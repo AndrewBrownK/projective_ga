@@ -7,7 +7,7 @@ use std::cmp::PartialEq;
 use std::hash::Hash;
 use std::ops::{BitAnd, BitOr, BitOrAssign, Not};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, ConstParamTy)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Grades(u32);
 pub type AntiGrades = Grades;
 
