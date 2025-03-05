@@ -10,7 +10,7 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, AntiScalar rhs) {
 }
 public extension AntiScalar {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return this;
     }
 }
 // Fancy postfix trick
@@ -23,7 +23,10 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, DualNum rhs) {
 }
 public extension DualNum {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e1234 */
+            this.e1234
+        );
     }
 }
 // Fancy postfix trick
@@ -36,7 +39,16 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Flector sub_type = Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), this.e4), 
+            /* e423, e431, e412, e321 */
+            float4(this.group1.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e1234 */
+            pow(sub_type.e4, 2) + pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -49,7 +61,16 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Line sub_type = Line(
+            /* e41, e42, e43 */
+            this.group0.xyz, 
+            /* e23, e31, e12 */
+            float3(0.0)
+        );
+        return AntiScalar(
+            /* e1234 */
+            pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -62,7 +83,16 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Motor sub_type = Motor(
+            /* e41, e42, e43, e1234 */
+            this.group0, 
+            /* e23, e31, e12, scalar */
+            float4(0.0)
+        );
+        return AntiScalar(
+            /* e1234 */
+            pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2) + pow(sub_type.e1234, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -75,7 +105,22 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        MultiVector sub_type = MultiVector(
+            /* scalar, e1234 */
+            float2(0.0, this.e1234), 
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), this.e4), 
+            /* e41, e42, e43 */
+            this.group2.xyz, 
+            /* e23, e31, e12 */
+            float3(0.0), 
+            /* e423, e431, e412, e321 */
+            float4(this.group4.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e1234 */
+            pow(sub_type.e1234, 2) + pow(sub_type.e4, 2) + pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2) + pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -88,7 +133,10 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Origin rhs) {
 }
 public extension Origin {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e1234 */
+            this.e4
+        );
     }
 }
 // Fancy postfix trick
@@ -101,7 +149,14 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Plane sub_type = Plane(
+            /* e423, e431, e412, e321 */
+            float4(this.group0.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e1234 */
+            pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -114,6 +169,9 @@ public AntiScalar operator /(WeightNormPrefixOrPostfix lhs, Point rhs) {
 }
 public extension Point {
     public AntiScalar weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e1234 */
+            this.e4
+        );
     }
 }

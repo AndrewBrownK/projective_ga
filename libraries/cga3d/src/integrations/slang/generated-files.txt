@@ -65,7 +65,6 @@
 ./libraries/cga3d/src/integrations/slang/traits/anti_reject_via_horizon_from.slang
 ./libraries/cga3d/src/integrations/slang/traits/anti_reverse.slang
 ./libraries/cga3d/src/integrations/slang/traits/anti_sandwich.slang
-./libraries/cga3d/src/integrations/slang/traits/anti_square_root.slang
 ./libraries/cga3d/src/integrations/slang/traits/anti_support.slang
 ./libraries/cga3d/src/integrations/slang/traits/anti_wedge.slang
 ./libraries/cga3d/src/integrations/slang/traits/auto_morphism.slang
@@ -108,7 +107,6 @@
 ./libraries/cga3d/src/integrations/slang/traits/impls/anti_reject_via_horizon_from.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/anti_reverse.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/anti_sandwich.slang
-./libraries/cga3d/src/integrations/slang/traits/impls/anti_square_root.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/anti_support.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/anti_wedge.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/auto_morphism.slang
@@ -158,7 +156,6 @@
 ./libraries/cga3d/src/integrations/slang/traits/impls/round_weight_norm.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/round_weight_norm_squared.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/sandwich.slang
-./libraries/cga3d/src/integrations/slang/traits/impls/square_root.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/support.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/try_into.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/unit.slang
@@ -196,7 +193,6 @@
 ./libraries/cga3d/src/integrations/slang/traits/round_weight_norm.slang
 ./libraries/cga3d/src/integrations/slang/traits/round_weight_norm_squared.slang
 ./libraries/cga3d/src/integrations/slang/traits/sandwich.slang
-./libraries/cga3d/src/integrations/slang/traits/square_root.slang
 ./libraries/cga3d/src/integrations/slang/traits/support.slang
 ./libraries/cga3d/src/integrations/slang/traits/try_into.slang
 ./libraries/cga3d/src/integrations/slang/traits/unit.slang

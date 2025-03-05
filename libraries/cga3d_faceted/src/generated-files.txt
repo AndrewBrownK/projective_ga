@@ -189,8 +189,7 @@
 ./libraries/cga3d_faceted/src/data/versor_odd.rs
 ./libraries/cga3d_faceted/src/data/versor_odd_at_infinity.rs
 ./libraries/cga3d_faceted/src/data/versor_odd_orthogonal_origin.rs
-./libraries/cga3d_faceted/src/integrations/glsl.rs
-./libraries/cga3d_faceted/src/integrations/wgsl.rs
+./libraries/cga3d_faceted/src/integrations.rs
 ./libraries/cga3d_faceted/src/lib.rs
 ./libraries/cga3d_faceted/src/simd.rs
 ./libraries/cga3d_faceted/src/traits.rs
@@ -208,7 +207,6 @@
 ./libraries/cga3d_faceted/src/traits/anti_reject_via_horizon_from.rs
 ./libraries/cga3d_faceted/src/traits/anti_reverse.rs
 ./libraries/cga3d_faceted/src/traits/anti_sandwich.rs
-./libraries/cga3d_faceted/src/traits/anti_square_root.rs
 ./libraries/cga3d_faceted/src/traits/anti_support.rs
 ./libraries/cga3d_faceted/src/traits/anti_wedge.rs
 ./libraries/cga3d_faceted/src/traits/auto_morphism.rs
@@ -251,7 +249,6 @@
 ./libraries/cga3d_faceted/src/traits/impls/anti_reject_via_horizon_from.rs
 ./libraries/cga3d_faceted/src/traits/impls/anti_reverse.rs
 ./libraries/cga3d_faceted/src/traits/impls/anti_sandwich.rs
-./libraries/cga3d_faceted/src/traits/impls/anti_square_root.rs
 ./libraries/cga3d_faceted/src/traits/impls/anti_support.rs
 ./libraries/cga3d_faceted/src/traits/impls/anti_wedge.rs
 ./libraries/cga3d_faceted/src/traits/impls/auto_morphism.rs
@@ -300,7 +297,6 @@
 ./libraries/cga3d_faceted/src/traits/impls/round_weight_norm.rs
 ./libraries/cga3d_faceted/src/traits/impls/round_weight_norm_squared.rs
 ./libraries/cga3d_faceted/src/traits/impls/sandwich.rs
-./libraries/cga3d_faceted/src/traits/impls/square_root.rs
 ./libraries/cga3d_faceted/src/traits/impls/support.rs
 ./libraries/cga3d_faceted/src/traits/impls/unit.rs
 ./libraries/cga3d_faceted/src/traits/impls/unitize.rs
@@ -336,7 +332,6 @@
 ./libraries/cga3d_faceted/src/traits/round_weight_norm.rs
 ./libraries/cga3d_faceted/src/traits/round_weight_norm_squared.rs
 ./libraries/cga3d_faceted/src/traits/sandwich.rs
-./libraries/cga3d_faceted/src/traits/square_root.rs
 ./libraries/cga3d_faceted/src/traits/support.rs
 ./libraries/cga3d_faceted/src/traits/unit.rs
 ./libraries/cga3d_faceted/src/traits/unitize.rs

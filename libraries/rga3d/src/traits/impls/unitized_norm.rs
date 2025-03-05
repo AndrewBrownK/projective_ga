@@ -1,4 +1,3 @@
-use crate::traits::UnitizedFlatNormSquared;
 // Note on Operative Statistics:
 // Operative Statistics are not a precise predictor of performance or performance comparisons.
 // This is due to varying hardware capabilities and compiler optimizations.
@@ -9,16 +8,16 @@ use crate::traits::UnitizedFlatNormSquared;
 // Total Implementations: 5
 //
 // Yes SIMD:   add/sub     mul     div
-//  Minimum:         2       5       1
-//   Median:         6      10       1
-//  Average:         6      10       1
-//  Maximum:        14      22       1
+//  Minimum:         0       0       0
+//   Median:         0       0       0
+//  Average:         0       0       0
+//  Maximum:         2       3       0
 //
 //  No SIMD:   add/sub     mul     div
-//  Minimum:         2       7       1
-//   Median:         6      12       1
-//  Average:         6      14       1
-//  Maximum:        14      29       1
+//  Minimum:         0       0       0
+//   Median:         0       0       0
+//  Average:         0       0       0
+//  Maximum:         2       3       0
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Flector {
     type Output = f32;
     fn div(self, _rhs: UnitizedNormPrefixOrPostfix) -> Self::Output {
@@ -26,15 +25,8 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Flector {
     }
 }
 impl UnitizedNorm for Flector {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        2        0
-    // Totals...
-    // yes simd        6       10        1
-    //  no simd        6       16        1
     fn unitized_norm(self) -> f32 {
-        return f32::powf(self.unitized_flat_norm_squared(), 0.5);
+        return 0.0;
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Line {
@@ -45,14 +37,13 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Line {
 }
 impl UnitizedNorm for Line {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        5        1
-    //  no simd        2        7        1
+    //      add/sub      mul      div
+    // f32        2        3        0
     fn unitized_norm(self) -> f32 {
-        return f32::powf(self.unitized_flat_norm_squared(), 0.5);
+        use crate::elements::*;
+        let wedge = Plane::from_groups(/* e423, e431, e412, e321 */ self.group1().with_w(0.0));
+        let sub_type_2 = Line::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ Simd32x3::from(0.0));
+        return (f32::powi(sub_type_2[e41], 2) * wedge[e321]) + (f32::powi(sub_type_2[e42], 2) * wedge[e321]) + (f32::powi(sub_type_2[e43], 2) * wedge[e321]);
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Motor {
@@ -62,15 +53,8 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Motor {
     }
 }
 impl UnitizedNorm for Motor {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        9        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        6       10        1
-    //  no simd        6       12        1
     fn unitized_norm(self) -> f32 {
-        return f32::powf(self.unitized_flat_norm_squared(), 0.5);
+        return 0.0;
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for MultiVector {
@@ -80,16 +64,8 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for MultiVector {
     }
 }
 impl UnitizedNorm for MultiVector {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       14       18        1
-    //    simd2        0        1        0
-    //    simd3        0        3        0
-    // Totals...
-    // yes simd       14       22        1
-    //  no simd       14       29        1
     fn unitized_norm(self) -> f32 {
-        return f32::powf(self.unitized_flat_norm_squared(), 0.5);
+        return 0.0;
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Point {
@@ -99,14 +75,7 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Point {
     }
 }
 impl UnitizedNorm for Point {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        2        0
-    // Totals...
-    // yes simd        2        6        1
-    //  no simd        2       10        1
     fn unitized_norm(self) -> f32 {
-        return f32::powf(self.unitized_flat_norm_squared(), 0.5);
+        return 0.0;
     }
 }

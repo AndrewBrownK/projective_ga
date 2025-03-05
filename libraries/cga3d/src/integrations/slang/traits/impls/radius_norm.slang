@@ -10,7 +10,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiCircleRotor rhs) {
 }
 public extension AntiCircleRotor {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.scalar, 2) - pow(this.e45, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -23,7 +26,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiDipoleInversion rhs)
 }
 public extension AntiDipoleInversion {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e4 * this.e5)
+        );
     }
 }
 // Fancy postfix trick
@@ -36,7 +42,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiDualNum rhs) {
 }
 public extension AntiDualNum {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.scalar
+        );
     }
 }
 // Fancy postfix trick
@@ -49,7 +58,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiFlatPoint rhs) {
 }
 public extension AntiFlatPoint {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.e321
+        );
     }
 }
 // Fancy postfix trick
@@ -62,7 +74,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiFlector rhs) {
 }
 public extension AntiFlector {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -75,7 +90,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiLine rhs) {
 }
 public extension AntiLine {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -88,7 +106,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiMotor rhs) {
 }
 public extension AntiMotor {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.scalar, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -101,7 +122,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiPlane rhs) {
 }
 public extension AntiPlane {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -114,7 +138,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, AntiScalar rhs) {
 }
 public extension AntiScalar {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.e12345 * -1.0
+        );
     }
 }
 // Fancy postfix trick
@@ -127,7 +154,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e321, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+        );
     }
 }
 // Fancy postfix trick
@@ -140,7 +170,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, CircleRotor rhs) {
 }
 public extension CircleRotor {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e321, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e12345, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+        );
     }
 }
 // Fancy postfix trick
@@ -153,7 +186,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -166,7 +202,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, DipoleInversion rhs) {
 }
 public extension DipoleInversion {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -179,7 +218,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, DualNum rhs) {
 }
 public extension DualNum {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.e12345 * -1.0
+        );
     }
 }
 // Fancy postfix trick
@@ -192,7 +234,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, FlatPoint rhs) {
 }
 public extension FlatPoint {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.e45 * -1.0
+        );
     }
 }
 // Fancy postfix trick
@@ -205,7 +250,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            -pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -218,7 +266,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            -pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -231,7 +282,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            -pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e12345, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -244,7 +298,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e15 * this.e41) + 2.0 * (this.e25 * this.e42) + 2.0 * (this.e35 * this.e43) + 2.0 * (this.e3215 * this.e1234) + pow(this.scalar, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.e321, 2) - pow(this.e12345, 2) - pow(this.e45, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2) - 2.0 * (this.e4 * this.e5) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+        );
     }
 }
 // Fancy postfix trick
@@ -257,7 +314,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            -pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -270,7 +330,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - 2.0 * (this.e4 * this.e5)
+        );
     }
 }
 // Fancy postfix trick
@@ -283,7 +346,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Scalar rhs) {
 }
 public extension Scalar {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            this.scalar
+        );
     }
 }
 // Fancy postfix trick
@@ -296,7 +362,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e3215 * this.e1234) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -309,7 +378,10 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - pow(this.e12345, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e5 * this.e4)
+        );
     }
 }
 // Fancy postfix trick
@@ -322,6 +394,9 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public Scalar radius_norm() {
-        return this.radius_norm_squared().square_root();
+        return Scalar(
+            /* scalar */
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + pow(this.scalar, 2) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+        );
     }
 }

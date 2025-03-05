@@ -1,5 +1,3 @@
-use crate::traits::AntiDotProduct;
-use crate::traits::FlatWeight;
 // Note on Operative Statistics:
 // Operative Statistics are not a precise predictor of performance or performance comparisons.
 // This is due to varying hardware capabilities and compiler optimizations.
@@ -10,16 +8,16 @@ use crate::traits::FlatWeight;
 // Total Implementations: 51
 //
 // Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         2       3       0
-//  Average:         2       3       0
-//  Maximum:        31      32       0
+//  Minimum:         0       0       0
+//   Median:         2       0       0
+//  Average:         2       0       0
+//  Maximum:        23      16       0
 //
 //  No SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         2       3       0
-//  Average:         2       3       0
-//  Maximum:        31      32       0
+//  Minimum:         0       0       0
+//   Median:         2       0       0
+//  Average:         2       0       0
+//  Maximum:        23      16       0
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiScalar;
     fn div(self, _rhs: FlatWeightNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -27,12 +25,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
     }
 }
 impl FlatWeightNormSquared for AntiCircleRotor {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -42,12 +37,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorAtIn
     }
 }
 impl FlatWeightNormSquared for AntiCircleRotorAtInfinity {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -59,10 +51,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion
 impl FlatWeightNormSquared for AntiDipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -74,10 +67,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion
 impl FlatWeightNormSquared for AntiDipoleInversionAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -89,10 +83,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion
 impl FlatWeightNormSquared for AntiDipoleInversionOrthogonalOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -102,12 +97,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryCircleRo
     }
 }
 impl FlatWeightNormSquared for AntiMysteryCircleRotor {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -119,10 +111,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryDipoleIn
 impl FlatWeightNormSquared for AntiMysteryDipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiScalar {
@@ -137,12 +130,9 @@ impl std::ops::DivAssign<FlatWeightNormSquaredPrefixOrPostfix> for AntiScalar {
     }
 }
 impl FlatWeightNormSquared for AntiScalar {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e12345], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Circle {
@@ -154,10 +144,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Circle {
 impl FlatWeightNormSquared for Circle {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAligningOrigin {
@@ -169,10 +160,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAligningOrigi
 impl FlatWeightNormSquared for CircleAligningOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAtInfinity {
@@ -184,10 +176,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAtInfinity {
 impl FlatWeightNormSquared for CircleAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleOnOrigin {
@@ -199,10 +192,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleOnOrigin {
 impl FlatWeightNormSquared for CircleOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -214,10 +208,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotor {
 impl FlatWeightNormSquared for CircleRotor {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -229,10 +227,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligning
 impl FlatWeightNormSquared for CircleRotorAligningOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -244,10 +246,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligning
 impl FlatWeightNormSquared for CircleRotorAligningOriginAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e12345]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -259,10 +265,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAtInfini
 impl FlatWeightNormSquared for CircleRotorAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -274,10 +284,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorOnOrigin
 impl FlatWeightNormSquared for CircleRotorOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Dipole {
@@ -287,12 +301,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Dipole {
     }
 }
 impl FlatWeightNormSquared for Dipole {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAligningOrigin {
@@ -302,12 +313,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAligningOrigi
     }
 }
 impl FlatWeightNormSquared for DipoleAligningOrigin {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAtInfinity {
@@ -317,12 +325,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAtInfinity {
     }
 }
 impl FlatWeightNormSquared for DipoleAtInfinity {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -334,10 +339,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversion {
 impl FlatWeightNormSquared for DipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -349,10 +358,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAlig
 impl FlatWeightNormSquared for DipoleInversionAligningOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -364,10 +377,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAtIn
 impl FlatWeightNormSquared for DipoleInversionAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -379,10 +396,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionOnOr
 impl FlatWeightNormSquared for DipoleInversionOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
@@ -392,12 +413,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
     }
 }
 impl FlatWeightNormSquared for DipoleOnOrigin {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DualNum {
@@ -407,12 +425,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DualNum {
     }
 }
 impl FlatWeightNormSquared for DualNum {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e12345], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatOrigin {
@@ -422,12 +437,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatOrigin {
     }
 }
 impl FlatWeightNormSquared for FlatOrigin {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatPoint {
@@ -437,12 +449,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatPoint {
     }
 }
 impl FlatWeightNormSquared for FlatPoint {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Flector {
@@ -454,10 +463,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Flector {
 impl FlatWeightNormSquared for Flector {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlectorOnOrigin {
@@ -469,10 +482,13 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlectorOnOrigin {
 impl FlatWeightNormSquared for FlectorOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(self[e45], 2) + f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Line {
@@ -484,10 +500,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Line {
 impl FlatWeightNormSquared for Line {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for LineOnOrigin {
@@ -499,10 +516,10 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for LineOnOrigin {
 impl FlatWeightNormSquared for LineOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e415], 2) + f32::powi(self[e425], 2) + f32::powi(self[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Motor {
@@ -514,10 +531,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Motor {
 impl FlatWeightNormSquared for Motor {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0());
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MotorOnOrigin {
@@ -529,10 +550,13 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MotorOnOrigin {
 impl FlatWeightNormSquared for MotorOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(self[e415], 2) + f32::powi(self[e425], 2) + f32::powi(self[e435], 2) + f32::powi(self[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MultiVector {
@@ -544,10 +568,60 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MultiVector {
 impl FlatWeightNormSquared for MultiVector {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32       31       32        0
+    // f32       23       16        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MultiVector::from_groups(
+            // scalar, e12345
+            Simd32x2::from([0.0, self[e12345]]),
+            // e1, e2, e3, e4
+            Simd32x4::from(0.0),
+            // e5
+            0.0,
+            // e41, e42, e43, e45
+            Simd32x3::from(0.0).with_w(self[e45]),
+            // e15, e25, e35
+            Simd32x3::from(0.0),
+            // e23, e31, e12
+            Simd32x3::from(0.0),
+            // e415, e425, e435, e321
+            self.group6().xyz().with_w(0.0),
+            // e423, e431, e412
+            Simd32x3::from(0.0),
+            // e235, e315, e125
+            Simd32x3::from(0.0),
+            // e1234, e4235, e4315, e4125
+            Simd32x4::from([0.0, self[e4235], self[e4315], self[e4125]]),
+            // e3215
+            0.0,
+        );
+        return AntiScalar::from_groups(
+            // e12345
+            2.0 * (sub_type[e4] * sub_type[e5])
+                + 2.0 * (sub_type[e423] * sub_type[e235])
+                + 2.0 * (sub_type[e431] * sub_type[e315])
+                + 2.0 * (sub_type[e412] * sub_type[e125])
+                + f32::powi(sub_type[e12345], 2)
+                + f32::powi(sub_type[e45], 2)
+                + f32::powi(sub_type[e415], 2)
+                + f32::powi(sub_type[e425], 2)
+                + f32::powi(sub_type[e435], 2)
+                + f32::powi(sub_type[e4235], 2)
+                + f32::powi(sub_type[e4315], 2)
+                + f32::powi(sub_type[e4125], 2)
+                - f32::powi(sub_type[scalar], 2)
+                - f32::powi(sub_type[e1], 2)
+                - f32::powi(sub_type[e2], 2)
+                - f32::powi(sub_type[e3], 2)
+                - f32::powi(sub_type[e23], 2)
+                - f32::powi(sub_type[e31], 2)
+                - f32::powi(sub_type[e12], 2)
+                - f32::powi(sub_type[e321], 2)
+                - 2.0 * (sub_type[e41] * sub_type[e15])
+                - 2.0 * (sub_type[e42] * sub_type[e25])
+                - 2.0 * (sub_type[e43] * sub_type[e35])
+                - 2.0 * (sub_type[e1234] * sub_type[e3215]),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircle {
@@ -559,10 +633,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircle {
 impl FlatWeightNormSquared for MysteryCircle {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircleRotor {
@@ -574,10 +649,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircleRotor 
 impl FlatWeightNormSquared for MysteryCircleRotor {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipole {
@@ -587,12 +666,9 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipole {
     }
 }
 impl FlatWeightNormSquared for MysteryDipole {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e45], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipoleInversion {
@@ -604,10 +680,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipoleInvers
 impl FlatWeightNormSquared for MysteryDipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorEven {
@@ -619,10 +699,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorEven {
 impl FlatWeightNormSquared for MysteryVersorEven {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorOdd {
@@ -634,10 +718,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorOdd {
 impl FlatWeightNormSquared for MysteryVersorOdd {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Plane {
@@ -649,10 +737,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Plane {
 impl FlatWeightNormSquared for Plane {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for PlaneOnOrigin {
@@ -664,10 +753,10 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for PlaneOnOrigin {
 impl FlatWeightNormSquared for PlaneOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Sphere {
@@ -679,10 +768,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Sphere {
 impl FlatWeightNormSquared for Sphere {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for SphereOnOrigin {
@@ -694,10 +784,11 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for SphereOnOrigin {
 impl FlatWeightNormSquared for SphereOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        3        0
+    // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEven {
@@ -709,10 +800,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEven {
 impl FlatWeightNormSquared for VersorEven {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -724,10 +819,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAligningO
 impl FlatWeightNormSquared for VersorEvenAligningOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -739,10 +838,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAtInfinit
 impl FlatWeightNormSquared for VersorEvenAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -754,10 +857,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenOnOrigin 
 impl FlatWeightNormSquared for VersorEvenOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -769,10 +876,14 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOdd {
 impl FlatWeightNormSquared for VersorOdd {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOddAtInfinity {
@@ -784,9 +895,13 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOddAtInfinity
 impl FlatWeightNormSquared for VersorOddAtInfinity {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        3        4        0
+    // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
-        let flat_weight = self.flat_weight();
-        return flat_weight.anti_dot_product(flat_weight);
+        use crate::elements::*;
+        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        return AntiScalar::from_groups(
+            // e12345
+            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+        );
     }
 }

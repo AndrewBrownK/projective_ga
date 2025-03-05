@@ -50,12 +50,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/dot_product.slang
 ./libraries/rga3d/src/integrations/slang/traits/double_complement.slang
 ./libraries/rga3d/src/integrations/slang/traits/fix.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_bulk.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_bulk_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_bulk_norm_squared.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_weight.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_weight_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/flat_weight_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/geometric_anti_product.slang
 ./libraries/rga3d/src/integrations/slang/traits/geometric_anti_quotient.slang
 ./libraries/rga3d/src/integrations/slang/traits/geometric_product.slang
@@ -88,12 +82,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/impls/dot_product.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/double_complement.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/fix.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_bulk.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_bulk_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_bulk_norm_squared.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_weight.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_weight_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/flat_weight_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/geometric_anti_product.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/geometric_anti_quotient.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/geometric_product.slang
@@ -118,7 +106,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/impls/try_into.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/unit.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/unitize.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/unitized_flat_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/unitized_norm.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/wedge.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/weight.slang
@@ -144,7 +131,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/try_into.slang
 ./libraries/rga3d/src/integrations/slang/traits/unit.slang
 ./libraries/rga3d/src/integrations/slang/traits/unitize.slang
-./libraries/rga3d/src/integrations/slang/traits/unitized_flat_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/unitized_norm.slang
 ./libraries/rga3d/src/integrations/slang/traits/wedge.slang
 ./libraries/rga3d/src/integrations/slang/traits/weight.slang

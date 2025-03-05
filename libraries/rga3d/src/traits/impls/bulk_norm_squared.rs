@@ -1,6 +1,3 @@
-use crate::traits::DotProduct;
-use crate::traits::FlatBulk;
-use crate::traits::Wedge;
 // Note on Operative Statistics:
 // Operative Statistics are not a precise predictor of performance or performance comparisons.
 // This is due to varying hardware capabilities and compiler optimizations.
@@ -8,57 +5,19 @@ use crate::traits::Wedge;
 // real measurements on real work-loads on real hardware.
 // Disclaimer aside, enjoy the fun information =)
 //
-// Total Implementations: 5
+// Total Implementations: 2
 //
 // Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       2       0
-//   Median:         3       6       0
-//  Average:         3       6       0
-//  Maximum:         7      14       0
+//  Minimum:         3       2       0
+//   Median:         7       6       0
+//  Average:         5       4       0
+//  Maximum:         7       6       0
 //
 //  No SIMD:   add/sub     mul     div
-//  Minimum:         0       4       0
-//   Median:         3       9       0
-//  Average:         3      10       0
-//  Maximum:         7      21       0
-impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for Flector {
-    type Output = Scalar;
-    fn div(self, _rhs: BulkNormSquaredPrefixOrPostfix) -> Self::Output {
-        self.bulk_norm_squared()
-    }
-}
-impl BulkNormSquared for Flector {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd4        0        2        0
-    // Totals...
-    // yes simd        3        6        0
-    //  no simd        3       12        0
-    fn bulk_norm_squared(self) -> Scalar {
-        let flat_bulk_thing = self.flat_bulk().wedge(Origin::from_groups(/* e4 */ 1.0));
-        return flat_bulk_thing.dot_product(flat_bulk_thing);
-    }
-}
-impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for Line {
-    type Output = Scalar;
-    fn div(self, _rhs: BulkNormSquaredPrefixOrPostfix) -> Self::Output {
-        self.bulk_norm_squared()
-    }
-}
-impl BulkNormSquared for Line {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
-    fn bulk_norm_squared(self) -> Scalar {
-        let flat_bulk_thing = self.flat_bulk().wedge(Origin::from_groups(/* e4 */ 1.0));
-        return flat_bulk_thing.dot_product(flat_bulk_thing);
-    }
-}
+//  Minimum:         3       4       0
+//   Median:         7      13       0
+//  Average:         5       8       0
+//  Maximum:         7      13       0
 impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for Motor {
     type Output = Scalar;
     fn div(self, _rhs: BulkNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -68,14 +27,25 @@ impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for Motor {
 impl BulkNormSquared for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        5        0
+    //      f32        3        1        0
     //    simd3        0        1        0
     // Totals...
-    // yes simd        3        6        0
-    //  no simd        3        8        0
+    // yes simd        3        2        0
+    //  no simd        3        4        0
     fn bulk_norm_squared(self) -> Scalar {
-        let flat_bulk_thing = self.flat_bulk().wedge(Origin::from_groups(/* e4 */ 1.0));
-        return flat_bulk_thing.dot_product(flat_bulk_thing);
+        use crate::elements::*;
+        let sub_type = Motor::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from(0.0), /* e23, e31, e12, scalar */ self.group1());
+        let other = Origin::from_groups(/* e4 */ 1.0);
+        let wedge = Flector::from_groups(
+            // e1, e2, e3, e4
+            Simd32x3::from(0.0).with_w(sub_type[scalar] * other[e4]),
+            // e423, e431, e412, e321
+            (Simd32x3::from(other[e4]) * sub_type.group1().xyz()).with_w(0.0),
+        );
+        return Scalar::from_groups(
+            // scalar
+            f32::powi(wedge[e1], 2) + f32::powi(wedge[e2], 2) + f32::powi(wedge[e3], 2) + f32::powi(wedge[e321], 2),
+        );
     }
 }
 impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for MultiVector {
@@ -87,33 +57,49 @@ impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for MultiVector {
 impl BulkNormSquared for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        7       10        0
+    //      f32        7        2        0
     //    simd2        0        1        0
     //    simd3        0        3        0
     // Totals...
-    // yes simd        7       14        0
-    //  no simd        7       21        0
+    // yes simd        7        6        0
+    //  no simd        7       13        0
     fn bulk_norm_squared(self) -> Scalar {
-        let flat_bulk_thing = self.flat_bulk().wedge(Origin::from_groups(/* e4 */ 1.0));
-        return flat_bulk_thing.dot_product(flat_bulk_thing);
-    }
-}
-impl std::ops::Div<BulkNormSquaredPrefixOrPostfix> for Point {
-    type Output = Scalar;
-    fn div(self, _rhs: BulkNormSquaredPrefixOrPostfix) -> Self::Output {
-        self.bulk_norm_squared()
-    }
-}
-impl BulkNormSquared for Point {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        3        0
-    //    simd3        0        2        0
-    // Totals...
-    // yes simd        2        5        0
-    //  no simd        2        9        0
-    fn bulk_norm_squared(self) -> Scalar {
-        let flat_bulk_thing = self.flat_bulk().wedge(Origin::from_groups(/* e4 */ 1.0));
-        return flat_bulk_thing.dot_product(flat_bulk_thing);
+        use crate::elements::*;
+        let sub_type = MultiVector::from_groups(
+            // scalar, e1234
+            Simd32x2::from([self[scalar], 0.0]),
+            // e1, e2, e3, e4
+            self.group1().xyz().with_w(0.0),
+            // e41, e42, e43
+            Simd32x3::from(0.0),
+            // e23, e31, e12
+            self.group3(),
+            // e423, e431, e412, e321
+            Simd32x3::from(0.0).with_w(self[e321]),
+        );
+        let other = Origin::from_groups(/* e4 */ 1.0);
+        let wedge = MultiVector::from_groups(
+            // scalar, e1234
+            Simd32x2::from([1.0, sub_type[e321] * other[e4]]) * Simd32x2::from([0.0, -1.0]),
+            // e1, e2, e3, e4
+            Simd32x3::from(0.0).with_w(sub_type[scalar] * other[e4]),
+            // e41, e42, e43
+            Simd32x3::from(other[e4]) * sub_type.group1().xyz() * Simd32x3::from(-1.0),
+            // e23, e31, e12
+            Simd32x3::from(0.0),
+            // e423, e431, e412, e321
+            (Simd32x3::from(other[e4]) * sub_type.group3()).with_w(0.0),
+        );
+        return Scalar::from_groups(
+            // scalar
+            f32::powi(wedge[scalar], 2)
+                + f32::powi(wedge[e1], 2)
+                + f32::powi(wedge[e2], 2)
+                + f32::powi(wedge[e3], 2)
+                + f32::powi(wedge[e23], 2)
+                + f32::powi(wedge[e31], 2)
+                + f32::powi(wedge[e12], 2)
+                + f32::powi(wedge[e321], 2),
+        );
     }
 }

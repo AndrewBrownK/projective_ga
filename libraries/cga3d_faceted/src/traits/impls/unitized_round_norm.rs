@@ -1,4 +1,3 @@
-use crate::traits::UnitizedRoundNormSquared;
 // Note on Operative Statistics:
 // Operative Statistics are not a precise predictor of performance or performance comparisons.
 // This is due to varying hardware capabilities and compiler optimizations.
@@ -9,16 +8,16 @@ use crate::traits::UnitizedRoundNormSquared;
 // Total Implementations: 23
 //
 // Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       3       1
-//   Median:         5       8       1
-//  Average:         6      10       1
-//  Maximum:        62      76       1
+//  Minimum:         0       0       0
+//   Median:         0       0       0
+//  Average:         0       1       0
+//  Maximum:         2      13       3
 //
 //  No SIMD:   add/sub     mul     div
-//  Minimum:         0       3       1
-//   Median:         5      10       1
-//  Average:         6      12       1
-//  Maximum:        62      86       1
+//  Minimum:         0       0       0
+//   Median:         0       0       0
+//  Average:         0       1       0
+//  Maximum:         2      21       3
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleOnOrigin {
     type Output = f32;
     fn div(self, _rhs: UnitizedRoundNormPrefixOrPostfix) -> Self::Output {
@@ -26,15 +25,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleOnOrigin {
     }
 }
 impl UnitizedRoundNorm for AntiCircleOnOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        4        7        1
-    //  no simd        4        9        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotor {
@@ -44,15 +37,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotor {
     }
 }
 impl UnitizedRoundNorm for AntiCircleRotor {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        5        8        1
-    //  no simd        5       10        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -62,15 +49,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotorAligning
     }
 }
 impl UnitizedRoundNorm for AntiCircleRotorAligningOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        5        8        1
-    //  no simd        5       10        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -80,15 +61,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotorOnOrigin
     }
 }
 impl UnitizedRoundNorm for AntiCircleRotorOnOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        5        8        1
-    //  no simd        5       10        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -98,15 +73,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
     }
 }
 impl UnitizedRoundNorm for AntiDipoleInversion {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e321], 2) * f32::powi(self[e4], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -116,15 +85,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversionOnOr
     }
 }
 impl UnitizedRoundNorm for AntiDipoleInversionOnOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e321], 2) * f32::powi(self[e4], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -135,14 +98,13 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleOnOrigin {
 }
 impl UnitizedRoundNorm for AntiDipoleOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        5        1
-    //  no simd        2        7        1
+    //      add/sub      mul      div
+    // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiFlatOrigin::from_groups(/* e321 */ self[e321]);
+        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        return (f32::powi(wedge[e4235], 2) * sub_type[e321]) + (f32::powi(wedge[e4315], 2) * sub_type[e321]) + (f32::powi(wedge[e4125], 2) * sub_type[e321]);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDualNum {
@@ -154,9 +116,10 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDualNum {
 impl UnitizedRoundNorm for AntiDualNum {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        0        3        1
+    // f32        0        0        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return self[scalar] / (self[e1234]);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -168,9 +131,12 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiSphereOnOrigin {
 impl UnitizedRoundNorm for AntiSphereOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        5        1
+    // f32        2        0        3
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ self.group0().xyz());
+        let wedge = FlatOrigin::from_groups(/* e45 */ self[e4]);
+        return (f32::powi(sub_type[e1], 2) / (wedge[e45])) + (f32::powi(sub_type[e2], 2) / (wedge[e45])) + (f32::powi(sub_type[e3], 2) / (wedge[e45]));
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -180,15 +146,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiVersorEvenOnOrigin 
     }
 }
 impl UnitizedRoundNorm for AntiVersorEvenOnOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Circle {
@@ -199,14 +159,13 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Circle {
 }
 impl UnitizedRoundNorm for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        5        1
-    //  no simd        2        7        1
+    //      add/sub      mul      div
+    // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiFlatOrigin::from_groups(/* e321 */ self[e321]);
+        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
+        return (f32::powi(wedge[e4235], 2) * sub_type[e321]) + (f32::powi(wedge[e4315], 2) * sub_type[e321]) + (f32::powi(wedge[e4125], 2) * sub_type[e321]);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -217,14 +176,13 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for CircleOrthogonalOrigin 
 }
 impl UnitizedRoundNorm for CircleOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        5        1
-    //  no simd        2        7        1
+    //      add/sub      mul      div
+    // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiFlatOrigin::from_groups(/* e321 */ self[e321]);
+        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        return (f32::powi(wedge[e4235], 2) * sub_type[e321]) + (f32::powi(wedge[e4315], 2) * sub_type[e321]) + (f32::powi(wedge[e4125], 2) * sub_type[e321]);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for CircleRotor {
@@ -235,14 +193,13 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for CircleRotor {
 }
 impl UnitizedRoundNorm for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        5        1
-    //  no simd        2        7        1
+    //      add/sub      mul      div
+    // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiFlatOrigin::from_groups(/* e321 */ self[e321]);
+        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
+        return (f32::powi(wedge[e4235], 2) * sub_type[e321]) + (f32::powi(wedge[e4315], 2) * sub_type[e321]) + (f32::powi(wedge[e4125], 2) * sub_type[e321]);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Dipole {
@@ -252,15 +209,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Dipole {
     }
 }
 impl UnitizedRoundNorm for Dipole {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        4        7        1
-    //  no simd        4        9        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
@@ -270,15 +221,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
     }
 }
 impl UnitizedRoundNorm for DipoleInversion {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        5        8        1
-    //  no simd        5       11        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -288,15 +233,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversionOrthogon
     }
 }
 impl UnitizedRoundNorm for DipoleInversionOrthogonalOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        5        8        1
-    //  no simd        5       11        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -306,15 +245,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleOrthogonalOrigin 
     }
 }
 impl UnitizedRoundNorm for DipoleOrthogonalOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        1
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        4        7        1
-    //  no simd        4        9        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for MultiVector {
@@ -326,15 +259,89 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for MultiVector {
 impl UnitizedRoundNorm for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       62       71        1
+    //      f32        0        9        0
     //    simd2        0        1        0
-    //    simd3        0        3        0
+    //    simd3        0        2        0
     //    simd4        0        1        0
     // Totals...
-    // yes simd       62       76        1
-    //  no simd       62       86        1
+    // yes simd        0       13        0
+    //  no simd        0       21        0
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = MultiVector::from_groups(
+            // scalar, e12345
+            Simd32x2::from([self[scalar], 0.0]),
+            // e1, e2, e3, e4
+            self.group1().xyz().with_w(0.0),
+            // e5
+            0.0,
+            // e41, e42, e43, e45
+            Simd32x4::from(0.0),
+            // e15, e25, e35
+            Simd32x3::from(0.0),
+            // e23, e31, e12
+            self.group5(),
+            // e415, e425, e435, e321
+            Simd32x3::from(0.0).with_w(self[e321]),
+            // e423, e431, e412
+            Simd32x3::from(0.0),
+            // e235, e315, e125
+            Simd32x3::from(0.0),
+            // e1234, e4235, e4315, e4125
+            Simd32x4::from(0.0),
+            // e3215
+            0.0,
+        );
+        let sub_type_2 = MultiVector::from_groups(
+            // scalar, e12345
+            Simd32x2::from(0.0),
+            // e1, e2, e3, e4
+            Simd32x3::from(0.0).with_w(self[e4]),
+            // e5
+            0.0,
+            // e41, e42, e43, e45
+            self.group3().xyz().with_w(0.0),
+            // e15, e25, e35
+            Simd32x3::from(0.0),
+            // e23, e31, e12
+            Simd32x3::from(0.0),
+            // e415, e425, e435, e321
+            Simd32x4::from(0.0),
+            // e423, e431, e412
+            self.group7(),
+            // e235, e315, e125
+            Simd32x3::from(0.0),
+            // e1234, e4235, e4315, e4125
+            Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
+            // e3215
+            0.0,
+        );
+        let other = Infinity::from_groups(/* e5 */ 1.0);
+        let wedge = MultiVector::from_groups(
+            // scalar, e12345
+            Simd32x2::from([1.0, other[e5] * sub_type_2[e1234]]) * Simd32x2::from([0.0, 1.0]),
+            // e1, e2, e3, e4
+            Simd32x4::from(0.0),
+            // e5
+            0.0,
+            // e41, e42, e43, e45
+            Simd32x3::from(0.0).with_w(other[e5] * sub_type_2[e4]),
+            // e15, e25, e35
+            Simd32x3::from(other[e5]) * sub_type_2.group1().xyz(),
+            // e23, e31, e12
+            Simd32x3::from(0.0),
+            // e415, e425, e435, e321
+            (Simd32x3::from(other[e5]) * sub_type_2.group3().xyz()).with_w(0.0),
+            // e423, e431, e412
+            Simd32x3::from(0.0),
+            // e235, e315, e125
+            Simd32x3::from(0.0),
+            // e1234, e4235, e4315, e4125
+            Simd32x4::from([0.0, other[e5] * sub_type_2[e423], other[e5] * sub_type_2[e431], other[e5] * sub_type_2[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]),
+            // e3215
+            0.0,
+        );
+        return (sub_type[e41] * sub_type[e15] * wedge[e4] * wedge[e5]) * 4.0;
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for RoundPoint {
@@ -346,9 +353,12 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for RoundPoint {
 impl UnitizedRoundNorm for RoundPoint {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32        2        5        1
+    // f32        2        0        3
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        let sub_type = AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ self.group0().xyz());
+        let wedge = FlatOrigin::from_groups(/* e45 */ self[e4]);
+        return (f32::powi(sub_type[e1], 2) / (wedge[e45])) + (f32::powi(sub_type[e2], 2) / (wedge[e45])) + (f32::powi(sub_type[e3], 2) / (wedge[e45]));
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
@@ -358,15 +368,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
     }
 }
 impl UnitizedRoundNorm for VersorEven {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e321], 2) * f32::powi(self[e4], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -376,15 +380,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEvenOrthogonalOri
     }
 }
 impl UnitizedRoundNorm for VersorEvenOrthogonalOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e321], 2) * f32::powi(self[e4], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
@@ -394,15 +392,9 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
     }
 }
 impl UnitizedRoundNorm for VersorOdd {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -412,14 +404,8 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOddOrthogonalOrig
     }
 }
 impl UnitizedRoundNorm for VersorOddOrthogonalOrigin {
-    // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        6        9        1
-    //  no simd        6       12        1
     fn unitized_round_norm(self) -> f32 {
-        return f32::powf(self.unitized_round_norm_squared(), 0.5);
+        use crate::elements::*;
+        return f32::powi(self[e41], 2) * f32::powi(self[e23], 2);
     }
 }

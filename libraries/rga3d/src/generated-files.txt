@@ -52,12 +52,6 @@
 ./libraries/rga3d/src/traits/dot_product.rs
 ./libraries/rga3d/src/traits/double_complement.rs
 ./libraries/rga3d/src/traits/fix.rs
-./libraries/rga3d/src/traits/flat_bulk.rs
-./libraries/rga3d/src/traits/flat_bulk_norm.rs
-./libraries/rga3d/src/traits/flat_bulk_norm_squared.rs
-./libraries/rga3d/src/traits/flat_weight.rs
-./libraries/rga3d/src/traits/flat_weight_norm.rs
-./libraries/rga3d/src/traits/flat_weight_norm_squared.rs
 ./libraries/rga3d/src/traits/geometric_anti_product.rs
 ./libraries/rga3d/src/traits/geometric_anti_quotient.rs
 ./libraries/rga3d/src/traits/geometric_product.rs
@@ -90,12 +84,6 @@
 ./libraries/rga3d/src/traits/impls/dot_product.rs
 ./libraries/rga3d/src/traits/impls/double_complement.rs
 ./libraries/rga3d/src/traits/impls/fix.rs
-./libraries/rga3d/src/traits/impls/flat_bulk.rs
-./libraries/rga3d/src/traits/impls/flat_bulk_norm.rs
-./libraries/rga3d/src/traits/impls/flat_bulk_norm_squared.rs
-./libraries/rga3d/src/traits/impls/flat_weight.rs
-./libraries/rga3d/src/traits/impls/flat_weight_norm.rs
-./libraries/rga3d/src/traits/impls/flat_weight_norm_squared.rs
 ./libraries/rga3d/src/traits/impls/geometric_anti_product.rs
 ./libraries/rga3d/src/traits/impls/geometric_anti_quotient.rs
 ./libraries/rga3d/src/traits/impls/geometric_product.rs
@@ -118,7 +106,6 @@
 ./libraries/rga3d/src/traits/impls/square_root.rs
 ./libraries/rga3d/src/traits/impls/unit.rs
 ./libraries/rga3d/src/traits/impls/unitize.rs
-./libraries/rga3d/src/traits/impls/unitized_flat_norm_squared.rs
 ./libraries/rga3d/src/traits/impls/unitized_norm.rs
 ./libraries/rga3d/src/traits/impls/wedge.rs
 ./libraries/rga3d/src/traits/impls/weight.rs
@@ -142,7 +129,6 @@
 ./libraries/rga3d/src/traits/square_root.rs
 ./libraries/rga3d/src/traits/unit.rs
 ./libraries/rga3d/src/traits/unitize.rs
-./libraries/rga3d/src/traits/unitized_flat_norm_squared.rs
 ./libraries/rga3d/src/traits/unitized_norm.rs
 ./libraries/rga3d/src/traits/wedge.rs
 ./libraries/rga3d/src/traits/weight.rs

@@ -10,7 +10,10 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, AntiCircleRotor 
 }
 public extension AntiCircleRotor {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e12345 */
+            float4(float3(0.0), this.e45)[3]
+        );
     }
 }
 // Fancy postfix trick
@@ -23,7 +26,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, AntiDipoleInvers
 }
 public extension AntiDipoleInversion {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Line sub_type = Line(
+            /* e415, e425, e435 */
+            this.group1.xyz, 
+            /* e235, e315, e125 */
+            float3(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -36,7 +48,7 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, AntiScalar rhs) 
 }
 public extension AntiScalar {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return this;
     }
 }
 // Fancy postfix trick
@@ -49,7 +61,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Line sub_type = Line(
+            /* e415, e425, e435 */
+            this.group1.xyz, 
+            /* e235, e315, e125 */
+            float3(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -62,7 +83,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, CircleRotor rhs)
 }
 public extension CircleRotor {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Motor sub_type = Motor(
+            /* e415, e425, e435, e12345 */
+            float4(this.e415, this.e425, this.e435, this.e12345), 
+            /* e235, e315, e125, e5 */
+            float4(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2) + pow(sub_type.e12345, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -75,7 +105,10 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e12345 */
+            float4(float3(0.0), this.e45)[3]
+        );
     }
 }
 // Fancy postfix trick
@@ -88,7 +121,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, DipoleInversion 
 }
 public extension DipoleInversion {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Flector sub_type = Flector(
+            /* e15, e25, e35, e45 */
+            float4(float3(0.0), this.e45), 
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group3.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e45, 2) + pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -101,7 +143,10 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, DualNum rhs) {
 }
 public extension DualNum {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e12345 */
+            this.e12345
+        );
     }
 }
 // Fancy postfix trick
@@ -114,7 +159,10 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, FlatPoint rhs) {
 }
 public extension FlatPoint {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        return AntiScalar(
+            /* e12345 */
+            float4(float3(0.0), this.e45)[3]
+        );
     }
 }
 // Fancy postfix trick
@@ -127,7 +175,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Flector sub_type = Flector(
+            /* e15, e25, e35, e45 */
+            float4(float3(0.0), this.e45), 
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group1.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e45, 2) + pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -140,7 +197,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Line sub_type = Line(
+            /* e415, e425, e435 */
+            this.group0.xyz, 
+            /* e235, e315, e125 */
+            float3(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -153,7 +219,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Motor sub_type = Motor(
+            /* e415, e425, e435, e12345 */
+            this.group0, 
+            /* e235, e315, e125, e5 */
+            float4(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2) + pow(sub_type.e12345, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -166,7 +241,34 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, MultiVector rhs)
 }
 public extension MultiVector {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        MultiVector sub_type = MultiVector(
+            /* scalar, e12345 */
+            float2(0.0, this.e12345), 
+            /* e1, e2, e3, e4 */
+            float4(0.0), 
+            /* e5 */
+            0.0, 
+            /* e15, e25, e35, e45 */
+            float4(float3(0.0), this.e45), 
+            /* e41, e42, e43 */
+            float3(0.0), 
+            /* e23, e31, e12 */
+            float3(0.0), 
+            /* e415, e425, e435, e321 */
+            float4(this.group6.xyz, 0.0), 
+            /* e423, e431, e412 */
+            float3(0.0), 
+            /* e235, e315, e125 */
+            float3(0.0), 
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group9.xyz, 0.0), 
+            /* e1234 */
+            0.0
+        );
+        return AntiScalar(
+            /* e12345 */
+            2.0*(sub_type.e4 * sub_type.e5) + 2.0 * (sub_type.e423 * sub_type.e235) + 2.0 * (sub_type.e431 * sub_type.e315) + 2.0 * (sub_type.e412 * sub_type.e125) + pow(sub_type.e12345, 2) + pow(sub_type.e45, 2) + pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2) + pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2) - pow(sub_type.scalar, 2) - pow(sub_type.e1, 2) - pow(sub_type.e2, 2) - pow(sub_type.e3, 2) - pow(sub_type.e23, 2) - pow(sub_type.e31, 2) - pow(sub_type.e12, 2) - pow(sub_type.e321, 2) - 2.0 * (sub_type.e15 * sub_type.e41) - 2.0 * (sub_type.e25 * sub_type.e42) - 2.0 * (sub_type.e35 * sub_type.e43) - 2.0 * (sub_type.e3215 * sub_type.e1234)
+        );
     }
 }
 // Fancy postfix trick
@@ -179,7 +281,14 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Plane sub_type = Plane(
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group0.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -192,7 +301,14 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Plane sub_type = Plane(
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group0.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -205,7 +321,16 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, VersorEven rhs) 
 }
 public extension VersorEven {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Motor sub_type = Motor(
+            /* e415, e425, e435, e12345 */
+            float4(this.e415, this.e425, this.e435, this.e12345), 
+            /* e235, e315, e125, e5 */
+            float4(0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e415, 2) + pow(sub_type.e425, 2) + pow(sub_type.e435, 2) + pow(sub_type.e12345, 2)
+        );
     }
 }
 // Fancy postfix trick
@@ -218,6 +343,15 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public AntiScalar flat_weight_norm() {
-        return this.flat_weight_norm_squared().anti_square_root();
+        Flector sub_type = Flector(
+            /* e15, e25, e35, e45 */
+            float4(float3(0.0), this.e45), 
+            /* e4235, e4315, e4125, e3215 */
+            float4(this.group3.xyz, 0.0)
+        );
+        return AntiScalar(
+            /* e12345 */
+            pow(sub_type.e45, 2) + pow(sub_type.e4235, 2) + pow(sub_type.e4315, 2) + pow(sub_type.e4125, 2)
+        );
     }
 }
