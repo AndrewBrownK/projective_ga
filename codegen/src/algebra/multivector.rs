@@ -328,6 +328,12 @@ impl<const AntiScalar: BasisElement> MultiVec<AntiScalar> {
     }
 }
 
+// TODO at the time of this comment, the compiler can ICE on MultiVec::new_by_groups in const eval.
+//  It's really hard to understand why, but this wrapper function seems to mitigate it.
+pub const fn multivec_by_groups<const AntiScalar: BasisElement>(name: &'static str, element_groups: ConstVec<BasisElementGroup, QTY_GROUPS>) -> MultiVec<AntiScalar> {
+    MultiVec::new_by_groups(name, element_groups)
+}
+
 impl<const AntiScalar: BasisElement> MultiVec<AntiScalar> {
     pub const fn new_by_groups(name: &'static str, element_groups: ConstVec<BasisElementGroup, QTY_GROUPS>) -> Self {
         if ((AntiScalar.grade() / 3) + 1) as usize > QTY_GROUPS {
@@ -404,7 +410,7 @@ macro_rules! multi_vec {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<{$anti_scalar}>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         }
     };
     // grouped using arrays
@@ -421,7 +427,7 @@ macro_rules! multi_vec {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<{$anti_scalar}>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         }
     };
     // ungrouped list of BasisElement
@@ -451,7 +457,7 @@ macro_rules! multi_vec {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<$anti_scalar>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         }
     };
 }
@@ -473,7 +479,7 @@ macro_rules! multi_vecs {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<{$anti_scalar}>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         };
         )+
         pub fn register_multi_vecs(ga: std::sync::Arc<$crate::algebra::GeometricAlgebra<{$anti_scalar}>>) -> $crate::algebra::multivector::DeclareMultiVecs<{$anti_scalar}> {
@@ -497,7 +503,7 @@ macro_rules! multi_vecs {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<{$anti_scalar}>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         };
         )+
         pub fn register_multi_vecs(ga: std::sync::Arc<$crate::algebra::GeometricAlgebra<{$anti_scalar}>>) -> $crate::algebra::multivector::DeclareMultiVecs<{$anti_scalar}> {
@@ -521,7 +527,7 @@ macro_rules! multi_vecs {
                 $(cv.push(($($basis_element),+,).tuple_to_group());)+
                 cv
             };
-            $crate::algebra::multivector::MultiVec::<$anti_scalar>::new_by_groups(name, groups)
+            $crate::algebra::multivector::multivec_by_groups::<{$anti_scalar}>(name, groups)
         };
         )+
         pub fn register_multi_vecs(ga: std::sync::Arc<$crate::algebra::GeometricAlgebra<{$anti_scalar}>>) -> $crate::algebra::multivector::DeclareMultiVecs<{$anti_scalar}> {

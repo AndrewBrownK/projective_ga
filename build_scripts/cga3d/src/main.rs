@@ -1,7 +1,6 @@
 #![allow(non_upper_case_globals)]
 #![feature(const_mut_refs)]
 #![feature(const_trait_impl)]
-#![feature(effects)]
 #![feature(adt_const_params)]
 
 use codegen::algebra::multivector::DeclareMultiVecs;
