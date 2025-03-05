@@ -4,7 +4,6 @@ use std::collections::HashMap;
 use std::fmt::Debug;
 use std::future::Future;
 use std::hash::Hash;
-use std::marker::ConstParamTy;
 use std::ops::{Index, IndexMut};
 use std::sync::Arc;
 
@@ -13,6 +12,9 @@ use async_trait::async_trait;
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::error::RecvError;
 use tokio::task::JoinSet;
+
+pub mod fstr;
+pub mod const_option;
 
 pub enum AwaitOrClone<T: Clone> {
     InProgress(broadcast::Receiver<T>),
@@ -266,49 +268,6 @@ impl<T: Copy + Debug, const N: usize> IndexMut<usize> for ConstVec<T, N> {
     }
 }
 
-/// Option does implement StructuralPartialEq, but
-/// Option does not implement ConstParamTy.
-/// So we should probably PR rust to make Option implement ContParamTy, but
-/// until then, here we go.
-#[derive(PartialEq, Eq, Debug, Clone, Copy, Hash)]
-pub enum ConstOption<T> {
-    None,
-    Some(T),
-}
-impl<T: ConstParamTy> ConstParamTy for ConstOption<T> {}
-impl<T: Copy> ConstOption<T> {
-    pub const fn from_option(opt: Option<T>) -> Self {
-        match opt {
-            None => ConstOption::None,
-            Some(t) => ConstOption::Some(t),
-        }
-    }
-
-    pub const fn into_option(self) -> Option<T> {
-        match self {
-            ConstOption::None => None,
-            ConstOption::Some(t) => Some(t),
-        }
-    }
-
-    pub const fn is_none(&self) -> bool {
-        match self {
-            ConstOption::None => true,
-            ConstOption::Some(_) => false,
-        }
-    }
-
-    pub const fn is_some(&self) -> bool {
-        match self {
-            ConstOption::None => false,
-            ConstOption::Some(_) => true,
-        }
-    }
-
-    pub const fn expect(self, err: &'static str) -> T {
-        self.into_option().expect(err)
-    }
-}
 
 #[async_trait]
 pub trait CollectResults {
@@ -349,3 +308,5 @@ where
     }
     return i;
 }
+
+

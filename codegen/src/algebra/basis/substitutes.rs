@@ -1,12 +1,15 @@
+use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::ops::{Add, AddAssign, Mul, MulAssign};
 
 use crate::algebra::basis::arithmetic::{GradedSum, Product, Sum};
 use crate::algebra::basis::generators::{GeneratorElement, GeneratorSquares};
 use crate::algebra::basis::grades::grade1;
-use crate::algebra::basis::{BasisElement};
+use crate::algebra::basis::{BasisElement, BasisSignature};
 use im::HashMap;
 use parking_lot::RwLock;
+use crate::generator_squares;
+use crate::utility::const_option::ConstOption;
 
 // I don't think we want to <const AntiScalar: BasisElement> here.
 // It is fundamentally more annoying to get GeneratorElements to track this type level

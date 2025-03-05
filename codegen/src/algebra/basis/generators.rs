@@ -4,9 +4,9 @@ use crate::algebra::basis::arithmetic::{GradedProduct, GradedSum, Product};
 use crate::algebra::basis::grades::{grade1};
 use crate::algebra::basis::substitutes::Substitutions;
 use crate::algebra::basis::{BasisElement, BasisSignature};
-use crate::utility::ConstOption;
 use std::cmp::Ordering;
 use std::ops::{Add, Mul, Sub};
+use crate::utility::const_option::ConstOption;
 
 /// The foundational GeneratorSquares assumes a diagonal metric
 /// (with no generator substitutions).

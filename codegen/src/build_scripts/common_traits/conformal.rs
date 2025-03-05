@@ -327,8 +327,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let cns = center_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let result = SquareRoot.invoke(&mut builder, cns).await?;
+            let cns = center_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let result = SquareRoot.inline(&mut builder, cns).await?;
             builder.return_expr(result)
         }
     }
@@ -343,9 +343,9 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rbns = round_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let fwns = flat_weight_norm_squared(self.origin, Some(self.infinity)).invoke(&mut builder, slf).await?;
-            let ad = RightAntiDual.invoke(&mut builder, fwns).await?;
+            let rbns = round_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let fwns = flat_weight_norm_squared(self.origin, Some(self.infinity)).inline(&mut builder, slf).await?;
+            let ad = RightAntiDual.inline(&mut builder, fwns).await?;
             let result = Addition.inline(&mut builder, rbns, ad).await?;
             builder.return_expr(result)
         }
@@ -361,8 +361,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let fbns = flat_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let result = SquareRoot.invoke(&mut builder, fbns).await?;
+            let fbns = flat_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let result = SquareRoot.inline(&mut builder, fbns).await?;
             builder.return_expr(result)
         }
     }
@@ -381,10 +381,10 @@ pub mod impls {
             dyn_origin += (FloatExpr::Literal(1.0), self.origin);
             let origin = dyn_origin.construct(&builder)?;
 
-            let flat_bulk = flat_bulk(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let wedge = Wedge.invoke(&mut builder, flat_bulk, origin).await?;
+            let flat_bulk = flat_bulk(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let wedge = Wedge.inline(&mut builder, flat_bulk, origin).await?;
             let fbt = builder.variable("flat_bulk_thing", wedge);
-            let dot = DotProduct.invoke(&mut builder, fbt.clone(), fbt).await?;
+            let dot = DotProduct.inline(&mut builder, fbt.clone(), fbt).await?;
             builder.return_expr(dot)
         }
     }
@@ -399,8 +399,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let fbn = flat_bulk_norm(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let fwn = flat_weight_norm(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let fbn = flat_bulk_norm(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let fwn = flat_weight_norm(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let result = Addition.inline(&mut builder, fbn, fwn).await?;
             builder.return_expr(result)
         }
@@ -416,8 +416,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let fbn = flat_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let fwn = flat_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let fbn = flat_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let fwn = flat_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let result = Addition.inline(&mut builder, fbn, fwn).await?;
             builder.return_expr(result)
         }
@@ -433,8 +433,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let fwns = flat_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let result = AntiSquareRoot.invoke(&mut builder, fwns).await?;
+            let fwns = flat_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let result = AntiSquareRoot.inline(&mut builder, fwns).await?;
             builder.return_expr(result)
         }
     }
@@ -449,21 +449,21 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let fw = flat_weight(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let fw = flat_weight(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let fw = builder.variable("flat_weight", fw);
-            let anti_dot = AntiDotProduct.invoke(&mut builder, fw.clone(), fw).await?;
+            let anti_dot = AntiDotProduct.inline(&mut builder, fw.clone(), fw).await?;
             builder.return_expr(anti_dot)
         }
     }
 
     trait_impl_1_type_1_arg!(RadiusNormImpl(builder, slf) -> MultiVector {
-        let rns = RadiusNormSquared.invoke(&mut builder, slf.clone()).await?;
-        let result = SquareRoot.invoke(&mut builder, rns).await?;
+        let rns = RadiusNormSquared.inline(&mut builder, slf.clone()).await?;
+        let result = SquareRoot.inline(&mut builder, rns).await?;
         builder.return_expr(result)
     });
     trait_impl_1_type_1_arg!(RadiusNormSquaredImpl(builder, slf) -> MultiVector {
-        let anti_dot = AntiDotProduct.invoke(&mut builder, slf.clone(), slf.clone()).await?;
-        let result = RightAntiDual.invoke(&mut builder, anti_dot).await?;
+        let anti_dot = AntiDotProduct.inline(&mut builder, slf.clone(), slf.clone()).await?;
+        let result = RightAntiDual.inline(&mut builder, anti_dot).await?;
         builder.return_expr(result)
     });
 
@@ -477,8 +477,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rbns = round_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let result = SquareRoot.invoke(&mut builder, rbns).await?;
+            let rbns = round_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let result = SquareRoot.inline(&mut builder, rbns).await?;
             builder.return_expr(result)
         }
     }
@@ -493,9 +493,9 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rb = round_bulk(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let rb = round_bulk(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let rb = builder.variable("round_bulk", rb);
-            let dot = DotProduct.invoke(&mut builder, rb.clone(), rb).await?;
+            let dot = DotProduct.inline(&mut builder, rb.clone(), rb).await?;
             builder.return_expr(dot)
         }
     }
@@ -510,8 +510,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rbn = round_bulk_norm(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let rwn = round_weight_norm(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let rbn = round_bulk_norm(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let rwn = round_weight_norm(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let result = Addition.inline(&mut builder, rbn, rwn).await?;
             builder.return_expr(result)
         }
@@ -527,8 +527,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rbn = round_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let rwn = round_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
+            let rbn = round_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let rwn = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
             let result = Addition.inline(&mut builder, rbn, rwn).await?;
             builder.return_expr(result)
         }
@@ -544,8 +544,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let rwns = round_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let result = AntiSquareRoot.invoke(&mut builder, rwns).await?;
+            let rwns = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let result = AntiSquareRoot.inline(&mut builder, rwns).await?;
             builder.return_expr(result)
         }
     }
@@ -564,10 +564,10 @@ pub mod impls {
             dyn_infinity += (FloatExpr::Literal(1.0), self.infinity);
             let infinity = dyn_infinity.construct(&builder)?;
 
-            let rw = round_weight(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let wedge = Wedge.invoke(&mut builder, rw, infinity).await?;
+            let rw = round_weight(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let wedge = Wedge.inline(&mut builder, rw, infinity).await?;
             let v = builder.variable("round_weight_carrier", wedge);
-            let anti_dot = AntiDotProduct.invoke(&mut builder, v.clone(), v).await?;
+            let anti_dot = AntiDotProduct.inline(&mut builder, v.clone(), v).await?;
             builder.return_expr(anti_dot)
         }
     }
@@ -582,8 +582,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let ucns = unitized_center_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(ucns, 0.5)], 1.0);
+            let ucns = unitized_center_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let sqrt = FloatExpr::Product(vec![(ucns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -598,10 +598,10 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let numerator = center_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let denominator = round_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator, 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator, 0);
+            let numerator = center_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
             let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -617,8 +617,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let ufns = unitized_flat_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(ufns, 0.5)], 1.0);
+            let ufns = unitized_flat_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let sqrt = FloatExpr::Product(vec![(ufns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -633,10 +633,10 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let numerator = flat_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let denominator = flat_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator, 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator, 0);
+            let numerator = flat_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let denominator = flat_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
             let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -652,8 +652,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let urns = unitized_radius_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(urns, 0.5)], 1.0);
+            let urns = unitized_radius_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let sqrt = FloatExpr::Product(vec![(urns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -668,10 +668,10 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let numerator = RadiusNormSquared.invoke(&mut builder, slf.clone()).await?;
-            let denominator = round_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator, 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator, 0);
+            let numerator = RadiusNormSquared.inline(&mut builder, slf.clone()).await?;
+            let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
             let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -687,8 +687,8 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let urns = unitized_round_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(urns, 0.5)], 1.0);
+            let urns = unitized_round_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
+            let sqrt = FloatExpr::Product(vec![(urns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -703,10 +703,10 @@ pub mod impls {
             mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
-            let numerator = round_bulk_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let denominator = round_weight_norm_squared(self.origin, self.infinity).invoke(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator, 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator, 0);
+            let numerator = round_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
+            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
             let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }

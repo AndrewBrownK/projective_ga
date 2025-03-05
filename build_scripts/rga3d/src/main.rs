@@ -1,7 +1,5 @@
 #![allow(non_upper_case_globals)]
-#![feature(const_mut_refs)]
 #![feature(const_trait_impl)]
-#![feature(effects)]
 
 use codegen::algebra::multivector::DeclareMultiVecs;
 use codegen::elements::e1234;

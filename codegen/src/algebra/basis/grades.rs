@@ -1,13 +1,13 @@
 #![allow(non_upper_case_globals)]
 
-use std::marker::ConstParamTy;
+use std::marker::{ConstParamTy, ConstParamTy_, UnsizedConstParamTy};
 
 use crate::algebra::basis::{BasisElement, BasisSignature};
 use std::cmp::PartialEq;
 use std::hash::Hash;
 use std::ops::{BitAnd, BitOr, BitOrAssign, Not};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, ConstParamTy)]
 pub struct Grades(u32);
 pub type AntiGrades = Grades;
 
@@ -138,7 +138,8 @@ impl Not for Grades {
 }
 
 // Implement `ConstParamTy` for `Grades`
-impl ConstParamTy for Grades {}
+impl UnsizedConstParamTy for Grades {}
+impl ConstParamTy_ for Grades {}
 
 #[macro_export]
 macro_rules! grade_constraint {

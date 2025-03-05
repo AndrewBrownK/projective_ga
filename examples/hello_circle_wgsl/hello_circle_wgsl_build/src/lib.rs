@@ -8,7 +8,7 @@ pub const FRAGMENT_SHADER_MAIN: &'static str = "fs_main";
 pub fn compile_shaders() -> anyhow::Result<()> {
     compile_shaders_in(".")
 }
-pub fn compile_shaders_in(app_root: &'static str) -> anyhow::Result<()> {
+pub fn compile_shaders_in(_app_root: &'static str) -> anyhow::Result<()> {
     // let app_wgsl = Box::new(format!("{app_root}/{APP_WGSL}")).leak();
     // let vertex_spirv = format!("{app_root}/{VERTEX_SHADER_SPIRV}");
     // let fragment_spirv = format!("{app_root}/{FRAGMENT_SHADER_SPIRV}");

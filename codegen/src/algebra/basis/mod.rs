@@ -1,14 +1,18 @@
+#![feature(const_option)]
+
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
-use std::marker::ConstParamTy;
+use std::marker::{ConstParamTy_, UnsizedConstParamTy};
 use std::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, Neg, Sub};
-
+use const_panic::fmt::ShortString;
 use const_panic::PanicFmt;
 
 use crate::algebra::basis::generators::GeneratorElement;
 use crate::algebra::basis::grades::{AntiGrades, Grades};
-use crate::utility::ConstOption;
+use crate::generator_squares;
+use crate::utility::const_option::ConstOption;
+use crate::utility::fstr::fstr;
 
 pub mod arithmetic;
 pub mod filter;
@@ -20,9 +24,9 @@ pub mod substitutes;
 // we need to implement ConstParamTy
 #[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct BasisSignature(u16);
+impl ConstParamTy_ for BasisSignature {}
+impl UnsizedConstParamTy for BasisSignature {}
 
-// Implement `ConstParamTy` for `BasisSignature`
-impl ConstParamTy for BasisSignature {}
 #[allow(non_upper_case_globals)]
 impl BasisSignature {
     pub const scalar: BasisSignature = BasisSignature(0x0);
@@ -285,7 +289,8 @@ pub struct BasisElement {
     // (for example) +e412, -e412, +e124, and -e124
     display_name: ConstOption<BasisElementDisplayName>,
 }
-impl ConstParamTy for BasisElement {}
+impl UnsizedConstParamTy for BasisElement {}
+impl ConstParamTy_ for BasisElement {}
 
 impl Neg for BasisElement {
     type Output = BasisElement;
@@ -357,19 +362,20 @@ impl BasisElement {
             if sign == 0 {
                 result[21] = const_panic::PanicVal::write_str("0");
             } else {
-                result[21] = const_panic::PanicVal::write_str(dn.display_name);
+                result[21] = const_panic::PanicVal::write_short_str(ShortString::new(dn.display_name.as_str()));
             }
         }
-        return result;
+        result
     }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PanicFmt)]
 pub struct BasisElementDisplayName {
-    display_name: &'static str,
+    display_name: fstr<20>,
     negate_display: bool,
 }
-impl ConstParamTy for BasisElementDisplayName {}
+impl UnsizedConstParamTy for BasisElementDisplayName {}
+impl ConstParamTy_ for BasisElementDisplayName {}
 
 impl PartialOrd for BasisElement {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
@@ -500,14 +506,15 @@ impl BasisElement {
         Grades::from_sig(self.signature)
     }
     pub const fn anti_grades(&self, anti_scalar: BasisElement) -> AntiGrades {
-        AntiGrades::from_sig(anti_scalar.signature - self.signature)
+        AntiGrades::from_sig(BasisSignature(anti_scalar.signature.0 - self.signature.0))
     }
 
     pub const fn parsed_display_name(s: &'static str) -> Option<Self> {
         let mut result = BasisElement::zero();
         result.coefficient = 1;
         let mut display_name = BasisElementDisplayName {
-            display_name: s,
+            display_name: fstr::<20>::from_str(s)
+                .expect("BasisElement name must not be too long"),
             negate_display: false,
         };
 
@@ -618,7 +625,8 @@ impl BasisElement {
 
     pub const fn with_name(mut self, display_name: &'static str, odd_permutation: bool) -> Self {
         let dn = BasisElementDisplayName {
-            display_name,
+            display_name: fstr::<20>::from_str(display_name)
+                .expect("BasisElement name must not be too long"),
             negate_display: odd_permutation,
         };
         self.display_name = ConstOption::Some(dn);

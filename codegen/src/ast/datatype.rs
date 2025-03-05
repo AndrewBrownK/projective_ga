@@ -17,7 +17,7 @@ pub struct Vec3;
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, Ord, PartialOrd)]
 pub struct Vec4;
 
-const DUMMY_ANTI_SCALAR: BasisElement = BasisElement::const_from(BasisSignature::from_bits_retain(u16::MAX)).with_name("DUMMY_ANTI_SCALAR_SHOULD_NOT_BE_EXPOSED", false);
+const DUMMY_ANTI_SCALAR: BasisElement = BasisElement::const_from(BasisSignature::from_bits_retain(u16::MAX)).with_name("DUMMY_ANTI_SCALAR", false);
 
 // Should we infect a generic AntiScalar parameter across the AST?
 //

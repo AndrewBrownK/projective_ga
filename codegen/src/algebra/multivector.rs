@@ -577,7 +577,6 @@ impl const TupleToGroup for [BasisElement; 1] {
     }
 }
 
-#[test]
 mod test_stuff {
     use crate::algebra::basis::elements::*;
     use crate::algebra::multivector::{MultiVec, TupleToGroup};
