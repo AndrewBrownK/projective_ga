@@ -4,7 +4,8 @@ use std::borrow::Cow;
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::ops::Deref;
 use std::sync::{Arc, Weak};
-
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering::Release;
 use async_trait::async_trait;
 use indicatif::MultiProgress;
 use lazy_static::lazy_static;
@@ -16,10 +17,10 @@ use crate::algebra::basis::{BasisElement, BasisSignature};
 use crate::algebra::multivector::{DynamicMultiVector, MultiVecRepository};
 use crate::algebra::GeometricAlgebra;
 use crate::ast::datatype::{ClassesFromRegistry, ExpressionType, Float, Integer, MultiVector};
-use crate::ast::expressions::{extract_multivector_expr, AnyExpression, Expression, MultiVectorExpr, TraitResultType, IntExpr, FloatExpr, Vec2Expr, Vec3Expr, Vec4Expr, MultiVectorVia, extract_float_expr, extract_integer_expr};
+use crate::ast::expressions::{extract_multivector_expr, AnyExpression, Expression, MultiVectorExpr, TraitResultType, IntExpr, FloatExpr, Vec2Expr, Vec3Expr, Vec4Expr, MultiVectorVia, extract_float_expr, extract_integer_expr, DestructurableVariables, MultiVectorGroupExpr};
 use crate::ast::impls::{Elaborated, InlineOnly, OvertDelegate};
 use crate::ast::operations_tracker::{TrackOperations, TraitOperationsLookup, VectoredOperationsTracker};
-use crate::ast::{RawVariableDeclaration, Variable};
+use crate::ast::{RawVariableDeclaration, RawVariableInvocation, Variable};
 use crate::utility::AsyncMap;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -2169,6 +2170,7 @@ pub(crate) fn param_self() -> Arc<RawVariableDeclaration> {
         comment: None,
         name: ("self".to_string(), 0),
         expr: None,
+        force_inline: Arc::new(AtomicBool::new(false)),
     })
 }
 pub(crate) fn param_other() -> Arc<RawVariableDeclaration> {
@@ -2176,6 +2178,7 @@ pub(crate) fn param_other() -> Arc<RawVariableDeclaration> {
         comment: None,
         name: ("other".to_string(), 0),
         expr: None,
+        force_inline: Arc::new(AtomicBool::new(false)),
     })
 }
 
@@ -2216,6 +2219,15 @@ pub struct TraitImplBuilder<const AntiScalar: BasisElement, ReturnType> {
     return_comment: Option<String>,
     return_expr: Option<AnyExpression>,
     return_type: ReturnType,
+}
+
+fn make_var_name_unique<RVD>(variables: &Mutex<HashMap<(String, usize), RVD>>, var_name: String) -> (String, usize) {
+    let mut key = (var_name.to_string(), 0);
+    let vars = variables.lock();
+    while vars.contains_key(&mut key) {
+        key.1 += 1;
+    }
+    key
 }
 
 impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned> {
@@ -2306,15 +2318,6 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
         self.specialized = true;
     }
 
-    fn make_var_name_unique(&self, var_name: String) -> (String, usize) {
-        let mut key = (var_name.to_string(), 0);
-        let vars = self.variables.lock();
-        while vars.contains_key(&mut key) {
-            key.1 += 1;
-        }
-        key
-    }
-
     pub fn comment<C: Into<String>>(&mut self, comment: C) {
         self.lines.lock().push(CommentOrVariableDeclaration::Comment(Cow::Owned(comment.into())))
     }
@@ -2339,11 +2342,12 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
         }
 
         let var_name = var_name.into();
-        let unique_name = self.make_var_name_unique(var_name);
+        let unique_name = make_var_name_unique(&self.variables, var_name);
         let decl = Arc::new(RawVariableDeclaration {
             comment: comment.map(|it| Cow::Owned(it.into())),
             name: unique_name.clone(),
             expr: Some(Arc::new(RwLock::new(expr))),
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         let mut vars = self.variables.lock();
         let existing = vars.insert(unique_name.clone(), Arc::downgrade(&decl));
@@ -2538,7 +2542,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
                 CommentOrVariableDeclaration::VarDec(old_decl) => {
                     let Some(old_decl) = old_decl.upgrade() else { continue };
                     let new_var_comment = old_decl.comment.clone();
-                    let new_var_name = self.make_var_name_unique(old_decl.name.0.clone());
+                    let new_var_name = make_var_name_unique(&self.variables, old_decl.name.0.clone());
                     let mut new_var_expr = old_decl.expr.as_ref().expect("Non-Parameter Variables are always initialized").read().clone();
                     for (old, new) in var_replacements.iter() {
                         // Update all variables used in this expression
@@ -2549,6 +2553,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
                         comment: new_var_comment,
                         name: new_var_name,
                         expr: Some(Arc::new(RwLock::new(new_var_expr))),
+                        force_inline: Arc::new(AtomicBool::new(false)),
                     });
                     // Then add it to the list
                     var_replacements.push((old_decl.clone(), new_decl.clone()));
@@ -2610,28 +2615,106 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         let mut return_expr = self.return_expr.expect("Must have return expression in order to register");
         let mut lines = self.lines.into_inner();
 
-        loop {
-            // Scan through the lines in reverse, drop unused variables
-            return_expr.final_simplify();
-            let mut i = lines.len();
-            while i > 0 {
-                i -= 1;
-                let CommentOrVariableDeclaration::VarDec(vd) = &lines[i] else { continue };
-                match vd.upgrade() {
-                    None => drop(lines.remove(i)),
-                    Some(vd) => {
-                        if let Some(v) = &vd.expr {
-                            let mut expr = v.write();
-                            expr.final_simplify();
+        'outer: loop {
+            'inner: loop {
+                // Scan through the lines in reverse, drop unused variables
+                return_expr.final_simplify();
+                let mut i = lines.len();
+                while i > 0 {
+                    i -= 1;
+                    let CommentOrVariableDeclaration::VarDec(vd) = &lines[i] else { continue };
+                    match vd.upgrade() {
+                        None => drop(lines.remove(i)),
+                        Some(vd) => {
+                            if let Some(v) = &vd.expr {
+                                let mut expr = v.write();
+                                expr.final_simplify();
+                            }
                         }
                     }
                 }
+
+                if lines.iter().any(|it| it.needs_more_inlining()) {
+                    continue 'inner
+                } else {
+                    break 'inner
+                }
             }
 
-            if lines.iter().any(|it| it.needs_more_inlining()) {
-                continue
+
+            // Destructuring simplification of variables that are not used in whole
+            let mut dv = DestructurableVariables::new();
+            return_expr.scan_for_destructurable_variables(&mut dv);
+            let mut should_destructure = dv.needs_destructuring();
+
+            let mut did_destructure = false;
+            let mut i = 0;
+            'inner: while i < lines.len() {
+                // Foo i=2 j=0
+                // Bar i=1 j=1
+                // Baz i=0 j=2
+                let j = lines.len() - i - 1;
+
+                let CommentOrVariableDeclaration::VarDec(vd) = &lines[j] else { continue };
+                let vd = vd.upgrade().expect("unused variables were eliminated");
+                if !should_destructure.contains(&vd.clone().into()) {
+                    if let Some(e) = &vd.expr {
+                        let expr = e.read();
+                        expr.scan_for_destructurable_variables(&mut dv);
+                        should_destructure = dv.needs_destructuring();
+                    }
+                    i += 1;
+                    continue 'inner
+                }
+
+                let mut new_vars = Self::destructure_variable_if_applicable(self.variables.clone(), vd.clone());
+
+                if new_vars.is_empty() {
+                    if let Some(e) = &vd.expr {
+                        let expr = e.read();
+                        expr.scan_for_destructurable_variables(&mut dv);
+                        should_destructure = dv.needs_destructuring();
+                    }
+                    i += 1;
+                    continue 'inner
+                }
+                did_destructure = true;
+
+                // Foo i=2 j=0
+                // Bar i=1 j=1
+                drop(lines.remove(j));
+
+                let l = new_vars.len();
+                for new_var in new_vars {
+
+                    if let Some(e) = &new_var.expr {
+                        let expr = e.read();
+                        expr.scan_for_destructurable_variables(&mut dv);
+                        should_destructure = dv.needs_destructuring();
+                    }
+
+                    let new_line = CommentOrVariableDeclaration::VarDec(Arc::downgrade(&new_var));
+
+                    // Foo i=2 j=0
+                    // Bar i=1 j=1
+                    // Baz_x i=0 j=2
+                    // Baz_y i=0 j=3
+                    // Baz_z i=0 j=4
+                    lines.insert(lines.len() - i, new_line);
+                }
+
+                // Foo i=4 j=0
+                // Bar i=3 j=1
+                // Baz_x i=2 j=2
+                // Baz_y i=1 j=3
+                // Baz_z i=0 j=4
+                i += l;
+            }
+
+            if did_destructure {
+                continue 'outer
             } else {
-                break
+                break 'outer;
             }
         }
 
@@ -2679,9 +2762,140 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         for mv in w {
             self.mvs.note_wanted(mv, ti.clone());
         }
-        return Some(ti);
+        Some(ti)
+    }
+
+    fn destructure_variable_if_applicable(
+        variables: Arc<Mutex<HashMap<(String, usize), Weak<RawVariableDeclaration>>>>,
+        rvd: Arc<RawVariableDeclaration>,
+    ) -> Vec<Arc<RawVariableDeclaration>> {
+        let base_name = &rvd.name.0;
+        let Some(vd) = &rvd.expr else { return vec![] };
+
+        let make_a_var= |expr: AnyExpression, suffix: &str| {
+            Arc::new(RawVariableDeclaration {
+                comment: None,
+                name: make_var_name_unique(&variables, format!("{base_name}_{suffix}")),
+                expr: Some(Arc::new(RwLock::new(expr))),
+                force_inline: Arc::new(AtomicBool::new(false)),
+            })
+        };
+        let make_a_var_2 = |expr: AnyExpression, suffix: String| {
+            make_a_var(expr, suffix.as_str())
+        };
+
+        let mut ae = vd.write();
+        match &mut *ae {
+            AnyExpression::Vec2(Vec2Expr::Gather1(x)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                vec![x_decl]
+            }
+            AnyExpression::Vec2(Vec2Expr::Gather2(x, y)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let y_decl = make_a_var(AnyExpression::Float(y.take_as_owned()), "y");
+                *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                vec![x_decl, y_decl]
+            }
+            AnyExpression::Vec3(Vec3Expr::Gather1(x)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                vec![x_decl]
+            }
+            AnyExpression::Vec3(Vec3Expr::Gather3(x, y, z)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let y_decl = make_a_var(AnyExpression::Float(y.take_as_owned()), "y");
+                *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                let z_decl = make_a_var(AnyExpression::Float(z.take_as_owned()), "z");
+                *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                vec![x_decl, y_decl, z_decl]
+            }
+            AnyExpression::Vec3(Vec3Expr::Extend2to3(xy, z)) => {
+                rvd.force_inline.store(true, Release);
+                let xy_decl = make_a_var(AnyExpression::Vec2(xy.take_as_owned()), "xy");
+                *xy = Vec2Expr::Variable(RawVariableInvocation { decl: xy_decl.clone(), });
+                let z_decl = make_a_var(AnyExpression::Float(z.take_as_owned()), "z");
+                *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                vec![xy_decl, z_decl]
+            }
+            AnyExpression::Vec4(Vec4Expr::Gather1(x)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                vec![x_decl]
+            }
+            AnyExpression::Vec4(Vec4Expr::Gather4(x, y, z, w)) => {
+                rvd.force_inline.store(true, Release);
+                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
+                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let y_decl = make_a_var(AnyExpression::Float(y.take_as_owned()), "y");
+                *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                let z_decl = make_a_var(AnyExpression::Float(z.take_as_owned()), "z");
+                *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                let w_decl = make_a_var(AnyExpression::Float(w.take_as_owned()), "w");
+                *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                vec![x_decl, y_decl, z_decl, w_decl]
+            }
+            AnyExpression::Vec4(Vec4Expr::Extend2to4(xy, z, w)) => {
+                rvd.force_inline.store(true, Release);
+                let xy_decl = make_a_var(AnyExpression::Vec2(xy.take_as_owned()), "xy");
+                *xy = Vec2Expr::Variable(RawVariableInvocation { decl: xy_decl.clone(), });
+                let z_decl = make_a_var(AnyExpression::Float(z.take_as_owned()), "z");
+                *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                let w_decl = make_a_var(AnyExpression::Float(w.take_as_owned()), "w");
+                *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                vec![xy_decl, z_decl, w_decl]
+            }
+            AnyExpression::Vec4(Vec4Expr::Extend3to4(xyz, w)) => {
+                rvd.force_inline.store(true, Release);
+                let xyz_decl = make_a_var(AnyExpression::Vec3(xyz.take_as_owned()), "xyz");
+                *xyz = Vec3Expr::Variable(RawVariableInvocation { decl: xyz_decl.clone(), });
+                let w_decl = make_a_var(AnyExpression::Float(w.take_as_owned()), "w");
+                *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                vec![xyz_decl, w_decl]
+            }
+            AnyExpression::Class(MultiVectorExpr { expr: box MultiVectorVia::Construct(parts), .. }) => {
+                if !parts.is_empty() {
+                    rvd.force_inline.store(true, Release);
+                }
+                let mut result = vec![];
+                for (i, part) in parts.iter_mut().enumerate() {
+                    match part {
+                        MultiVectorGroupExpr::JustFloat(f) => {
+                            let f_decl = make_a_var_2(AnyExpression::Float(f.take_as_owned()), format!("g{i}"));
+                            *f = FloatExpr::Variable(RawVariableInvocation { decl: f_decl.clone(), });
+                            result.push(f_decl);
+                        }
+                        MultiVectorGroupExpr::Vec2(v) => {
+                            let v_decl = make_a_var_2(AnyExpression::Vec2(v.take_as_owned()), format!("g{i}"));
+                            *v = Vec2Expr::Variable(RawVariableInvocation { decl: v_decl.clone(), });
+                            result.push(v_decl);
+                        }
+                        MultiVectorGroupExpr::Vec3(v) => {
+                            let v_decl = make_a_var_2(AnyExpression::Vec3(v.take_as_owned()), format!("g{i}"));
+                            *v = Vec3Expr::Variable(RawVariableInvocation { decl: v_decl.clone(), });
+                            result.push(v_decl);
+                        }
+                        MultiVectorGroupExpr::Vec4(v) => {
+                            let v_decl = make_a_var_2(AnyExpression::Vec4(v.take_as_owned()), format!("g{i}"));
+                            *v = Vec4Expr::Variable(RawVariableInvocation { decl: v_decl.clone(), });
+                            result.push(v_decl);
+                        }
+                    }
+                }
+                result
+            }
+            _ => vec![]
+        }
     }
 }
+
 
 impl<const AntiScalar: BasisElement, ExprType: TraitResultType> TraitImplBuilder<AntiScalar, ExprType> {
     fn finish_inline<V: Into<String>>(self, b: &mut TraitImplBuilder<AntiScalar, HasNotReturned>, var_name: V) -> Option<Variable<ExprType>> {

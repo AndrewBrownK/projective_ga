@@ -11,6 +11,7 @@ use crate::ast::operations_tracker::{TrackOperations, TraitOperationsLookup, Vec
 use crate::ast::traits::TraitKey;
 use crate::ast::{RawVariableDeclaration, RawVariableInvocation, Variable};
 use crate::utility::slice_retain_mut;
+use std::collections::HashSet;
 
 pub trait TraitResultType: Clone + Debug + Sized + Send + Sync + 'static {
     type Expr: Expression<Self>;
@@ -312,6 +313,7 @@ include!("expressions/impl_statistics.rs");
 
 // A few methods
 include!("expressions/misc_methods.rs");
+include!("expressions/scan_destructurable.rs");
 
 // The extremely tedious stuff
 include!("expressions/simplify.rs");

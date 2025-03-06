@@ -10,6 +10,7 @@ use std::io::{BufRead, BufReader, BufWriter, ErrorKind, Write};
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 use std::time::Duration;
 
 use anyhow::bail;
@@ -582,9 +583,17 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, "pow(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
+                                // TODO we should only do this if we can assure the FloatExpr is "simple" as in it is just a variable, or a property access on a variable, and not some complicated calculation
+                                // if e == 2 {
+                                //     self.write_float(w, factor, false)?;
+                                //     write!(w, " * ")?;
+                                //     self.write_float(w, factor, false)?;
+                                // } else
+                                {
+                                    write!(w, "pow(")?;
+                                    self.write_float(w, factor, true)?;
+                                    write!(w, ", {e})")?;
+                                }
                             } else {
                                 write!(w, "pow(")?;
                                 self.write_float(w, factor, true)?;
@@ -892,6 +901,10 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 match v {
                     Vec2Expr::Truncate3to2(box v3) => self.write_vec3(w, v3, false)?,
                     Vec2Expr::Truncate4to2(box v4) => self.write_vec4(w, v4, false)?,
+                    Vec2Expr::AccessMultiVecGroup(mv, i) => {
+                        self.write_multi_vec(w, mv)?;
+                        write!(w, ".group{i}")?;
+                    }
                     _ => self.write_vec2(w, v, false)?,
                 }
                 let x = swizzle_term(i0)?;
@@ -1105,6 +1118,10 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
             Vec3Expr::SwizzleVec3(box v, i0, i1, i2) => {
                 match v {
                     Vec3Expr::Truncate4to3(box v4) => self.write_vec4(w, v4, false)?,
+                    Vec3Expr::AccessMultiVecGroup(mv, i) => {
+                        self.write_multi_vec(w, mv)?;
+                        write!(w, ".group{i}")?;
+                    }
                     _ => self.write_vec3(w, v, false)?,
                 }
                 let x = swizzle_term(i0)?;
@@ -1496,11 +1513,13 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
             comment: None,
             name: ("self".to_string(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         let new_var = Arc::new(RawVariableDeclaration {
             comment: None,
             name: (other_lsc, 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         ret.substitute_variable(old_var, new_var);
         write!(w, "        return ")?;
@@ -1537,11 +1556,13 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
             comment: None,
             name: ("self".to_string(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         let new_var = Arc::new(RawVariableDeclaration {
             comment: None,
             name: (lsc.clone(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         ret.substitute_variable(old_var, new_var);
         for el in misfit_elements {

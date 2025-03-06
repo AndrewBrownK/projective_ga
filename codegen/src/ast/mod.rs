@@ -1,9 +1,9 @@
+use parking_lot::RwLock;
 use std::borrow::Cow;
 use std::cmp::Ordering;
 use std::ops::Deref;
+use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
-
-use parking_lot::RwLock;
 
 use crate::ast::expressions::AnyExpression;
 
@@ -29,6 +29,7 @@ impl<ExprType> Variable<ExprType> {
                 comment: None,
                 name: (name.to_string(), 0),
                 expr: None,
+                force_inline: Arc::new(AtomicBool::new(false)),
             }),
         }
     }
@@ -58,6 +59,7 @@ pub struct RawVariableDeclaration {
     pub(crate) comment: Option<Cow<'static, String>>,
     pub(crate) name: (String, usize),
     pub(crate) expr: Option<Arc<RwLock<AnyExpression>>>,
+    pub(crate) force_inline: Arc<AtomicBool>,
 }
 impl PartialEq for RawVariableDeclaration {
     fn eq(&self, other: &Self) -> bool {

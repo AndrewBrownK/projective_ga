@@ -291,7 +291,7 @@ impl FloatExpr {
         result
     }
 
-    fn take_as_owned(&mut self) -> Self {
+    pub(crate) fn take_as_owned(&mut self) -> Self {
         let mut x = FloatExpr::Literal(0.0);
         mem::swap(&mut x, self);
         x
@@ -350,7 +350,7 @@ impl Vec2Expr {
         result
     }
 
-    fn take_as_owned(&mut self) -> Self {
+    pub(crate) fn take_as_owned(&mut self) -> Self {
         let mut x = Vec2Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         x
@@ -460,7 +460,7 @@ impl Vec3Expr {
         result
     }
 
-    fn take_as_owned(&mut self) -> Self {
+    pub(crate) fn take_as_owned(&mut self) -> Self {
         let mut x = Vec3Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         x
@@ -580,7 +580,7 @@ impl Vec4Expr {
         result
     }
 
-    fn take_as_owned(&mut self) -> Self {
+    pub(crate) fn take_as_owned(&mut self) -> Self {
         let mut x = Vec4Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         x

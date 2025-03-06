@@ -8,6 +8,7 @@ use std::process::Command;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{fs, thread};
+use std::sync::atomic::AtomicBool;
 use tokio::task::JoinSet;
 
 use crate::algebra::basis::grades::{plane_based_k_reflections, point_based_k_reflections};
@@ -1026,9 +1027,17 @@ postgres-types = "0.2.7""#
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, "f32::powi(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
+                                // TODO we should only do this if we can assure the FloatExpr is "simple" as in it is just a variable, or a property access on a variable, and not some complicated calculation
+                                // if e == 2 {
+                                //     self.write_float(w, factor, false)?;
+                                //     write!(w, " * ")?;
+                                //     self.write_float(w, factor, false)?;
+                                // } else
+                                {
+                                    write!(w, "f32::powi(")?;
+                                    self.write_float(w, factor, true)?;
+                                    write!(w, ", {e})")?;
+                                }
                             } else {
                                 write!(w, "f32::powf(")?;
                                 self.write_float(w, factor, true)?;
@@ -1932,11 +1941,13 @@ impl From<{other}> for {owner} {{
             comment: None,
             name: ("self".to_string(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         let new_var = Arc::new(RawVariableDeclaration {
             comment: None,
             name: (lsc, 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         ret.substitute_variable(old_var, new_var);
         writeln!(w, "        return ")?;
@@ -1972,11 +1983,13 @@ impl TryFrom<{other}> for {owner} {{
             comment: None,
             name: ("self".to_string(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         let new_var = Arc::new(RawVariableDeclaration {
             comment: None,
             name: (lsc.clone(), 0),
             expr: None,
+            force_inline: Arc::new(AtomicBool::new(false)),
         });
         ret.substitute_variable(old_var, new_var);
         writeln!(w, "        let mut error_string = String::new();")?;

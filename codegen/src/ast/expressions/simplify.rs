@@ -1,21 +1,4 @@
-
-// TODO simplify this by introducing destructuring of pure literal variables
-/*
-impl UnitizedRadiusNormSquared for RoundPoint {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        2        0
-    fn unitized_radius_norm_squared(self) -> f32 {
-        use crate::elements::*;
-        let sub_type = RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x3::from(0.0).with_w(self[e4]), /* e5 */ 0.0);
-        let other = DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([1.0, 0.0]));
-        return (f32::powi(self[e1], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
-            + (f32::powi(self[e2], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
-            + (f32::powi(self[e3], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
-            - 2.0 * (self[e4] * self[e5] * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2));
-    }
-}
- */
+use std::sync::atomic::Ordering::Acquire;
 
 trait SortVecDespiteF32 {
     fn sort_with_f32(&mut self);
@@ -76,13 +59,13 @@ impl IntExpr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false, false, false, false);
     }
-    // TODO clean up unued parameters
+    // TODO clean up unused parameters
     #[allow(unused)]
     fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
         match self {
             IntExpr::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
@@ -119,7 +102,7 @@ impl FloatExpr {
         match self {
             FloatExpr::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
@@ -591,7 +574,7 @@ impl Vec2Expr {
         match self {
             Vec2Expr::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
@@ -1012,7 +995,7 @@ impl Vec3Expr {
         match self {
             Vec3Expr::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
@@ -1649,7 +1632,7 @@ impl Vec4Expr {
         match self {
             Vec4Expr::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
@@ -2698,7 +2681,7 @@ impl MultiVectorExpr {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) {
+                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();

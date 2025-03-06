@@ -15,6 +15,7 @@ use tokio::task::JoinSet;
 
 pub mod fstr;
 pub mod const_option;
+pub mod ptrarc;
 
 pub enum AwaitOrClone<T: Clone> {
     InProgress(broadcast::Receiver<T>),
