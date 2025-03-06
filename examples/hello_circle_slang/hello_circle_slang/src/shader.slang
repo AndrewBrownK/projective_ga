@@ -103,62 +103,10 @@ float4 fs_main(
     // Now perform a meet to get a RoundPoint centered on the line and contained by the circle
     RoundPoint meet_fragment_and_circle = circle.anti_wedge(fragment_as_line);
 
-    // TODO it seems like radius_squared is positive infinity, which naga will refuse to compile literals,
-    // TODO but perhaps the GPU rolls with it at runtime
-    // TODO the only way for it to be infinity is (assuming divide by zero) for e4 on the RoundPoint to be zero
-    // TODO hello_circle_rust never finds an e4 = 0.0 on that
-    // TODO so how can we get e4 = 0.0 from circle.anti_wedge(fragment_as_line)?
-    // TODO this Circle and other Line -> e4 = -(this.e431 * other.e425) - (this.e412 * other.e435) - (this.e423 * other.e415)
-    // TODO in rust, e4 is always = 2.0 here
-    // TODO so let's try an experiment....
-    //return background_color + float4(1.0 / meet_fragment_and_circle.e4);
-    //return background_color - float4(1.0 / meet_fragment_and_circle.e4);
-    // TODO damn it... it is really acting like e4 is 2.0.... well that's good in a way.
-    // TODO but how is radius_squared turning into infinity then?
-
     // Now get the squared radius of the meet
-
-    // TODO confirmed... the associated method returns infinity, but manually inlining returns correct value.
-    float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared(); // this one is infinity
-    //float radius_squared = unitized_radius_norm_squared_1(meet_fragment_and_circle); // this one is not infinity
-    //float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared_2(); // This one causes NVVM failure
-
-/*
-    if (abs(radius_squared) > pow(2.0, 126)) {
-        return float4(1.0) - background_color;
-    } else {
-        return background_color;
-    }
-*/
+    float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared();
 
     // And lastly, make pixels more bright the closer they are to the circle.
     float4 destructive_circle_color = float4(1.0) - float4(abs(radius_squared) * 100.0);
     return background_color + destructive_circle_color;
 }
-/*
-float unitized_radius_norm_squared_1(RoundPoint dis) {
-    RoundPoint sub_type = RoundPoint(
-        0.0, 0.0, 0.0, dis.e4, 0.0
-    );
-    DualNum other = DualNum(
-        1.0, 0.0
-    );
-    return (pow(dis.e1, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
-        + (pow(dis.e2, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
-        + (pow(dis.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
-        - 2.0 * (dis.e4 * dis.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
-}
-
-public extension RoundPoint {
-    public float unitized_radius_norm_squared_2() {
-        RoundPoint sub_type = RoundPoint(
-            float4(float3(0.0), this.e4),
-            0.0
-        );
-        DualNum other = DualNum(
-            float2(1.0, 0.0)
-        );
-        return (pow(this.e1, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e2, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) - 2.0 * (this.e4 * this.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
-    }
-}
-*/
