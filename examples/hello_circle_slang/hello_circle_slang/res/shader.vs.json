@@ -33,7 +33,7 @@
     "entryPoints": [
         {
             "name": "vs_main",
-            "stage:": "vertex",
+            "stage": "vertex",
             "parameters": [
                 {
                     "name": "in_vertex_index",
@@ -44,7 +44,7 @@
                     }
                 }
             ],
-            "result:": {
+            "result": {
                 "stage": "vertex",
                 "binding": {"kind": "varyingOutput", "index": 0},
                 "type": {

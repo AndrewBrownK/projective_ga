@@ -103,10 +103,48 @@ float4 fs_main(
     // Now perform a meet to get a RoundPoint centered on the line and contained by the circle
     RoundPoint meet_fragment_and_circle = circle.anti_wedge(fragment_as_line);
 
+
+    // return background_color + float4(meet_fragment_and_circle.e4);
+
     // Now get the squared radius of the meet
     float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared();
+
+    return background_color + float4(radius_squared);
 
     // And lastly, make pixels more bright the closer they are to the circle.
     float4 destructive_circle_color = float4(1.0) - float4(abs(radius_squared) * 100.0);
     return background_color + destructive_circle_color;
 }
+
+/*
+TODO there is an NVVM crash that happens when we compile to SPIRV, but not when we compile to WGSL
+ It doesn't happen if we return before meet_fragment_and_circle.unitized_radius_norm_squared(),
+ and it does happen if we return after meet_fragment_and_circle.unitized_radius_norm_squared().
+ I gave the before and after spirv-dis to SuperGrok, as well as a bit of code surrounding
+ the meet_fragment_and_circle.unitized_radius_norm_squared() invocation, and the definition
+ of RoundPoint.unitized_radius_norm_squared();
+ SuperGrok thinks the issue could be a driver bug, since spirv-val validates it just fine.
+ It thinks we might be able to prevent the issue if we get rid of the pow(x, -2) invocation.
+ There are three things I can do towards this end
+ 1) make pow(x, 2) output as x*x instead
+ 2) make pow(x, -y) output as division if y is 1 or 2
+ 3) Perform destructured simplification, which unwraps types when the whole type is not used, and will
+    cause some of the expressions to simplify like pow(1, -2) = 1.
+ Although I'd rather have the slang example working perfectly before moving on to more simplification,
+ it is undoubtedly true that this is simplification that I am interested in doing eventually, and if
+ doing so is necessary in order to fix the slang example, then oh well. I guess I'll do it sooner than I expected.
+*/
+/*
+public extension RoundPoint {
+    public float unitized_radius_norm_squared() {
+        RoundPoint sub_type = RoundPoint(
+            float4(float3(0.0), this.e4),
+            0.0
+        );
+        DualNum other = DualNum(
+            float2(1.0, 0.0)
+        );
+        return (pow(this.e1, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e2, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) - 2.0 * (this.e4 * this.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
+    }
+}
+*/
