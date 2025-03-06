@@ -105,15 +105,15 @@ pub fn emit_slang_support<W: Write>(w: &mut W, algebra_name: &str) -> anyhow::Re
     use std::process::Command;
 
     pub const {upper_algebra_name}_SLANG: &'static str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/integrations/slang/{algebra_name}.slang");
+    pub const {upper_algebra_name}_SLANG_MODULE: &'static str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/integrations/slang-module/{algebra_name}.slang-module");
 
     /// This requires slangc to be installed and added to your path
     /// Warning, this can be an extremely slow operation. Give it time.
-    pub fn compile_binary_slang_module<P: AsRef<Path>>(output_dir: P) {{
+    pub fn compile_binary_slang_module() {{
         let mut cmd = Command::new("slangc");
         cmd.arg({upper_algebra_name}_SLANG);
         cmd.arg("-o");
-        let output_dir = output_dir.as_ref().to_string_lossy();
-        cmd.arg(format!("{{output_dir}}/{algebra_name}.slang-module"));
+        cmd.arg({upper_algebra_name}_SLANG_MODULE);
         // TODO better error handling and propagation
         cmd.spawn().expect("failed to run slangc");
     }}

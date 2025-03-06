@@ -119,21 +119,23 @@ float4 fs_main(
     // Now get the squared radius of the meet
 
     // TODO confirmed... the associated method returns infinity, but manually inlining returns correct value.
-    //float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared(); // this one is infinity
-    float radius_squared = unitized_radius_norm_squared_1(meet_fragment_and_circle); // this one is not infinity
+    float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared(); // this one is infinity
+    //float radius_squared = unitized_radius_norm_squared_1(meet_fragment_and_circle); // this one is not infinity
+    //float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared_2(); // This one causes NVVM failure
 
-    //if (abs(radius_squared) > pow(2.0, 126)) {
-    //    return float4(1.0) - background_color;
-    //} else {
-    //    return background_color;
-    //}
-
+/*
+    if (abs(radius_squared) > pow(2.0, 126)) {
+        return float4(1.0) - background_color;
+    } else {
+        return background_color;
+    }
+*/
 
     // And lastly, make pixels more bright the closer they are to the circle.
     float4 destructive_circle_color = float4(1.0) - float4(abs(radius_squared) * 100.0);
     return background_color + destructive_circle_color;
 }
-
+/*
 float unitized_radius_norm_squared_1(RoundPoint dis) {
     RoundPoint sub_type = RoundPoint(
         0.0, 0.0, 0.0, dis.e4, 0.0
@@ -146,3 +148,17 @@ float unitized_radius_norm_squared_1(RoundPoint dis) {
         + (pow(dis.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
         - 2.0 * (dis.e4 * dis.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
 }
+
+public extension RoundPoint {
+    public float unitized_radius_norm_squared_2() {
+        RoundPoint sub_type = RoundPoint(
+            float4(float3(0.0), this.e4),
+            0.0
+        );
+        DualNum other = DualNum(
+            float2(1.0, 0.0)
+        );
+        return (pow(this.e1, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e2, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) + (pow(this.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2)) - 2.0 * (this.e4 * this.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
+    }
+}
+*/

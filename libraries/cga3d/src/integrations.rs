@@ -5,15 +5,15 @@ pub mod slang {
     use std::process::Command;
 
     pub const CGA3D_SLANG: &'static str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/integrations/slang/cga3d.slang");
+    pub const CGA3D_SLANG_MODULE: &'static str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/integrations/slang-module/cga3d.slang-module");
 
     /// This requires slangc to be installed and added to your path
     /// Warning, this can be an extremely slow operation. Give it time.
-    pub fn compile_binary_slang_module<P: AsRef<Path>>(output_dir: P) {
+    pub fn compile_binary_slang_module() {
         let mut cmd = Command::new("slangc");
         cmd.arg(CGA3D_SLANG);
         cmd.arg("-o");
-        let output_dir = output_dir.as_ref().to_string_lossy();
-        cmd.arg(format!("{output_dir}/cga3d.slang-module"));
+        cmd.arg(CGA3D_SLANG_MODULE);
         // TODO better error handling and propagation
         cmd.spawn().expect("failed to run slangc");
     }

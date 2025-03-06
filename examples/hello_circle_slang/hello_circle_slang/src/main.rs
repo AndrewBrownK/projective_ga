@@ -4,7 +4,7 @@ use std::sync::Arc;
 
 use parking_lot::Mutex;
 use wgpu::util::{BufferInitDescriptor, DeviceExt};
-use wgpu::{include_spirv, BindGroupDescriptor, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BufferUsages, Instance, InstanceDescriptor, PipelineCompilationOptions, SurfaceTargetUnsafe};
+use wgpu::{include_spirv, include_wgsl, BindGroupDescriptor, BindGroupLayoutDescriptor, BindGroupLayoutEntry, BufferUsages, Instance, InstanceDescriptor, PipelineCompilationOptions, SurfaceTargetUnsafe};
 use winit::application::ApplicationHandler;
 use winit::dpi::PhysicalSize;
 use winit::event::WindowEvent;
@@ -119,7 +119,9 @@ impl App {
                 buffers: &[],
             },
             fragment: Some(wgpu::FragmentState {
-                module: &device.create_shader_module(include_spirv!("../res/shader.fs.spv")),
+                // // TODO spv is causing an NVVM error for some reason... frustrating
+                // module: &device.create_shader_module(include_spirv!("../res/shader.fs.spv")),
+                module: &device.create_shader_module(include_wgsl!("../res/shader.fs.wgsl")),
                 entry_point: Some("fs_main"),
                 compilation_options: PipelineCompilationOptions::default(),
                 targets: &[Some(swapchain_format.into())],

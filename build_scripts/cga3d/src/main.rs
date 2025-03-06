@@ -159,6 +159,9 @@ fn main() {
         repo.clone(),
         traits.clone()
     );
+    // cd .\IdeaProjects\projective_ga\libraries\cga3d\src\integrations
+    // Measure-Command { slangc slang\cga3d.slang -o slang-module\cga3d.slang-module }
+    // Previous run took 15 minutes and 23 seconds
 
     let mut rust = codegen::Rust::new(true).all_features();
     rust.sql = false;
