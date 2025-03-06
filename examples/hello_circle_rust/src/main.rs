@@ -1,6 +1,7 @@
 use cga3d::traits::UnitizedRadiusNormSquared;
 use cga3d::traits::{AntiWedge, Wedge};
 use cga3d::data::{FlatPoint, RoundPoint};
+use cga3d::elements::e4;
 
 fn main() {
     // Start by constructing a Circle.
@@ -16,6 +17,9 @@ fn main() {
 
     // Join the remaining point
     let circle = left_to_top_dipole.wedge(right);
+
+    println!("circle = {:?}", circle);
+    // Circle { e423: 0.0, e431: 0.0, e412: -2.0, e415: 0.0, e425: 0.0, e435: 0.0, e321: 0.0, e235: 0.0, e315: 0.0, e125: -1.0 }
 
     // Sample across space to imagine an image of our circle
     let grid = 10;
@@ -34,6 +38,11 @@ fn main() {
 
             // Now perform a meet to get a RoundPoint centered on the line and contained by the circle
             let meet_fragment_and_circle = circle.anti_wedge(fragment_as_line);
+
+            // if meet_fragment_and_circle[e4] == 0.0 {
+            //     println!("Got e4 = zero here: {:?}", meet_fragment_and_circle);
+            // }
+            // println!("e4 = {:?}", meet_fragment_and_circle[e4]);
 
             // Now get the squared radius of the meet
             let radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared();

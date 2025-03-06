@@ -1,5 +1,21 @@
 
-
+// TODO simplify this by introducing destructuring of pure literal variables
+/*
+impl UnitizedRadiusNormSquared for RoundPoint {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div
+    // f32        3        2        0
+    fn unitized_radius_norm_squared(self) -> f32 {
+        use crate::elements::*;
+        let sub_type = RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x3::from(0.0).with_w(self[e4]), /* e5 */ 0.0);
+        let other = DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([1.0, 0.0]));
+        return (f32::powi(self[e1], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
+            + (f32::powi(self[e2], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
+            + (f32::powi(self[e3], 2) * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2))
+            - 2.0 * (self[e4] * self[e5] * f32::powi(other[e5], -2) * f32::powi(sub_type[e4], -2));
+    }
+}
+ */
 
 trait SortVecDespiteF32 {
     fn sort_with_f32(&mut self);

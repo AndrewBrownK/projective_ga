@@ -81,10 +81,13 @@ float4 fs_main(
 
     // Join the remaining point
     Circle circle = left_to_top_dipole /wedge/ right;
-    //return background_color + float4(circle.e412); // causes black screen
-    //return background_color + float4(circle.e125); // causes color changes, mostly black
-    //return background_color - float4(circle.e412); // causes white screen (so likely a large negative number, not NaN issue)
-    // return background_color - float4(circle.e125); // Causes color changes, mostly white
+
+    // Circle { e423: 0.0, e431: 0.0, e412: -2.0, e415: 0.0, e425: 0.0, e435: 0.0, e321: 0.0, e235: 0.0, e315: 0.0, e125: -1.0 }
+
+    //return background_color + float4(circle.e412); // -2, causes black screen
+    //return background_color + float4(circle.e125); // -1, causes color changes, mostly black
+    //return background_color - float4(circle.e412); // +2, causes white screen
+    //return background_color - float4(circle.e125); // +1, Causes color changes, mostly white
 
 
     // Now that we have our circle, we can determine what we want to do with this fragment
@@ -95,23 +98,51 @@ float4 fs_main(
     FlatPoint direction = FlatPoint(0.0, 0.0, 1.0, 0.0);
 
     // Join a round point and point at infinity to create a line
-    Line fragment_as_line = direction /wedge/ fragment_point;
+    Line fragment_as_line = direction.wedge(fragment_point);
 
     // Now perform a meet to get a RoundPoint centered on the line and contained by the circle
-    RoundPoint meet_fragment_and_circle = circle /anti_wedge/ fragment_as_line;
+    RoundPoint meet_fragment_and_circle = circle.anti_wedge(fragment_as_line);
+
+    // TODO it seems like radius_squared is positive infinity, which naga will refuse to compile literals,
+    // TODO but perhaps the GPU rolls with it at runtime
+    // TODO the only way for it to be infinity is (assuming divide by zero) for e4 on the RoundPoint to be zero
+    // TODO hello_circle_rust never finds an e4 = 0.0 on that
+    // TODO so how can we get e4 = 0.0 from circle.anti_wedge(fragment_as_line)?
+    // TODO this Circle and other Line -> e4 = -(this.e431 * other.e425) - (this.e412 * other.e435) - (this.e423 * other.e415)
+    // TODO in rust, e4 is always = 2.0 here
+    // TODO so let's try an experiment....
+    //return background_color + float4(1.0 / meet_fragment_and_circle.e4);
+    //return background_color - float4(1.0 / meet_fragment_and_circle.e4);
+    // TODO damn it... it is really acting like e4 is 2.0.... well that's good in a way.
+    // TODO but how is radius_squared turning into infinity then?
 
     // Now get the squared radius of the meet
-    float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared();
-    // TODO it seems like radius_squared is positive infinity, which naga will refuse to compile literals,
-    //  but perhaps the GPU rolls with it at runtime
-    if (abs(radius_squared) > pow(2.0, 126)) {
-        return float4(1.0) - background_color;
-    } else {
-        return background_color;
-    }
+
+    // TODO confirmed... the associated method returns infinity, but manually inlining returns correct value.
+    //float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared(); // this one is infinity
+    float radius_squared = unitized_radius_norm_squared_1(meet_fragment_and_circle); // this one is not infinity
+
+    //if (abs(radius_squared) > pow(2.0, 126)) {
+    //    return float4(1.0) - background_color;
+    //} else {
+    //    return background_color;
+    //}
 
 
     // And lastly, make pixels more bright the closer they are to the circle.
     float4 destructive_circle_color = float4(1.0) - float4(abs(radius_squared) * 100.0);
     return background_color + destructive_circle_color;
+}
+
+float unitized_radius_norm_squared_1(RoundPoint dis) {
+    RoundPoint sub_type = RoundPoint(
+        0.0, 0.0, 0.0, dis.e4, 0.0
+    );
+    DualNum other = DualNum(
+        1.0, 0.0
+    );
+    return (pow(dis.e1, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
+        + (pow(dis.e2, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
+        + (pow(dis.e3, 2) * pow(other.e5, -2) * pow(sub_type.e4, -2))
+        - 2.0 * (dis.e4 * dis.e5 * pow(other.e5, -2) * pow(sub_type.e4, -2));
 }
