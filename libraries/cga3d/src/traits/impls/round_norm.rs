@@ -30,7 +30,7 @@ impl RoundNorm for AntiCircleRotor {
     // f32        5        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar],
@@ -56,7 +56,7 @@ impl RoundNorm for AntiCircleRotor {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -71,7 +71,7 @@ impl RoundNorm for AntiDipoleInversion {
     // f32        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -97,7 +97,7 @@ impl RoundNorm for AntiDipoleInversion {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for Circle {
@@ -112,7 +112,7 @@ impl RoundNorm for Circle {
     // f32        2        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -135,7 +135,7 @@ impl RoundNorm for Circle {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for CircleRotor {
@@ -150,7 +150,7 @@ impl RoundNorm for CircleRotor {
     // f32        2        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -173,7 +173,7 @@ impl RoundNorm for CircleRotor {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for Dipole {
@@ -188,7 +188,7 @@ impl RoundNorm for Dipole {
     // f32        4        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -214,7 +214,7 @@ impl RoundNorm for Dipole {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for DipoleInversion {
@@ -229,7 +229,7 @@ impl RoundNorm for DipoleInversion {
     // f32        5        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -255,7 +255,7 @@ impl RoundNorm for DipoleInversion {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for MultiVector {
@@ -275,7 +275,7 @@ impl RoundNorm for MultiVector {
     // f32       14        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar]
@@ -315,7 +315,7 @@ impl RoundNorm for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for RoundPoint {
@@ -330,7 +330,7 @@ impl RoundNorm for RoundPoint {
     // f32        2        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3], self[e4]]),
             // e1, e2, e3, e4
@@ -353,7 +353,7 @@ impl RoundNorm for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorEven {
@@ -368,7 +368,7 @@ impl RoundNorm for VersorEven {
     // f32        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -394,7 +394,7 @@ impl RoundNorm for VersorEven {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorOdd {
@@ -409,7 +409,7 @@ impl RoundNorm for VersorOdd {
     // f32        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -435,6 +435,6 @@ impl RoundNorm for VersorOdd {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }

@@ -38,14 +38,14 @@ impl Reverse for AntiCircleRotor {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn reverse(self) -> Self {
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiDipoleInversion {
@@ -68,7 +68,7 @@ impl Reverse for AntiDipoleInversion {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn reverse(self) -> Self {
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -77,7 +77,7 @@ impl Reverse for AntiDipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiDualNum {
@@ -93,7 +93,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for AntiDualNum {
 }
 impl Reverse for AntiDualNum {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiFlatPoint {
@@ -113,7 +113,7 @@ impl Reverse for AntiFlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn reverse(self) -> Self {
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiFlector {
@@ -133,7 +133,7 @@ impl Reverse for AntiFlector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn reverse(self) -> Self {
-        return AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1());
+        AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1())
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiLine {
@@ -153,12 +153,12 @@ impl Reverse for AntiLine {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn reverse(self) -> Self {
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiMotor {
@@ -178,12 +178,12 @@ impl Reverse for AntiMotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn reverse(self) -> Self {
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e3215
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiPlane {
@@ -199,7 +199,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for AntiPlane {
 }
 impl Reverse for AntiPlane {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for AntiScalar {
@@ -215,7 +215,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for AntiScalar {
 }
 impl Reverse for AntiScalar {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Circle {
@@ -238,14 +238,14 @@ impl Reverse for Circle {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn reverse(self) -> Self {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for CircleRotor {
@@ -268,14 +268,14 @@ impl Reverse for CircleRotor {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn reverse(self) -> Self {
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Dipole {
@@ -298,14 +298,14 @@ impl Reverse for Dipole {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn reverse(self) -> Self {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for DipoleInversion {
@@ -328,7 +328,7 @@ impl Reverse for DipoleInversion {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn reverse(self) -> Self {
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -337,7 +337,7 @@ impl Reverse for DipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for DualNum {
@@ -353,7 +353,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for DualNum {
 }
 impl Reverse for DualNum {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for FlatPoint {
@@ -373,7 +373,7 @@ impl Reverse for FlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn reverse(self) -> Self {
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Flector {
@@ -393,7 +393,7 @@ impl Reverse for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn reverse(self) -> Self {
-        return Flector::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125, e3215 */ self.group1());
+        Flector::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125, e3215 */ self.group1())
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Line {
@@ -413,12 +413,12 @@ impl Reverse for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn reverse(self) -> Self {
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Motor {
@@ -438,12 +438,12 @@ impl Reverse for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn reverse(self) -> Self {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for MultiVector {
@@ -467,7 +467,7 @@ impl Reverse for MultiVector {
     //  no simd        0       20        0
     fn reverse(self) -> Self {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             self.group0(),
             // e1, e2, e3, e4
@@ -490,7 +490,7 @@ impl Reverse for MultiVector {
             self.group9(),
             // e1234
             self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Plane {
@@ -506,7 +506,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for Plane {
 }
 impl Reverse for Plane {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for RoundPoint {
@@ -522,7 +522,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for RoundPoint {
 }
 impl Reverse for RoundPoint {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Scalar {
@@ -538,7 +538,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for Scalar {
 }
 impl Reverse for Scalar {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for Sphere {
@@ -554,7 +554,7 @@ impl std::ops::DivAssign<ReversePrefixOrPostfix> for Sphere {
 }
 impl Reverse for Sphere {
     fn reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for VersorEven {
@@ -574,7 +574,7 @@ impl Reverse for VersorEven {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn reverse(self) -> Self {
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -583,7 +583,7 @@ impl Reverse for VersorEven {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ReversePrefixOrPostfix> for VersorOdd {
@@ -603,7 +603,7 @@ impl Reverse for VersorOdd {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn reverse(self) -> Self {
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e45
@@ -612,6 +612,6 @@ impl Reverse for VersorOdd {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3(),
-        );
+        )
     }
 }

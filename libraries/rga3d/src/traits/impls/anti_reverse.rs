@@ -31,7 +31,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiScalar {
 }
 impl AntiReverse for AntiScalar {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DualNum {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for DualNum {
 }
 impl AntiReverse for DualNum {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Flector {
@@ -67,7 +67,7 @@ impl AntiReverse for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return Flector::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group1());
+        Flector::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Horizon {
@@ -83,7 +83,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Horizon {
 }
 impl AntiReverse for Horizon {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Line {
@@ -103,12 +103,12 @@ impl AntiReverse for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Motor {
@@ -128,12 +128,12 @@ impl AntiReverse for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MultiVector {
@@ -156,7 +156,7 @@ impl AntiReverse for MultiVector {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_reverse(self) -> Self {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0(),
             // e1, e2, e3, e4
@@ -167,7 +167,7 @@ impl AntiReverse for MultiVector {
             self.group3() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             self.group4(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Origin {
@@ -187,7 +187,7 @@ impl AntiReverse for Origin {
     // f32        0        1        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * -1.0)
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Plane {
@@ -203,7 +203,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Plane {
 }
 impl AntiReverse for Plane {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Point {
@@ -223,7 +223,7 @@ impl AntiReverse for Point {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Scalar {
@@ -239,6 +239,6 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Scalar {
 }
 impl AntiReverse for Scalar {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }

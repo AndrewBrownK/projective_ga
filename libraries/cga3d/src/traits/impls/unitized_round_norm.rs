@@ -27,7 +27,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotor {
 impl UnitizedRoundNorm for AntiCircleRotor {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e41] * self[e41] * f32::powi(self[e23], 2);
+        self[e41] * self[e41] * f32::powi(self[e23], 2)
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -39,7 +39,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
 impl UnitizedRoundNorm for AntiDipoleInversion {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e321] * self[e321] * f32::powi(self[e4], 2);
+        self[e321] * self[e321] * f32::powi(self[e4], 2)
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Circle {
@@ -54,7 +54,7 @@ impl UnitizedRoundNorm for Circle {
     // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e423] * self[e423] * self[e321]) + (self[e431] * self[e431] * self[e321]) + (self[e412] * self[e412] * self[e321]);
+        (self[e423] * self[e423] * self[e321]) + (self[e431] * self[e431] * self[e321]) + (self[e412] * self[e412] * self[e321])
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for CircleRotor {
@@ -69,7 +69,7 @@ impl UnitizedRoundNorm for CircleRotor {
     // f32        2        3        0
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e423] * self[e423] * self[e321]) + (self[e431] * self[e431] * self[e321]) + (self[e412] * self[e412] * self[e321]);
+        (self[e423] * self[e423] * self[e321]) + (self[e431] * self[e431] * self[e321]) + (self[e412] * self[e412] * self[e321])
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Dipole {
@@ -81,7 +81,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Dipole {
 impl UnitizedRoundNorm for Dipole {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e41] * self[e41] * f32::powi(self[e23], 2);
+        self[e41] * self[e41] * f32::powi(self[e23], 2)
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
@@ -93,7 +93,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
 impl UnitizedRoundNorm for DipoleInversion {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e41] * self[e41] * f32::powi(self[e23], 2);
+        self[e41] * self[e41] * f32::powi(self[e23], 2)
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for MultiVector {
@@ -104,7 +104,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for MultiVector {
 }
 impl UnitizedRoundNorm for MultiVector {
     fn unitized_round_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for RoundPoint {
@@ -119,7 +119,7 @@ impl UnitizedRoundNorm for RoundPoint {
     // f32        2        0        3
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e1] * self[e1] / (self[e4])) + (self[e2] * self[e2] / (self[e4])) + (self[e3] * self[e3] / (self[e4]));
+        (self[e1] * self[e1] / (self[e4])) + (self[e2] * self[e2] / (self[e4])) + (self[e3] * self[e3] / (self[e4]))
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
@@ -131,7 +131,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
 impl UnitizedRoundNorm for VersorEven {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e321] * self[e321] * f32::powi(self[e4], 2);
+        self[e321] * self[e321] * f32::powi(self[e4], 2)
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
@@ -143,6 +143,6 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
 impl UnitizedRoundNorm for VersorOdd {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e41] * self[e41] * f32::powi(self[e23], 2);
+        self[e41] * self[e41] * f32::powi(self[e23], 2)
     }
 }

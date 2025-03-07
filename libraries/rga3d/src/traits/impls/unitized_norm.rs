@@ -26,7 +26,7 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Flector {
 }
 impl UnitizedNorm for Flector {
     fn unitized_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Line {
@@ -37,7 +37,7 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Line {
 }
 impl UnitizedNorm for Line {
     fn unitized_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Motor {
@@ -48,7 +48,7 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Motor {
 }
 impl UnitizedNorm for Motor {
     fn unitized_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for MultiVector {
@@ -59,7 +59,7 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for MultiVector {
 }
 impl UnitizedNorm for MultiVector {
     fn unitized_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Point {
@@ -70,6 +70,6 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Point {
 }
 impl UnitizedNorm for Point {
     fn unitized_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }

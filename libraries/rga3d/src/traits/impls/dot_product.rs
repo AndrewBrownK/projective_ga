@@ -30,7 +30,7 @@ impl DotProduct<DualNum> for DualNum {
     // f32        0        1        0
     fn dot_product(self, other: DualNum) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<Motor> for DualNum {
@@ -39,7 +39,7 @@ impl DotProduct<Motor> for DualNum {
     // f32        0        1        0
     fn dot_product(self, other: Motor) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl DotProduct<MultiVector> for DualNum {
@@ -48,7 +48,7 @@ impl DotProduct<MultiVector> for DualNum {
     // f32        0        1        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl DotProduct<Scalar> for DualNum {
@@ -57,7 +57,7 @@ impl DotProduct<Scalar> for DualNum {
     // f32        0        1        0
     fn dot_product(self, other: Scalar) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl std::ops::Div<DotProductInfix> for Flector {
@@ -72,7 +72,7 @@ impl DotProduct<Flector> for Flector {
     // f32        3        4        0
     fn dot_product(self, other: Flector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]) + (other[e321] * self[e321]));
+        Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]) + (other[e321] * self[e321]))
     }
 }
 impl DotProduct<Horizon> for Flector {
@@ -81,7 +81,7 @@ impl DotProduct<Horizon> for Flector {
     // f32        0        1        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * other[e321]);
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<MultiVector> for Flector {
@@ -90,7 +90,7 @@ impl DotProduct<MultiVector> for Flector {
     // f32        3        4        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]) + (self[e321] * other[e321]));
+        Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]) + (self[e321] * other[e321]))
     }
 }
 impl DotProduct<Plane> for Flector {
@@ -99,7 +99,7 @@ impl DotProduct<Plane> for Flector {
     // f32        0        1        0
     fn dot_product(self, other: Plane) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * other[e321]);
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<Point> for Flector {
@@ -108,7 +108,7 @@ impl DotProduct<Point> for Flector {
     // f32        2        3        0
     fn dot_product(self, other: Point) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]));
+        Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]))
     }
 }
 impl std::ops::Div<DotProductInfix> for Horizon {
@@ -123,7 +123,7 @@ impl DotProduct<Flector> for Horizon {
     // f32        0        1        0
     fn dot_product(self, other: Flector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<Horizon> for Horizon {
@@ -132,7 +132,7 @@ impl DotProduct<Horizon> for Horizon {
     // f32        0        1        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<MultiVector> for Horizon {
@@ -141,7 +141,7 @@ impl DotProduct<MultiVector> for Horizon {
     // f32        0        1        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * other[e321]);
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<Plane> for Horizon {
@@ -150,7 +150,7 @@ impl DotProduct<Plane> for Horizon {
     // f32        0        1        0
     fn dot_product(self, other: Plane) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * other[e321]);
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl std::ops::Div<DotProductInfix> for Line {
@@ -165,7 +165,7 @@ impl DotProduct<Line> for Line {
     // f32        2        3        0
     fn dot_product(self, other: Line) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]));
+        Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]))
     }
 }
 impl DotProduct<Motor> for Line {
@@ -174,7 +174,7 @@ impl DotProduct<Motor> for Line {
     // f32        2        3        0
     fn dot_product(self, other: Motor) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]));
+        Scalar::from_groups(/* scalar */ (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]))
     }
 }
 impl DotProduct<MultiVector> for Line {
@@ -183,7 +183,7 @@ impl DotProduct<MultiVector> for Line {
     // f32        2        3        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]));
+        Scalar::from_groups(/* scalar */ (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]))
     }
 }
 impl std::ops::Div<DotProductInfix> for Motor {
@@ -198,7 +198,7 @@ impl DotProduct<DualNum> for Motor {
     // f32        0        1        0
     fn dot_product(self, other: DualNum) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<Line> for Motor {
@@ -207,7 +207,7 @@ impl DotProduct<Line> for Motor {
     // f32        2        3        0
     fn dot_product(self, other: Line) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]));
+        Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]))
     }
 }
 impl DotProduct<Motor> for Motor {
@@ -216,10 +216,10 @@ impl DotProduct<Motor> for Motor {
     // f32        3        4        0
     fn dot_product(self, other: Motor) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]) + (other[scalar] * self[scalar]),
-        );
+        )
     }
 }
 impl DotProduct<MultiVector> for Motor {
@@ -228,10 +228,10 @@ impl DotProduct<MultiVector> for Motor {
     // f32        3        4        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]) + (self[scalar] * other[scalar]),
-        );
+        )
     }
 }
 impl DotProduct<Scalar> for Motor {
@@ -240,7 +240,7 @@ impl DotProduct<Scalar> for Motor {
     // f32        0        1        0
     fn dot_product(self, other: Scalar) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl std::ops::Div<DotProductInfix> for MultiVector {
@@ -255,7 +255,7 @@ impl DotProduct<DualNum> for MultiVector {
     // f32        0        1        0
     fn dot_product(self, other: DualNum) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<Flector> for MultiVector {
@@ -264,7 +264,7 @@ impl DotProduct<Flector> for MultiVector {
     // f32        3        4        0
     fn dot_product(self, other: Flector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]) + (other[e321] * self[e321]));
+        Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]) + (other[e321] * self[e321]))
     }
 }
 impl DotProduct<Horizon> for MultiVector {
@@ -273,7 +273,7 @@ impl DotProduct<Horizon> for MultiVector {
     // f32        0        1        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<Line> for MultiVector {
@@ -282,7 +282,7 @@ impl DotProduct<Line> for MultiVector {
     // f32        2        3        0
     fn dot_product(self, other: Line) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]));
+        Scalar::from_groups(/* scalar */ (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]))
     }
 }
 impl DotProduct<Motor> for MultiVector {
@@ -291,10 +291,10 @@ impl DotProduct<Motor> for MultiVector {
     // f32        3        4        0
     fn dot_product(self, other: Motor) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]) + (other[scalar] * self[scalar]),
-        );
+        )
     }
 }
 impl DotProduct<MultiVector> for MultiVector {
@@ -303,7 +303,7 @@ impl DotProduct<MultiVector> for MultiVector {
     // f32        7        8        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (other[scalar] * self[scalar])
                 + (other[e1] * self[e1])
@@ -313,7 +313,7 @@ impl DotProduct<MultiVector> for MultiVector {
                 + (other[e31] * self[e31])
                 + (other[e12] * self[e12])
                 + (other[e321] * self[e321]),
-        );
+        )
     }
 }
 impl DotProduct<Plane> for MultiVector {
@@ -322,7 +322,7 @@ impl DotProduct<Plane> for MultiVector {
     // f32        0        1        0
     fn dot_product(self, other: Plane) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * other[e321]);
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<Point> for MultiVector {
@@ -331,7 +331,7 @@ impl DotProduct<Point> for MultiVector {
     // f32        2        3        0
     fn dot_product(self, other: Point) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]));
+        Scalar::from_groups(/* scalar */ (self[e1] * other[e1]) + (self[e2] * other[e2]) + (self[e3] * other[e3]))
     }
 }
 impl DotProduct<Scalar> for MultiVector {
@@ -340,7 +340,7 @@ impl DotProduct<Scalar> for MultiVector {
     // f32        0        1        0
     fn dot_product(self, other: Scalar) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl std::ops::Div<DotProductInfix> for Plane {
@@ -355,7 +355,7 @@ impl DotProduct<Flector> for Plane {
     // f32        0        1        0
     fn dot_product(self, other: Flector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<Horizon> for Plane {
@@ -364,7 +364,7 @@ impl DotProduct<Horizon> for Plane {
     // f32        0        1        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<MultiVector> for Plane {
@@ -373,7 +373,7 @@ impl DotProduct<MultiVector> for Plane {
     // f32        0        1        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<Plane> for Plane {
@@ -382,7 +382,7 @@ impl DotProduct<Plane> for Plane {
     // f32        0        1        0
     fn dot_product(self, other: Plane) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl std::ops::Div<DotProductInfix> for Point {
@@ -397,7 +397,7 @@ impl DotProduct<Flector> for Point {
     // f32        2        3        0
     fn dot_product(self, other: Flector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]));
+        Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]))
     }
 }
 impl DotProduct<MultiVector> for Point {
@@ -406,7 +406,7 @@ impl DotProduct<MultiVector> for Point {
     // f32        2        3        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]));
+        Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]))
     }
 }
 impl DotProduct<Point> for Point {
@@ -415,7 +415,7 @@ impl DotProduct<Point> for Point {
     // f32        2        3        0
     fn dot_product(self, other: Point) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]));
+        Scalar::from_groups(/* scalar */ (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]))
     }
 }
 impl std::ops::Div<DotProductInfix> for Scalar {
@@ -430,7 +430,7 @@ impl DotProduct<DualNum> for Scalar {
     // f32        0        1        0
     fn dot_product(self, other: DualNum) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<Motor> for Scalar {
@@ -439,7 +439,7 @@ impl DotProduct<Motor> for Scalar {
     // f32        0        1        0
     fn dot_product(self, other: Motor) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<MultiVector> for Scalar {
@@ -448,7 +448,7 @@ impl DotProduct<MultiVector> for Scalar {
     // f32        0        1        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl DotProduct<Scalar> for Scalar {
@@ -457,6 +457,6 @@ impl DotProduct<Scalar> for Scalar {
     // f32        0        1        0
     fn dot_product(self, other: Scalar) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }

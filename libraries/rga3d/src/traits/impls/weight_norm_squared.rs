@@ -32,7 +32,7 @@ impl std::ops::DivAssign<WeightNormSquaredPrefixOrPostfix> for AntiScalar {
 impl WeightNormSquared for AntiScalar {
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for DualNum {
@@ -44,7 +44,7 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for DualNum {
 impl WeightNormSquared for DualNum {
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Flector {
@@ -59,7 +59,7 @@ impl WeightNormSquared for Flector {
     // f32        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
+        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Line {
@@ -74,7 +74,7 @@ impl WeightNormSquared for Line {
     // f32        2        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Motor {
@@ -89,7 +89,7 @@ impl WeightNormSquared for Motor {
     // f32        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for MultiVector {
@@ -104,7 +104,7 @@ impl WeightNormSquared for MultiVector {
     // f32        7        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e1234
             self[e1234] * self[e1234]
                 + self[e4] * self[e4]
@@ -114,7 +114,7 @@ impl WeightNormSquared for MultiVector {
                 + self[e423] * self[e423]
                 + self[e431] * self[e431]
                 + self[e412] * self[e412],
-        );
+        )
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Origin {
@@ -126,7 +126,7 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Origin {
 impl WeightNormSquared for Origin {
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4]);
+        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Plane {
@@ -141,7 +141,7 @@ impl WeightNormSquared for Plane {
     // f32        2        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
+        AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Point {
@@ -153,6 +153,6 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Point {
 impl WeightNormSquared for Point {
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4]);
+        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4])
     }
 }

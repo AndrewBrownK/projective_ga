@@ -31,7 +31,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiScalar {
 }
 impl DoubleComplement for AntiScalar {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DualNum {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DualNum {
 }
 impl DoubleComplement for DualNum {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Flector {
@@ -67,12 +67,12 @@ impl DoubleComplement for Flector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn double_complement(self) -> Self {
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             self.group0() * Simd32x4::from(-1.0),
             // e423, e431, e412, e321
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Horizon {
@@ -92,7 +92,7 @@ impl DoubleComplement for Horizon {
     // f32        0        1        0
     fn double_complement(self) -> Self {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e321] * -1.0);
+        Horizon::from_groups(/* e321 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Line {
@@ -108,7 +108,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Line {
 }
 impl DoubleComplement for Line {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Motor {
@@ -124,7 +124,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Motor {
 }
 impl DoubleComplement for Motor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MultiVector {
@@ -144,7 +144,7 @@ impl DoubleComplement for MultiVector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn double_complement(self) -> Self {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0(),
             // e1, e2, e3, e4
@@ -155,7 +155,7 @@ impl DoubleComplement for MultiVector {
             self.group3(),
             // e423, e431, e412, e321
             self.group4() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Origin {
@@ -175,7 +175,7 @@ impl DoubleComplement for Origin {
     // f32        0        1        0
     fn double_complement(self) -> Self {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * -1.0)
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Plane {
@@ -195,7 +195,7 @@ impl DoubleComplement for Plane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn double_complement(self) -> Self {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Point {
@@ -215,7 +215,7 @@ impl DoubleComplement for Point {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn double_complement(self) -> Self {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Scalar {
@@ -231,6 +231,6 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Scalar {
 }
 impl DoubleComplement for Scalar {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }

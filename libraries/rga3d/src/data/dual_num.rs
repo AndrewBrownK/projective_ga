@@ -80,7 +80,7 @@ impl nearly::NearlyEqEps<DualNum, f32, f32> for DualNum {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<DualNum, f32, f32> for DualNum {
@@ -94,7 +94,7 @@ impl nearly::NearlyEqUlps<DualNum, f32, f32> for DualNum {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<DualNum, f32, f32> for DualNum {}
@@ -119,7 +119,7 @@ impl nearly::NearlyOrdUlps<DualNum, f32, f32> for DualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &DualNum, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -141,7 +141,7 @@ impl nearly::NearlyOrdUlps<DualNum, f32, f32> for DualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<DualNum, f32, f32> for DualNum {
@@ -164,7 +164,7 @@ impl nearly::NearlyOrdEps<DualNum, f32, f32> for DualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &DualNum, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -186,7 +186,7 @@ impl nearly::NearlyOrdEps<DualNum, f32, f32> for DualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<DualNum, f32, f32> for DualNum {}
@@ -257,14 +257,14 @@ impl encase::ShaderType for DualNum {
     type ExtraMetadata = <DualNumGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <DualNumGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <DualNumGroups as encase::ShaderType>::min_size();
+        <DualNumGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <DualNumGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <DualNumGroups as encase::ShaderType>::assert_uniform_compat();
+        <DualNumGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

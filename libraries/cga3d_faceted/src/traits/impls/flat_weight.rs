@@ -28,7 +28,7 @@ impl FlatWeight for AntiCircleRotor {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -41,7 +41,7 @@ impl FlatWeight for AntiCircleRotorAtInfinity {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversion {
@@ -53,7 +53,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversion {
 impl FlatWeight for AntiDipoleInversion {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -65,7 +65,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversionAtInfinity 
 impl FlatWeight for AntiDipoleInversionAtInfinity {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -77,7 +77,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversionOrthogonalO
 impl FlatWeight for AntiDipoleInversionOrthogonalOrigin {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -90,7 +90,7 @@ impl FlatWeight for AntiMysteryCircleRotor {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -102,7 +102,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiMysteryDipoleInversion {
 impl FlatWeight for AntiMysteryDipoleInversion {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiScalar {
@@ -119,7 +119,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for AntiScalar {
 impl FlatWeight for AntiScalar {
     type Output = AntiScalar;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Circle {
@@ -131,7 +131,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Circle {
 impl FlatWeight for Circle {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleAligningOrigin {
@@ -143,7 +143,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleAligningOrigin {
 impl FlatWeight for CircleAligningOrigin {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleAtInfinity {
@@ -155,7 +155,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleAtInfinity {
 impl FlatWeight for CircleAtInfinity {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleOnOrigin {
@@ -167,7 +167,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleOnOrigin {
 impl FlatWeight for CircleOnOrigin {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotor {
@@ -180,7 +180,7 @@ impl FlatWeight for CircleRotor {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -193,7 +193,7 @@ impl FlatWeight for CircleRotorAligningOrigin {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -206,7 +206,7 @@ impl FlatWeight for CircleRotorAligningOriginAtInfinity {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e12345]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e12345]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -219,7 +219,7 @@ impl FlatWeight for CircleRotorAtInfinity {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -232,7 +232,7 @@ impl FlatWeight for CircleRotorOnOrigin {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Dipole {
@@ -245,7 +245,7 @@ impl FlatWeight for Dipole {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleAligningOrigin {
@@ -258,7 +258,7 @@ impl FlatWeight for DipoleAligningOrigin {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleAtInfinity {
@@ -271,7 +271,7 @@ impl FlatWeight for DipoleAtInfinity {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleInversion {
@@ -284,7 +284,7 @@ impl FlatWeight for DipoleInversion {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -297,7 +297,7 @@ impl FlatWeight for DipoleInversionAligningOrigin {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -310,7 +310,7 @@ impl FlatWeight for DipoleInversionAtInfinity {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -323,7 +323,7 @@ impl FlatWeight for DipoleInversionOnOrigin {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleOnOrigin {
@@ -336,7 +336,7 @@ impl FlatWeight for DipoleOnOrigin {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DualNum {
@@ -349,7 +349,7 @@ impl FlatWeight for DualNum {
     type Output = AntiScalar;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345]);
+        AntiScalar::from_groups(/* e12345 */ self[e12345])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for FlatOrigin {
@@ -366,7 +366,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for FlatOrigin {
 impl FlatWeight for FlatOrigin {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for FlatPoint {
@@ -379,7 +379,7 @@ impl FlatWeight for FlatPoint {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Flector {
@@ -392,7 +392,7 @@ impl FlatWeight for Flector {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for FlectorOnOrigin {
@@ -409,7 +409,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for FlectorOnOrigin {
 impl FlatWeight for FlectorOnOrigin {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Line {
@@ -421,7 +421,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Line {
 impl FlatWeight for Line {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for LineOnOrigin {
@@ -438,7 +438,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for LineOnOrigin {
 impl FlatWeight for LineOnOrigin {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Motor {
@@ -450,7 +450,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Motor {
 impl FlatWeight for Motor {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0());
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MotorOnOrigin {
@@ -467,7 +467,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for MotorOnOrigin {
 impl FlatWeight for MotorOnOrigin {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MultiVector {
@@ -485,7 +485,7 @@ impl FlatWeight for MultiVector {
     type Output = MultiVector;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -508,7 +508,7 @@ impl FlatWeight for MultiVector {
             Simd32x4::from([0.0, self[e4235], self[e4315], self[e4125]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryCircle {
@@ -520,7 +520,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryCircle {
 impl FlatWeight for MysteryCircle {
     type Output = LineOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryCircleRotor {
@@ -533,7 +533,7 @@ impl FlatWeight for MysteryCircleRotor {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryDipole {
@@ -546,7 +546,7 @@ impl FlatWeight for MysteryDipole {
     type Output = FlatOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45]);
+        FlatOrigin::from_groups(/* e45 */ self[e45])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryDipoleInversion {
@@ -559,7 +559,7 @@ impl FlatWeight for MysteryDipoleInversion {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryVersorEven {
@@ -572,7 +572,7 @@ impl FlatWeight for MysteryVersorEven {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MysteryVersorOdd {
@@ -585,7 +585,7 @@ impl FlatWeight for MysteryVersorOdd {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Plane {
@@ -597,7 +597,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Plane {
 impl FlatWeight for Plane {
     type Output = PlaneOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for PlaneOnOrigin {
@@ -614,7 +614,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for PlaneOnOrigin {
 impl FlatWeight for PlaneOnOrigin {
     type Output = PlaneOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Sphere {
@@ -626,7 +626,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Sphere {
 impl FlatWeight for Sphere {
     type Output = PlaneOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for SphereOnOrigin {
@@ -638,7 +638,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for SphereOnOrigin {
 impl FlatWeight for SphereOnOrigin {
     type Output = PlaneOnOrigin;
     fn flat_weight(self) -> Self::Output {
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorEven {
@@ -651,7 +651,7 @@ impl FlatWeight for VersorEven {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -664,7 +664,7 @@ impl FlatWeight for VersorEvenAligningOrigin {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -677,7 +677,7 @@ impl FlatWeight for VersorEvenAtInfinity {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -690,7 +690,7 @@ impl FlatWeight for VersorEvenOnOrigin {
     type Output = MotorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorOdd {
@@ -703,7 +703,7 @@ impl FlatWeight for VersorOdd {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorOddAtInfinity {
@@ -716,6 +716,6 @@ impl FlatWeight for VersorOddAtInfinity {
     type Output = FlectorOnOrigin;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]))
     }
 }

@@ -105,7 +105,7 @@ impl nearly::NearlyEqEps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircle
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircleRotor {
@@ -119,7 +119,7 @@ impl nearly::NearlyEqUlps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircl
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircleRotor {}
@@ -144,7 +144,7 @@ impl nearly::NearlyOrdUlps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCirc
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiMysteryCircleRotor, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -166,7 +166,7 @@ impl nearly::NearlyOrdUlps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCirc
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircleRotor {
@@ -189,7 +189,7 @@ impl nearly::NearlyOrdEps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircl
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiMysteryCircleRotor, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -211,7 +211,7 @@ impl nearly::NearlyOrdEps<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircl
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiMysteryCircleRotor, f32, f32> for AntiMysteryCircleRotor {}
@@ -282,14 +282,14 @@ impl encase::ShaderType for AntiMysteryCircleRotor {
     type ExtraMetadata = <AntiMysteryCircleRotorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiMysteryCircleRotorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiMysteryCircleRotorGroups as encase::ShaderType>::min_size();
+        <AntiMysteryCircleRotorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiMysteryCircleRotorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiMysteryCircleRotorGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiMysteryCircleRotorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

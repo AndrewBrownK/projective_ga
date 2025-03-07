@@ -126,7 +126,7 @@ impl nearly::NearlyEqEps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipole
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipoleInversionAtInfinity {
@@ -140,7 +140,7 @@ impl nearly::NearlyEqUlps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipol
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipoleInversionAtInfinity {}
@@ -165,7 +165,7 @@ impl nearly::NearlyOrdUlps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipo
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiDipoleInversionAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -187,7 +187,7 @@ impl nearly::NearlyOrdUlps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipo
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipoleInversionAtInfinity {
@@ -210,7 +210,7 @@ impl nearly::NearlyOrdEps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipol
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiDipoleInversionAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -232,7 +232,7 @@ impl nearly::NearlyOrdEps<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipol
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiDipoleInversionAtInfinity, f32, f32> for AntiDipoleInversionAtInfinity {}
@@ -303,14 +303,14 @@ impl encase::ShaderType for AntiDipoleInversionAtInfinity {
     type ExtraMetadata = <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::min_size();
+        <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiDipoleInversionAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

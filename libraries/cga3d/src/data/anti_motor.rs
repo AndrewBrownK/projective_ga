@@ -106,7 +106,7 @@ impl nearly::NearlyEqEps<AntiMotor, f32, f32> for AntiMotor {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiMotor, f32, f32> for AntiMotor {
@@ -120,7 +120,7 @@ impl nearly::NearlyEqUlps<AntiMotor, f32, f32> for AntiMotor {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiMotor, f32, f32> for AntiMotor {}
@@ -145,7 +145,7 @@ impl nearly::NearlyOrdUlps<AntiMotor, f32, f32> for AntiMotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiMotor, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -167,7 +167,7 @@ impl nearly::NearlyOrdUlps<AntiMotor, f32, f32> for AntiMotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiMotor, f32, f32> for AntiMotor {
@@ -190,7 +190,7 @@ impl nearly::NearlyOrdEps<AntiMotor, f32, f32> for AntiMotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiMotor, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -212,7 +212,7 @@ impl nearly::NearlyOrdEps<AntiMotor, f32, f32> for AntiMotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiMotor, f32, f32> for AntiMotor {}
@@ -283,14 +283,14 @@ impl encase::ShaderType for AntiMotor {
     type ExtraMetadata = <AntiMotorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiMotorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiMotorGroups as encase::ShaderType>::min_size();
+        <AntiMotorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiMotorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiMotorGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiMotorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

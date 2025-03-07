@@ -119,7 +119,7 @@ impl nearly::NearlyEqEps<Circle, f32, f32> for Circle {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Circle, f32, f32> for Circle {
@@ -133,7 +133,7 @@ impl nearly::NearlyEqUlps<Circle, f32, f32> for Circle {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Circle, f32, f32> for Circle {}
@@ -158,7 +158,7 @@ impl nearly::NearlyOrdUlps<Circle, f32, f32> for Circle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Circle, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -180,7 +180,7 @@ impl nearly::NearlyOrdUlps<Circle, f32, f32> for Circle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Circle, f32, f32> for Circle {
@@ -203,7 +203,7 @@ impl nearly::NearlyOrdEps<Circle, f32, f32> for Circle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Circle, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -225,7 +225,7 @@ impl nearly::NearlyOrdEps<Circle, f32, f32> for Circle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Circle, f32, f32> for Circle {}
@@ -296,14 +296,14 @@ impl encase::ShaderType for Circle {
     type ExtraMetadata = <CircleGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <CircleGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <CircleGroups as encase::ShaderType>::min_size();
+        <CircleGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <CircleGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <CircleGroups as encase::ShaderType>::assert_uniform_compat();
+        <CircleGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

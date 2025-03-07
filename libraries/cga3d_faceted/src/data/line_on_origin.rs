@@ -83,7 +83,7 @@ impl nearly::NearlyEqEps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<LineOnOrigin, f32, f32> for LineOnOrigin {
@@ -97,7 +97,7 @@ impl nearly::NearlyEqUlps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<LineOnOrigin, f32, f32> for LineOnOrigin {}
@@ -122,7 +122,7 @@ impl nearly::NearlyOrdUlps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &LineOnOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -144,7 +144,7 @@ impl nearly::NearlyOrdUlps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<LineOnOrigin, f32, f32> for LineOnOrigin {
@@ -167,7 +167,7 @@ impl nearly::NearlyOrdEps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &LineOnOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -189,7 +189,7 @@ impl nearly::NearlyOrdEps<LineOnOrigin, f32, f32> for LineOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<LineOnOrigin, f32, f32> for LineOnOrigin {}
@@ -260,14 +260,14 @@ impl encase::ShaderType for LineOnOrigin {
     type ExtraMetadata = <LineOnOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <LineOnOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <LineOnOriginGroups as encase::ShaderType>::min_size();
+        <LineOnOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <LineOnOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <LineOnOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <LineOnOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

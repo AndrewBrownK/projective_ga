@@ -31,7 +31,7 @@ impl UnitizedRadiusNormSquared for AntiCircleOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -self[e23] * self[e23] - self[e31] * self[e31] - self[e12] * self[e12];
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiCircleRotor {
@@ -54,7 +54,7 @@ impl UnitizedRadiusNormSquared for AntiCircleRotor {
             - 2.0 * (self[e41] * self[e15])
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -76,7 +76,7 @@ impl UnitizedRadiusNormSquared for AntiCircleRotorAligningOrigin {
             - 2.0 * (self[e41] * self[e15])
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -92,7 +92,7 @@ impl UnitizedRadiusNormSquared for AntiCircleRotorOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -self[scalar] * self[scalar] - self[e23] * self[e23] - self[e31] * self[e31] - self[e12] * self[e12];
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -119,10 +119,10 @@ impl UnitizedRadiusNormSquared for AntiDipoleInversion {
             - self[e2] * self[e2]
             - self[e3] * self[e3];
         let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
-        return -(wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
+        -(wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
             - (wedge_g0[1] * wedge_g0[1] * anti_dot_product_g0)
             - (wedge_g0[2] * wedge_g0[2] * anti_dot_product_g0)
-            - (wedge_g0[3] * wedge_g0[3] * anti_dot_product_g0);
+            - (wedge_g0[3] * wedge_g0[3] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -138,10 +138,10 @@ impl UnitizedRadiusNormSquared for AntiDipoleInversionOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -self[e321] * self[e321] - self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -163,10 +163,10 @@ impl UnitizedRadiusNormSquared for AntiDipoleInversionOrthogonalOrigin {
             + self[e415] * self[e415]
             + self[e425] * self[e425]
             + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -182,7 +182,7 @@ impl UnitizedRadiusNormSquared for AntiDipoleOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e321] * self[e321] * -1.0;
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDualNum {
@@ -194,7 +194,7 @@ impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiDualNum {
 impl UnitizedRadiusNormSquared for AntiDualNum {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[scalar] * self[scalar] * f32::powi(self[e1234], -2);
+        self[scalar] * self[scalar] * f32::powi(self[e1234], -2)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -209,7 +209,7 @@ impl UnitizedRadiusNormSquared for AntiSphereOnOrigin {
     // f32        2        0        0
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2));
+        (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2))
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -225,10 +225,10 @@ impl UnitizedRadiusNormSquared for AntiVersorEvenOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -self[scalar] * self[scalar] - self[e23] * self[e23] - self[e31] * self[e31] - self[e12] * self[e12];
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for Circle {
@@ -250,7 +250,7 @@ impl UnitizedRadiusNormSquared for Circle {
             + self[e425] * self[e425]
             + self[e435] * self[e435]
             - self[e321] * self[e321];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleAligningOrigin {
@@ -271,7 +271,7 @@ impl UnitizedRadiusNormSquared for CircleAligningOrigin {
             + self[e415] * self[e415]
             + self[e425] * self[e425]
             + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleAtOrigin {
@@ -287,7 +287,7 @@ impl UnitizedRadiusNormSquared for CircleAtOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = 2.0 * (self[e423] * self[e235]) + 2.0 * (self[e431] * self[e315]) + 2.0 * (self[e412] * self[e125]);
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleOnOrigin {
@@ -303,7 +303,7 @@ impl UnitizedRadiusNormSquared for CircleOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -319,7 +319,7 @@ impl UnitizedRadiusNormSquared for CircleOrthogonalOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = 2.0 * (self[e423] * self[e235]) + 2.0 * (self[e431] * self[e315]) + 2.0 * (self[e412] * self[e125]) - self[e321] * self[e321];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -342,7 +342,7 @@ impl UnitizedRadiusNormSquared for CircleRotor {
             + self[e435] * self[e435]
             + self[e12345] * self[e12345]
             - self[e321] * self[e321];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -364,7 +364,7 @@ impl UnitizedRadiusNormSquared for CircleRotorAligningOrigin {
             + self[e425] * self[e425]
             + self[e435] * self[e435]
             + self[e12345] * self[e12345];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -380,7 +380,7 @@ impl UnitizedRadiusNormSquared for CircleRotorOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0);
+        -(self[e423] * self[e423] * anti_dot_product_g0) - (self[e431] * self[e431] * anti_dot_product_g0) - (self[e412] * self[e412] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for Dipole {
@@ -402,7 +402,7 @@ impl UnitizedRadiusNormSquared for Dipole {
             - 2.0 * (self[e41] * self[e15])
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleAligningOrigin {
@@ -418,7 +418,7 @@ impl UnitizedRadiusNormSquared for DipoleAligningOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e45] * self[e45] - 2.0 * (self[e41] * self[e15]) - 2.0 * (self[e42] * self[e25]) - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleAtOrigin {
@@ -434,7 +434,7 @@ impl UnitizedRadiusNormSquared for DipoleAtOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -2.0 * (self[e41] * self[e15]) - 2.0 * (self[e42] * self[e25]) - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -457,10 +457,10 @@ impl UnitizedRadiusNormSquared for DipoleInversion {
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e1234] * self[e3215]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -480,10 +480,10 @@ impl UnitizedRadiusNormSquared for DipoleInversionAligningOrigin {
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e1234] * self[e3215]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -499,10 +499,10 @@ impl UnitizedRadiusNormSquared for DipoleInversionAtOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = -2.0 * (self[e41] * self[e15]) - 2.0 * (self[e42] * self[e25]) - 2.0 * (self[e43] * self[e35]) - 2.0 * (self[e3215] * self[e1234]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -518,10 +518,10 @@ impl UnitizedRadiusNormSquared for DipoleInversionOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125];
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -543,10 +543,10 @@ impl UnitizedRadiusNormSquared for DipoleInversionOrthogonalOrigin {
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e3215] * self[e1234]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
@@ -562,7 +562,7 @@ impl UnitizedRadiusNormSquared for DipoleOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e45] * self[e45];
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -579,7 +579,7 @@ impl UnitizedRadiusNormSquared for DipoleOrthogonalOrigin {
         use crate::elements::*;
         let anti_dot_product_g0 =
             -self[e23] * self[e23] - self[e31] * self[e31] - self[e12] * self[e12] - 2.0 * (self[e41] * self[e15]) - 2.0 * (self[e42] * self[e25]) - 2.0 * (self[e43] * self[e35]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0);
+        -(self[e41] * self[e41] * anti_dot_product_g0) - (self[e42] * self[e42] * anti_dot_product_g0) - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for DualNum {
@@ -594,7 +594,7 @@ impl UnitizedRadiusNormSquared for DualNum {
     // f32        0        1        0
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e12345] * self[e12345] * f32::powi(self[e4], -2) * -1.0;
+        self[e12345] * self[e12345] * f32::powi(self[e4], -2) * -1.0
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for MultiVector {
@@ -640,7 +640,7 @@ impl UnitizedRadiusNormSquared for MultiVector {
             - 2.0 * (self[e1234] * self[e3215]);
         let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
         let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
-        return (wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
+        (wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
             - (wedge_g0[1] * wedge_g0[1] * anti_dot_product_g0)
             - (wedge_g9[1] * wedge_g9[1] * anti_dot_product_g0)
             - (wedge_g9[2] * wedge_g9[2] * anti_dot_product_g0)
@@ -648,7 +648,7 @@ impl UnitizedRadiusNormSquared for MultiVector {
             - (self[e4] * self[e4] * anti_dot_product_g0)
             - (self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
-            - (self[e43] * self[e43] * anti_dot_product_g0);
+            - (self[e43] * self[e43] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for RoundPoint {
@@ -663,8 +663,8 @@ impl UnitizedRadiusNormSquared for RoundPoint {
     // f32        3        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2))
-            - 2.0 * (self[e5] / (self[e4]));
+        (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2))
+            - 2.0 * (self[e5] / (self[e4]))
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for RoundPointAtOrigin {
@@ -679,7 +679,7 @@ impl UnitizedRadiusNormSquared for RoundPointAtOrigin {
     // f32        0        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e5] / (self[e4]) * -2.0;
+        self[e5] / (self[e4]) * -2.0
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for Sphere {
@@ -694,10 +694,10 @@ impl UnitizedRadiusNormSquared for Sphere {
     // f32        3        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return 2.0 * (self[e3215] / (self[e1234]))
+        2.0 * (self[e3215] / (self[e1234]))
             - (self[e4235] * self[e4235] * f32::powi(self[e1234], -2))
             - (self[e4315] * self[e4315] * f32::powi(self[e1234], -2))
-            - (self[e4125] * self[e4125] * f32::powi(self[e1234], -2));
+            - (self[e4125] * self[e4125] * f32::powi(self[e1234], -2))
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for SphereAtOrigin {
@@ -712,7 +712,7 @@ impl UnitizedRadiusNormSquared for SphereAtOrigin {
     // f32        0        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e3215] / (self[e1234]) * 2.0;
+        self[e3215] / (self[e1234]) * 2.0
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for SphereOnOrigin {
@@ -727,9 +727,9 @@ impl UnitizedRadiusNormSquared for SphereOnOrigin {
     // f32        2        0        0
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return -(self[e4235] * self[e4235] * f32::powi(self[e1234], -2))
+        -(self[e4235] * self[e4235] * f32::powi(self[e1234], -2))
             - (self[e4315] * self[e4315] * f32::powi(self[e1234], -2))
-            - (self[e4125] * self[e4125] * f32::powi(self[e1234], -2));
+            - (self[e4125] * self[e4125] * f32::powi(self[e1234], -2))
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEven {
@@ -756,10 +756,10 @@ impl UnitizedRadiusNormSquared for VersorEven {
             - self[e1] * self[e1]
             - self[e2] * self[e2]
             - self[e3] * self[e3];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -782,10 +782,10 @@ impl UnitizedRadiusNormSquared for VersorEvenAligningOrigin {
             + self[e415] * self[e415]
             + self[e425] * self[e425]
             + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -802,10 +802,10 @@ impl UnitizedRadiusNormSquared for VersorEvenAtOrigin {
         use crate::elements::*;
         let anti_dot_product_g0 = 2.0 * (self[e423] * self[e235]) + 2.0 * (self[e431] * self[e315]) + 2.0 * (self[e412] * self[e125]) + 2.0 * (self[e4] * self[e5]);
         let wedge_g0 = self.group0().wxyz();
-        return -(wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
+        -(wedge_g0[0] * wedge_g0[0] * anti_dot_product_g0)
             - (wedge_g0[1] * wedge_g0[1] * anti_dot_product_g0)
             - (wedge_g0[2] * wedge_g0[2] * anti_dot_product_g0)
-            - (wedge_g0[3] * wedge_g0[3] * anti_dot_product_g0);
+            - (wedge_g0[3] * wedge_g0[3] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -821,10 +821,10 @@ impl UnitizedRadiusNormSquared for VersorEvenOnOrigin {
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
         let anti_dot_product_g0 = self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -844,10 +844,10 @@ impl UnitizedRadiusNormSquared for VersorEvenOrthogonalOrigin {
             - self[e1] * self[e1]
             - self[e2] * self[e2]
             - self[e3] * self[e3];
-        return -(self[e423] * self[e423] * anti_dot_product_g0)
+        -(self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
-            - (self[e4] * self[e4] * anti_dot_product_g0);
+            - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -871,10 +871,10 @@ impl UnitizedRadiusNormSquared for VersorOdd {
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e1234] * self[e3215]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -897,9 +897,9 @@ impl UnitizedRadiusNormSquared for VersorOddOrthogonalOrigin {
             - 2.0 * (self[e42] * self[e25])
             - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e3215] * self[e1234]);
-        return -(self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
-            - (self[e1234] * self[e1234] * anti_dot_product_g0);
+            - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }

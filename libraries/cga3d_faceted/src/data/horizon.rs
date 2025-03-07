@@ -78,7 +78,7 @@ impl nearly::NearlyEqEps<Horizon, f32, f32> for Horizon {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Horizon, f32, f32> for Horizon {
@@ -92,7 +92,7 @@ impl nearly::NearlyEqUlps<Horizon, f32, f32> for Horizon {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Horizon, f32, f32> for Horizon {}
@@ -117,7 +117,7 @@ impl nearly::NearlyOrdUlps<Horizon, f32, f32> for Horizon {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Horizon, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -139,7 +139,7 @@ impl nearly::NearlyOrdUlps<Horizon, f32, f32> for Horizon {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Horizon, f32, f32> for Horizon {
@@ -162,7 +162,7 @@ impl nearly::NearlyOrdEps<Horizon, f32, f32> for Horizon {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Horizon, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -184,7 +184,7 @@ impl nearly::NearlyOrdEps<Horizon, f32, f32> for Horizon {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Horizon, f32, f32> for Horizon {}
@@ -255,14 +255,14 @@ impl encase::ShaderType for Horizon {
     type ExtraMetadata = <HorizonGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <HorizonGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <HorizonGroups as encase::ShaderType>::min_size();
+        <HorizonGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <HorizonGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <HorizonGroups as encase::ShaderType>::assert_uniform_compat();
+        <HorizonGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

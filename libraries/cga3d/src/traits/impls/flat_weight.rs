@@ -28,7 +28,7 @@ impl FlatWeight for AntiCircleRotor {
     type Output = FlatPoint;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversion {
@@ -40,7 +40,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiDipoleInversion {
 impl FlatWeight for AntiDipoleInversion {
     type Output = Line;
     fn flat_weight(self) -> Self::Output {
-        return Line::from_groups(/* e415, e425, e435 */ self.group1().xyz(), /* e235, e315, e125 */ Simd32x3::from(0.0));
+        Line::from_groups(/* e415, e425, e435 */ self.group1().xyz(), /* e235, e315, e125 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiScalar {
@@ -57,7 +57,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for AntiScalar {
 impl FlatWeight for AntiScalar {
     type Output = AntiScalar;
     fn flat_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Circle {
@@ -69,7 +69,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Circle {
 impl FlatWeight for Circle {
     type Output = Line;
     fn flat_weight(self) -> Self::Output {
-        return Line::from_groups(/* e415, e425, e435 */ self.group1().xyz(), /* e235, e315, e125 */ Simd32x3::from(0.0));
+        Line::from_groups(/* e415, e425, e435 */ self.group1().xyz(), /* e235, e315, e125 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for CircleRotor {
@@ -82,12 +82,12 @@ impl FlatWeight for CircleRotor {
     type Output = Motor;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Dipole {
@@ -100,7 +100,7 @@ impl FlatWeight for Dipole {
     type Output = FlatPoint;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DipoleInversion {
@@ -113,12 +113,12 @@ impl FlatWeight for DipoleInversion {
     type Output = Flector;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
             self.group3().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for DualNum {
@@ -131,7 +131,7 @@ impl FlatWeight for DualNum {
     type Output = AntiScalar;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345]);
+        AntiScalar::from_groups(/* e12345 */ self[e12345])
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for FlatPoint {
@@ -149,7 +149,7 @@ impl FlatWeight for FlatPoint {
     type Output = FlatPoint;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x3::from(0.0).with_w(self[e45]))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Flector {
@@ -167,12 +167,12 @@ impl FlatWeight for Flector {
     type Output = Flector;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
             self.group1().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Line {
@@ -189,7 +189,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for Line {
 impl FlatWeight for Line {
     type Output = Line;
     fn flat_weight(self) -> Self::Output {
-        return Line::from_groups(/* e415, e425, e435 */ self.group0(), /* e235, e315, e125 */ Simd32x3::from(0.0));
+        Line::from_groups(/* e415, e425, e435 */ self.group0(), /* e235, e315, e125 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Motor {
@@ -206,7 +206,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for Motor {
 impl FlatWeight for Motor {
     type Output = Motor;
     fn flat_weight(self) -> Self::Output {
-        return Motor::from_groups(/* e415, e425, e435, e12345 */ self.group0(), /* e235, e315, e125, e5 */ Simd32x4::from(0.0));
+        Motor::from_groups(/* e415, e425, e435, e12345 */ self.group0(), /* e235, e315, e125, e5 */ Simd32x4::from(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for MultiVector {
@@ -224,7 +224,7 @@ impl FlatWeight for MultiVector {
     type Output = MultiVector;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -247,7 +247,7 @@ impl FlatWeight for MultiVector {
             self.group9().xyz().with_w(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Plane {
@@ -264,7 +264,7 @@ impl std::ops::DivAssign<FlatWeightPrefixOrPostfix> for Plane {
 impl FlatWeight for Plane {
     type Output = Plane;
     fn flat_weight(self) -> Self::Output {
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(0.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for Sphere {
@@ -276,7 +276,7 @@ impl std::ops::Div<FlatWeightPrefixOrPostfix> for Sphere {
 impl FlatWeight for Sphere {
     type Output = Plane;
     fn flat_weight(self) -> Self::Output {
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(0.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorEven {
@@ -289,12 +289,12 @@ impl FlatWeight for VersorEven {
     type Output = Motor;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for VersorOdd {
@@ -307,11 +307,11 @@ impl FlatWeight for VersorOdd {
     type Output = Flector;
     fn flat_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
             self.group3().xyz().with_w(0.0),
-        );
+        )
     }
 }

@@ -89,7 +89,7 @@ impl nearly::NearlyEqEps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
@@ -103,7 +103,7 @@ impl nearly::NearlyEqUlps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<MotorOnOrigin, f32, f32> for MotorOnOrigin {}
@@ -128,7 +128,7 @@ impl nearly::NearlyOrdUlps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &MotorOnOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -150,7 +150,7 @@ impl nearly::NearlyOrdUlps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
@@ -173,7 +173,7 @@ impl nearly::NearlyOrdEps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &MotorOnOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -195,7 +195,7 @@ impl nearly::NearlyOrdEps<MotorOnOrigin, f32, f32> for MotorOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<MotorOnOrigin, f32, f32> for MotorOnOrigin {}
@@ -266,14 +266,14 @@ impl encase::ShaderType for MotorOnOrigin {
     type ExtraMetadata = <MotorOnOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <MotorOnOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <MotorOnOriginGroups as encase::ShaderType>::min_size();
+        <MotorOnOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <MotorOnOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <MotorOnOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <MotorOnOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

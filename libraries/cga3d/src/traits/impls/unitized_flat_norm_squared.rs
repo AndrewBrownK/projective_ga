@@ -31,9 +31,7 @@ impl UnitizedFlatNormSquared for AntiCircleRotor {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
         let wedge_g0 = self.group2().xyz();
-        return -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2))
-            - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2))
-            - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2));
+        -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2)) - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2)) - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2))
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -45,7 +43,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for AntiDipoleInversi
 impl UnitizedFlatNormSquared for AntiDipoleInversion {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e5], 2);
+        self[e415] * self[e415] * f32::powi(self[e5], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Circle {
@@ -57,7 +55,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Circle {
 impl UnitizedFlatNormSquared for Circle {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e235], 2);
+        self[e415] * self[e415] * f32::powi(self[e235], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -69,7 +67,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for CircleRotor {
 impl UnitizedFlatNormSquared for CircleRotor {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e235], 2);
+        self[e415] * self[e415] * f32::powi(self[e235], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Dipole {
@@ -85,9 +83,7 @@ impl UnitizedFlatNormSquared for Dipole {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
         let wedge_g0 = self.group2();
-        return -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2))
-            - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2))
-            - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2));
+        -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2)) - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2)) - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2))
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -102,7 +98,7 @@ impl UnitizedFlatNormSquared for DipoleInversion {
     // f32        0        3        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0;
+        self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for DualNum {
@@ -114,7 +110,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for DualNum {
 impl UnitizedFlatNormSquared for DualNum {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e5] * self[e5] * f32::powi(self[e12345], -2);
+        self[e5] * self[e5] * f32::powi(self[e12345], -2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for FlatPoint {
@@ -130,9 +126,7 @@ impl UnitizedFlatNormSquared for FlatPoint {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
         let wedge_g0 = self.group0().xyz();
-        return -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2))
-            - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2))
-            - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2));
+        -(wedge_g0[0] * wedge_g0[0] * f32::powi(self[e45], -2)) - (wedge_g0[1] * wedge_g0[1] * f32::powi(self[e45], -2)) - (wedge_g0[2] * wedge_g0[2] * f32::powi(self[e45], -2))
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Flector {
@@ -147,7 +141,7 @@ impl UnitizedFlatNormSquared for Flector {
     // f32        0        3        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0;
+        self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Line {
@@ -159,7 +153,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Line {
 impl UnitizedFlatNormSquared for Line {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e235], 2);
+        self[e415] * self[e415] * f32::powi(self[e235], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Motor {
@@ -171,7 +165,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Motor {
 impl UnitizedFlatNormSquared for Motor {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e5], 2);
+        self[e415] * self[e415] * f32::powi(self[e5], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for MultiVector {
@@ -182,7 +176,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for MultiVector {
 }
 impl UnitizedFlatNormSquared for MultiVector {
     fn unitized_flat_norm_squared(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Plane {
@@ -197,9 +191,7 @@ impl UnitizedFlatNormSquared for Plane {
     // f32        2        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return -(self[e4235] * self[e4235] * f32::powi(self[e3215], 2))
-            - (self[e4315] * self[e4315] * f32::powi(self[e3215], 2))
-            - (self[e4125] * self[e4125] * f32::powi(self[e3215], 2));
+        -(self[e4235] * self[e4235] * f32::powi(self[e3215], 2)) - (self[e4315] * self[e4315] * f32::powi(self[e3215], 2)) - (self[e4125] * self[e4125] * f32::powi(self[e3215], 2))
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Sphere {
@@ -214,9 +206,7 @@ impl UnitizedFlatNormSquared for Sphere {
     // f32        2        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return -(self[e4235] * self[e4235] * f32::powi(self[e3215], 2))
-            - (self[e4315] * self[e4315] * f32::powi(self[e3215], 2))
-            - (self[e4125] * self[e4125] * f32::powi(self[e3215], 2));
+        -(self[e4235] * self[e4235] * f32::powi(self[e3215], 2)) - (self[e4315] * self[e4315] * f32::powi(self[e3215], 2)) - (self[e4125] * self[e4125] * f32::powi(self[e3215], 2))
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for VersorEven {
@@ -228,7 +218,7 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for VersorEven {
 impl UnitizedFlatNormSquared for VersorEven {
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e415] * self[e415] * f32::powi(self[e5], 2);
+        self[e415] * self[e415] * f32::powi(self[e5], 2)
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -243,6 +233,6 @@ impl UnitizedFlatNormSquared for VersorOdd {
     // f32        0        3        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        return self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0;
+        self[e45] * self[e45] * Simd32x3::from(0.0).with_w(1.0).wwwx()[0] * self[e15] * -1.0
     }
 }

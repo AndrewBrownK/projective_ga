@@ -106,7 +106,7 @@ impl nearly::NearlyEqEps<AntiFlector, f32, f32> for AntiFlector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiFlector, f32, f32> for AntiFlector {
@@ -120,7 +120,7 @@ impl nearly::NearlyEqUlps<AntiFlector, f32, f32> for AntiFlector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiFlector, f32, f32> for AntiFlector {}
@@ -145,7 +145,7 @@ impl nearly::NearlyOrdUlps<AntiFlector, f32, f32> for AntiFlector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiFlector, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -167,7 +167,7 @@ impl nearly::NearlyOrdUlps<AntiFlector, f32, f32> for AntiFlector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiFlector, f32, f32> for AntiFlector {
@@ -190,7 +190,7 @@ impl nearly::NearlyOrdEps<AntiFlector, f32, f32> for AntiFlector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiFlector, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -212,7 +212,7 @@ impl nearly::NearlyOrdEps<AntiFlector, f32, f32> for AntiFlector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiFlector, f32, f32> for AntiFlector {}
@@ -283,14 +283,14 @@ impl encase::ShaderType for AntiFlector {
     type ExtraMetadata = <AntiFlectorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiFlectorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiFlectorGroups as encase::ShaderType>::min_size();
+        <AntiFlectorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiFlectorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiFlectorGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiFlectorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

@@ -30,10 +30,10 @@ impl CenterNormSquared for AntiCircleRotor {
     // f32        4        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar] - self[e45] * self[e45],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -48,10 +48,10 @@ impl CenterNormSquared for AntiDipoleInversion {
     // f32        6        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for Circle {
@@ -66,7 +66,7 @@ impl CenterNormSquared for Circle {
     // f32        3        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435])
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -81,10 +81,10 @@ impl CenterNormSquared for CircleRotor {
     // f32        4        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for Dipole {
@@ -99,7 +99,7 @@ impl CenterNormSquared for Dipole {
     // f32        3        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] - self[e45] * self[e45]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] - self[e45] * self[e45])
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -114,14 +114,14 @@ impl CenterNormSquared for DipoleInversion {
     // f32        6        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
                 - self[e45] * self[e45]
                 - self[e4235] * self[e4235]
                 - self[e4315] * self[e4315]
                 - self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for MultiVector {
@@ -136,7 +136,7 @@ impl CenterNormSquared for MultiVector {
     // f32       15        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[scalar] * self[scalar]
                 + self[e1] * self[e1]
@@ -154,7 +154,7 @@ impl CenterNormSquared for MultiVector {
                 - self[e4235] * self[e4235]
                 - self[e4315] * self[e4315]
                 - self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for VersorEven {
@@ -169,14 +169,14 @@ impl CenterNormSquared for VersorEven {
     // f32        7        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]
                 - self[e12345] * self[e12345]
                 - self[e415] * self[e415]
                 - self[e425] * self[e425]
                 - self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<CenterNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -191,13 +191,13 @@ impl CenterNormSquared for VersorOdd {
     // f32        7        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
                 - self[e45] * self[e45]
                 - self[e4235] * self[e4235]
                 - self[e4315] * self[e4315]
                 - self[e4125] * self[e4125],
-        );
+        )
     }
 }

@@ -31,7 +31,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiScalar {
 }
 impl AntiAutoMorphism for AntiScalar {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DualNum {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for DualNum {
 }
 impl AntiAutoMorphism for DualNum {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Flector {
@@ -67,12 +67,12 @@ impl AntiAutoMorphism for Flector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             self.group0() * Simd32x4::from(-1.0),
             // e423, e431, e412, e321
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Horizon {
@@ -92,7 +92,7 @@ impl AntiAutoMorphism for Horizon {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e321] * -1.0);
+        Horizon::from_groups(/* e321 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Line {
@@ -108,7 +108,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Line {
 }
 impl AntiAutoMorphism for Line {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Motor {
@@ -124,7 +124,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Motor {
 }
 impl AntiAutoMorphism for Motor {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MultiVector {
@@ -144,7 +144,7 @@ impl AntiAutoMorphism for MultiVector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0(),
             // e1, e2, e3, e4
@@ -155,7 +155,7 @@ impl AntiAutoMorphism for MultiVector {
             self.group3(),
             // e423, e431, e412, e321
             self.group4() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Origin {
@@ -175,7 +175,7 @@ impl AntiAutoMorphism for Origin {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Plane {
@@ -195,7 +195,7 @@ impl AntiAutoMorphism for Plane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Point {
@@ -215,7 +215,7 @@ impl AntiAutoMorphism for Point {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Scalar {
@@ -231,6 +231,6 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Scalar {
 }
 impl AntiAutoMorphism for Scalar {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }

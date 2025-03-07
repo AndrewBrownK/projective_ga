@@ -87,7 +87,7 @@ impl nearly::NearlyEqEps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
@@ -101,7 +101,7 @@ impl nearly::NearlyEqUlps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {}
@@ -126,7 +126,7 @@ impl nearly::NearlyOrdUlps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &DipoleOnOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -148,7 +148,7 @@ impl nearly::NearlyOrdUlps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
@@ -171,7 +171,7 @@ impl nearly::NearlyOrdEps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &DipoleOnOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -193,7 +193,7 @@ impl nearly::NearlyOrdEps<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<DipoleOnOrigin, f32, f32> for DipoleOnOrigin {}
@@ -264,14 +264,14 @@ impl encase::ShaderType for DipoleOnOrigin {
     type ExtraMetadata = <DipoleOnOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <DipoleOnOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <DipoleOnOriginGroups as encase::ShaderType>::min_size();
+        <DipoleOnOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <DipoleOnOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <DipoleOnOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <DipoleOnOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

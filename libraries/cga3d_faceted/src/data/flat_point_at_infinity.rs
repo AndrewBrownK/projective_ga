@@ -86,7 +86,7 @@ impl nearly::NearlyEqEps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity 
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity {
@@ -100,7 +100,7 @@ impl nearly::NearlyEqUlps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity {}
@@ -125,7 +125,7 @@ impl nearly::NearlyOrdUlps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinit
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &FlatPointAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -147,7 +147,7 @@ impl nearly::NearlyOrdUlps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinit
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity {
@@ -170,7 +170,7 @@ impl nearly::NearlyOrdEps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &FlatPointAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -192,7 +192,7 @@ impl nearly::NearlyOrdEps<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<FlatPointAtInfinity, f32, f32> for FlatPointAtInfinity {}
@@ -263,14 +263,14 @@ impl encase::ShaderType for FlatPointAtInfinity {
     type ExtraMetadata = <FlatPointAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <FlatPointAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <FlatPointAtInfinityGroups as encase::ShaderType>::min_size();
+        <FlatPointAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <FlatPointAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <FlatPointAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <FlatPointAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

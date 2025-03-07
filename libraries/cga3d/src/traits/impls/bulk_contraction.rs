@@ -39,7 +39,7 @@ impl BulkContraction<AntiCircleRotor> for AntiCircleRotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -58,7 +58,7 @@ impl BulkContraction<AntiCircleRotor> for AntiCircleRotor {
                     - (right_dual_g2[1] * self[e42])
                     - (right_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiCircleRotor {
@@ -75,7 +75,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiCircleRotor {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g3[2] * self[e31]) + (right_dual_g3[3] * self[e41]),
@@ -86,7 +86,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiCircleRotor {
                 - (self.group2().xyz() * right_dual_g2.www()).with_w(right_dual_g3[1] * self[e42]),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiCircleRotor {
@@ -100,14 +100,14 @@ impl BulkContraction<AntiDualNum> for AntiCircleRotor {
     //  no simd        0       11        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(other[scalar]) * self.group1(),
             // e15, e25, e35, scalar
             Simd32x4::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for AntiCircleRotor {
@@ -122,7 +122,7 @@ impl BulkContraction<AntiFlector> for AntiCircleRotor {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g1[2] * self[e31]) + (right_dual_g1[3] * self[e41]),
@@ -132,7 +132,7 @@ impl BulkContraction<AntiFlector> for AntiCircleRotor {
             ]) - (right_dual_g1.yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (right_dual_g1[0] * self[e15]) + (right_dual_g1[1] * self[e25]) + (right_dual_g1[2] * self[e35]) + (right_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiCircleRotor {
@@ -148,7 +148,7 @@ impl BulkContraction<AntiLine> for AntiCircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e23])
                 - (right_dual_g0[1] * self[e31])
@@ -156,7 +156,7 @@ impl BulkContraction<AntiLine> for AntiCircleRotor {
                 - (right_dual_g1[0] * self[e41])
                 - (right_dual_g1[1] * self[e42])
                 - (right_dual_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiCircleRotor {
@@ -173,7 +173,7 @@ impl BulkContraction<AntiMotor> for AntiCircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -188,7 +188,7 @@ impl BulkContraction<AntiMotor> for AntiCircleRotor {
                     - (right_dual_g1[1] * self[e42])
                     - (right_dual_g1[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiCircleRotor {
@@ -203,7 +203,7 @@ impl BulkContraction<AntiPlane> for AntiCircleRotor {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e31]) + (right_dual_g0[3] * self[e41]),
@@ -213,7 +213,7 @@ impl BulkContraction<AntiPlane> for AntiCircleRotor {
             ]) - (right_dual_g0.yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiCircleRotor {
@@ -231,7 +231,7 @@ impl BulkContraction<Dipole> for AntiCircleRotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -243,7 +243,7 @@ impl BulkContraction<Dipole> for AntiCircleRotor {
                 - (right_dual_g1[1] * self[e31])
                 - (right_dual_g1[2] * self[e12])
                 - (right_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiCircleRotor {
@@ -261,7 +261,7 @@ impl BulkContraction<DipoleInversion> for AntiCircleRotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -273,7 +273,7 @@ impl BulkContraction<DipoleInversion> for AntiCircleRotor {
                 - (right_dual_g2[0] * self[e41])
                 - (right_dual_g2[1] * self[e42])
                 - (right_dual_g2[2] * self[e43]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for AntiCircleRotor {
@@ -287,7 +287,7 @@ impl BulkContraction<DualNum> for AntiCircleRotor {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]))
     }
 }
 impl BulkContraction<FlatPoint> for AntiCircleRotor {
@@ -302,10 +302,10 @@ impl BulkContraction<FlatPoint> for AntiCircleRotor {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e41]) - (right_dual_g0[1] * self[e42]) - (right_dual_g0[2] * self[e43]) - (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for AntiCircleRotor {
@@ -320,10 +320,10 @@ impl BulkContraction<Flector> for AntiCircleRotor {
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e41]) - (right_dual_g0[1] * self[e42]) - (right_dual_g0[2] * self[e43]) - (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for AntiCircleRotor {
@@ -337,7 +337,7 @@ impl BulkContraction<Motor> for AntiCircleRotor {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]))
     }
 }
 impl BulkContraction<MultiVector> for AntiCircleRotor {
@@ -359,7 +359,7 @@ impl BulkContraction<MultiVector> for AntiCircleRotor {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[1] * self[scalar])
@@ -401,7 +401,7 @@ impl BulkContraction<MultiVector> for AntiCircleRotor {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiCircleRotor {
@@ -418,7 +418,7 @@ impl BulkContraction<RoundPoint> for AntiCircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e31]) + (right_dual_g0[3] * self[e41]),
@@ -429,7 +429,7 @@ impl BulkContraction<RoundPoint> for AntiCircleRotor {
                 - (Simd32x3::from(right_dual_g1) * self.group2().xyz()).with_w(right_dual_g0[1] * self[e42]),
             // e5
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiCircleRotor {
@@ -443,14 +443,14 @@ impl BulkContraction<Scalar> for AntiCircleRotor {
     //  no simd        0       11        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(other[scalar]) * self.group1(),
             // e15, e25, e35, scalar
             Simd32x4::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for AntiCircleRotor {
@@ -467,7 +467,7 @@ impl BulkContraction<VersorEven> for AntiCircleRotor {
         use crate::elements::*;
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g3[2] * self[e31]) + (right_dual_g3[3] * self[e41]),
@@ -478,7 +478,7 @@ impl BulkContraction<VersorEven> for AntiCircleRotor {
                 - (self.group2().xyz() * right_dual_g2.www()).with_w(right_dual_g3[1] * self[e42]),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiCircleRotor {
@@ -496,7 +496,7 @@ impl BulkContraction<VersorOdd> for AntiCircleRotor {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -515,7 +515,7 @@ impl BulkContraction<VersorOdd> for AntiCircleRotor {
                     - (right_dual_g2[1] * self[e42])
                     - (right_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiDipoleInversion {
@@ -539,7 +539,7 @@ impl BulkContraction<AntiCircleRotor> for AntiDipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -563,7 +563,7 @@ impl BulkContraction<AntiCircleRotor> for AntiDipoleInversion {
             ]) + (right_dual_g2.yzxw() * self.group0().zxy().with_w(self[e5]))
                 - (right_dual_g2.zxyx() * self.group0().yzx().with_w(self[e415]))
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g2[1] * self[e425]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiDipoleInversion {
@@ -581,7 +581,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiDipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g2[3]) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g3.yzx()) - (self.group0().yzx() * right_dual_g3.zxy()),
             // e23, e31, e12, e45
@@ -607,7 +607,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiDipoleInversion {
                         - (other[e412] * self[e125]),
                 )
                 - (right_dual_g3.yzx() * self.group2().zxy()).with_w(right_dual_g2[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiDipoleInversion {
@@ -621,7 +621,7 @@ impl BulkContraction<AntiDualNum> for AntiDipoleInversion {
     //  no simd        0       15        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
@@ -630,7 +630,7 @@ impl BulkContraction<AntiDualNum> for AntiDipoleInversion {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e1, e2, e3, e5
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiDipoleInversion {
@@ -645,10 +645,10 @@ impl BulkContraction<AntiFlatPoint> for AntiDipoleInversion {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for AntiDipoleInversion {
@@ -665,7 +665,7 @@ impl BulkContraction<AntiFlector> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (self.group0().zxy() * right_dual_g1.yzx()) - (self.group0().yzx() * right_dual_g1.zxy()),
             // e23, e31, e12, e45
@@ -680,7 +680,7 @@ impl BulkContraction<AntiFlector> for AntiDipoleInversion {
                         - (right_dual_g0[3] * self[e321]),
                 )
                 - (right_dual_g1.yzx() * self.group2().zxy()).with_w(right_dual_g0[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiDipoleInversion {
@@ -697,7 +697,7 @@ impl BulkContraction<AntiLine> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[0] * self[e321]) + (right_dual_g1[1] * self[e412]),
@@ -712,7 +712,7 @@ impl BulkContraction<AntiLine> for AntiDipoleInversion {
                 - (right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
                 - (right_dual_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiDipoleInversion {
@@ -729,7 +729,7 @@ impl BulkContraction<AntiMotor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -749,7 +749,7 @@ impl BulkContraction<AntiMotor> for AntiDipoleInversion {
                     - (right_dual_g1[2] * self[e435]),
             ]) + (self.group0().zxy() * right_dual_g1.yzx()).with_w(right_dual_g0[3] * self[e5])
                 - (right_dual_g1.zxyx() * self.group0().yzx().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiDipoleInversion {
@@ -765,7 +765,7 @@ impl BulkContraction<AntiPlane> for AntiDipoleInversion {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
@@ -774,7 +774,7 @@ impl BulkContraction<AntiPlane> for AntiDipoleInversion {
             (Simd32x4::from(right_dual_g0[3]) * self.group1().xyz().with_w(self[e4]))
                 + (right_dual_g0.zxyx() * self.group2().yzx().with_w(self[e1]))
                 + (right_dual_g0.yzx() * self.group2().zxy() * Simd32x3::from(-1.0)).with_w((right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for AntiDipoleInversion {
@@ -789,7 +789,7 @@ impl BulkContraction<Circle> for AntiDipoleInversion {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -801,7 +801,7 @@ impl BulkContraction<Circle> for AntiDipoleInversion {
                 - (self[e235] * other[e423])
                 - (self[e315] * other[e431])
                 - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for AntiDipoleInversion {
@@ -817,7 +817,7 @@ impl BulkContraction<CircleRotor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -829,7 +829,7 @@ impl BulkContraction<CircleRotor> for AntiDipoleInversion {
                 - (self[e235] * other[e423])
                 - (self[e315] * other[e431])
                 - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiDipoleInversion {
@@ -847,7 +847,7 @@ impl BulkContraction<Dipole> for AntiDipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g2[1] * self[e412]) + (right_dual_g1[0] * self[e321]) + (right_dual_g1[3] * self[e415]),
@@ -863,7 +863,7 @@ impl BulkContraction<Dipole> for AntiDipoleInversion {
                 - (right_dual_g1[0] * self[e235])
                 - (right_dual_g1[1] * self[e315])
                 - (right_dual_g1[2] * self[e125]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiDipoleInversion {
@@ -881,7 +881,7 @@ impl BulkContraction<DipoleInversion> for AntiDipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]) + (right_dual_g1[3] * self[e415]) + (right_dual_g2[1] * self[e412]),
@@ -897,7 +897,7 @@ impl BulkContraction<DipoleInversion> for AntiDipoleInversion {
                 - (right_dual_g2[0] * self[e415])
                 - (right_dual_g2[1] * self[e425])
                 - (right_dual_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for AntiDipoleInversion {
@@ -913,12 +913,12 @@ impl BulkContraction<DualNum> for AntiDipoleInversion {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(right_dual_g0[0]) * self.group0().with_w(self[e4]),
             // e15, e25, e35, e3215
             (self.group1().xyz() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for AntiDipoleInversion {
@@ -933,7 +933,7 @@ impl BulkContraction<FlatPoint> for AntiDipoleInversion {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[1] * self[e412]) + (right_dual_g0[3] * self[e415]),
@@ -941,7 +941,7 @@ impl BulkContraction<FlatPoint> for AntiDipoleInversion {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for AntiDipoleInversion {
@@ -956,7 +956,7 @@ impl BulkContraction<Flector> for AntiDipoleInversion {
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[1] * self[e412]) + (right_dual_g0[3] * self[e415]),
@@ -964,7 +964,7 @@ impl BulkContraction<Flector> for AntiDipoleInversion {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for AntiDipoleInversion {
@@ -974,7 +974,7 @@ impl BulkContraction<Line> for AntiDipoleInversion {
     // f32        5        6        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(self[e423] * other[e235])
                 - (self[e431] * other[e315])
@@ -982,7 +982,7 @@ impl BulkContraction<Line> for AntiDipoleInversion {
                 - (self[e415] * other[e415])
                 - (self[e425] * other[e425])
                 - (self[e435] * other[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for AntiDipoleInversion {
@@ -999,7 +999,7 @@ impl BulkContraction<Motor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g1[3]) * self.group0()).with_w(
                 (right_dual_g1[3] * self[e4])
@@ -1012,7 +1012,7 @@ impl BulkContraction<Motor> for AntiDipoleInversion {
             ),
             // e15, e25, e35, e3215
             (self.group1().xyz() * right_dual_g1.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiDipoleInversion {
@@ -1034,7 +1034,7 @@ impl BulkContraction<MultiVector> for AntiDipoleInversion {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g10 * self[e5])
@@ -1092,7 +1092,7 @@ impl BulkContraction<MultiVector> for AntiDipoleInversion {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiDipoleInversion {
@@ -1109,7 +1109,7 @@ impl BulkContraction<RoundPoint> for AntiDipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g1) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
@@ -1124,7 +1124,7 @@ impl BulkContraction<RoundPoint> for AntiDipoleInversion {
                 + (right_dual_g0.zxyx() * self.group2().yzx().with_w(self[e1]))
                 + (right_dual_g0.yzx() * self.group2().zxy() * Simd32x3::from(-1.0))
                     .with_w((right_dual_g1 * self[e5]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiDipoleInversion {
@@ -1138,7 +1138,7 @@ impl BulkContraction<Scalar> for AntiDipoleInversion {
     //  no simd        0       15        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
@@ -1147,7 +1147,7 @@ impl BulkContraction<Scalar> for AntiDipoleInversion {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e1, e2, e3, e5
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for AntiDipoleInversion {
@@ -1166,7 +1166,7 @@ impl BulkContraction<VersorEven> for AntiDipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g2[3]) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g3.yzx()) - (self.group0().yzx() * right_dual_g3.zxy()),
             // e23, e31, e12, e45
@@ -1192,7 +1192,7 @@ impl BulkContraction<VersorEven> for AntiDipoleInversion {
                         - (right_dual_g2[2] * self[e412]),
                 )
                 - (right_dual_g3.yzx() * self.group2().zxy()).with_w(right_dual_g2[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiDipoleInversion {
@@ -1210,7 +1210,7 @@ impl BulkContraction<VersorOdd> for AntiDipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -1234,7 +1234,7 @@ impl BulkContraction<VersorOdd> for AntiDipoleInversion {
             ]) + (self.group0().zxy() * right_dual_g2.yzx()).with_w(right_dual_g0[3] * self[e5])
                 - (right_dual_g2.zxyx() * self.group0().yzx().with_w(self[e415]))
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g2[1] * self[e425]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiDualNum {
@@ -1255,12 +1255,12 @@ impl BulkContraction<AntiCircleRotor> for AntiDualNum {
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group0().xx().with_zw(self[e3215], self[scalar]) * (other.group0() * Simd32x3::from(-1.0)).with_w(right_dual_g2[3]),
             // e15, e25, e35, e3215
             Simd32x4::from(self[e3215]) * (other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(right_dual_g2[3]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiDualNum {
@@ -1274,12 +1274,12 @@ impl BulkContraction<AntiDipoleInversion> for AntiDualNum {
     //  no simd        0       22        0
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * (other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(other[e4] * -1.0) * Simd32x4::from(-1.0),
             // e1, e2, e3, e5
             Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiDualNum {
@@ -1290,7 +1290,7 @@ impl BulkContraction<AntiDualNum> for AntiDualNum {
     // no simd        0        2        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[scalar]) * self.group0());
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiDualNum {
@@ -1304,7 +1304,7 @@ impl BulkContraction<AntiFlatPoint> for AntiDualNum {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e321] * -1.0, 1.0]) * Simd32x2::from([-1.0, 0.0]));
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e321] * -1.0, 1.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl BulkContraction<AntiFlector> for AntiDualNum {
@@ -1319,12 +1319,12 @@ impl BulkContraction<AntiFlector> for AntiDualNum {
     //  no simd        0       16        0
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             ((other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(self[e3215] * other[e321] * -1.0) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiDualNum {
@@ -1338,10 +1338,10 @@ impl BulkContraction<AntiLine> for AntiDualNum {
     //  no simd        0        6        0
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             (Simd32x3::from([other[e23] * -1.0, other[e31] * -1.0, other[e12] * -1.0]) * self.group0().xx().with_z(self[e3215])).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiDualNum {
@@ -1356,12 +1356,12 @@ impl BulkContraction<AntiMotor> for AntiDualNum {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(right_dual_g0[3] * self[scalar]),
             // e15, e25, e35, e3215
             right_dual_g0 * Simd32x4::from(self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiDualNum {
@@ -1372,10 +1372,10 @@ impl BulkContraction<AntiPlane> for AntiDualNum {
     // no simd        0        6        0
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             (other.group0().xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for AntiDualNum {
@@ -1389,7 +1389,7 @@ impl BulkContraction<Circle> for AntiDualNum {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0))
     }
 }
 impl BulkContraction<CircleRotor> for AntiDualNum {
@@ -1403,7 +1403,7 @@ impl BulkContraction<CircleRotor> for AntiDualNum {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0))
     }
 }
 impl BulkContraction<Dipole> for AntiDualNum {
@@ -1417,12 +1417,12 @@ impl BulkContraction<Dipole> for AntiDualNum {
     //  no simd        0       13        0
     fn bulk_contraction(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[e3215]) * other.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             Simd32x3::from(self[e3215]) * (other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz(),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiDualNum {
@@ -1436,12 +1436,12 @@ impl BulkContraction<DipoleInversion> for AntiDualNum {
     //  no simd        0       14        0
     fn bulk_contraction(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(self[e3215]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e1234]),
             // e15, e25, e35, e3215
             ((other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz() * self.group0().xx().with_z(self[e3215])).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiDualNum {
@@ -1458,7 +1458,7 @@ impl BulkContraction<MultiVector> for AntiDualNum {
     fn bulk_contraction(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(right_dual_g0[1] * self[scalar]) + (self[e3215] * other[e1234]), 0.0]),
             // e1, e2, e3, e4
@@ -1481,7 +1481,7 @@ impl BulkContraction<MultiVector> for AntiDualNum {
             Simd32x3::from(0.0).with_w(right_dual_g0[1] * self[e3215]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiDualNum {
@@ -1495,10 +1495,10 @@ impl BulkContraction<RoundPoint> for AntiDualNum {
     //  no simd        0       13        0
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * (other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(other[e4] * -1.0) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiDualNum {
@@ -1509,7 +1509,7 @@ impl BulkContraction<Scalar> for AntiDualNum {
     // no simd        0        2        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[scalar]) * self.group0());
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<Sphere> for AntiDualNum {
@@ -1519,7 +1519,7 @@ impl BulkContraction<Sphere> for AntiDualNum {
     // f32        0        1        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e3215] * other[e1234]);
+        Scalar::from_groups(/* scalar */ self[e3215] * other[e1234])
     }
 }
 impl BulkContraction<VersorEven> for AntiDualNum {
@@ -1533,12 +1533,12 @@ impl BulkContraction<VersorEven> for AntiDualNum {
     //  no simd        0       26        0
     fn bulk_contraction(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * (other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(other[e4] * -1.0) * Simd32x4::from(-1.0),
             // e1, e2, e3, e5
             Simd32x4::from(self[e3215]) * (other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiDualNum {
@@ -1553,12 +1553,12 @@ impl BulkContraction<VersorOdd> for AntiDualNum {
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group0().xx().with_zw(self[e3215], (right_dual_g0[3] * self[scalar]) + (self[e3215] * other[e1234])) * right_dual_g0.xyz().with_w(1.0),
             // e15, e25, e35, e3215
             Simd32x4::from(self[e3215]) * (other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiFlatPoint {
@@ -1581,7 +1581,7 @@ impl BulkContraction<AntiCircleRotor> for AntiFlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(other[scalar]) * self.group0(),
             // e1, e2, e3, e5
@@ -1591,7 +1591,7 @@ impl BulkContraction<AntiCircleRotor> for AntiFlatPoint {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group0().zxy()).with_w(right_dual_g1[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiFlatPoint {
@@ -1607,13 +1607,13 @@ impl BulkContraction<AntiDipoleInversion> for AntiFlatPoint {
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((self.group0().xyz() * (other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).www()) - (right_dual_g3.xyz() * self.group0().www()))
                 .with_w((other[e321] * self[e321]) - (other[e423] * self[e235]) - (other[e431] * self[e315]) - (other[e412] * self[e125])),
             // e15, e25, e35, e3215
             ((right_dual_g3.zxy() * self.group0().yzx()) - (right_dual_g3.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiFlatPoint {
@@ -1624,7 +1624,7 @@ impl BulkContraction<AntiDualNum> for AntiFlatPoint {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiFlatPoint {
@@ -1634,7 +1634,7 @@ impl BulkContraction<AntiFlatPoint> for AntiFlatPoint {
     // f32        0        1        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl BulkContraction<AntiFlector> for AntiFlatPoint {
@@ -1650,12 +1650,12 @@ impl BulkContraction<AntiFlector> for AntiFlatPoint {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(self[e321]) * right_dual_g1.xyz().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0),
             // e15, e25, e35, e3215
             ((right_dual_g1.zxy() * self.group0().yzx()) - (right_dual_g1.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiFlatPoint {
@@ -1670,10 +1670,10 @@ impl BulkContraction<AntiLine> for AntiFlatPoint {
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (right_dual_g0 * Simd32x3::from(self[e321])).with_w(-(right_dual_g0[0] * self[e235]) - (right_dual_g0[1] * self[e315]) - (right_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiFlatPoint {
@@ -1689,12 +1689,12 @@ impl BulkContraction<AntiMotor> for AntiFlatPoint {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
             // e1, e2, e3, e5
             (right_dual_g0.xyz() * self.group0().www()).with_w(-(right_dual_g0[0] * self[e235]) - (right_dual_g0[1] * self[e315]) - (right_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiFlatPoint {
@@ -1709,12 +1709,12 @@ impl BulkContraction<AntiPlane> for AntiFlatPoint {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[e321]) * right_dual_g0.xyz() * Simd32x3::from(-1.0),
             // e15, e25, e35
             (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for AntiFlatPoint {
@@ -1724,10 +1724,10 @@ impl BulkContraction<Circle> for AntiFlatPoint {
     // f32        3        4        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for AntiFlatPoint {
@@ -1737,10 +1737,10 @@ impl BulkContraction<CircleRotor> for AntiFlatPoint {
     // f32        3        4        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiFlatPoint {
@@ -1757,7 +1757,7 @@ impl BulkContraction<Dipole> for AntiFlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]),
@@ -1765,7 +1765,7 @@ impl BulkContraction<Dipole> for AntiFlatPoint {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group0().zxy()).with_w(right_dual_g1[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiFlatPoint {
@@ -1782,7 +1782,7 @@ impl BulkContraction<DipoleInversion> for AntiFlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]),
@@ -1790,7 +1790,7 @@ impl BulkContraction<DipoleInversion> for AntiFlatPoint {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiFlatPoint {
@@ -1810,7 +1810,7 @@ impl BulkContraction<MultiVector> for AntiFlatPoint {
         let right_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]), 0.0]),
             // e1, e2, e3, e4
@@ -1834,7 +1834,7 @@ impl BulkContraction<MultiVector> for AntiFlatPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiFlatPoint {
@@ -1850,12 +1850,12 @@ impl BulkContraction<RoundPoint> for AntiFlatPoint {
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             (Simd32x3::from(other[e4] * -1.0) * self.group0().xyz()) - (Simd32x3::from(self[e321]) * right_dual_g0.xyz()),
             // e15, e25, e35
             (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiFlatPoint {
@@ -1866,7 +1866,7 @@ impl BulkContraction<Scalar> for AntiFlatPoint {
     // no simd        0        4        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<VersorEven> for AntiFlatPoint {
@@ -1883,14 +1883,14 @@ impl BulkContraction<VersorEven> for AntiFlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (self.group0().xyz() * (other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).www())
                 .with_w((self[e321] * other[e321]) - (right_dual_g0[1] * self[e315]) - (right_dual_g0[2] * self[e125]))
                 - (self.group0().wwwx() * right_dual_g3.xyz().with_w(right_dual_g0[0])),
             // e15, e25, e35, e3215
             ((right_dual_g3.zxy() * self.group0().yzx()) - (right_dual_g3.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiFlatPoint {
@@ -1906,7 +1906,7 @@ impl BulkContraction<VersorOdd> for AntiFlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
             // e1, e2, e3, e5
@@ -1916,7 +1916,7 @@ impl BulkContraction<VersorOdd> for AntiFlatPoint {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiFlector {
@@ -1940,7 +1940,7 @@ impl BulkContraction<AntiCircleRotor> for AntiFlector {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g2[3]) * self.group0(),
             // e1, e2, e3, e5
@@ -1951,7 +1951,7 @@ impl BulkContraction<AntiCircleRotor> for AntiFlector {
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) + (right_dual_g0.zxy() * self.group0().yzx()).with_w(right_dual_g2[3] * self[e5])
                 - (right_dual_g0.yzx() * self.group0().zxy()).with_w(right_dual_g1[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiFlector {
@@ -1968,7 +1968,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiFlector {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(
                 (right_dual_g2[3] * self[e5]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) + (other[e321] * self[e321])
@@ -1978,7 +1978,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiFlector {
                 - (right_dual_g3.xyz() * self.group0().www()).with_w(other[e423] * self[e235]),
             // e15, e25, e35, e3215
             ((right_dual_g3.zxy() * self.group0().yzx()) - (right_dual_g3.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiFlector {
@@ -1989,12 +1989,12 @@ impl BulkContraction<AntiDualNum> for AntiFlector {
     // no simd        0        8        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(other[scalar]) * self.group0(),
             // e1, e2, e3, e5
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiFlector {
@@ -2004,7 +2004,7 @@ impl BulkContraction<AntiFlatPoint> for AntiFlector {
     // f32        0        1        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl BulkContraction<AntiFlector> for AntiFlector {
@@ -2020,13 +2020,13 @@ impl BulkContraction<AntiFlector> for AntiFlector {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (right_dual_g1.xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w((right_dual_g1[0] * self[e1]) + (right_dual_g1[1] * self[e2]) + (right_dual_g1[2] * self[e3]) + (other[e321] * self[e321])),
             // e15, e25, e35, e3215
             ((right_dual_g1.zxy() * self.group0().yzx()) - (right_dual_g1.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiFlector {
@@ -2041,10 +2041,10 @@ impl BulkContraction<AntiLine> for AntiFlector {
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (right_dual_g0 * Simd32x3::from(self[e321])).with_w(-(right_dual_g0[0] * self[e235]) - (right_dual_g0[1] * self[e315]) - (right_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiFlector {
@@ -2060,13 +2060,13 @@ impl BulkContraction<AntiMotor> for AntiFlector {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
             // e1, e2, e3, e5
             (right_dual_g0 * self.group0().www().with_w(self[e5]))
                 + (self.group1().xyz() * right_dual_g0.www()).with_w(-(right_dual_g0[0] * self[e235]) - (right_dual_g0[1] * self[e315]) - (right_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiFlector {
@@ -2082,13 +2082,13 @@ impl BulkContraction<AntiPlane> for AntiFlector {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (right_dual_g0.xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w((right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3])),
             // e15, e25, e35, e3215
             ((right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for AntiFlector {
@@ -2098,10 +2098,10 @@ impl BulkContraction<Circle> for AntiFlector {
     // f32        3        4        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for AntiFlector {
@@ -2111,10 +2111,10 @@ impl BulkContraction<CircleRotor> for AntiFlector {
     // f32        3        4        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiFlector {
@@ -2131,7 +2131,7 @@ impl BulkContraction<Dipole> for AntiFlector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]),
@@ -2139,7 +2139,7 @@ impl BulkContraction<Dipole> for AntiFlector {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group0().zxy()).with_w(right_dual_g1[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiFlector {
@@ -2156,7 +2156,7 @@ impl BulkContraction<DipoleInversion> for AntiFlector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]),
@@ -2164,7 +2164,7 @@ impl BulkContraction<DipoleInversion> for AntiFlector {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[2] * self[e321]),
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiFlector {
@@ -2185,7 +2185,7 @@ impl BulkContraction<MultiVector> for AntiFlector {
         let right_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g10 * self[e5]) + (right_dual_g9[0] * self[e1]) + (right_dual_g9[1] * self[e2]) + (right_dual_g9[2] * self[e3]) + (self[e321] * other[e321])
@@ -2217,7 +2217,7 @@ impl BulkContraction<MultiVector> for AntiFlector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiFlector {
@@ -2234,7 +2234,7 @@ impl BulkContraction<RoundPoint> for AntiFlector {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x4::from([self[e321], self[e321], self[e321], 1.0])
                 * right_dual_g0.xyz().with_w((right_dual_g1 * self[e5]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]))
@@ -2242,7 +2242,7 @@ impl BulkContraction<RoundPoint> for AntiFlector {
                 + (Simd32x3::from(right_dual_g1) * self.group0().xyz()).with_w(right_dual_g0[0] * self[e1]),
             // e15, e25, e35, e3215
             ((right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiFlector {
@@ -2253,12 +2253,12 @@ impl BulkContraction<Scalar> for AntiFlector {
     // no simd        0        8        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(other[scalar]) * self.group0(),
             // e1, e2, e3, e5
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for AntiFlector {
@@ -2276,7 +2276,7 @@ impl BulkContraction<VersorEven> for AntiFlector {
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(
                 (right_dual_g2[3] * self[e5]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) + (self[e321] * other[e321])
@@ -2286,7 +2286,7 @@ impl BulkContraction<VersorEven> for AntiFlector {
                 - (self.group0().wwwx() * right_dual_g3.xyz().with_w(right_dual_g0[0])),
             // e15, e25, e35, e3215
             ((right_dual_g3.zxy() * self.group0().yzx()) - (right_dual_g3.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiFlector {
@@ -2302,7 +2302,7 @@ impl BulkContraction<VersorOdd> for AntiFlector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
             // e1, e2, e3, e5
@@ -2313,7 +2313,7 @@ impl BulkContraction<VersorOdd> for AntiFlector {
                 -(right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) + (right_dual_g0.zxyw() * self.group0().yzx().with_w(self[e5]))
                 - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiLine {
@@ -2337,7 +2337,7 @@ impl BulkContraction<AntiCircleRotor> for AntiLine {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g2[3]) * self.group0()).with_w(
                 -(right_dual_g0[0] * self[e15])
@@ -2349,7 +2349,7 @@ impl BulkContraction<AntiCircleRotor> for AntiLine {
             ),
             // e15, e25, e35, e3215
             (self.group1() * right_dual_g2.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiLine {
@@ -2365,7 +2365,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiLine {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 -(right_dual_g2[3] * self[e15]) - (right_dual_g3[1] * self[e12]),
@@ -2373,7 +2373,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiLine {
                 -(right_dual_g2[3] * self[e35]) - (right_dual_g3[0] * self[e31]),
                 (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]),
             ]) + (right_dual_g3.zxyx() * self.group0().yzx().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiLine {
@@ -2384,12 +2384,12 @@ impl BulkContraction<AntiDualNum> for AntiLine {
     // no simd        0        6        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(other[scalar]) * self.group0(),
             // e15, e25, e35
             Simd32x3::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for AntiLine {
@@ -2405,11 +2405,11 @@ impl BulkContraction<AntiFlector> for AntiLine {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (right_dual_g1.zxyx() * self.group0().yzx().with_w(self[e15]))
                 + (self.group0().zxy() * right_dual_g1.yzx() * Simd32x3::from(-1.0)).with_w((right_dual_g1[1] * self[e25]) + (right_dual_g1[2] * self[e35])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiLine {
@@ -2424,7 +2424,7 @@ impl BulkContraction<AntiLine> for AntiLine {
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(/* scalar */ -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]));
+        Scalar::from_groups(/* scalar */ -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]))
     }
 }
 impl BulkContraction<AntiMotor> for AntiLine {
@@ -2440,12 +2440,12 @@ impl BulkContraction<AntiMotor> for AntiLine {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g0[3]) * self.group0()).with_w(-(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12])),
             // e15, e25, e35, e3215
             (self.group1() * right_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiLine {
@@ -2461,11 +2461,11 @@ impl BulkContraction<AntiPlane> for AntiLine {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e15]))
                 + (self.group0().zxy() * right_dual_g0.yzx() * Simd32x3::from(-1.0)).with_w((right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35])),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiLine {
@@ -2482,7 +2482,7 @@ impl BulkContraction<Dipole> for AntiLine {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -2490,7 +2490,7 @@ impl BulkContraction<Dipole> for AntiLine {
                 - (right_dual_g1[0] * self[e23])
                 - (right_dual_g1[1] * self[e31])
                 - (right_dual_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiLine {
@@ -2507,7 +2507,7 @@ impl BulkContraction<DipoleInversion> for AntiLine {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -2515,7 +2515,7 @@ impl BulkContraction<DipoleInversion> for AntiLine {
                 - (right_dual_g1[0] * self[e23])
                 - (right_dual_g1[1] * self[e31])
                 - (right_dual_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiLine {
@@ -2535,7 +2535,7 @@ impl BulkContraction<MultiVector> for AntiLine {
         let right_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g7[0] * self[e15])
@@ -2568,7 +2568,7 @@ impl BulkContraction<MultiVector> for AntiLine {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiLine {
@@ -2584,7 +2584,7 @@ impl BulkContraction<RoundPoint> for AntiLine {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 -(right_dual_g1 * self[e15]) - (right_dual_g0[1] * self[e12]),
@@ -2592,7 +2592,7 @@ impl BulkContraction<RoundPoint> for AntiLine {
                 -(right_dual_g1 * self[e35]) - (right_dual_g0[0] * self[e31]),
                 (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]),
             ]) + (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiLine {
@@ -2603,12 +2603,12 @@ impl BulkContraction<Scalar> for AntiLine {
     // no simd        0        6        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(other[scalar]) * self.group0(),
             // e15, e25, e35
             Simd32x3::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for AntiLine {
@@ -2624,7 +2624,7 @@ impl BulkContraction<VersorEven> for AntiLine {
         use crate::elements::*;
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 -(right_dual_g2[3] * self[e15]) - (right_dual_g3[1] * self[e12]),
@@ -2632,7 +2632,7 @@ impl BulkContraction<VersorEven> for AntiLine {
                 -(right_dual_g2[3] * self[e35]) - (right_dual_g3[0] * self[e31]),
                 (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]),
             ]) + (right_dual_g3.zxyx() * self.group0().yzx().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiLine {
@@ -2649,7 +2649,7 @@ impl BulkContraction<VersorOdd> for AntiLine {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g0[3]) * self.group0()).with_w(
                 -(right_dual_g0[0] * self[e15])
@@ -2661,7 +2661,7 @@ impl BulkContraction<VersorOdd> for AntiLine {
             ),
             // e15, e25, e35, e3215
             (self.group1() * right_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiMotor {
@@ -2685,7 +2685,7 @@ impl BulkContraction<AntiCircleRotor> for AntiMotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((right_dual_g0 * self.group1().www()) + (self.group0().xyz() * right_dual_g2.www())).with_w(
                 (right_dual_g2[3] * self[scalar])
@@ -2698,7 +2698,7 @@ impl BulkContraction<AntiCircleRotor> for AntiMotor {
             ),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g2[3]) * self.group1().xyz()) + (Simd32x3::from(self[e3215]) * right_dual_g1.xyz())).with_w(right_dual_g2[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiMotor {
@@ -2715,7 +2715,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiMotor {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * right_dual_g3.xyz().with_w(right_dual_g2[3]) * Simd32x4::from(-1.0),
             // e1, e2, e3, e5
@@ -2726,7 +2726,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiMotor {
                 (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]),
             ]) + (right_dual_g3.zxyx() * self.group0().yzx().with_w(self[e15]))
                 - (other.group0() * self.group1().www()).with_w(other[e321] * self[e3215] * -1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiMotor {
@@ -2737,12 +2737,12 @@ impl BulkContraction<AntiDualNum> for AntiMotor {
     // no simd        0        8        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(other[scalar]) * self.group0(),
             // e15, e25, e35, e3215
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiMotor {
@@ -2756,7 +2756,7 @@ impl BulkContraction<AntiFlatPoint> for AntiMotor {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e321] * self[e3215] * -1.0, 1.0]) * Simd32x2::from([-1.0, 0.0]));
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e321] * self[e3215] * -1.0, 1.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl BulkContraction<AntiFlector> for AntiMotor {
@@ -2772,13 +2772,13 @@ impl BulkContraction<AntiFlector> for AntiMotor {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             (right_dual_g1.xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e1, e2, e3, e5
             (right_dual_g1.zxyx() * self.group0().yzx().with_w(self[e15])) + Simd32x3::from(0.0).with_w((right_dual_g1[1] * self[e25]) + (right_dual_g1[2] * self[e35]))
                 - (right_dual_g1.yzx() * self.group0().zxy()).with_w(other[e321] * self[e3215] * -1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiMotor {
@@ -2793,12 +2793,12 @@ impl BulkContraction<AntiLine> for AntiMotor {
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12])),
             // e15, e25, e35, e3215
             (right_dual_g0 * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiMotor {
@@ -2814,13 +2814,13 @@ impl BulkContraction<AntiMotor> for AntiMotor {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz())
                 .with_w((right_dual_g0[3] * self[scalar]) - (right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12])),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g0[3]) * self.group1().xyz()) + (Simd32x3::from(self[e3215]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiMotor {
@@ -2836,13 +2836,13 @@ impl BulkContraction<AntiPlane> for AntiMotor {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             (right_dual_g0.xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e1, e2, e3, e5
             (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e15]))
                 + (right_dual_g0.yzx() * self.group0().zxy() * Simd32x3::from(-1.0)).with_w((right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for AntiMotor {
@@ -2856,10 +2856,10 @@ impl BulkContraction<Circle> for AntiMotor {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (other.group0() * self.group1().www() * Simd32x3::from(-1.0)).with_w(self[e3215] * other[e321]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for AntiMotor {
@@ -2873,7 +2873,7 @@ impl BulkContraction<CircleRotor> for AntiMotor {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0))
     }
 }
 impl BulkContraction<Dipole> for AntiMotor {
@@ -2890,7 +2890,7 @@ impl BulkContraction<Dipole> for AntiMotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (right_dual_g0 * Simd32x3::from(self[e3215])).with_w(
                 -(right_dual_g0[0] * self[e15])
@@ -2902,7 +2902,7 @@ impl BulkContraction<Dipole> for AntiMotor {
             ),
             // e15, e25, e35, e3215
             (right_dual_g1.xyz() * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiMotor {
@@ -2919,7 +2919,7 @@ impl BulkContraction<DipoleInversion> for AntiMotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (right_dual_g0 * Simd32x3::from(self[e3215])).with_w(
                 (self[e3215] * other[e1234])
@@ -2932,7 +2932,7 @@ impl BulkContraction<DipoleInversion> for AntiMotor {
             ),
             // e15, e25, e35, e3215
             (right_dual_g1.xyz() * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiMotor {
@@ -2953,7 +2953,7 @@ impl BulkContraction<MultiVector> for AntiMotor {
         let right_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[1] * self[scalar]) + (self[e3215] * other[e1234])
@@ -2988,7 +2988,7 @@ impl BulkContraction<MultiVector> for AntiMotor {
             Simd32x3::from(0.0).with_w(right_dual_g0[1] * self[e3215]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiMotor {
@@ -3004,7 +3004,7 @@ impl BulkContraction<RoundPoint> for AntiMotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * right_dual_g0.xyz().with_w(right_dual_g1) * Simd32x4::from(-1.0),
             // e1, e2, e3, e5
@@ -3014,7 +3014,7 @@ impl BulkContraction<RoundPoint> for AntiMotor {
                 -(right_dual_g1 * self[e35]) - (right_dual_g0[0] * self[e31]),
                 (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]),
             ]) + (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiMotor {
@@ -3025,12 +3025,12 @@ impl BulkContraction<Scalar> for AntiMotor {
     // no simd        0        8        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(other[scalar]) * self.group0(),
             // e15, e25, e35, e3215
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for AntiMotor {
@@ -3040,7 +3040,7 @@ impl BulkContraction<Sphere> for AntiMotor {
     // f32        0        1        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e3215] * other[e1234]);
+        Scalar::from_groups(/* scalar */ self[e3215] * other[e1234])
     }
 }
 impl BulkContraction<VersorEven> for AntiMotor {
@@ -3058,7 +3058,7 @@ impl BulkContraction<VersorEven> for AntiMotor {
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e3215]) * right_dual_g3.xyz().with_w(right_dual_g2[3]) * Simd32x4::from(-1.0),
             // e1, e2, e3, e5
@@ -3069,7 +3069,7 @@ impl BulkContraction<VersorEven> for AntiMotor {
                 (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]),
             ]) + (right_dual_g3.zxyx() * self.group0().yzx().with_w(self[e15]))
                 - (right_dual_g3.yzx() * self.group0().zxy()).with_w(self[e3215] * other[e321] * -1.0),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiMotor {
@@ -3086,7 +3086,7 @@ impl BulkContraction<VersorOdd> for AntiMotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x4::from(right_dual_g0[3]) * self.group0())
                 + (Simd32x4::from(self[e3215]) * right_dual_g0.xyz().with_w(other[e1234]))
@@ -3100,7 +3100,7 @@ impl BulkContraction<VersorOdd> for AntiMotor {
                 ),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g0[3]) * self.group1().xyz()) + (Simd32x3::from(self[e3215]) * right_dual_g1.xyz())).with_w(right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiPlane {
@@ -3117,7 +3117,7 @@ impl BulkContraction<AntiCircleRotor> for AntiPlane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiPlane {
@@ -3132,10 +3132,10 @@ impl BulkContraction<AntiDipoleInversion> for AntiPlane {
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g3[0] * self[e1]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) - (other[e4] * self[e5]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiPlane {
@@ -3146,7 +3146,7 @@ impl BulkContraction<AntiDualNum> for AntiPlane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiFlector> for AntiPlane {
@@ -3161,7 +3161,7 @@ impl BulkContraction<AntiFlector> for AntiPlane {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(/* scalar */ (right_dual_g1[0] * self[e1]) + (right_dual_g1[1] * self[e2]) + (right_dual_g1[2] * self[e3]));
+        Scalar::from_groups(/* scalar */ (right_dual_g1[0] * self[e1]) + (right_dual_g1[1] * self[e2]) + (right_dual_g1[2] * self[e3]))
     }
 }
 impl BulkContraction<AntiMotor> for AntiPlane {
@@ -3172,7 +3172,7 @@ impl BulkContraction<AntiMotor> for AntiPlane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiPlane> for AntiPlane {
@@ -3187,7 +3187,7 @@ impl BulkContraction<AntiPlane> for AntiPlane {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]));
+        Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]))
     }
 }
 impl BulkContraction<MultiVector> for AntiPlane {
@@ -3205,7 +3205,7 @@ impl BulkContraction<MultiVector> for AntiPlane {
         use crate::elements::*;
         let right_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g9[0] * self[e1]) + (right_dual_g9[1] * self[e2]) + (right_dual_g9[2] * self[e3]) - (self[e5] * other[e4]),
@@ -3231,7 +3231,7 @@ impl BulkContraction<MultiVector> for AntiPlane {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiPlane {
@@ -3246,10 +3246,10 @@ impl BulkContraction<RoundPoint> for AntiPlane {
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]) - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiPlane {
@@ -3260,7 +3260,7 @@ impl BulkContraction<Scalar> for AntiPlane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<VersorEven> for AntiPlane {
@@ -3275,10 +3275,10 @@ impl BulkContraction<VersorEven> for AntiPlane {
     fn bulk_contraction(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g3[0] * self[e1]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiPlane {
@@ -3289,7 +3289,7 @@ impl BulkContraction<VersorOdd> for AntiPlane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl std::ops::Div<BulkContractionInfix> for AntiScalar {
@@ -3309,14 +3309,14 @@ impl BulkContraction<AntiCircleRotor> for AntiScalar {
     //  no simd        0       22        0
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e12345
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for AntiScalar {
@@ -3330,7 +3330,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiScalar {
     //  no simd        0       27        0
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -3339,7 +3339,7 @@ impl BulkContraction<AntiDipoleInversion> for AntiScalar {
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for AntiScalar {
@@ -3350,7 +3350,7 @@ impl BulkContraction<AntiDualNum> for AntiScalar {
     // no simd        0        2        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[e12345]) * other.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[e12345]) * other.group0())
     }
 }
 impl BulkContraction<AntiFlatPoint> for AntiScalar {
@@ -3364,7 +3364,7 @@ impl BulkContraction<AntiFlatPoint> for AntiScalar {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0))
     }
 }
 impl BulkContraction<AntiFlector> for AntiScalar {
@@ -3375,12 +3375,12 @@ impl BulkContraction<AntiFlector> for AntiScalar {
     // no simd        0       16        0
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for AntiScalar {
@@ -3391,12 +3391,12 @@ impl BulkContraction<AntiLine> for AntiScalar {
     // no simd        0       12        0
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             Simd32x3::from(self[e12345]) * other.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for AntiScalar {
@@ -3407,12 +3407,12 @@ impl BulkContraction<AntiMotor> for AntiScalar {
     // no simd        0       16        0
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for AntiScalar {
@@ -3426,7 +3426,7 @@ impl BulkContraction<AntiPlane> for AntiScalar {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl BulkContraction<AntiScalar> for AntiScalar {
@@ -3436,7 +3436,7 @@ impl BulkContraction<AntiScalar> for AntiScalar {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for AntiScalar {
@@ -3450,14 +3450,14 @@ impl BulkContraction<Circle> for AntiScalar {
     //  no simd        0       14        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35
             Simd32x3::from(self[e12345]) * other.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for AntiScalar {
@@ -3471,14 +3471,14 @@ impl BulkContraction<CircleRotor> for AntiScalar {
     //  no simd        0       19        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, scalar
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for AntiScalar {
@@ -3492,14 +3492,14 @@ impl BulkContraction<Dipole> for AntiScalar {
     //  no simd        0       20        0
     fn bulk_contraction(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125
             Simd32x3::from(self[e12345]) * other.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for AntiScalar {
@@ -3513,7 +3513,7 @@ impl BulkContraction<DipoleInversion> for AntiScalar {
     //  no simd        0       30        0
     fn bulk_contraction(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -3522,7 +3522,7 @@ impl BulkContraction<DipoleInversion> for AntiScalar {
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for AntiScalar {
@@ -3536,7 +3536,7 @@ impl BulkContraction<DualNum> for AntiScalar {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[e12345]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[e12345]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]))
     }
 }
 impl BulkContraction<FlatPoint> for AntiScalar {
@@ -3550,10 +3550,10 @@ impl BulkContraction<FlatPoint> for AntiScalar {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e15] * -1.0, other[e25] * -1.0, other[e35] * -1.0, other[e45]]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for AntiScalar {
@@ -3564,12 +3564,12 @@ impl BulkContraction<Flector> for AntiScalar {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for AntiScalar {
@@ -3580,12 +3580,12 @@ impl BulkContraction<Line> for AntiScalar {
     // no simd        0        6        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[e12345]) * other.group0(),
             // e15, e25, e35
             Simd32x3::from(self[e12345]) * other.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for AntiScalar {
@@ -3596,12 +3596,12 @@ impl BulkContraction<Motor> for AntiScalar {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, e3215
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for AntiScalar {
@@ -3617,7 +3617,7 @@ impl BulkContraction<MultiVector> for AntiScalar {
     //  no simd        0       54        0
     fn bulk_contraction(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(self[e12345]) * other.group0().yx() * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -3640,7 +3640,7 @@ impl BulkContraction<MultiVector> for AntiScalar {
             Simd32x4::from(self[e12345]) * other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             self[e12345] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for AntiScalar {
@@ -3654,10 +3654,10 @@ impl BulkContraction<Plane> for AntiScalar {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for AntiScalar {
@@ -3671,12 +3671,12 @@ impl BulkContraction<RoundPoint> for AntiScalar {
     //  no simd        0       10        0
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             self[e12345] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for AntiScalar {
@@ -3686,7 +3686,7 @@ impl BulkContraction<Scalar> for AntiScalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[scalar])
     }
 }
 impl BulkContraction<Sphere> for AntiScalar {
@@ -3700,12 +3700,12 @@ impl BulkContraction<Sphere> for AntiScalar {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             self[e12345] * other[e3215],
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for AntiScalar {
@@ -3716,7 +3716,7 @@ impl BulkContraction<VersorEven> for AntiScalar {
     // no simd        0       32        0
     fn bulk_contraction(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e23, e31, e12, e45
@@ -3725,7 +3725,7 @@ impl BulkContraction<VersorEven> for AntiScalar {
             Simd32x4::from(self[e12345]) * other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for AntiScalar {
@@ -3736,7 +3736,7 @@ impl BulkContraction<VersorOdd> for AntiScalar {
     // no simd        0       32        0
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -3745,7 +3745,7 @@ impl BulkContraction<VersorOdd> for AntiScalar {
             Simd32x4::from(self[e12345]) * other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Circle {
@@ -3769,7 +3769,7 @@ impl BulkContraction<AntiCircleRotor> for Circle {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -3791,7 +3791,7 @@ impl BulkContraction<AntiCircleRotor> for Circle {
                 -(right_dual_g1[2] * self[e125]) - (right_dual_g2[0] * self[e415]) - (right_dual_g2[1] * self[e425]) - (right_dual_g2[2] * self[e435]),
             ]) - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g1[1] * self[e315])
                 - (self.group0().yzx() * right_dual_g2.zxy()).with_w(right_dual_g1[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Circle {
@@ -3809,7 +3809,7 @@ impl BulkContraction<AntiDipoleInversion> for Circle {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g2[3]) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g3.yzx()) - (self.group0().yzx() * right_dual_g3.zxy()),
             // e23, e31, e12, e45
@@ -3834,7 +3834,7 @@ impl BulkContraction<AntiDipoleInversion> for Circle {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ]) - (self.group2().zxy() * right_dual_g3.yzx()).with_w(right_dual_g2[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Circle {
@@ -3848,14 +3848,14 @@ impl BulkContraction<AntiDualNum> for Circle {
     //  no simd        0       10        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(other[scalar]) * self.group1(),
             // e235, e315, e125
             Simd32x3::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for Circle {
@@ -3870,10 +3870,10 @@ impl BulkContraction<AntiFlatPoint> for Circle {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for Circle {
@@ -3890,7 +3890,7 @@ impl BulkContraction<AntiFlector> for Circle {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (self.group0().zxy() * right_dual_g1.yzx()) - (self.group0().yzx() * right_dual_g1.zxy()),
             // e23, e31, e12, e45
@@ -3902,7 +3902,7 @@ impl BulkContraction<AntiFlector> for Circle {
                 (right_dual_g1[1] * self[e235]) + (right_dual_g1[3] * self[e435]),
                 -(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]),
             ]) - (self.group2().zxy() * right_dual_g1.yzx()).with_w(right_dual_g0[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Circle {
@@ -3919,7 +3919,7 @@ impl BulkContraction<AntiLine> for Circle {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[0] * self[e321]) + (right_dual_g1[1] * self[e412]),
@@ -3934,7 +3934,7 @@ impl BulkContraction<AntiLine> for Circle {
                 - (right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
                 - (right_dual_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Circle {
@@ -3951,7 +3951,7 @@ impl BulkContraction<AntiMotor> for Circle {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -3969,7 +3969,7 @@ impl BulkContraction<AntiMotor> for Circle {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ]) - (self.group0().yzx() * right_dual_g1.zxy()).with_w(right_dual_g0[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Circle {
@@ -3985,14 +3985,14 @@ impl BulkContraction<AntiPlane> for Circle {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
             (self.group0() * right_dual_g0.www()).with_w(-(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])) - (right_dual_g0.xyzx() * self.group1().wwwx()),
             // e15, e25, e35
             (Simd32x3::from(right_dual_g0[3]) * self.group1().xyz()) + (self.group2().yzx() * right_dual_g0.zxy()) - (self.group2().zxy() * right_dual_g0.yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for Circle {
@@ -4007,7 +4007,7 @@ impl BulkContraction<Circle> for Circle {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -4019,7 +4019,7 @@ impl BulkContraction<Circle> for Circle {
                 - (other[e235] * self[e423])
                 - (other[e315] * self[e431])
                 - (other[e125] * self[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Circle {
@@ -4035,7 +4035,7 @@ impl BulkContraction<CircleRotor> for Circle {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -4047,7 +4047,7 @@ impl BulkContraction<CircleRotor> for Circle {
                 - (self[e235] * other[e423])
                 - (self[e315] * other[e431])
                 - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Circle {
@@ -4065,7 +4065,7 @@ impl BulkContraction<Dipole> for Circle {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g2[1] * self[e412]) + (right_dual_g1[0] * self[e321]) + (right_dual_g1[3] * self[e415]),
@@ -4081,7 +4081,7 @@ impl BulkContraction<Dipole> for Circle {
                 - (right_dual_g1[0] * self[e235])
                 - (right_dual_g1[1] * self[e315])
                 - (right_dual_g1[2] * self[e125]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Circle {
@@ -4099,7 +4099,7 @@ impl BulkContraction<DipoleInversion> for Circle {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[0] * self[e321]) + (right_dual_g1[3] * self[e415]) + (right_dual_g2[1] * self[e412]),
@@ -4115,7 +4115,7 @@ impl BulkContraction<DipoleInversion> for Circle {
                 - (right_dual_g2[0] * self[e415])
                 - (right_dual_g2[1] * self[e425])
                 - (right_dual_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Circle {
@@ -4129,12 +4129,12 @@ impl BulkContraction<DualNum> for Circle {
     //  no simd        0        8        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(right_dual_g0[0]) * self.group0(),
             // e15, e25, e35
             Simd32x3::from(right_dual_g0[0]) * self.group1().xyz(),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for Circle {
@@ -4150,7 +4150,7 @@ impl BulkContraction<FlatPoint> for Circle {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[1] * self[e412]) + (right_dual_g0[3] * self[e415]),
@@ -4158,7 +4158,7 @@ impl BulkContraction<FlatPoint> for Circle {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (self.group0().yzx() * right_dual_g0.zxy()).with_w(right_dual_g0[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Circle {
@@ -4174,7 +4174,7 @@ impl BulkContraction<Flector> for Circle {
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (right_dual_g0[1] * self[e412]) + (right_dual_g0[3] * self[e415]),
@@ -4182,7 +4182,7 @@ impl BulkContraction<Flector> for Circle {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (self.group0().yzx() * right_dual_g0.zxy()).with_w(right_dual_g0[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Circle {
@@ -4192,7 +4192,7 @@ impl BulkContraction<Line> for Circle {
     // f32        5        6        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(self[e423] * other[e235])
                 - (self[e431] * other[e315])
@@ -4200,7 +4200,7 @@ impl BulkContraction<Line> for Circle {
                 - (self[e415] * other[e415])
                 - (self[e425] * other[e425])
                 - (self[e435] * other[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Circle {
@@ -4217,7 +4217,7 @@ impl BulkContraction<Motor> for Circle {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(right_dual_g1[3]) * self.group0()).with_w(
                 -(right_dual_g0[0] * self[e415])
@@ -4229,7 +4229,7 @@ impl BulkContraction<Motor> for Circle {
             ),
             // e15, e25, e35, e3215
             (self.group1().xyz() * right_dual_g1.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Circle {
@@ -4251,7 +4251,7 @@ impl BulkContraction<MultiVector> for Circle {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (self[e321] * other[e321])
@@ -4302,7 +4302,7 @@ impl BulkContraction<MultiVector> for Circle {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for Circle {
@@ -4319,7 +4319,7 @@ impl BulkContraction<RoundPoint> for Circle {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g1) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
@@ -4331,7 +4331,7 @@ impl BulkContraction<RoundPoint> for Circle {
             ]) - (right_dual_g0.xyzx() * self.group1().wwwx()),
             // e15, e25, e35
             (Simd32x3::from(right_dual_g0[3]) * self.group1().xyz()) + (self.group2().yzx() * right_dual_g0.zxy()) - (self.group2().zxy() * right_dual_g0.yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Circle {
@@ -4345,14 +4345,14 @@ impl BulkContraction<Scalar> for Circle {
     //  no simd        0       10        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(other[scalar]) * self.group1(),
             // e235, e315, e125
             Simd32x3::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Circle {
@@ -4371,7 +4371,7 @@ impl BulkContraction<VersorEven> for Circle {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g2[3]) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g3.yzx()) - (self.group0().yzx() * right_dual_g3.zxy()),
             // e23, e31, e12, e45
@@ -4396,7 +4396,7 @@ impl BulkContraction<VersorEven> for Circle {
                     - (right_dual_g2[1] * self[e431])
                     - (right_dual_g2[2] * self[e412]),
             ]) - (self.group2().zxy() * right_dual_g3.yzx()).with_w(right_dual_g2[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Circle {
@@ -4414,7 +4414,7 @@ impl BulkContraction<VersorOdd> for Circle {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -4436,7 +4436,7 @@ impl BulkContraction<VersorOdd> for Circle {
                 -(right_dual_g1[2] * self[e125]) - (right_dual_g2[0] * self[e415]) - (right_dual_g2[1] * self[e425]) - (right_dual_g2[2] * self[e435]),
             ]) - (self.group0().yzx() * right_dual_g2.zxy()).with_w(right_dual_g1[0] * self[e235])
                 - (self.group2().zxy() * right_dual_g0.yzx()).with_w(right_dual_g1[1] * self[e315]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for CircleRotor {
@@ -4460,7 +4460,7 @@ impl BulkContraction<AntiCircleRotor> for CircleRotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((right_dual_g0 * Simd32x3::from(self[e12345])) + (Simd32x3::from(right_dual_g2[3]) * self.group0())).with_w(right_dual_g2[3] * self[e12345]),
             // e415, e425, e435, e321
@@ -4485,7 +4485,7 @@ impl BulkContraction<AntiCircleRotor> for CircleRotor {
                 -(right_dual_g0[2] * self[e435]) - (right_dual_g1[0] * self[e423]) - (right_dual_g1[1] * self[e431]) - (right_dual_g1[2] * self[e412]),
             ]) - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g0[0] * self[e415])
                 - (self.group0().yzx() * right_dual_g2.zxy()).with_w(right_dual_g0[1] * self[e425]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for CircleRotor {
@@ -4503,7 +4503,7 @@ impl BulkContraction<AntiDipoleInversion> for CircleRotor {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from([
                 (right_dual_g2[3] * self[e415]) + (right_dual_g3[1] * self[e412]) + (other[e423] * self[e12345]),
@@ -4533,7 +4533,7 @@ impl BulkContraction<AntiDipoleInversion> for CircleRotor {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for CircleRotor {
@@ -4544,7 +4544,7 @@ impl BulkContraction<AntiDualNum> for CircleRotor {
     // no simd        0       12        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(other[scalar]) * self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4553,7 +4553,7 @@ impl BulkContraction<AntiDualNum> for CircleRotor {
             self.group2() * other.group0().yy().with_zw(other[scalar], other[e3215]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for CircleRotor {
@@ -4569,7 +4569,7 @@ impl BulkContraction<AntiFlatPoint> for CircleRotor {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -4577,7 +4577,7 @@ impl BulkContraction<AntiFlatPoint> for CircleRotor {
             // e15, e25, e35, scalar
             (right_dual_g0.xyz() * self.group2().www())
                 .with_w(-(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for CircleRotor {
@@ -4594,7 +4594,7 @@ impl BulkContraction<AntiFlector> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((self.group0().zxy() * right_dual_g1.yzx()) - (self.group0().yzx() * right_dual_g1.zxy()))
                 .with_w(-(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321])),
@@ -4609,7 +4609,7 @@ impl BulkContraction<AntiFlector> for CircleRotor {
                 - (right_dual_g1.yzx() * self.group2().zxy()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             right_dual_g1 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for CircleRotor {
@@ -4626,7 +4626,7 @@ impl BulkContraction<AntiLine> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -4644,7 +4644,7 @@ impl BulkContraction<AntiLine> for CircleRotor {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ]) - (right_dual_g1.zxy() * self.group0().yzx()).with_w(right_dual_g0[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for CircleRotor {
@@ -4661,7 +4661,7 @@ impl BulkContraction<AntiMotor> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(right_dual_g0[3]) * self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4684,7 +4684,7 @@ impl BulkContraction<AntiMotor> for CircleRotor {
                 (right_dual_g0[2] * self[e321]) + (right_dual_g1[0] * self[e431]),
                 -(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]),
             ]) - (self.group0().yzx() * right_dual_g1.zxy()).with_w(right_dual_g0[0] * self[e423]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for CircleRotor {
@@ -4700,7 +4700,7 @@ impl BulkContraction<AntiPlane> for CircleRotor {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
@@ -4710,7 +4710,7 @@ impl BulkContraction<AntiPlane> for CircleRotor {
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiScalar> for CircleRotor {
@@ -4720,7 +4720,7 @@ impl BulkContraction<AntiScalar> for CircleRotor {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for CircleRotor {
@@ -4736,7 +4736,7 @@ impl BulkContraction<Circle> for CircleRotor {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -4754,7 +4754,7 @@ impl BulkContraction<Circle> for CircleRotor {
                     - (other[e315] * self[e431])
                     - (other[e125] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for CircleRotor {
@@ -4771,7 +4771,7 @@ impl BulkContraction<CircleRotor> for CircleRotor {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -4790,7 +4790,7 @@ impl BulkContraction<CircleRotor> for CircleRotor {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for CircleRotor {
@@ -4808,7 +4808,7 @@ impl BulkContraction<Dipole> for CircleRotor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -4830,7 +4830,7 @@ impl BulkContraction<Dipole> for CircleRotor {
                 -(right_dual_g2[2] * self[e435]) - (right_dual_g1[0] * self[e235]) - (right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g2[0] * self[e415])
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(right_dual_g2[1] * self[e425]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for CircleRotor {
@@ -4849,7 +4849,7 @@ impl BulkContraction<DipoleInversion> for CircleRotor {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -4873,7 +4873,7 @@ impl BulkContraction<DipoleInversion> for CircleRotor {
             ]) + (self.group2().yzxw() * right_dual_g0.zxy().with_w(right_dual_g3[3]))
                 - (self.group2().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0]))
                 - (self.group0().yzx() * right_dual_g2.zxy()).with_w(right_dual_g1[1] * self[e315]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for CircleRotor {
@@ -4888,12 +4888,12 @@ impl BulkContraction<DualNum> for CircleRotor {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             right_dual_g0.xx().with_zw(right_dual_g0[0], right_dual_g0[1]) * self.group0().with_w(self[e12345]),
             // e15, e25, e35, e3215
             Simd32x4::from(right_dual_g0[0]) * self.group1().xyz().with_w(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for CircleRotor {
@@ -4909,7 +4909,7 @@ impl BulkContraction<FlatPoint> for CircleRotor {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
@@ -4919,7 +4919,7 @@ impl BulkContraction<FlatPoint> for CircleRotor {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (self.group0().yzx() * right_dual_g0.zxy()).with_w(right_dual_g0[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for CircleRotor {
@@ -4936,7 +4936,7 @@ impl BulkContraction<Flector> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
@@ -4947,7 +4947,7 @@ impl BulkContraction<Flector> for CircleRotor {
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) + (self.group0().zxy() * right_dual_g0.yzx()).with_w(right_dual_g1[3] * self[e12345])
                 - (self.group0().yzx() * right_dual_g0.zxy()).with_w(right_dual_g0[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for CircleRotor {
@@ -4961,7 +4961,7 @@ impl BulkContraction<Line> for CircleRotor {
     //  no simd        5       12        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(self[e12345]) * other.group0()).with_w(
                 -(self[e423] * other[e235])
@@ -4973,7 +4973,7 @@ impl BulkContraction<Line> for CircleRotor {
             ),
             // e15, e25, e35, e3215
             (other.group1() * self.group2().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for CircleRotor {
@@ -4990,7 +4990,7 @@ impl BulkContraction<Motor> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x4::from([self[e12345], self[e12345], self[e12345], 1.0])
                 * right_dual_g0.xyz().with_w(
@@ -5004,7 +5004,7 @@ impl BulkContraction<Motor> for CircleRotor {
                 + (self.group0() * right_dual_g1.www()).with_w(right_dual_g0[3] * self[e12345]),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g1[3]) * self.group1().xyz()) + (Simd32x3::from(self[e12345]) * right_dual_g1.xyz())).with_w(right_dual_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for CircleRotor {
@@ -5028,7 +5028,7 @@ impl BulkContraction<MultiVector> for CircleRotor {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[0] * self[e12345])
@@ -5085,7 +5085,7 @@ impl BulkContraction<MultiVector> for CircleRotor {
             right_dual_g9 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g10 * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for CircleRotor {
@@ -5099,10 +5099,10 @@ impl BulkContraction<Plane> for CircleRotor {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for CircleRotor {
@@ -5119,7 +5119,7 @@ impl BulkContraction<RoundPoint> for CircleRotor {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(right_dual_g1) * self.group1().xyz()) + (self.group0().zxy() * right_dual_g0.yzx()) - (self.group0().yzx() * right_dual_g0.zxy()),
             // e23, e31, e12, e45
@@ -5134,7 +5134,7 @@ impl BulkContraction<RoundPoint> for CircleRotor {
                 .with_w(right_dual_g1 * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for CircleRotor {
@@ -5148,14 +5148,14 @@ impl BulkContraction<Scalar> for CircleRotor {
     //  no simd        0       11        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(other[scalar]) * self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for CircleRotor {
@@ -5169,12 +5169,12 @@ impl BulkContraction<Sphere> for CircleRotor {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             self[e12345] * other[e3215],
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for CircleRotor {
@@ -5193,7 +5193,7 @@ impl BulkContraction<VersorEven> for CircleRotor {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from([
                 (right_dual_g0[0] * self[e12345]) + (right_dual_g2[3] * self[e415]),
@@ -5224,7 +5224,7 @@ impl BulkContraction<VersorEven> for CircleRotor {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for CircleRotor {
@@ -5243,7 +5243,7 @@ impl BulkContraction<VersorOdd> for CircleRotor {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((Simd32x3::from(right_dual_g0[3]) * self.group0()) + (Simd32x3::from(self[e12345]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * self[e12345]),
             // e415, e425, e435, e321
@@ -5268,7 +5268,7 @@ impl BulkContraction<VersorOdd> for CircleRotor {
             ]) + (self.group0().zxy() * right_dual_g2.yzx()).with_w(right_dual_g3[3] * self[e12345])
                 - (self.group0().yzx() * right_dual_g2.zxy()).with_w(right_dual_g1[0] * self[e423])
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g1[1] * self[e431]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Dipole {
@@ -5292,7 +5292,7 @@ impl BulkContraction<AntiCircleRotor> for Dipole {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -5310,7 +5310,7 @@ impl BulkContraction<AntiCircleRotor> for Dipole {
                     - (right_dual_g2[1] * self[e42])
                     - (right_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Dipole {
@@ -5327,7 +5327,7 @@ impl BulkContraction<AntiDipoleInversion> for Dipole {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g3[2] * self[e31]) + (right_dual_g3[3] * self[e41]),
@@ -5338,7 +5338,7 @@ impl BulkContraction<AntiDipoleInversion> for Dipole {
                 - (self.group2() * right_dual_g2.www()).with_w(right_dual_g3[0] * self[e41]),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Dipole {
@@ -5352,14 +5352,14 @@ impl BulkContraction<AntiDualNum> for Dipole {
     //  no simd        0       10        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(other[scalar]) * self.group1(),
             // e15, e25, e35
             Simd32x3::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for Dipole {
@@ -5374,7 +5374,7 @@ impl BulkContraction<AntiFlector> for Dipole {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g1[2] * self[e31]) + (right_dual_g1[3] * self[e41]),
@@ -5384,7 +5384,7 @@ impl BulkContraction<AntiFlector> for Dipole {
             ]) - (right_dual_g1.yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (right_dual_g1[0] * self[e15]) + (right_dual_g1[1] * self[e25]) + (right_dual_g1[2] * self[e35]) + (right_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Dipole {
@@ -5400,7 +5400,7 @@ impl BulkContraction<AntiLine> for Dipole {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e23])
                 - (right_dual_g0[1] * self[e31])
@@ -5408,7 +5408,7 @@ impl BulkContraction<AntiLine> for Dipole {
                 - (right_dual_g1[0] * self[e41])
                 - (right_dual_g1[1] * self[e42])
                 - (right_dual_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Dipole {
@@ -5425,7 +5425,7 @@ impl BulkContraction<AntiMotor> for Dipole {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -5439,7 +5439,7 @@ impl BulkContraction<AntiMotor> for Dipole {
                     - (right_dual_g1[1] * self[e42])
                     - (right_dual_g1[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Dipole {
@@ -5454,7 +5454,7 @@ impl BulkContraction<AntiPlane> for Dipole {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e31]) + (right_dual_g0[3] * self[e41]),
@@ -5464,7 +5464,7 @@ impl BulkContraction<AntiPlane> for Dipole {
             ]) - (right_dual_g0.yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Dipole {
@@ -5482,7 +5482,7 @@ impl BulkContraction<Dipole> for Dipole {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -5494,7 +5494,7 @@ impl BulkContraction<Dipole> for Dipole {
                 - (right_dual_g1[1] * self[e31])
                 - (right_dual_g1[2] * self[e12])
                 - (right_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Dipole {
@@ -5512,7 +5512,7 @@ impl BulkContraction<DipoleInversion> for Dipole {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15])
                 - (right_dual_g0[1] * self[e25])
@@ -5524,7 +5524,7 @@ impl BulkContraction<DipoleInversion> for Dipole {
                 - (right_dual_g2[0] * self[e41])
                 - (right_dual_g2[1] * self[e42])
                 - (right_dual_g2[2] * self[e43]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Dipole {
@@ -5538,7 +5538,7 @@ impl BulkContraction<DualNum> for Dipole {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e5] * -1.0) * self.group0().with_w(self[e45]))
     }
 }
 impl BulkContraction<FlatPoint> for Dipole {
@@ -5553,10 +5553,10 @@ impl BulkContraction<FlatPoint> for Dipole {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e41]) - (right_dual_g0[1] * self[e42]) - (right_dual_g0[2] * self[e43]) - (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Dipole {
@@ -5571,10 +5571,10 @@ impl BulkContraction<Flector> for Dipole {
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e41]) - (right_dual_g0[1] * self[e42]) - (right_dual_g0[2] * self[e43]) - (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Dipole {
@@ -5590,7 +5590,7 @@ impl BulkContraction<Motor> for Dipole {
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ (self.group0() * right_dual_g1.www()).with_w(right_dual_g1[3] * self[e45]));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ (self.group0() * right_dual_g1.www()).with_w(right_dual_g1[3] * self[e45]))
     }
 }
 impl BulkContraction<MultiVector> for Dipole {
@@ -5612,7 +5612,7 @@ impl BulkContraction<MultiVector> for Dipole {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g7[0] * self[e15])
@@ -5653,7 +5653,7 @@ impl BulkContraction<MultiVector> for Dipole {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for Dipole {
@@ -5670,7 +5670,7 @@ impl BulkContraction<RoundPoint> for Dipole {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e31]) + (right_dual_g0[3] * self[e41]),
@@ -5681,7 +5681,7 @@ impl BulkContraction<RoundPoint> for Dipole {
                 - (Simd32x3::from(right_dual_g1) * self.group2()).with_w(right_dual_g0[0] * self[e41]),
             // e5
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Dipole {
@@ -5695,14 +5695,14 @@ impl BulkContraction<Scalar> for Dipole {
     //  no simd        0       10        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(other[scalar]) * self.group1(),
             // e15, e25, e35
             Simd32x3::from(other[scalar]) * self.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Dipole {
@@ -5719,7 +5719,7 @@ impl BulkContraction<VersorEven> for Dipole {
         use crate::elements::*;
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g3[2] * self[e31]) + (right_dual_g3[3] * self[e41]),
@@ -5730,7 +5730,7 @@ impl BulkContraction<VersorEven> for Dipole {
                 - (self.group2() * right_dual_g2.www()).with_w(right_dual_g3[0] * self[e41]),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Dipole {
@@ -5748,7 +5748,7 @@ impl BulkContraction<VersorOdd> for Dipole {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -5766,7 +5766,7 @@ impl BulkContraction<VersorOdd> for Dipole {
                     - (right_dual_g2[1] * self[e42])
                     - (right_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for DipoleInversion {
@@ -5790,7 +5790,7 @@ impl BulkContraction<AntiCircleRotor> for DipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from([
                 (right_dual_g0[2] * self[e4315]) + (right_dual_g1[0] * self[e1234]) + (right_dual_g2[3] * self[e41]),
@@ -5820,7 +5820,7 @@ impl BulkContraction<AntiCircleRotor> for DipoleInversion {
             .with_w(right_dual_g2[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g2[3]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for DipoleInversion {
@@ -5838,7 +5838,7 @@ impl BulkContraction<AntiDipoleInversion> for DipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -5861,7 +5861,7 @@ impl BulkContraction<AntiDipoleInversion> for DipoleInversion {
                 - (right_dual_g2.wwwy() * self.group2().xyz().with_w(self[e4315]))
                 - (self.group3().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0]))
                 - (right_dual_g3.yzx() * self.group1().zxy()).with_w(right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for DipoleInversion {
@@ -5872,7 +5872,7 @@ impl BulkContraction<AntiDualNum> for DipoleInversion {
     // no simd        0       16        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0().yy().with_zw(other[scalar], other[e3215]) * self.group0().with_w(self[e1234]),
             // e23, e31, e12, e45
@@ -5881,7 +5881,7 @@ impl BulkContraction<AntiDualNum> for DipoleInversion {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for DipoleInversion {
@@ -5896,12 +5896,12 @@ impl BulkContraction<AntiFlatPoint> for DipoleInversion {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             right_dual_g0 * Simd32x4::from(self[e1234]),
             // e5
             -(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for DipoleInversion {
@@ -5918,7 +5918,7 @@ impl BulkContraction<AntiFlector> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g1.xyz(),
             // e415, e425, e435, e321
@@ -5934,7 +5934,7 @@ impl BulkContraction<AntiFlector> for DipoleInversion {
                 + Simd32x3::from(0.0)
                     .with_w((right_dual_g1[2] * self[e35]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]))
                 - (right_dual_g1.yzx() * self.group1().zxy()).with_w(right_dual_g0[0] * self[e4235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for DipoleInversion {
@@ -5951,7 +5951,7 @@ impl BulkContraction<AntiLine> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             right_dual_g0 * Simd32x3::from(self[e1234]),
             // e23, e31, e12, e45
@@ -5963,7 +5963,7 @@ impl BulkContraction<AntiLine> for DipoleInversion {
                 (right_dual_g0[2] * self[e3215]) + (right_dual_g1[0] * self[e4315]),
                 -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]) - (right_dual_g1[1] * self[e42]) - (right_dual_g1[2] * self[e43]),
             ]) - (right_dual_g1.zxy() * self.group3().yzx()).with_w(right_dual_g1[0] * self[e41]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for DipoleInversion {
@@ -5980,7 +5980,7 @@ impl BulkContraction<AntiMotor> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (Simd32x4::from([self[e1234], self[e1234], self[e1234], 1.0])
                 * right_dual_g0.xyz().with_w(
@@ -6004,7 +6004,7 @@ impl BulkContraction<AntiMotor> for DipoleInversion {
             .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for DipoleInversion {
@@ -6020,7 +6020,7 @@ impl BulkContraction<AntiPlane> for DipoleInversion {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g0.xyz(),
             // e415, e425, e435, e321
@@ -6032,7 +6032,7 @@ impl BulkContraction<AntiPlane> for DipoleInversion {
             (Simd32x4::from(right_dual_g0[3]) * self.group0().with_w(self[e45]))
                 + (right_dual_g0.zxyx() * self.group1().yzx().with_w(self[e15]))
                 + (right_dual_g0.yzx() * self.group1().zxy() * Simd32x3::from(-1.0)).with_w((right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for DipoleInversion {
@@ -6048,7 +6048,7 @@ impl BulkContraction<Circle> for DipoleInversion {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -6059,7 +6059,7 @@ impl BulkContraction<Circle> for DipoleInversion {
                 + (other.group2() * self.group2().www()).with_w(other[e423] * self[e4235]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (other[e235] * self[e4235]) - (other[e315] * self[e4315]) - (other[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for DipoleInversion {
@@ -6076,7 +6076,7 @@ impl BulkContraction<CircleRotor> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -6087,7 +6087,7 @@ impl BulkContraction<CircleRotor> for DipoleInversion {
                 + (right_dual_g2.xyz() * self.group2().www()).with_w(other[e431] * self[e4315]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[0] * self[e4235]) - (right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for DipoleInversion {
@@ -6105,7 +6105,7 @@ impl BulkContraction<Dipole> for DipoleInversion {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group3().yzx()) - (right_dual_g0.yzx() * self.group3().zxy()),
             // e23, e31, e12, e45
@@ -6130,7 +6130,7 @@ impl BulkContraction<Dipole> for DipoleInversion {
                     - (right_dual_g1[2] * self[e12])
                     - (right_dual_g1[3] * self[e45]),
             ]) - (right_dual_g2.zxy() * self.group3().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for DipoleInversion {
@@ -6149,7 +6149,7 @@ impl BulkContraction<DipoleInversion> for DipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group3().yzx()) - (right_dual_g0.yzx() * self.group3().zxy()),
             // e23, e31, e12, e45
@@ -6175,7 +6175,7 @@ impl BulkContraction<DipoleInversion> for DipoleInversion {
                         - (right_dual_g2[2] * self[e43]),
                 )
                 - (right_dual_g2.zxy() * self.group3().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for DipoleInversion {
@@ -6190,12 +6190,12 @@ impl BulkContraction<DualNum> for DipoleInversion {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[0]) * self.group3().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from(right_dual_g0[0]) * self.group0().with_w(self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for DipoleInversion {
@@ -6211,7 +6211,7 @@ impl BulkContraction<FlatPoint> for DipoleInversion {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x4::from([self[e1234], self[e1234], self[e1234], 1.0])
                 * right_dual_g0
@@ -6220,7 +6220,7 @@ impl BulkContraction<FlatPoint> for DipoleInversion {
                 - (self.group3().xyz() * right_dual_g0.www()).with_w(right_dual_g0[0] * self[e41]),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group3().zxy()) - (right_dual_g0.zxy() * self.group3().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for DipoleInversion {
@@ -6237,7 +6237,7 @@ impl BulkContraction<Flector> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(
                 (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e1234])
@@ -6248,7 +6248,7 @@ impl BulkContraction<Flector> for DipoleInversion {
                 - (self.group3().xyz() * right_dual_g0.www()).with_w(right_dual_g0[0] * self[e41]),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group3().zxy()) - (right_dual_g0.zxy() * self.group3().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for DipoleInversion {
@@ -6262,7 +6262,7 @@ impl BulkContraction<Line> for DipoleInversion {
     //  no simd        8       12        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e1234] * other[e235]) + (self[e4315] * other[e435]),
@@ -6270,7 +6270,7 @@ impl BulkContraction<Line> for DipoleInversion {
                 (self[e1234] * other[e125]) + (self[e4235] * other[e425]),
                 -(self[e4315] * other[e315]) - (self[e4125] * other[e125]),
             ]) - (self.group3().zxyx() * other.group0().yzx().with_w(other[e235])),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for DipoleInversion {
@@ -6287,7 +6287,7 @@ impl BulkContraction<Motor> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g1[3]) * self.group3().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
@@ -6298,7 +6298,7 @@ impl BulkContraction<Motor> for DipoleInversion {
                 -(right_dual_g1[1] * self[e4315]) - (right_dual_g1[2] * self[e4125]),
             ]) + (self.group0() * right_dual_g1.www()).with_w(right_dual_g1[3] * self[e45])
                 - (self.group3().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for DipoleInversion {
@@ -6322,7 +6322,7 @@ impl BulkContraction<MultiVector> for DipoleInversion {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e4235])
@@ -6381,7 +6381,7 @@ impl BulkContraction<MultiVector> for DipoleInversion {
             Simd32x4::from(right_dual_g0[1]) * self.group3(),
             // e1234
             right_dual_g0[1] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for DipoleInversion {
@@ -6396,10 +6396,10 @@ impl BulkContraction<Plane> for DipoleInversion {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for DipoleInversion {
@@ -6416,7 +6416,7 @@ impl BulkContraction<RoundPoint> for DipoleInversion {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g0.xyz()) - (Simd32x3::from(right_dual_g1) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -6432,7 +6432,7 @@ impl BulkContraction<RoundPoint> for DipoleInversion {
                 (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]),
             ]) + (Simd32x4::from(right_dual_g0[3]) * self.group0().with_w(self[e45]))
                 + (right_dual_g0.zxyx() * self.group1().yzx().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for DipoleInversion {
@@ -6446,7 +6446,7 @@ impl BulkContraction<Scalar> for DipoleInversion {
     //  no simd        0       15        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
@@ -6455,7 +6455,7 @@ impl BulkContraction<Scalar> for DipoleInversion {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for DipoleInversion {
@@ -6470,14 +6470,14 @@ impl BulkContraction<Sphere> for DipoleInversion {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235])
                 + (right_dual_g0[1] * self[e4315])
                 + (right_dual_g0[2] * self[e4125])
                 + (right_dual_g0[3] * self[e3215])
                 + (self[e1234] * other[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for DipoleInversion {
@@ -6496,7 +6496,7 @@ impl BulkContraction<VersorEven> for DipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -6518,7 +6518,7 @@ impl BulkContraction<VersorEven> for DipoleInversion {
                 - (right_dual_g2.wwwy() * self.group2().xyz().with_w(self[e4315]))
                 - (self.group3().zxyz() * right_dual_g1.yzx().with_w(right_dual_g2[2]))
                 - (right_dual_g3.yzx() * self.group1().zxy()).with_w(right_dual_g2[0] * self[e4235]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for DipoleInversion {
@@ -6537,7 +6537,7 @@ impl BulkContraction<VersorOdd> for DipoleInversion {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group3().yzxy() * right_dual_g0.zxy().with_w(right_dual_g3[1]))
                 + Simd32x3::from(0.0).with_w(
@@ -6569,7 +6569,7 @@ impl BulkContraction<VersorOdd> for DipoleInversion {
             .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for DualNum {
@@ -6590,7 +6590,7 @@ impl BulkContraction<AntiCircleRotor> for DualNum {
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(self[e12345]) * (other.group0() * Simd32x3::from(-1.0)).with_w(right_dual_g2[3]),
             // e415, e425, e435, e321
@@ -6599,7 +6599,7 @@ impl BulkContraction<AntiCircleRotor> for DualNum {
             right_dual_g2 * self.group0().yy().with_zw(self[e12345], self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for DualNum {
@@ -6611,7 +6611,7 @@ impl BulkContraction<AntiDipoleInversion> for DualNum {
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0().yy().with_zw(self[e12345], self[e5]) * other.group0().with_w(right_dual_g2[3]),
             // e23, e31, e12, e45
@@ -6620,7 +6620,7 @@ impl BulkContraction<AntiDipoleInversion> for DualNum {
             right_dual_g2 * Simd32x4::from(self[e12345]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for DualNum {
@@ -6630,10 +6630,10 @@ impl BulkContraction<AntiDualNum> for DualNum {
     // f32        1        3        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(
+        DualNum::from_groups(
             // e5, e12345
             Simd32x2::from([(other[e3215] * self[e12345]) + (other[scalar] * self[e5]), other[scalar] * self[e12345]]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for DualNum {
@@ -6647,7 +6647,7 @@ impl BulkContraction<AntiFlatPoint> for DualNum {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0))
     }
 }
 impl BulkContraction<AntiFlector> for DualNum {
@@ -6658,12 +6658,12 @@ impl BulkContraction<AntiFlector> for DualNum {
     // no simd        0       16        0
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for DualNum {
@@ -6674,12 +6674,12 @@ impl BulkContraction<AntiLine> for DualNum {
     // no simd        0       12        0
     fn bulk_contraction(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             Simd32x3::from(self[e12345]) * other.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for DualNum {
@@ -6695,12 +6695,12 @@ impl BulkContraction<AntiMotor> for DualNum {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e235, e315, e125, e5
             self.group0().yy().with_zw(self[e12345], (right_dual_g0[3] * self[e5]) + (right_dual_g1[3] * self[e12345])) * right_dual_g1.xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for DualNum {
@@ -6714,7 +6714,7 @@ impl BulkContraction<AntiPlane> for DualNum {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl BulkContraction<AntiScalar> for DualNum {
@@ -6724,7 +6724,7 @@ impl BulkContraction<AntiScalar> for DualNum {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for DualNum {
@@ -6738,14 +6738,14 @@ impl BulkContraction<Circle> for DualNum {
     //  no simd        0       14        0
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35
             Simd32x3::from(self[e12345]) * other.group2(),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for DualNum {
@@ -6759,14 +6759,14 @@ impl BulkContraction<CircleRotor> for DualNum {
     //  no simd        0       19        0
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, scalar
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for DualNum {
@@ -6780,14 +6780,14 @@ impl BulkContraction<Dipole> for DualNum {
     //  no simd        0       20        0
     fn bulk_contraction(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125
             Simd32x3::from(self[e12345]) * other.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for DualNum {
@@ -6801,7 +6801,7 @@ impl BulkContraction<DipoleInversion> for DualNum {
     //  no simd        0       30        0
     fn bulk_contraction(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e12345]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -6810,7 +6810,7 @@ impl BulkContraction<DipoleInversion> for DualNum {
             Simd32x4::from(self[e12345]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for DualNum {
@@ -6824,7 +6824,7 @@ impl BulkContraction<DualNum> for DualNum {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[e12345]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[e12345]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]))
     }
 }
 impl BulkContraction<FlatPoint> for DualNum {
@@ -6838,10 +6838,10 @@ impl BulkContraction<FlatPoint> for DualNum {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e15] * -1.0, other[e25] * -1.0, other[e35] * -1.0, other[e45]]),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for DualNum {
@@ -6852,12 +6852,12 @@ impl BulkContraction<Flector> for DualNum {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for DualNum {
@@ -6868,12 +6868,12 @@ impl BulkContraction<Line> for DualNum {
     // no simd        0        6        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[e12345]) * other.group0(),
             // e15, e25, e35
             Simd32x3::from(self[e12345]) * other.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for DualNum {
@@ -6884,12 +6884,12 @@ impl BulkContraction<Motor> for DualNum {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(self[e12345]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, e3215
             Simd32x4::from(self[e12345]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for DualNum {
@@ -6907,7 +6907,7 @@ impl BulkContraction<MultiVector> for DualNum {
         use crate::elements::*;
         let right_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(right_dual_g10 * self[e5]) + (right_dual_g0[0] * self[e12345]), right_dual_g0[1] * self[e12345]]),
             // e1, e2, e3, e4
@@ -6930,7 +6930,7 @@ impl BulkContraction<MultiVector> for DualNum {
             Simd32x4::from(self[e12345]) * other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             right_dual_g10 * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for DualNum {
@@ -6944,10 +6944,10 @@ impl BulkContraction<Plane> for DualNum {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for DualNum {
@@ -6962,7 +6962,7 @@ impl BulkContraction<RoundPoint> for DualNum {
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other[e4] * -1.0;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(right_dual_g1 * self[e5]),
             // e23, e31, e12, e45
@@ -6971,7 +6971,7 @@ impl BulkContraction<RoundPoint> for DualNum {
             Simd32x3::from(0.0).with_w(right_dual_g1 * self[e12345]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for DualNum {
@@ -6982,7 +6982,7 @@ impl BulkContraction<Scalar> for DualNum {
     // no simd        0        2        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[scalar]) * self.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<Sphere> for DualNum {
@@ -6996,12 +6996,12 @@ impl BulkContraction<Sphere> for DualNum {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             self[e12345] * other[e3215],
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for DualNum {
@@ -7017,7 +7017,7 @@ impl BulkContraction<VersorEven> for DualNum {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0().yy().with_zw(self[e12345], (right_dual_g0[3] * self[e12345]) + (right_dual_g2[3] * self[e5])) * right_dual_g0.xyz().with_w(1.0),
             // e23, e31, e12, e45
@@ -7026,7 +7026,7 @@ impl BulkContraction<VersorEven> for DualNum {
             right_dual_g2 * Simd32x4::from(self[e12345]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for DualNum {
@@ -7042,7 +7042,7 @@ impl BulkContraction<VersorOdd> for DualNum {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e415, e425, e435, e321
@@ -7051,7 +7051,7 @@ impl BulkContraction<VersorOdd> for DualNum {
             self.group0().yy().with_zw(self[e12345], (right_dual_g0[3] * self[e5]) + (right_dual_g2[3] * self[e12345])) * right_dual_g2.xyz().with_w(1.0),
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for FlatPoint {
@@ -7074,7 +7074,7 @@ impl BulkContraction<AntiCircleRotor> for FlatPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -7082,7 +7082,7 @@ impl BulkContraction<AntiCircleRotor> for FlatPoint {
             // e15, e25, e35, scalar
             (self.group0().xyz() * right_dual_g2.www())
                 .with_w(-(right_dual_g0[0] * self[e15]) - (right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (other[e45] * self[e45])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for FlatPoint {
@@ -7097,12 +7097,12 @@ impl BulkContraction<AntiDipoleInversion> for FlatPoint {
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[e4] * -1.0) * self.group0() * Simd32x4::from(-1.0),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for FlatPoint {
@@ -7113,7 +7113,7 @@ impl BulkContraction<AntiDualNum> for FlatPoint {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiFlector> for FlatPoint {
@@ -7128,10 +7128,10 @@ impl BulkContraction<AntiFlector> for FlatPoint {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
             (right_dual_g1[0] * self[e15]) + (right_dual_g1[1] * self[e25]) + (right_dual_g1[2] * self[e35]) + (right_dual_g1[3] * self[e45]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl BulkContraction<AntiMotor> for FlatPoint {
@@ -7142,7 +7142,7 @@ impl BulkContraction<AntiMotor> for FlatPoint {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiPlane> for FlatPoint {
@@ -7157,10 +7157,10 @@ impl BulkContraction<AntiPlane> for FlatPoint {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl BulkContraction<Dipole> for FlatPoint {
@@ -7175,10 +7175,10 @@ impl BulkContraction<Dipole> for FlatPoint {
     fn bulk_contraction(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15]) - (right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for FlatPoint {
@@ -7193,10 +7193,10 @@ impl BulkContraction<DipoleInversion> for FlatPoint {
     fn bulk_contraction(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * self[e15]) - (right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for FlatPoint {
@@ -7210,7 +7210,7 @@ impl BulkContraction<DualNum> for FlatPoint {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e5] * self[e45] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]));
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e5] * self[e45] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]))
     }
 }
 impl BulkContraction<FlatPoint> for FlatPoint {
@@ -7220,7 +7220,7 @@ impl BulkContraction<FlatPoint> for FlatPoint {
     // f32        0        2        0
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e45] * self[e45] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e45] * self[e45] * -1.0)
     }
 }
 impl BulkContraction<Flector> for FlatPoint {
@@ -7230,7 +7230,7 @@ impl BulkContraction<Flector> for FlatPoint {
     // f32        0        2        0
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e45] * other[e45] * -1.0);
+        Scalar::from_groups(/* scalar */ self[e45] * other[e45] * -1.0)
     }
 }
 impl BulkContraction<Motor> for FlatPoint {
@@ -7244,7 +7244,7 @@ impl BulkContraction<Motor> for FlatPoint {
     //  no simd        0        4        0
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e45] * other[e5] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]));
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e45] * other[e5] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]))
     }
 }
 impl BulkContraction<MultiVector> for FlatPoint {
@@ -7261,7 +7261,7 @@ impl BulkContraction<MultiVector> for FlatPoint {
         use crate::elements::*;
         let right_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g7[0] * self[e15]) - (right_dual_g7[1] * self[e25]) - (right_dual_g7[2] * self[e35]) - (self[e45] * other[e45]),
@@ -7287,7 +7287,7 @@ impl BulkContraction<MultiVector> for FlatPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for FlatPoint {
@@ -7302,12 +7302,12 @@ impl BulkContraction<RoundPoint> for FlatPoint {
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[e4] * -1.0) * self.group0() * Simd32x4::from(-1.0),
             // e5
             (right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for FlatPoint {
@@ -7318,7 +7318,7 @@ impl BulkContraction<Scalar> for FlatPoint {
     // no simd        0        4        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<VersorEven> for FlatPoint {
@@ -7333,12 +7333,12 @@ impl BulkContraction<VersorEven> for FlatPoint {
     fn bulk_contraction(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[e4] * -1.0) * self.group0() * Simd32x4::from(-1.0),
             // e5
             (right_dual_g3[0] * self[e15]) + (right_dual_g3[1] * self[e25]) + (right_dual_g3[2] * self[e35]) + (right_dual_g3[3] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for FlatPoint {
@@ -7354,7 +7354,7 @@ impl BulkContraction<VersorOdd> for FlatPoint {
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -7362,7 +7362,7 @@ impl BulkContraction<VersorOdd> for FlatPoint {
             // e15, e25, e35, scalar
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz())
                 .with_w(-(right_dual_g0[0] * self[e15]) - (right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (self[e45] * other[e45])),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Flector {
@@ -7386,7 +7386,7 @@ impl BulkContraction<AntiCircleRotor> for Flector {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((right_dual_g0.zxy() * self.group1().yzx()) - (right_dual_g0.yzx() * self.group1().zxy()))
                 .with_w(-(right_dual_g0[0] * self[e15]) - (right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (right_dual_g1[3] * self[e45])),
@@ -7401,7 +7401,7 @@ impl BulkContraction<AntiCircleRotor> for Flector {
                 - (right_dual_g2.zxy() * self.group1().yzx()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g2[3]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Flector {
@@ -7419,7 +7419,7 @@ impl BulkContraction<AntiDipoleInversion> for Flector {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -7433,7 +7433,7 @@ impl BulkContraction<AntiDipoleInversion> for Flector {
                 - (Simd32x4::from(self[e3215]) * other.group0().with_w(right_dual_g1[3]))
                 - (right_dual_g2.wwwy() * self.group0().xyz().with_w(self[e4315]))
                 - (self.group1().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Flector {
@@ -7444,12 +7444,12 @@ impl BulkContraction<AntiDualNum> for Flector {
     // no simd        0        8        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[scalar]) * self.group0(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for Flector {
@@ -7464,10 +7464,10 @@ impl BulkContraction<AntiFlatPoint> for Flector {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
             -(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl BulkContraction<AntiFlector> for Flector {
@@ -7484,7 +7484,7 @@ impl BulkContraction<AntiFlector> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             ((right_dual_g1.yzx() * self.group1().zxy()) - (right_dual_g1.zxy() * self.group1().yzx())).with_w(0.0),
             // e235, e315, e125, e5
@@ -7496,7 +7496,7 @@ impl BulkContraction<AntiFlector> for Flector {
                         - (right_dual_g0[3] * self[e3215]),
                 )
                 - (self.group1().wwwx() * right_dual_g1.xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Flector {
@@ -7513,7 +7513,7 @@ impl BulkContraction<AntiLine> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[0] * self[e3215]) + (right_dual_g1[1] * self[e4125]),
@@ -7521,7 +7521,7 @@ impl BulkContraction<AntiLine> for Flector {
                 (right_dual_g0[2] * self[e3215]) + (right_dual_g1[0] * self[e4315]),
                 -(right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]),
             ]) - (self.group1().yzxx() * right_dual_g1.zxy().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Flector {
@@ -7537,7 +7537,7 @@ impl BulkContraction<AntiMotor> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[0] * self[e3215]) + (right_dual_g1[1] * self[e4125]),
@@ -7548,7 +7548,7 @@ impl BulkContraction<AntiMotor> for Flector {
                 - (self.group1().yzxx() * right_dual_g1.zxy().with_w(right_dual_g0[0])),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Flector {
@@ -7564,7 +7564,7 @@ impl BulkContraction<AntiPlane> for Flector {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             ((right_dual_g0.yzx() * self.group1().zxy()) - (right_dual_g0.zxy() * self.group1().yzx())).with_w(0.0),
             // e235, e315, e125, e5
@@ -7574,7 +7574,7 @@ impl BulkContraction<AntiPlane> for Flector {
                     .with_w((right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]))
                 * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
                 + (right_dual_g0.wwwx() * self.group1().xyz().with_w(self[e15])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for Flector {
@@ -7589,7 +7589,7 @@ impl BulkContraction<Circle> for Flector {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -7599,7 +7599,7 @@ impl BulkContraction<Circle> for Flector {
             ]) + (self.group1().yzxx() * right_dual_g1.zxy().with_w(other[e423])),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (other[e235] * self[e4235]) - (other[e315] * self[e4315]) - (other[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Flector {
@@ -7615,7 +7615,7 @@ impl BulkContraction<CircleRotor> for Flector {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -7625,7 +7625,7 @@ impl BulkContraction<CircleRotor> for Flector {
             ]) + (self.group1().yzxx() * right_dual_g1.zxy().with_w(other[e423])),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[0] * self[e4235]) - (right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Flector {
@@ -7643,7 +7643,7 @@ impl BulkContraction<Dipole> for Flector {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (right_dual_g0.zxy() * self.group1().yzx()) - (right_dual_g0.yzx() * self.group1().zxy()),
             // e23, e31, e12, e45
@@ -7656,7 +7656,7 @@ impl BulkContraction<Dipole> for Flector {
                 (right_dual_g2[0] * self[e4315]) + (right_dual_g1[2] * self[e3215]),
                 -(right_dual_g0[1] * self[e25]) - (right_dual_g0[2] * self[e35]) - (right_dual_g1[3] * self[e45]),
             ]) - (right_dual_g2.zxy() * self.group1().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Flector {
@@ -7675,7 +7675,7 @@ impl BulkContraction<DipoleInversion> for Flector {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (right_dual_g0.zxy() * self.group1().yzx()) - (right_dual_g0.yzx() * self.group1().zxy()),
             // e23, e31, e12, e45
@@ -7691,7 +7691,7 @@ impl BulkContraction<DipoleInversion> for Flector {
                         - (right_dual_g1[3] * self[e45]),
                 )
                 - (right_dual_g2.zxy() * self.group1().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Flector {
@@ -7707,12 +7707,12 @@ impl BulkContraction<DualNum> for Flector {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             (self.group1().xyz() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(right_dual_g0[0] * self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for Flector {
@@ -7727,12 +7727,12 @@ impl BulkContraction<FlatPoint> for Flector {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(right_dual_g0[3]) * self.group1().xyz().with_w(self[e45]) * Simd32x4::from(-1.0),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group1().zxy()) - (right_dual_g0.zxy() * self.group1().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Flector {
@@ -7749,13 +7749,13 @@ impl BulkContraction<Flector> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (self.group1().xyz() * right_dual_g0.www() * Simd32x3::from(-1.0))
                 .with_w((right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) - (right_dual_g0[3] * self[e45])),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group1().zxy()) - (right_dual_g0.zxy() * self.group1().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Flector {
@@ -7769,7 +7769,7 @@ impl BulkContraction<Line> for Flector {
     //  no simd        5        9        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 self[e4315] * other[e435],
@@ -7777,7 +7777,7 @@ impl BulkContraction<Line> for Flector {
                 self[e4235] * other[e425],
                 -(self[e4315] * other[e315]) - (self[e4125] * other[e125]),
             ]) - (self.group1().zxyx() * other.group0().yzx().with_w(other[e235])),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Flector {
@@ -7794,14 +7794,14 @@ impl BulkContraction<Motor> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             (self.group1().xyz() * right_dual_g1.www()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(-(right_dual_g1[1] * self[e4315]) - (right_dual_g1[2] * self[e4125]))
                 + (right_dual_g0.zxy() * self.group1().yzx()).with_w(right_dual_g1[3] * self[e45])
                 - (self.group1().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Flector {
@@ -7824,7 +7824,7 @@ impl BulkContraction<MultiVector> for Flector {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e3215])
@@ -7869,7 +7869,7 @@ impl BulkContraction<MultiVector> for Flector {
             Simd32x4::from(right_dual_g0[1]) * self.group1(),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for Flector {
@@ -7884,7 +7884,7 @@ impl BulkContraction<Plane> for Flector {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]));
+        Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]))
     }
 }
 impl BulkContraction<RoundPoint> for Flector {
@@ -7901,7 +7901,7 @@ impl BulkContraction<RoundPoint> for Flector {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g1) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -7911,7 +7911,7 @@ impl BulkContraction<RoundPoint> for Flector {
             // e1, e2, e3, e5
             (Simd32x3::from(right_dual_g1) * self.group0().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_dual_g0[0] * self[e15]) + (right_dual_g0[1] * self[e25]) + (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Flector {
@@ -7922,12 +7922,12 @@ impl BulkContraction<Scalar> for Flector {
     // no simd        0        8        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[scalar]) * self.group0(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for Flector {
@@ -7942,10 +7942,10 @@ impl BulkContraction<Sphere> for Flector {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Flector {
@@ -7964,7 +7964,7 @@ impl BulkContraction<VersorEven> for Flector {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -7978,7 +7978,7 @@ impl BulkContraction<VersorEven> for Flector {
                 - (right_dual_g2.wwwx() * self.group0().xyz().with_w(self[e4235]))
                 - (self.group1().zxyy() * right_dual_g1.yzx().with_w(right_dual_g2[1]))
                 - (self.group1().wwwz() * right_dual_g0.xyz().with_w(right_dual_g2[2])),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Flector {
@@ -7997,7 +7997,7 @@ impl BulkContraction<VersorOdd> for Flector {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group1().yzxx() * right_dual_g0.zxy().with_w(right_dual_g3[0]))
                 + Simd32x3::from(0.0).with_w(
@@ -8017,7 +8017,7 @@ impl BulkContraction<VersorOdd> for Flector {
                 - (right_dual_g2.zxy() * self.group1().yzx()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Line {
@@ -8041,7 +8041,7 @@ impl BulkContraction<AntiCircleRotor> for Line {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -8059,7 +8059,7 @@ impl BulkContraction<AntiCircleRotor> for Line {
                     - (right_dual_g2[1] * self[e425])
                     - (right_dual_g2[2] * self[e435]),
             ]) - (right_dual_g0.yzx() * self.group1().zxy()).with_w(right_dual_g2[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Line {
@@ -8077,7 +8077,7 @@ impl BulkContraction<AntiDipoleInversion> for Line {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -8089,7 +8089,7 @@ impl BulkContraction<AntiDipoleInversion> for Line {
                 (right_dual_g3[1] * self[e235]) + (right_dual_g3[3] * self[e435]),
                 -(right_dual_g1[0] * self[e415]) - (right_dual_g1[1] * self[e425]) - (right_dual_g1[2] * self[e435]) - (other[e431] * self[e315]) - (other[e412] * self[e125]),
             ]) - (self.group1().zxy() * right_dual_g3.yzx()).with_w(other[e423] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Line {
@@ -8100,12 +8100,12 @@ impl BulkContraction<AntiDualNum> for Line {
     // no simd        0        6        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(other[scalar]) * self.group0(),
             // e235, e315, e125
             Simd32x3::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for Line {
@@ -8120,7 +8120,7 @@ impl BulkContraction<AntiFlector> for Line {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g1[2] * self[e315]) + (right_dual_g1[3] * self[e415]),
@@ -8128,7 +8128,7 @@ impl BulkContraction<AntiFlector> for Line {
                 (right_dual_g1[1] * self[e235]) + (right_dual_g1[3] * self[e435]),
                 -(right_dual_g1[1] * self[e425]) - (right_dual_g1[2] * self[e435]),
             ]) - (right_dual_g1.yzxx() * self.group1().zxy().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Line {
@@ -8144,7 +8144,7 @@ impl BulkContraction<AntiLine> for Line {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
             -(right_dual_g0[0] * self[e235])
                 - (right_dual_g0[1] * self[e315])
                 - (right_dual_g0[2] * self[e125])
@@ -8152,7 +8152,7 @@ impl BulkContraction<AntiLine> for Line {
                 - (right_dual_g1[1] * self[e425])
                 - (right_dual_g1[2] * self[e435]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl BulkContraction<AntiMotor> for Line {
@@ -8169,7 +8169,7 @@ impl BulkContraction<AntiMotor> for Line {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group0() * right_dual_g0.www()).with_w(0.0),
             // e235, e315, e125, e5
@@ -8181,7 +8181,7 @@ impl BulkContraction<AntiMotor> for Line {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Line {
@@ -8196,7 +8196,7 @@ impl BulkContraction<AntiPlane> for Line {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g0[3] * self[e415]),
@@ -8204,7 +8204,7 @@ impl BulkContraction<AntiPlane> for Line {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (right_dual_g0.yzxx() * self.group1().zxy().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for Line {
@@ -8219,7 +8219,7 @@ impl BulkContraction<Circle> for Line {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -8227,7 +8227,7 @@ impl BulkContraction<Circle> for Line {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Line {
@@ -8242,7 +8242,7 @@ impl BulkContraction<CircleRotor> for Line {
     fn bulk_contraction(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g1[0] * self[e415])
                 - (right_dual_g1[1] * self[e425])
@@ -8250,7 +8250,7 @@ impl BulkContraction<CircleRotor> for Line {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Line {
@@ -8268,7 +8268,7 @@ impl BulkContraction<Dipole> for Line {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[3] * self[e415]),
@@ -8283,7 +8283,7 @@ impl BulkContraction<Dipole> for Line {
                 - (right_dual_g1[0] * self[e235])
                 - (right_dual_g1[1] * self[e315])
                 - (right_dual_g1[2] * self[e125]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Line {
@@ -8301,7 +8301,7 @@ impl BulkContraction<DipoleInversion> for Line {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g1[3] * self[e415]),
@@ -8316,7 +8316,7 @@ impl BulkContraction<DipoleInversion> for Line {
                 - (right_dual_g2[0] * self[e415])
                 - (right_dual_g2[1] * self[e425])
                 - (right_dual_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Line {
@@ -8330,7 +8330,7 @@ impl BulkContraction<DualNum> for Line {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0))
     }
 }
 impl BulkContraction<FlatPoint> for Line {
@@ -8346,10 +8346,10 @@ impl BulkContraction<FlatPoint> for Line {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (Simd32x3::from(right_dual_g0[3]) * self.group0()).with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Line {
@@ -8365,10 +8365,10 @@ impl BulkContraction<Flector> for Line {
     fn bulk_contraction(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             (Simd32x3::from(right_dual_g0[3]) * self.group0()).with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Line {
@@ -8378,7 +8378,7 @@ impl BulkContraction<Line> for Line {
     // f32        2        3        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435]));
+        Scalar::from_groups(/* scalar */ -(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435]))
     }
 }
 impl BulkContraction<Motor> for Line {
@@ -8394,12 +8394,12 @@ impl BulkContraction<Motor> for Line {
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
             // e15, e25, e35, e3215
             (self.group0() * (other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Line {
@@ -8421,7 +8421,7 @@ impl BulkContraction<MultiVector> for Line {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(self[e415] * other[e415])
@@ -8467,7 +8467,7 @@ impl BulkContraction<MultiVector> for Line {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for Line {
@@ -8484,14 +8484,14 @@ impl BulkContraction<RoundPoint> for Line {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g1) * self.group0(),
             // e23, e31, e12, e45
             (Simd32x3::from(right_dual_g1) * self.group1()).with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
             // e15, e25, e35
             (Simd32x3::from(right_dual_g0[3]) * self.group0()) + (self.group1().yzx() * right_dual_g0.zxy()) - (self.group1().zxy() * right_dual_g0.yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Line {
@@ -8502,12 +8502,12 @@ impl BulkContraction<Scalar> for Line {
     // no simd        0        6        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(other[scalar]) * self.group0(),
             // e235, e315, e125
             Simd32x3::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Line {
@@ -8526,7 +8526,7 @@ impl BulkContraction<VersorEven> for Line {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -8542,7 +8542,7 @@ impl BulkContraction<VersorEven> for Line {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ]) - (self.group1().zxy() * right_dual_g3.yzx()).with_w(right_dual_g1[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Line {
@@ -8560,7 +8560,7 @@ impl BulkContraction<VersorOdd> for Line {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -8578,7 +8578,7 @@ impl BulkContraction<VersorOdd> for Line {
                     - (right_dual_g2[1] * self[e425])
                     - (right_dual_g2[2] * self[e435]),
             ]) - (self.group1().zxy() * right_dual_g0.yzx()).with_w(right_dual_g2[0] * self[e415]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Motor {
@@ -8602,7 +8602,7 @@ impl BulkContraction<AntiCircleRotor> for Motor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(self[e12345]) * right_dual_g0.with_w(right_dual_g2[3]),
             // e415, e425, e435, e321
@@ -8624,7 +8624,7 @@ impl BulkContraction<AntiCircleRotor> for Motor {
                 (right_dual_g0[1] * self[e235]) + (right_dual_g1[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (right_dual_g0.yzx() * self.group1().zxy()).with_w(right_dual_g0[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Motor {
@@ -8642,7 +8642,7 @@ impl BulkContraction<AntiDipoleInversion> for Motor {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((other.group0() * self.group0().www()) + (self.group0().xyz() * right_dual_g2.www())).with_w(
                 (right_dual_g2[3] * self[e5])
@@ -8662,7 +8662,7 @@ impl BulkContraction<AntiDipoleInversion> for Motor {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Motor {
@@ -8676,12 +8676,12 @@ impl BulkContraction<AntiDualNum> for Motor {
     //  no simd        1       10        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(other[scalar]) * self.group0(),
             // e235, e315, e125, e5
             other.group0().yy().with_zw(other[scalar], (other[e3215] * self[e12345]) + (other[scalar] * self[e5])) * self.group1().xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for Motor {
@@ -8695,7 +8695,7 @@ impl BulkContraction<AntiFlatPoint> for Motor {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e321] * -1.0))
     }
 }
 impl BulkContraction<AntiFlector> for Motor {
@@ -8710,7 +8710,7 @@ impl BulkContraction<AntiFlector> for Motor {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g1[2] * self[e315]) + (right_dual_g1[3] * self[e415]),
@@ -8721,7 +8721,7 @@ impl BulkContraction<AntiFlector> for Motor {
                 - (right_dual_g1.yzxx() * self.group1().zxy().with_w(self[e415])),
             // e4235, e4315, e4125, e3215
             right_dual_g1 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Motor {
@@ -8737,7 +8737,7 @@ impl BulkContraction<AntiLine> for Motor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_dual_g0 * self.group0().www()).with_w(0.0),
             // e235, e315, e125, e5
@@ -8749,7 +8749,7 @@ impl BulkContraction<AntiLine> for Motor {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Motor {
@@ -8766,7 +8766,7 @@ impl BulkContraction<AntiMotor> for Motor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             ((Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e12345]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * self[e12345]),
             // e235, e315, e125, e5
@@ -8780,7 +8780,7 @@ impl BulkContraction<AntiMotor> for Motor {
                         - (right_dual_g1[1] * self[e425])
                         - (right_dual_g1[2] * self[e435]),
                 ),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Motor {
@@ -8795,7 +8795,7 @@ impl BulkContraction<AntiPlane> for Motor {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[2] * self[e315]) + (right_dual_g0[3] * self[e415]),
@@ -8805,7 +8805,7 @@ impl BulkContraction<AntiPlane> for Motor {
             ]) - (right_dual_g0.yzxx() * self.group1().zxy().with_w(self[e415])),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiScalar> for Motor {
@@ -8815,7 +8815,7 @@ impl BulkContraction<AntiScalar> for Motor {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for Motor {
@@ -8831,7 +8831,7 @@ impl BulkContraction<Circle> for Motor {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -8845,7 +8845,7 @@ impl BulkContraction<Circle> for Motor {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Motor {
@@ -8862,7 +8862,7 @@ impl BulkContraction<CircleRotor> for Motor {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -8877,7 +8877,7 @@ impl BulkContraction<CircleRotor> for Motor {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Motor {
@@ -8895,7 +8895,7 @@ impl BulkContraction<Dipole> for Motor {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -8913,7 +8913,7 @@ impl BulkContraction<Dipole> for Motor {
                     - (right_dual_g1[1] * self[e315])
                     - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group1().zxy()).with_w(right_dual_g2[0] * self[e415]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Motor {
@@ -8932,7 +8932,7 @@ impl BulkContraction<DipoleInversion> for Motor {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -8952,7 +8952,7 @@ impl BulkContraction<DipoleInversion> for Motor {
                     - (right_dual_g2[2] * self[e435]),
             ]) + (right_dual_g0.zxy() * self.group1().yzx()).with_w(right_dual_g3[3] * self[e12345])
                 - (self.group1().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Motor {
@@ -8968,12 +8968,12 @@ impl BulkContraction<DualNum> for Motor {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(right_dual_g0[1] * self[e12345]),
             // e15, e25, e35, e3215
             Simd32x4::from(right_dual_g0[0]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for Motor {
@@ -8989,12 +8989,12 @@ impl BulkContraction<FlatPoint> for Motor {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
             (self.group0().xyz() * right_dual_g0.www()).with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Motor {
@@ -9010,7 +9010,7 @@ impl BulkContraction<Flector> for Motor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
@@ -9019,7 +9019,7 @@ impl BulkContraction<Flector> for Motor {
                     .xyz()
                     .with_w(-(right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])))
                 + (self.group0() * right_dual_g0.www().with_w(right_dual_g1[3])),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Motor {
@@ -9033,12 +9033,12 @@ impl BulkContraction<Line> for Motor {
     //  no simd        2        9        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(self[e12345]) * other.group0()).with_w(-(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435])),
             // e15, e25, e35, e3215
             (other.group1() * self.group0().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Motor {
@@ -9055,13 +9055,13 @@ impl BulkContraction<Motor> for Motor {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(self[e12345]) * right_dual_g0.xyz())
                 .with_w((right_dual_g0[3] * self[e12345]) - (right_dual_g0[0] * self[e415]) - (right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435])),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g1[3]) * self.group0().xyz()) + (Simd32x3::from(self[e12345]) * right_dual_g1.xyz())).with_w(right_dual_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Motor {
@@ -9084,7 +9084,7 @@ impl BulkContraction<MultiVector> for Motor {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g10 * self[e5]) + (right_dual_g0[0] * self[e12345])
@@ -9134,7 +9134,7 @@ impl BulkContraction<MultiVector> for Motor {
             right_dual_g9 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g10 * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for Motor {
@@ -9148,10 +9148,10 @@ impl BulkContraction<Plane> for Motor {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for Motor {
@@ -9168,7 +9168,7 @@ impl BulkContraction<RoundPoint> for Motor {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_dual_g1) * self.group0().xyz().with_w(self[e5]),
             // e23, e31, e12, e45
@@ -9178,7 +9178,7 @@ impl BulkContraction<RoundPoint> for Motor {
                 .with_w(right_dual_g1 * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Motor {
@@ -9189,12 +9189,12 @@ impl BulkContraction<Scalar> for Motor {
     // no simd        0        8        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(other[scalar]) * self.group0(),
             // e235, e315, e125, e5
             Simd32x4::from(other[scalar]) * self.group1(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for Motor {
@@ -9208,12 +9208,12 @@ impl BulkContraction<Sphere> for Motor {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             self[e12345] * other[e3215],
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Motor {
@@ -9232,7 +9232,7 @@ impl BulkContraction<VersorEven> for Motor {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group0() * right_dual_g2.www().with_w(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(
@@ -9253,7 +9253,7 @@ impl BulkContraction<VersorEven> for Motor {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Motor {
@@ -9272,7 +9272,7 @@ impl BulkContraction<VersorOdd> for Motor {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e415, e425, e435, e321
@@ -9296,7 +9296,7 @@ impl BulkContraction<VersorOdd> for Motor {
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) + (self.group0() * right_dual_g1.www().with_w(right_dual_g3[3]))
                 - (right_dual_g0.yzxx() * self.group1().zxy().with_w(self[e415])),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for MultiVector {
@@ -9320,7 +9320,7 @@ impl BulkContraction<AntiCircleRotor> for MultiVector {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g2[3] * self[scalar])
@@ -9377,7 +9377,7 @@ impl BulkContraction<AntiCircleRotor> for MultiVector {
             Simd32x4::from(right_dual_g2[3]) * self.group9(),
             // e1234
             right_dual_g2[3] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for MultiVector {
@@ -9395,7 +9395,7 @@ impl BulkContraction<AntiDipoleInversion> for MultiVector {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g2[3] * self[e5]) + (right_dual_g3[0] * self[e1]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) + (right_dual_g3[3] * self[e4])
@@ -9450,7 +9450,7 @@ impl BulkContraction<AntiDipoleInversion> for MultiVector {
             right_dual_g3 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g2[3] * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for MultiVector {
@@ -9465,7 +9465,7 @@ impl BulkContraction<AntiDualNum> for MultiVector {
     //  no simd        2       34        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(other[e3215] * self[e1234]) + (other[scalar] * self[scalar]), other[scalar] * self[e12345]]),
             // e1, e2, e3, e4
@@ -9488,7 +9488,7 @@ impl BulkContraction<AntiDualNum> for MultiVector {
             Simd32x4::from(other[scalar]) * self.group9(),
             // e1234
             other[scalar] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for MultiVector {
@@ -9503,7 +9503,7 @@ impl BulkContraction<AntiFlatPoint> for MultiVector {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]),
@@ -9529,7 +9529,7 @@ impl BulkContraction<AntiFlatPoint> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for MultiVector {
@@ -9546,7 +9546,7 @@ impl BulkContraction<AntiFlector> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e1]) + (right_dual_g1[1] * self[e2]) + (right_dual_g1[2] * self[e3]) + (right_dual_g1[3] * self[e4])
@@ -9592,7 +9592,7 @@ impl BulkContraction<AntiFlector> for MultiVector {
             right_dual_g1 * Simd32x4::from(self[e12345]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for MultiVector {
@@ -9609,7 +9609,7 @@ impl BulkContraction<AntiLine> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g0[0] * self[e23])
@@ -9655,7 +9655,7 @@ impl BulkContraction<AntiLine> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for MultiVector {
@@ -9672,7 +9672,7 @@ impl BulkContraction<AntiMotor> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[3] * self[scalar]) + (right_dual_g1[3] * self[e1234])
@@ -9722,7 +9722,7 @@ impl BulkContraction<AntiMotor> for MultiVector {
             Simd32x4::from(right_dual_g0[3]) * self.group9(),
             // e1234
             right_dual_g0[3] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for MultiVector {
@@ -9738,7 +9738,7 @@ impl BulkContraction<AntiPlane> for MultiVector {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]) + (right_dual_g0[3] * self[e4]),
@@ -9774,7 +9774,7 @@ impl BulkContraction<AntiPlane> for MultiVector {
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<AntiScalar> for MultiVector {
@@ -9784,7 +9784,7 @@ impl BulkContraction<AntiScalar> for MultiVector {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for MultiVector {
@@ -9800,7 +9800,7 @@ impl BulkContraction<Circle> for MultiVector {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g1[0] * self[e415])
@@ -9841,7 +9841,7 @@ impl BulkContraction<Circle> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for MultiVector {
@@ -9858,7 +9858,7 @@ impl BulkContraction<CircleRotor> for MultiVector {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g2[3] * self[e12345])
@@ -9900,7 +9900,7 @@ impl BulkContraction<CircleRotor> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for MultiVector {
@@ -9918,7 +9918,7 @@ impl BulkContraction<Dipole> for MultiVector {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g0[0] * self[e15])
@@ -9969,7 +9969,7 @@ impl BulkContraction<Dipole> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for MultiVector {
@@ -9988,7 +9988,7 @@ impl BulkContraction<DipoleInversion> for MultiVector {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g2[3] * self[e3215])
@@ -10046,7 +10046,7 @@ impl BulkContraction<DipoleInversion> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for MultiVector {
@@ -10062,7 +10062,7 @@ impl BulkContraction<DualNum> for MultiVector {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(right_dual_g0[0] * self[e4]) + (right_dual_g0[1] * self[e12345]), 0.0]),
             // e1, e2, e3, e4
@@ -10085,7 +10085,7 @@ impl BulkContraction<DualNum> for MultiVector {
             Simd32x3::from(0.0).with_w(right_dual_g0[0] * self[e12345]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for MultiVector {
@@ -10101,7 +10101,7 @@ impl BulkContraction<FlatPoint> for MultiVector {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(right_dual_g0[0] * self[e41]) - (right_dual_g0[1] * self[e42]) - (right_dual_g0[2] * self[e43]) - (right_dual_g0[3] * self[e45]),
@@ -10128,7 +10128,7 @@ impl BulkContraction<FlatPoint> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for MultiVector {
@@ -10145,7 +10145,7 @@ impl BulkContraction<Flector> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e1234])
@@ -10178,7 +10178,7 @@ impl BulkContraction<Flector> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Line> for MultiVector {
@@ -10193,7 +10193,7 @@ impl BulkContraction<Line> for MultiVector {
     //  no simd       15       24        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -(other[e415] * self[e415])
@@ -10225,7 +10225,7 @@ impl BulkContraction<Line> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for MultiVector {
@@ -10242,7 +10242,7 @@ impl BulkContraction<Motor> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[3] * self[e12345]) + (right_dual_g1[3] * self[e4])
@@ -10277,7 +10277,7 @@ impl BulkContraction<Motor> for MultiVector {
             Simd32x3::from(0.0).with_w(right_dual_g1[3] * self[e12345]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for MultiVector {
@@ -10301,7 +10301,7 @@ impl BulkContraction<MultiVector> for MultiVector {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g10 * self[e5])
@@ -10414,7 +10414,7 @@ impl BulkContraction<MultiVector> for MultiVector {
             (right_dual_g9 * Simd32x4::from(self[e12345])) + (Simd32x4::from(right_dual_g0[1]) * self.group9()),
             // e1234
             (right_dual_g10 * self[e12345]) + (right_dual_g0[1] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for MultiVector {
@@ -10430,7 +10430,7 @@ impl BulkContraction<Plane> for MultiVector {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e1234]),
@@ -10456,7 +10456,7 @@ impl BulkContraction<Plane> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for MultiVector {
@@ -10473,7 +10473,7 @@ impl BulkContraction<RoundPoint> for MultiVector {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1 * self[e5]) + (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]) + (right_dual_g0[3] * self[e4]),
@@ -10510,7 +10510,7 @@ impl BulkContraction<RoundPoint> for MultiVector {
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g1 * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for MultiVector {
@@ -10526,7 +10526,7 @@ impl BulkContraction<Scalar> for MultiVector {
     //  no simd        0       32        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(other[scalar]) * self.group0(),
             // e1, e2, e3, e4
@@ -10549,7 +10549,7 @@ impl BulkContraction<Scalar> for MultiVector {
             Simd32x4::from(other[scalar]) * self.group9(),
             // e1234
             self[e1234] * other[scalar],
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for MultiVector {
@@ -10564,7 +10564,7 @@ impl BulkContraction<Sphere> for MultiVector {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[0] * self[e4235])
@@ -10594,7 +10594,7 @@ impl BulkContraction<Sphere> for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for MultiVector {
@@ -10613,7 +10613,7 @@ impl BulkContraction<VersorEven> for MultiVector {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[3] * self[e12345])
@@ -10673,7 +10673,7 @@ impl BulkContraction<VersorEven> for MultiVector {
             right_dual_g3 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g2[3] * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for MultiVector {
@@ -10692,7 +10692,7 @@ impl BulkContraction<VersorOdd> for MultiVector {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[3] * self[scalar])
@@ -10755,7 +10755,7 @@ impl BulkContraction<VersorOdd> for MultiVector {
             Simd32x4::from(right_dual_g0[3]) * self.group9(),
             // e1234
             right_dual_g0[3] * self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Plane {
@@ -10779,7 +10779,7 @@ impl BulkContraction<AntiCircleRotor> for Plane {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -10790,7 +10790,7 @@ impl BulkContraction<AntiCircleRotor> for Plane {
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g2[3]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Plane {
@@ -10808,7 +10808,7 @@ impl BulkContraction<AntiDipoleInversion> for Plane {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -10822,7 +10822,7 @@ impl BulkContraction<AntiDipoleInversion> for Plane {
             (right_dual_g1.zxy() * self.group0().yzx()).with_w(-(right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]))
                 - (Simd32x4::from(self[e3215]) * other.group0().with_w(right_dual_g1[3]))
                 - (self.group0().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Plane {
@@ -10833,7 +10833,7 @@ impl BulkContraction<AntiDualNum> for Plane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[scalar]) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<AntiFlatPoint> for Plane {
@@ -10848,10 +10848,10 @@ impl BulkContraction<AntiFlatPoint> for Plane {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([
             -(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl BulkContraction<AntiFlector> for Plane {
@@ -10868,13 +10868,13 @@ impl BulkContraction<AntiFlector> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             ((right_dual_g1.yzx() * self.group0().zxy()) - (right_dual_g1.zxy() * self.group0().yzx())).with_w(0.0),
             // e235, e315, e125, e5
             (self.group0().xyz() * right_dual_g1.www()).with_w(-(right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]))
                 - (self.group0().wwwx() * right_dual_g1.xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Plane {
@@ -10891,7 +10891,7 @@ impl BulkContraction<AntiLine> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[0] * self[e3215]) + (right_dual_g1[1] * self[e4125]),
@@ -10899,7 +10899,7 @@ impl BulkContraction<AntiLine> for Plane {
                 (right_dual_g0[2] * self[e3215]) + (right_dual_g1[0] * self[e4315]),
                 -(right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]),
             ]) - (self.group0().yzxx() * right_dual_g1.zxy().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Plane {
@@ -10915,7 +10915,7 @@ impl BulkContraction<AntiMotor> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from([
                 (right_dual_g0[0] * self[e3215]) + (right_dual_g1[1] * self[e4125]),
@@ -10925,7 +10925,7 @@ impl BulkContraction<AntiMotor> for Plane {
             ]) - (self.group0().yzxx() * right_dual_g1.zxy().with_w(right_dual_g0[0])),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Plane {
@@ -10940,12 +10940,12 @@ impl BulkContraction<AntiPlane> for Plane {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             (right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx()),
             // e235, e315, e125
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * right_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for Plane {
@@ -10960,7 +10960,7 @@ impl BulkContraction<Circle> for Plane {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -10970,7 +10970,7 @@ impl BulkContraction<Circle> for Plane {
             ]) + (self.group0().yzxx() * right_dual_g1.zxy().with_w(other[e423])),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (other[e235] * self[e4235]) - (other[e315] * self[e4315]) - (other[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Plane {
@@ -10986,7 +10986,7 @@ impl BulkContraction<CircleRotor> for Plane {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -10996,7 +10996,7 @@ impl BulkContraction<CircleRotor> for Plane {
             ]) + (self.group0().yzxx() * right_dual_g1.zxy().with_w(other[e423])),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[0] * self[e4235]) - (right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Plane {
@@ -11014,7 +11014,7 @@ impl BulkContraction<Dipole> for Plane {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -11022,7 +11022,7 @@ impl BulkContraction<Dipole> for Plane {
                 - (right_dual_g1.wwwx() * self.group0().xyzx()),
             // e15, e25, e35
             (Simd32x3::from(self[e3215]) * right_dual_g1.xyz()) + (right_dual_g2.yzx() * self.group0().zxy()) - (right_dual_g2.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Plane {
@@ -11041,7 +11041,7 @@ impl BulkContraction<DipoleInversion> for Plane {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -11051,7 +11051,7 @@ impl BulkContraction<DipoleInversion> for Plane {
             (Simd32x4::from(self[e3215]) * right_dual_g1.xyz().with_w(right_dual_g2[3]))
                 + (self.group0().zxyx() * right_dual_g2.yzx().with_w(right_dual_g3[0]))
                 + (right_dual_g2.zxy() * self.group0().yzx() * Simd32x3::from(-1.0)).with_w((right_dual_g3[1] * self[e4315]) + (right_dual_g3[2] * self[e4125])),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Plane {
@@ -11065,7 +11065,7 @@ impl BulkContraction<DualNum> for Plane {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0().xyz() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0().xyz() * right_dual_g0.xx().with_z(right_dual_g0[0])).with_w(0.0))
     }
 }
 impl BulkContraction<FlatPoint> for Plane {
@@ -11079,12 +11079,12 @@ impl BulkContraction<FlatPoint> for Plane {
     //  no simd        3       16        0
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(right_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e15, e25, e35
             (right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Plane {
@@ -11101,13 +11101,13 @@ impl BulkContraction<Flector> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (self.group0().xyz() * right_dual_g0.www() * Simd32x3::from(-1.0))
                 .with_w((right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125])),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Plane {
@@ -11121,7 +11121,7 @@ impl BulkContraction<Line> for Plane {
     //  no simd        5        9        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 other[e435] * self[e4315],
@@ -11129,7 +11129,7 @@ impl BulkContraction<Line> for Plane {
                 other[e425] * self[e4235],
                 -(other[e315] * self[e4315]) - (other[e125] * self[e4125]),
             ]) - (self.group0().zxyx() * other.group0().yzx().with_w(other[e235])),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Plane {
@@ -11146,13 +11146,13 @@ impl BulkContraction<Motor> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             (self.group0().xyz() * right_dual_g1.www()).with_w(0.0),
             // e1, e2, e3, e5
             (right_dual_g0.zxy() * self.group0().yzx()).with_w(-(right_dual_g1[1] * self[e4315]) - (right_dual_g1[2] * self[e4125]))
                 - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Plane {
@@ -11173,7 +11173,7 @@ impl BulkContraction<MultiVector> for Plane {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e3215]),
@@ -11209,7 +11209,7 @@ impl BulkContraction<MultiVector> for Plane {
             Simd32x4::from(other.group0().yx()[1]) * self.group0(),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for Plane {
@@ -11224,7 +11224,7 @@ impl BulkContraction<Plane> for Plane {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]));
+        Scalar::from_groups(/* scalar */ (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]))
     }
 }
 impl BulkContraction<RoundPoint> for Plane {
@@ -11241,14 +11241,14 @@ impl BulkContraction<RoundPoint> for Plane {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g1) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             ((right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx())).with_w(right_dual_g1 * self[e3215] * -1.0),
             // e235, e315, e125
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * right_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Plane {
@@ -11259,7 +11259,7 @@ impl BulkContraction<Scalar> for Plane {
     // no simd        0        4        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[scalar]) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[scalar]) * self.group0())
     }
 }
 impl BulkContraction<Sphere> for Plane {
@@ -11274,10 +11274,10 @@ impl BulkContraction<Sphere> for Plane {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Plane {
@@ -11296,7 +11296,7 @@ impl BulkContraction<VersorEven> for Plane {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_dual_g2[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -11310,7 +11310,7 @@ impl BulkContraction<VersorEven> for Plane {
             (right_dual_g1.zxy() * self.group0().yzx()).with_w(-(right_dual_g1[3] * self[e3215]) - (right_dual_g2[2] * self[e4125]))
                 - (self.group0().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0]))
                 - (self.group0().wwwy() * right_dual_g0.xyz().with_w(right_dual_g2[1])),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Plane {
@@ -11329,7 +11329,7 @@ impl BulkContraction<VersorOdd> for Plane {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group0().yzxx() * right_dual_g0.zxy().with_w(right_dual_g3[0]))
                 + (right_dual_g0.yzx() * self.group0().zxy() * Simd32x3::from(-1.0))
@@ -11342,7 +11342,7 @@ impl BulkContraction<VersorOdd> for Plane {
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for RoundPoint {
@@ -11363,7 +11363,7 @@ impl BulkContraction<AntiCircleRotor> for RoundPoint {
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g2[3]) * self.group0(), /* e5 */ right_dual_g2[3] * self[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g2[3]) * self.group0(), /* e5 */ right_dual_g2[3] * self[e5])
     }
 }
 impl BulkContraction<AntiDipoleInversion> for RoundPoint {
@@ -11378,10 +11378,10 @@ impl BulkContraction<AntiDipoleInversion> for RoundPoint {
     fn bulk_contraction(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g3[0] * self[e1]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) + (right_dual_g3[3] * self[e4]) - (other[e4] * self[e5]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for RoundPoint {
@@ -11395,7 +11395,7 @@ impl BulkContraction<AntiDualNum> for RoundPoint {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[scalar]) * self.group0(), /* e5 */ other[scalar] * self[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[scalar]) * self.group0(), /* e5 */ other[scalar] * self[e5])
     }
 }
 impl BulkContraction<AntiFlector> for RoundPoint {
@@ -11410,10 +11410,10 @@ impl BulkContraction<AntiFlector> for RoundPoint {
     fn bulk_contraction(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g1[0] * self[e1]) + (right_dual_g1[1] * self[e2]) + (right_dual_g1[2] * self[e3]) + (right_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for RoundPoint {
@@ -11428,7 +11428,7 @@ impl BulkContraction<AntiMotor> for RoundPoint {
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g0[3]) * self.group0(), /* e5 */ right_dual_g0[3] * self[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g0[3]) * self.group0(), /* e5 */ right_dual_g0[3] * self[e5])
     }
 }
 impl BulkContraction<AntiPlane> for RoundPoint {
@@ -11443,10 +11443,10 @@ impl BulkContraction<AntiPlane> for RoundPoint {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]) + (right_dual_g0[3] * self[e4]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for RoundPoint {
@@ -11456,7 +11456,7 @@ impl BulkContraction<DualNum> for RoundPoint {
     // f32        0        2        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e5] * self[e4] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e5] * self[e4] * -1.0)
     }
 }
 impl BulkContraction<Motor> for RoundPoint {
@@ -11466,7 +11466,7 @@ impl BulkContraction<Motor> for RoundPoint {
     // f32        0        2        0
     fn bulk_contraction(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e5] * self[e4] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e5] * self[e4] * -1.0)
     }
 }
 impl BulkContraction<MultiVector> for RoundPoint {
@@ -11483,7 +11483,7 @@ impl BulkContraction<MultiVector> for RoundPoint {
         use crate::elements::*;
         let right_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g9[0] * self[e1]) + (right_dual_g9[1] * self[e2]) + (right_dual_g9[2] * self[e3]) + (right_dual_g9[3] * self[e4]) - (other[e4] * self[e5]),
@@ -11509,7 +11509,7 @@ impl BulkContraction<MultiVector> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for RoundPoint {
@@ -11524,10 +11524,10 @@ impl BulkContraction<RoundPoint> for RoundPoint {
     fn bulk_contraction(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e1]) + (right_dual_g0[1] * self[e2]) + (right_dual_g0[2] * self[e3]) + (right_dual_g0[3] * self[e4]) - (other[e4] * self[e5]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for RoundPoint {
@@ -11541,7 +11541,7 @@ impl BulkContraction<Scalar> for RoundPoint {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[scalar]) * self.group0(), /* e5 */ self[e5] * other[scalar]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[scalar]) * self.group0(), /* e5 */ self[e5] * other[scalar])
     }
 }
 impl BulkContraction<VersorEven> for RoundPoint {
@@ -11556,10 +11556,10 @@ impl BulkContraction<VersorEven> for RoundPoint {
     fn bulk_contraction(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g3[0] * self[e1]) + (right_dual_g3[1] * self[e2]) + (right_dual_g3[2] * self[e3]) + (right_dual_g3[3] * self[e4]) - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for RoundPoint {
@@ -11574,7 +11574,7 @@ impl BulkContraction<VersorOdd> for RoundPoint {
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g0[3]) * self.group0(), /* e5 */ right_dual_g0[3] * self[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(right_dual_g0[3]) * self.group0(), /* e5 */ right_dual_g0[3] * self[e5])
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Scalar {
@@ -11590,7 +11590,7 @@ impl BulkContraction<AntiCircleRotor> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl BulkContraction<AntiDualNum> for Scalar {
@@ -11600,7 +11600,7 @@ impl BulkContraction<AntiDualNum> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl BulkContraction<AntiMotor> for Scalar {
@@ -11610,7 +11610,7 @@ impl BulkContraction<AntiMotor> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl BulkContraction<MultiVector> for Scalar {
@@ -11620,7 +11620,7 @@ impl BulkContraction<MultiVector> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl BulkContraction<Scalar> for Scalar {
@@ -11630,7 +11630,7 @@ impl BulkContraction<Scalar> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])
     }
 }
 impl BulkContraction<VersorOdd> for Scalar {
@@ -11640,7 +11640,7 @@ impl BulkContraction<VersorOdd> for Scalar {
     // f32        0        1        0
     fn bulk_contraction(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] * other[scalar])
     }
 }
 impl std::ops::Div<BulkContractionInfix> for Sphere {
@@ -11664,7 +11664,7 @@ impl BulkContraction<AntiCircleRotor> for Sphere {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -11679,7 +11679,7 @@ impl BulkContraction<AntiCircleRotor> for Sphere {
                 .with_w(right_dual_g2[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g2[3]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for Sphere {
@@ -11697,7 +11697,7 @@ impl BulkContraction<AntiDipoleInversion> for Sphere {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group0().xyz()),
             // e415, e425, e435, e321
@@ -11715,7 +11715,7 @@ impl BulkContraction<AntiDipoleInversion> for Sphere {
                 -(right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
             ]) - (Simd32x4::from(self[e3215]) * other.group0().with_w(right_dual_g1[3]))
                 - (self.group0().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for Sphere {
@@ -11729,7 +11729,7 @@ impl BulkContraction<AntiDualNum> for Sphere {
     //  no simd        0        6        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[e3215] * self[e1234]),
             // e23, e31, e12, e45
@@ -11738,7 +11738,7 @@ impl BulkContraction<AntiDualNum> for Sphere {
             Simd32x3::from(0.0).with_w(other[scalar] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for Sphere {
@@ -11753,12 +11753,12 @@ impl BulkContraction<AntiFlatPoint> for Sphere {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             right_dual_g0 * Simd32x4::from(self[e1234]),
             // e5
             -(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for Sphere {
@@ -11775,7 +11775,7 @@ impl BulkContraction<AntiFlector> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g1.xyz(),
             // e415, e425, e435, e321
@@ -11785,7 +11785,7 @@ impl BulkContraction<AntiFlector> for Sphere {
             // e1, e2, e3, e5
             (Simd32x3::from(self[e1234]) * right_dual_g0.xyz())
                 .with_w(-(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for Sphere {
@@ -11801,14 +11801,14 @@ impl BulkContraction<AntiLine> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             right_dual_g0 * Simd32x3::from(self[e1234]),
             // e23, e31, e12, e45
             (right_dual_g1 * Simd32x3::from(self[e1234])).with_w(-(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125])),
             // e15, e25, e35
             (right_dual_g0 * Simd32x3::from(self[e3215])) + (right_dual_g1.yzx() * self.group0().zxy()) - (right_dual_g1.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for Sphere {
@@ -11825,7 +11825,7 @@ impl BulkContraction<AntiMotor> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[e1234]) * right_dual_g0.xyz().with_w(right_dual_g1[3]),
             // e23, e31, e12, e45
@@ -11835,7 +11835,7 @@ impl BulkContraction<AntiMotor> for Sphere {
                 .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for Sphere {
@@ -11851,14 +11851,14 @@ impl BulkContraction<AntiPlane> for Sphere {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g0.xyz(),
             // e415, e425, e435, e321
             ((right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx())).with_w(right_dual_g0[3] * self[e1234]),
             // e235, e315, e125
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * right_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for Sphere {
@@ -11874,7 +11874,7 @@ impl BulkContraction<Circle> for Sphere {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -11885,7 +11885,7 @@ impl BulkContraction<Circle> for Sphere {
                 + (Simd32x3::from(self[e1234]) * other.group2()).with_w(other[e423] * self[e4235]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (other[e235] * self[e4235]) - (other[e315] * self[e4315]) - (other[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for Sphere {
@@ -11902,7 +11902,7 @@ impl BulkContraction<CircleRotor> for Sphere {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -11913,7 +11913,7 @@ impl BulkContraction<CircleRotor> for Sphere {
                 + (Simd32x3::from(self[e1234]) * right_dual_g2.xyz()).with_w(other[e431] * self[e4315]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[0] * self[e4235]) - (right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for Sphere {
@@ -11931,7 +11931,7 @@ impl BulkContraction<Dipole> for Sphere {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -11943,7 +11943,7 @@ impl BulkContraction<Dipole> for Sphere {
             ]) - (right_dual_g1.wwwx() * self.group0().xyzx()),
             // e15, e25, e35
             (Simd32x3::from(self[e3215]) * right_dual_g1.xyz()) + (right_dual_g2.yzx() * self.group0().zxy()) - (right_dual_g2.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for Sphere {
@@ -11962,7 +11962,7 @@ impl BulkContraction<DipoleInversion> for Sphere {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group0().yzx()) - (right_dual_g0.yzx() * self.group0().zxy()),
             // e23, e31, e12, e45
@@ -11977,7 +11977,7 @@ impl BulkContraction<DipoleInversion> for Sphere {
                 + (self.group0().zxyx() * right_dual_g2.yzx().with_w(right_dual_g3[0]))
                 + (right_dual_g2.zxy() * self.group0().yzx() * Simd32x3::from(-1.0))
                     .with_w((right_dual_g3[1] * self[e4315]) + (right_dual_g3[2] * self[e4125]) + (right_dual_g3[3] * self[e1234])),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for Sphere {
@@ -11991,7 +11991,7 @@ impl BulkContraction<DualNum> for Sphere {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e5] * -1.0) * self.group0().xyz().with_w(self[e1234]));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e5] * -1.0) * self.group0().xyz().with_w(self[e1234]))
     }
 }
 impl BulkContraction<FlatPoint> for Sphere {
@@ -12006,12 +12006,12 @@ impl BulkContraction<FlatPoint> for Sphere {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             (Simd32x3::from(self[e1234]) * right_dual_g0.xyz()) - (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()),
             // e15, e25, e35
             (right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for Sphere {
@@ -12028,13 +12028,13 @@ impl BulkContraction<Flector> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((Simd32x3::from(self[e1234]) * right_dual_g0.xyz()) - (self.group0().xyz() * right_dual_g0.www()))
                 .with_w((right_dual_g1[0] * self[e4235]) + (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e1234])),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group0().zxy()) - (right_dual_g0.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for Sphere {
@@ -12048,7 +12048,7 @@ impl BulkContraction<Line> for Sphere {
     //  no simd        8       12        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e435] * self[e4315]) + (other[e235] * self[e1234]),
@@ -12056,7 +12056,7 @@ impl BulkContraction<Line> for Sphere {
                 (other[e425] * self[e4235]) + (other[e125] * self[e1234]),
                 -(other[e315] * self[e4315]) - (other[e125] * self[e4125]),
             ]) - (self.group0().zxyx() * other.group0().yzx().with_w(other[e235])),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for Sphere {
@@ -12072,7 +12072,7 @@ impl BulkContraction<Motor> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g1[3]) * self.group0().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
@@ -12082,7 +12082,7 @@ impl BulkContraction<Motor> for Sphere {
                 (right_dual_g0[1] * self[e4235]) + (right_dual_g1[2] * self[e1234]),
                 -(right_dual_g1[1] * self[e4315]) - (right_dual_g1[2] * self[e4125]),
             ]) - (self.group0().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for Sphere {
@@ -12106,7 +12106,7 @@ impl BulkContraction<MultiVector> for Sphere {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g1[0] * self[e4235])
@@ -12147,7 +12147,7 @@ impl BulkContraction<MultiVector> for Sphere {
             Simd32x4::from(right_dual_g0[1]) * self.group0(),
             // e1234
             right_dual_g0[1] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for Sphere {
@@ -12162,10 +12162,10 @@ impl BulkContraction<Plane> for Sphere {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for Sphere {
@@ -12182,14 +12182,14 @@ impl BulkContraction<RoundPoint> for Sphere {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g0.xyz()) - (Simd32x3::from(right_dual_g1) * self.group0().xyz()),
             // e415, e425, e435, e321
             (right_dual_g0.yzxw() * self.group0().zxy().with_w(self[e1234])) - (right_dual_g0.zxy() * self.group0().yzx()).with_w(right_dual_g1 * self[e3215]),
             // e235, e315, e125
             (Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * right_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for Sphere {
@@ -12203,12 +12203,12 @@ impl BulkContraction<Scalar> for Sphere {
     //  no simd        0        5        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group0(),
             // e1234
             other[scalar] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for Sphere {
@@ -12223,14 +12223,14 @@ impl BulkContraction<Sphere> for Sphere {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235])
                 + (right_dual_g0[1] * self[e4315])
                 + (right_dual_g0[2] * self[e4125])
                 + (right_dual_g0[3] * self[e3215])
                 + (other[e3215] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for Sphere {
@@ -12249,7 +12249,7 @@ impl BulkContraction<VersorEven> for Sphere {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group0().xyz()),
             // e415, e425, e435, e321
@@ -12269,7 +12269,7 @@ impl BulkContraction<VersorEven> for Sphere {
                 -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[2] * self[e4125]),
             ]) - (self.group0().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0]))
                 - (self.group0().wwwy() * right_dual_g0.xyz().with_w(right_dual_g2[1])),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for Sphere {
@@ -12288,7 +12288,7 @@ impl BulkContraction<VersorOdd> for Sphere {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group0().yzxx() * right_dual_g0.zxy().with_w(right_dual_g3[0]))
                 + (right_dual_g0.yzx() * self.group0().zxy() * Simd32x3::from(-1.0))
@@ -12306,7 +12306,7 @@ impl BulkContraction<VersorOdd> for Sphere {
                 .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for VersorEven {
@@ -12330,7 +12330,7 @@ impl BulkContraction<AntiCircleRotor> for VersorEven {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((right_dual_g0 * Simd32x3::from(self[e12345])) + (Simd32x3::from(right_dual_g2[3]) * self.group0().xyz())).with_w(right_dual_g2[3] * self[e12345]),
             // e415, e425, e435, e321
@@ -12354,7 +12354,7 @@ impl BulkContraction<AntiCircleRotor> for VersorEven {
             ]) + (right_dual_g0.zxy() * self.group2().yzx()).with_w(right_dual_g2[3] * self[e4])
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g0[0] * self[e415])
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(right_dual_g0[1] * self[e425]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for VersorEven {
@@ -12372,7 +12372,7 @@ impl BulkContraction<AntiDipoleInversion> for VersorEven {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g3.yzxy() * self.group0().zxy().with_w(self[e2]))
                 + Simd32x3::from(0.0).with_w(
@@ -12404,7 +12404,7 @@ impl BulkContraction<AntiDipoleInversion> for VersorEven {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for VersorEven {
@@ -12418,7 +12418,7 @@ impl BulkContraction<AntiDualNum> for VersorEven {
     //  no simd        1       18        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
@@ -12427,7 +12427,7 @@ impl BulkContraction<AntiDualNum> for VersorEven {
             other.group0().yy().with_zw(other[scalar], (other[e3215] * self[e12345]) + (other[scalar] * self[e5])) * self.group2().xyz().with_w(1.0),
             // e1, e2, e3, e4
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for VersorEven {
@@ -12443,7 +12443,7 @@ impl BulkContraction<AntiFlatPoint> for VersorEven {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -12451,7 +12451,7 @@ impl BulkContraction<AntiFlatPoint> for VersorEven {
             // e15, e25, e35, scalar
             (Simd32x3::from(self[e12345]) * right_dual_g0.xyz())
                 .with_w(-(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for VersorEven {
@@ -12468,7 +12468,7 @@ impl BulkContraction<AntiFlector> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g1.yzxx() * self.group0().zxy().with_w(self[e1]))
                 + Simd32x3::from(0.0).with_w(
@@ -12488,7 +12488,7 @@ impl BulkContraction<AntiFlector> for VersorEven {
                 - (right_dual_g1.yzx() * self.group2().zxy()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             right_dual_g1 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for VersorEven {
@@ -12505,7 +12505,7 @@ impl BulkContraction<AntiLine> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -12523,7 +12523,7 @@ impl BulkContraction<AntiLine> for VersorEven {
                     - (right_dual_g1[1] * self[e425])
                     - (right_dual_g1[2] * self[e435]),
             ]) - (right_dual_g1.zxy() * self.group0().yzx()).with_w(right_dual_g0[0] * self[e235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for VersorEven {
@@ -12540,7 +12540,7 @@ impl BulkContraction<AntiMotor> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(right_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -12564,7 +12564,7 @@ impl BulkContraction<AntiMotor> for VersorEven {
                 -(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]),
             ]) + (right_dual_g0 * self.group1().www().with_w(self[e4]))
                 - (self.group0().yzxx() * right_dual_g1.zxy().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for VersorEven {
@@ -12580,7 +12580,7 @@ impl BulkContraction<AntiPlane> for VersorEven {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g0.yzxx() * self.group0().zxy().with_w(self[e1]))
                 + (right_dual_g0.zxy() * self.group0().yzx() * Simd32x3::from(-1.0))
@@ -12592,7 +12592,7 @@ impl BulkContraction<AntiPlane> for VersorEven {
                 - (right_dual_g0.yzx() * self.group2().zxy()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiScalar> for VersorEven {
@@ -12602,7 +12602,7 @@ impl BulkContraction<AntiScalar> for VersorEven {
     // f32        0        2        0
     fn bulk_contraction(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl BulkContraction<Circle> for VersorEven {
@@ -12618,7 +12618,7 @@ impl BulkContraction<Circle> for VersorEven {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -12636,7 +12636,7 @@ impl BulkContraction<Circle> for VersorEven {
                     - (other[e315] * self[e431])
                     - (other[e125] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for VersorEven {
@@ -12653,7 +12653,7 @@ impl BulkContraction<CircleRotor> for VersorEven {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e12345]) * other.group0(),
             // e23, e31, e12, e45
@@ -12672,7 +12672,7 @@ impl BulkContraction<CircleRotor> for VersorEven {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for VersorEven {
@@ -12690,7 +12690,7 @@ impl BulkContraction<Dipole> for VersorEven {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -12712,7 +12712,7 @@ impl BulkContraction<Dipole> for VersorEven {
                 -(right_dual_g2[2] * self[e435]) - (right_dual_g1[0] * self[e235]) - (right_dual_g1[1] * self[e315]) - (right_dual_g1[2] * self[e125]),
             ]) - (right_dual_g0.yzx() * self.group2().zxy()).with_w(right_dual_g2[0] * self[e415])
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(right_dual_g2[1] * self[e425]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for VersorEven {
@@ -12731,7 +12731,7 @@ impl BulkContraction<DipoleInversion> for VersorEven {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             right_dual_g0 * Simd32x3::from(self[e12345]),
             // e415, e425, e435, e321
@@ -12755,7 +12755,7 @@ impl BulkContraction<DipoleInversion> for VersorEven {
             ]) + (right_dual_g0.zxy() * self.group2().yzx()).with_w(right_dual_g3[3] * self[e12345])
                 - (self.group2().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0]))
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(right_dual_g1[1] * self[e315]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for VersorEven {
@@ -12771,12 +12771,12 @@ impl BulkContraction<DualNum> for VersorEven {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             right_dual_g0.xx().with_zw(right_dual_g0[0], (right_dual_g0[0] * self[e4]) + (right_dual_g0[1] * self[e12345])) * self.group0().xyz().with_w(1.0),
             // e15, e25, e35, e3215
             Simd32x4::from(right_dual_g0[0]) * self.group1().xyz().with_w(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for VersorEven {
@@ -12791,7 +12791,7 @@ impl BulkContraction<FlatPoint> for VersorEven {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
@@ -12801,7 +12801,7 @@ impl BulkContraction<FlatPoint> for VersorEven {
                 (right_dual_g0[0] * self[e431]) + (right_dual_g0[3] * self[e435]),
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) - (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for VersorEven {
@@ -12817,7 +12817,7 @@ impl BulkContraction<Flector> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             right_dual_g0 * Simd32x4::from(self[e12345]),
             // e1, e2, e3, e5
@@ -12828,7 +12828,7 @@ impl BulkContraction<Flector> for VersorEven {
                 -(right_dual_g0[1] * self[e425]) - (right_dual_g0[2] * self[e435]),
             ]) + (self.group0().zxyw() * right_dual_g0.yzx().with_w(right_dual_g1[3]))
                 - (right_dual_g0.zxyx() * self.group0().yzx().with_w(self[e415])),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for VersorEven {
@@ -12842,7 +12842,7 @@ impl BulkContraction<Line> for VersorEven {
     //  no simd        5       12        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x3::from(self[e12345]) * other.group0()).with_w(
                 -(other[e415] * self[e415])
@@ -12854,7 +12854,7 @@ impl BulkContraction<Line> for VersorEven {
             ),
             // e15, e25, e35, e3215
             (other.group1() * self.group0().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for VersorEven {
@@ -12871,7 +12871,7 @@ impl BulkContraction<Motor> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (right_dual_g0 * Simd32x4::from(self[e12345]))
                 + (Simd32x4::from(right_dual_g1[3]) * self.group0().xyz().with_w(self[e4]))
@@ -12885,7 +12885,7 @@ impl BulkContraction<Motor> for VersorEven {
                 ),
             // e15, e25, e35, e3215
             ((Simd32x3::from(right_dual_g1[3]) * self.group1().xyz()) + (Simd32x3::from(self[e12345]) * right_dual_g1.xyz())).with_w(right_dual_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for VersorEven {
@@ -12909,7 +12909,7 @@ impl BulkContraction<MultiVector> for VersorEven {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g10 * self[e5])
@@ -12974,7 +12974,7 @@ impl BulkContraction<MultiVector> for VersorEven {
             right_dual_g9 * Simd32x4::from(self[e12345]),
             // e1234
             right_dual_g10 * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for VersorEven {
@@ -12988,10 +12988,10 @@ impl BulkContraction<Plane> for VersorEven {
     //  no simd        0        7        0
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for VersorEven {
@@ -13008,7 +13008,7 @@ impl BulkContraction<RoundPoint> for VersorEven {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g0.yzxx() * self.group0().zxy().with_w(self[e1]))
                 + (right_dual_g0.zxy() * self.group0().yzx() * Simd32x3::from(-1.0))
@@ -13026,7 +13026,7 @@ impl BulkContraction<RoundPoint> for VersorEven {
                 .with_w(right_dual_g1 * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g0 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for VersorEven {
@@ -13037,7 +13037,7 @@ impl BulkContraction<Scalar> for VersorEven {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(other[scalar]) * self.group0(),
             // e415, e425, e435, e321
@@ -13046,7 +13046,7 @@ impl BulkContraction<Scalar> for VersorEven {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e1, e2, e3, e4
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for VersorEven {
@@ -13060,12 +13060,12 @@ impl BulkContraction<Sphere> for VersorEven {
     //  no simd        0        9        0
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e12345]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             other[e3215] * self[e12345],
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for VersorEven {
@@ -13084,7 +13084,7 @@ impl BulkContraction<VersorEven> for VersorEven {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (self.group0().zxyw() * right_dual_g3.yzx().with_w(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(
@@ -13116,7 +13116,7 @@ impl BulkContraction<VersorEven> for VersorEven {
             .with_w(right_dual_g2[3] * self[e12345]),
             // e4235, e4315, e4125, e3215
             right_dual_g3 * Simd32x4::from(self[e12345]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for VersorEven {
@@ -13135,7 +13135,7 @@ impl BulkContraction<VersorOdd> for VersorEven {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e12345]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * self[e12345]),
             // e415, e425, e435, e321
@@ -13161,7 +13161,7 @@ impl BulkContraction<VersorOdd> for VersorEven {
                 + (self.group3().xyz() * right_dual_g0.www()).with_w(right_dual_g3[3] * self[e12345])
                 - (right_dual_g0.yzxx() * self.group2().zxy().with_w(self[e415]))
                 - (right_dual_g2.zxy() * self.group0().yzx()).with_w(right_dual_g0[1] * self[e425]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkContractionInfix> for VersorOdd {
@@ -13185,7 +13185,7 @@ impl BulkContraction<AntiCircleRotor> for VersorOdd {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from([
                 (right_dual_g1[0] * self[e1234]) + (right_dual_g2[3] * self[e41]),
@@ -13216,7 +13216,7 @@ impl BulkContraction<AntiCircleRotor> for VersorOdd {
             .with_w(right_dual_g2[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g2[3]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDipoleInversion> for VersorOdd {
@@ -13234,7 +13234,7 @@ impl BulkContraction<AntiDipoleInversion> for VersorOdd {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -13257,7 +13257,7 @@ impl BulkContraction<AntiDipoleInversion> for VersorOdd {
                 - (right_dual_g2.wwwy() * self.group2().xyz().with_w(self[e4315]))
                 - (self.group3().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0]))
                 - (right_dual_g3.yzx() * self.group1().zxy()).with_w(right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiDualNum> for VersorOdd {
@@ -13271,7 +13271,7 @@ impl BulkContraction<AntiDualNum> for VersorOdd {
     //  no simd        1       18        0
     fn bulk_contraction(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0().yy().with_zw(other[scalar], (other[e3215] * self[e1234]) + (other[scalar] * self[scalar])) * self.group0().xyz().with_w(1.0),
             // e23, e31, e12, e45
@@ -13280,7 +13280,7 @@ impl BulkContraction<AntiDualNum> for VersorOdd {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlatPoint> for VersorOdd {
@@ -13295,12 +13295,12 @@ impl BulkContraction<AntiFlatPoint> for VersorOdd {
     fn bulk_contraction(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             right_dual_g0 * Simd32x4::from(self[e1234]),
             // e5
             -(right_dual_g0[0] * self[e4235]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiFlector> for VersorOdd {
@@ -13317,7 +13317,7 @@ impl BulkContraction<AntiFlector> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g1.xyz(),
             // e415, e425, e435, e321
@@ -13333,7 +13333,7 @@ impl BulkContraction<AntiFlector> for VersorOdd {
                 + Simd32x3::from(0.0)
                     .with_w((right_dual_g1[3] * self[e45]) - (right_dual_g0[1] * self[e4315]) - (right_dual_g0[2] * self[e4125]) - (right_dual_g0[3] * self[e3215]))
                 - (right_dual_g1.yzx() * self.group1().zxy()).with_w(right_dual_g0[0] * self[e4235]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiLine> for VersorOdd {
@@ -13350,7 +13350,7 @@ impl BulkContraction<AntiLine> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             right_dual_g0 * Simd32x3::from(self[e1234]),
             // e23, e31, e12, e45
@@ -13362,7 +13362,7 @@ impl BulkContraction<AntiLine> for VersorOdd {
                 (right_dual_g0[2] * self[e3215]) + (right_dual_g1[0] * self[e4315]),
                 -(right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]) - (right_dual_g1[0] * self[e41]) - (right_dual_g1[1] * self[e42]) - (right_dual_g1[2] * self[e43]),
             ]) - (right_dual_g1.zxy() * self.group3().yzx()).with_w(right_dual_g0[0] * self[e23]),
-        );
+        )
     }
 }
 impl BulkContraction<AntiMotor> for VersorOdd {
@@ -13379,7 +13379,7 @@ impl BulkContraction<AntiMotor> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g0 * self.group2().www().with_w(self[scalar]))
                 + Simd32x3::from(0.0).with_w(
@@ -13403,7 +13403,7 @@ impl BulkContraction<AntiMotor> for VersorOdd {
             .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<AntiPlane> for VersorOdd {
@@ -13419,7 +13419,7 @@ impl BulkContraction<AntiPlane> for VersorOdd {
     fn bulk_contraction(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e1234]) * right_dual_g0.xyz(),
             // e415, e425, e435, e321
@@ -13431,7 +13431,7 @@ impl BulkContraction<AntiPlane> for VersorOdd {
             (right_dual_g0.zxyx() * self.group1().yzx().with_w(self[e15]))
                 + (right_dual_g0.wwwy() * self.group0().xyz().with_w(self[e25]))
                 + (right_dual_g0.yzx() * self.group1().zxy() * Simd32x3::from(-1.0)).with_w((right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45])),
-        );
+        )
     }
 }
 impl BulkContraction<Circle> for VersorOdd {
@@ -13447,7 +13447,7 @@ impl BulkContraction<Circle> for VersorOdd {
     fn bulk_contraction(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -13458,7 +13458,7 @@ impl BulkContraction<Circle> for VersorOdd {
                 + (other.group2() * self.group2().www()).with_w(other[e423] * self[e4235]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (other[e235] * self[e4235]) - (other[e315] * self[e4315]) - (other[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<CircleRotor> for VersorOdd {
@@ -13475,7 +13475,7 @@ impl BulkContraction<CircleRotor> for VersorOdd {
         use crate::elements::*;
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(right_dual_g1[1] * self[e4125]) - (other[e423] * self[e3215]),
@@ -13486,7 +13486,7 @@ impl BulkContraction<CircleRotor> for VersorOdd {
                 + (right_dual_g2.xyz() * self.group2().www()).with_w(other[e431] * self[e4315]),
             // e5
             -(right_dual_g1[3] * self[e3215]) - (right_dual_g2[0] * self[e4235]) - (right_dual_g2[1] * self[e4315]) - (right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<Dipole> for VersorOdd {
@@ -13504,7 +13504,7 @@ impl BulkContraction<Dipole> for VersorOdd {
         let right_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group3().yzx()) - (right_dual_g0.yzx() * self.group3().zxy()),
             // e23, e31, e12, e45
@@ -13529,7 +13529,7 @@ impl BulkContraction<Dipole> for VersorOdd {
                     - (right_dual_g1[2] * self[e12])
                     - (right_dual_g1[3] * self[e45]),
             ]) - (right_dual_g2.zxy() * self.group3().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DipoleInversion> for VersorOdd {
@@ -13548,7 +13548,7 @@ impl BulkContraction<DipoleInversion> for VersorOdd {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * right_dual_g1.xyz()) + (right_dual_g0.zxy() * self.group3().yzx()) - (right_dual_g0.yzx() * self.group3().zxy()),
             // e23, e31, e12, e45
@@ -13574,7 +13574,7 @@ impl BulkContraction<DipoleInversion> for VersorOdd {
                         - (right_dual_g2[2] * self[e43]),
                 )
                 - (right_dual_g2.zxy() * self.group3().yzx()).with_w(right_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl BulkContraction<DualNum> for VersorOdd {
@@ -13589,12 +13589,12 @@ impl BulkContraction<DualNum> for VersorOdd {
     fn bulk_contraction(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g0[0]) * self.group3().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from(right_dual_g0[0]) * self.group0().xyz().with_w(self[e45]),
-        );
+        )
     }
 }
 impl BulkContraction<FlatPoint> for VersorOdd {
@@ -13610,7 +13610,7 @@ impl BulkContraction<FlatPoint> for VersorOdd {
     fn bulk_contraction(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (Simd32x4::from([self[e1234], self[e1234], self[e1234], 1.0])
                 * right_dual_g0
@@ -13619,7 +13619,7 @@ impl BulkContraction<FlatPoint> for VersorOdd {
                 - (right_dual_g0.wwwx() * self.group3().xyz().with_w(self[e41])),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group3().zxy()) - (right_dual_g0.zxy() * self.group3().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Flector> for VersorOdd {
@@ -13636,7 +13636,7 @@ impl BulkContraction<Flector> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(
                 (right_dual_g1[1] * self[e4315]) + (right_dual_g1[2] * self[e4125]) + (right_dual_g1[3] * self[e1234])
@@ -13647,7 +13647,7 @@ impl BulkContraction<Flector> for VersorOdd {
                 - (right_dual_g0.wwwx() * self.group3().xyz().with_w(self[e41])),
             // e15, e25, e35, e3215
             ((right_dual_g0.yzx() * self.group3().zxy()) - (right_dual_g0.zxy() * self.group3().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl BulkContraction<Line> for VersorOdd {
@@ -13661,7 +13661,7 @@ impl BulkContraction<Line> for VersorOdd {
     //  no simd        8       12        0
     fn bulk_contraction(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e435] * self[e4315]) + (other[e235] * self[e1234]),
@@ -13669,7 +13669,7 @@ impl BulkContraction<Line> for VersorOdd {
                 (other[e425] * self[e4235]) + (other[e125] * self[e1234]),
                 -(other[e315] * self[e4315]) - (other[e125] * self[e4125]),
             ]) - (self.group3().zxyx() * other.group0().yzx().with_w(other[e235])),
-        );
+        )
     }
 }
 impl BulkContraction<Motor> for VersorOdd {
@@ -13686,7 +13686,7 @@ impl BulkContraction<Motor> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_dual_g1[3]) * self.group3().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
@@ -13697,7 +13697,7 @@ impl BulkContraction<Motor> for VersorOdd {
                 -(right_dual_g1[1] * self[e4315]) - (right_dual_g1[2] * self[e4125]),
             ]) + (right_dual_g0.zxy() * self.group3().yzx()).with_w(right_dual_g1[3] * self[e45])
                 - (self.group3().zxyx() * right_dual_g0.yzx().with_w(right_dual_g1[0])),
-        );
+        )
     }
 }
 impl BulkContraction<MultiVector> for VersorOdd {
@@ -13721,7 +13721,7 @@ impl BulkContraction<MultiVector> for VersorOdd {
         let right_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 (right_dual_g0[1] * self[scalar])
@@ -13781,7 +13781,7 @@ impl BulkContraction<MultiVector> for VersorOdd {
             Simd32x4::from(right_dual_g0[1]) * self.group3(),
             // e1234
             right_dual_g0[1] * self[e1234],
-        );
+        )
     }
 }
 impl BulkContraction<Plane> for VersorOdd {
@@ -13796,10 +13796,10 @@ impl BulkContraction<Plane> for VersorOdd {
     fn bulk_contraction(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235]) + (right_dual_g0[1] * self[e4315]) + (right_dual_g0[2] * self[e4125]) + (right_dual_g0[3] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<RoundPoint> for VersorOdd {
@@ -13816,7 +13816,7 @@ impl BulkContraction<RoundPoint> for VersorOdd {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g1 = other[e4] * -1.0;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g0.xyz()) - (Simd32x3::from(right_dual_g1) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -13832,7 +13832,7 @@ impl BulkContraction<RoundPoint> for VersorOdd {
                 (right_dual_g0[2] * self[e35]) + (right_dual_g0[3] * self[e45]),
             ]) + (right_dual_g0.zxyx() * self.group1().yzx().with_w(self[e15]))
                 + (right_dual_g0.wwwy() * self.group0().xyz().with_w(self[e25])),
-        );
+        )
     }
 }
 impl BulkContraction<Scalar> for VersorOdd {
@@ -13843,7 +13843,7 @@ impl BulkContraction<Scalar> for VersorOdd {
     // no simd        0       16        0
     fn bulk_contraction(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(other[scalar]) * self.group0(),
             // e23, e31, e12, e45
@@ -13852,7 +13852,7 @@ impl BulkContraction<Scalar> for VersorOdd {
             Simd32x4::from(other[scalar]) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group3(),
-        );
+        )
     }
 }
 impl BulkContraction<Sphere> for VersorOdd {
@@ -13867,14 +13867,14 @@ impl BulkContraction<Sphere> for VersorOdd {
     fn bulk_contraction(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (right_dual_g0[0] * self[e4235])
                 + (right_dual_g0[1] * self[e4315])
                 + (right_dual_g0[2] * self[e4125])
                 + (right_dual_g0[3] * self[e3215])
                 + (other[e3215] * self[e1234]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorEven> for VersorOdd {
@@ -13893,7 +13893,7 @@ impl BulkContraction<VersorEven> for VersorOdd {
         let right_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * right_dual_g3.xyz()) - (Simd32x3::from(right_dual_g2[3]) * self.group3().xyz()),
             // e415, e425, e435, e321
@@ -13916,7 +13916,7 @@ impl BulkContraction<VersorEven> for VersorOdd {
                 - (right_dual_g2.wwwy() * self.group2().xyz().with_w(self[e4315]))
                 - (self.group3().zxyx() * right_dual_g1.yzx().with_w(right_dual_g2[0]))
                 - (right_dual_g3.yzx() * self.group1().zxy()).with_w(right_dual_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl BulkContraction<VersorOdd> for VersorOdd {
@@ -13935,7 +13935,7 @@ impl BulkContraction<VersorOdd> for VersorOdd {
         let right_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             (right_dual_g0.zxyw() * self.group3().yzx().with_w(self[scalar]))
                 + Simd32x3::from(0.0).with_w(
@@ -13967,6 +13967,6 @@ impl BulkContraction<VersorOdd> for VersorOdd {
             .with_w(right_dual_g0[3] * self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }

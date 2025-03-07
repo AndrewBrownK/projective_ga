@@ -122,7 +122,7 @@ impl nearly::NearlyEqEps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfinit
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfinity {
@@ -136,7 +136,7 @@ impl nearly::NearlyEqUlps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfini
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfinity {}
@@ -161,7 +161,7 @@ impl nearly::NearlyOrdUlps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfin
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &VersorEvenAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -183,7 +183,7 @@ impl nearly::NearlyOrdUlps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfin
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfinity {
@@ -206,7 +206,7 @@ impl nearly::NearlyOrdEps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfini
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &VersorEvenAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -228,7 +228,7 @@ impl nearly::NearlyOrdEps<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfini
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<VersorEvenAtInfinity, f32, f32> for VersorEvenAtInfinity {}
@@ -299,14 +299,14 @@ impl encase::ShaderType for VersorEvenAtInfinity {
     type ExtraMetadata = <VersorEvenAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <VersorEvenAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <VersorEvenAtInfinityGroups as encase::ShaderType>::min_size();
+        <VersorEvenAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <VersorEvenAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <VersorEvenAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <VersorEvenAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

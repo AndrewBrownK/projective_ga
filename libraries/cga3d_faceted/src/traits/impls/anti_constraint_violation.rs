@@ -37,7 +37,7 @@ impl AntiConstraintViolation for AntiCircleOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g0[0] * self[e23])
                 + (anti_reverse_g0[1] * self[e31])
@@ -45,7 +45,7 @@ impl AntiConstraintViolation for AntiCircleOnOrigin {
                 + (anti_reverse_g1[0] * self[e41])
                 + (anti_reverse_g1[1] * self[e42])
                 + (anti_reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiCircleRotor {
@@ -69,7 +69,7 @@ impl AntiConstraintViolation for AntiCircleRotor {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g0[2] * self[e25]) - (anti_reverse_g2[1] * self[e43]),
@@ -87,7 +87,7 @@ impl AntiConstraintViolation for AntiCircleRotor {
                 + (anti_reverse_g2[0] * self[e23])
                 + (anti_reverse_g2[1] * self[e31])
                 + (anti_reverse_g2[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -111,7 +111,7 @@ impl AntiConstraintViolation for AntiCircleRotorAligningOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g0[2] * self[e25]) - (anti_reverse_g2[1] * self[e43]),
@@ -127,7 +127,7 @@ impl AntiConstraintViolation for AntiCircleRotorAligningOrigin {
                 + (anti_reverse_g2[0] * self[e23])
                 + (anti_reverse_g2[1] * self[e31])
                 + (anti_reverse_g2[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -150,7 +150,7 @@ impl AntiConstraintViolation for AntiCircleRotorAligningOriginAtInfinity {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (anti_reverse_g0[0] * self[e15])
                 + (anti_reverse_g0[1] * self[e25])
@@ -158,7 +158,7 @@ impl AntiConstraintViolation for AntiCircleRotorAligningOriginAtInfinity {
                 + (anti_reverse_g1[0] * self[e23])
                 + (anti_reverse_g1[1] * self[e31])
                 + (anti_reverse_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -183,7 +183,7 @@ impl AntiConstraintViolation for AntiCircleRotorAtInfinity {
         let geometric_anti_product_g0 = Simd32x4::from([(anti_reverse_g0[2] * self[e12]) - (anti_reverse_g0[3] * self[e45]) - (anti_reverse_g1[3] * self[scalar]), 0.0, 0.0, 0.0])
             + (anti_reverse_g0.xxyz() * self.group0().xwww())
             + (anti_reverse_g0.ywww() * self.group0().yxyz());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -193,7 +193,7 @@ impl AntiConstraintViolation for AntiCircleRotorAtInfinity {
                 + (anti_reverse_g1[0] * self[e23])
                 + (anti_reverse_g1[1] * self[e31])
                 + (anti_reverse_g1[2] * self[e12]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -216,7 +216,7 @@ impl AntiConstraintViolation for AntiCircleRotorOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g1[0] * self[e41])
                 + (anti_reverse_g1[1] * self[e42])
@@ -224,7 +224,7 @@ impl AntiConstraintViolation for AntiCircleRotorOnOrigin {
                 + (anti_reverse_g0[0] * self[e23])
                 + (anti_reverse_g0[1] * self[e31])
                 + (anti_reverse_g0[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiDipoleInversion {
@@ -248,7 +248,7 @@ impl AntiConstraintViolation for AntiDipoleInversion {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g1[2] * self[e2]) + (anti_reverse_g1[3] * self[e415]) + (anti_reverse_g2[3] * self[e235]) + (self[e425] * self[e3]),
@@ -277,7 +277,7 @@ impl AntiConstraintViolation for AntiDipoleInversion {
                 - (anti_reverse_g2[1] * self[e2])
                 - (anti_reverse_g2[2] * self[e435])
                 - (anti_reverse_g2[2] * self[e3]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -308,7 +308,7 @@ impl AntiConstraintViolation for AntiDipoleInversionAtInfinity {
         ]) + (anti_reverse_g0.wxxy() * self.group0().ww().with_zw(self[e3], self[e1]))
             - (Simd32x4::from([anti_reverse_g0[1], self[e2], self[e415], self[e425]]) * self.group0().yz().with_zw(self[e3], self[e1]))
             - (Simd32x4::from([self[e415], self[e3], self[e1], self[e2]]) * anti_reverse_g0.xyzx());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -323,7 +323,7 @@ impl AntiConstraintViolation for AntiDipoleInversionAtInfinity {
                 - (anti_reverse_g0[1] * self[e315])
                 - (anti_reverse_g0[2] * self[e125])
                 - (anti_reverse_g0[3] * self[e5]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -344,14 +344,14 @@ impl AntiConstraintViolation for AntiDipoleInversionOnOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g0[0] * self[e1]) + (anti_reverse_g0[1] * self[e2]) + (anti_reverse_g0[2] * self[e3]) + (anti_reverse_g0[3] * self[e4])
                 - (self[e423] * self[e1])
                 - (self[e431] * self[e2])
                 - (self[e412] * self[e3])
                 - (self[e321] * self[e4]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -375,7 +375,7 @@ impl AntiConstraintViolation for AntiDipoleInversionOrthogonalOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g0[0] * self[e5]) + (anti_reverse_g0[2] * self[e315]) + (anti_reverse_g2[1] * self[e412]) + (anti_reverse_g2[3] * self[e235]),
@@ -393,7 +393,7 @@ impl AntiConstraintViolation for AntiDipoleInversionOrthogonalOrigin {
                 - (anti_reverse_g2[0] * self[e415])
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiDualNum {
@@ -409,7 +409,7 @@ impl AntiConstraintViolation for AntiDualNum {
     // f32        0        2        0
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e1234] * self[scalar] * -2.0);
+        Origin::from_groups(/* e4 */ self[e1234] * self[scalar] * -2.0)
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiFlector {
@@ -430,14 +430,14 @@ impl AntiConstraintViolation for AntiFlector {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (self[e235] * self[e1]) + (self[e315] * self[e2]) + (self[e125] * self[e3]) + (self[e321] * self[e5])
                 - (anti_reverse_g0[0] * self[e1])
                 - (anti_reverse_g0[1] * self[e2])
                 - (anti_reverse_g0[2] * self[e3])
                 - (anti_reverse_g0[3] * self[e5]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiLine {
@@ -459,7 +459,7 @@ impl AntiConstraintViolation for AntiLine {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (anti_reverse_g0[0] * self[e15])
                 + (anti_reverse_g0[1] * self[e25])
@@ -467,7 +467,7 @@ impl AntiConstraintViolation for AntiLine {
                 + (anti_reverse_g1[0] * self[e23])
                 + (anti_reverse_g1[1] * self[e31])
                 + (anti_reverse_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiMotor {
@@ -489,7 +489,7 @@ impl AntiConstraintViolation for AntiMotor {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (anti_reverse_g0[0] * self[e15])
                 + (anti_reverse_g0[1] * self[e25])
@@ -499,7 +499,7 @@ impl AntiConstraintViolation for AntiMotor {
                 + (anti_reverse_g1[2] * self[e12])
                 - (anti_reverse_g0[3] * self[e3215])
                 - (anti_reverse_g1[3] * self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -520,10 +520,10 @@ impl AntiConstraintViolation for AntiMysteryCircleRotor {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e45]) * anti_reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -545,7 +545,7 @@ impl AntiConstraintViolation for AntiMysteryDipoleInversion {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             Simd32x3::from([
                 (self[e425] * self[e3]) - (self[e435] * self[e2]),
@@ -555,7 +555,7 @@ impl AntiConstraintViolation for AntiMysteryDipoleInversion {
                 + (Simd32x3::from([self[e321], self[e3], self[e1]]) * anti_reverse_g0.xxy())
                 + (Simd32x3::from([self[e2], self[e321], self[e321]]) * anti_reverse_g0.zyz())
                 - (self.group1().zxy() * anti_reverse_g0.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -577,7 +577,7 @@ impl AntiConstraintViolation for AntiVersorEvenOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g0[0] * self[e23])
                 + (anti_reverse_g0[1] * self[e31])
@@ -587,7 +587,7 @@ impl AntiConstraintViolation for AntiVersorEvenOnOrigin {
                 + (anti_reverse_g1[2] * self[e43])
                 - (anti_reverse_g0[3] * self[e1234])
                 - (anti_reverse_g1[3] * self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Circle {
@@ -611,7 +611,7 @@ impl AntiConstraintViolation for Circle {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g0[2] * self[e315]) + (anti_reverse_g2[1] * self[e412]) + (anti_reverse_g1[0] * self[e321]) + (anti_reverse_g1[3] * self[e415]),
@@ -627,7 +627,7 @@ impl AntiConstraintViolation for Circle {
                 - (anti_reverse_g1[0] * self[e235])
                 - (anti_reverse_g1[1] * self[e315])
                 - (anti_reverse_g1[2] * self[e125]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleAligningOrigin {
@@ -651,7 +651,7 @@ impl AntiConstraintViolation for CircleAligningOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g0[2] * self[e315]) + (anti_reverse_g2[1] * self[e412]),
@@ -667,7 +667,7 @@ impl AntiConstraintViolation for CircleAligningOrigin {
                 - (anti_reverse_g2[0] * self[e415])
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleAtInfinity {
@@ -696,7 +696,7 @@ impl AntiConstraintViolation for CircleAtInfinity {
             anti_reverse_g0[3] * self[e425],
             anti_reverse_g0[3] * self[e435],
         ]) + (Simd32x4::from(self[e321]) * anti_reverse_g0.wxyz());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -706,7 +706,7 @@ impl AntiConstraintViolation for CircleAtInfinity {
                 - (anti_reverse_g0[0] * self[e235])
                 - (anti_reverse_g0[1] * self[e315])
                 - (anti_reverse_g0[2] * self[e125]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleAtOrigin {
@@ -724,12 +724,12 @@ impl AntiConstraintViolation for CircleAtOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (anti_reverse_g0.zxy() * self.group1().yzx()) + (anti_reverse_g1.yzx() * self.group0().zxy())
                 - (anti_reverse_g0.yzx() * self.group1().zxy())
                 - (anti_reverse_g1.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleOnOrigin {
@@ -751,7 +751,7 @@ impl AntiConstraintViolation for CircleOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             -(anti_reverse_g0[0] * self[e415])
                 - (anti_reverse_g0[1] * self[e425])
@@ -759,7 +759,7 @@ impl AntiConstraintViolation for CircleOnOrigin {
                 - (anti_reverse_g1[0] * self[e423])
                 - (anti_reverse_g1[1] * self[e431])
                 - (anti_reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -780,12 +780,12 @@ impl AntiConstraintViolation for CircleOrthogonalOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (anti_reverse_g1.yzx() * self.group0().zxy()) + (self.group1().yzx() * anti_reverse_g0.zxy())
                 - (anti_reverse_g1.zxy() * self.group0().yzx())
                 - (self.group1().zxy() * anti_reverse_g0.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleRotor {
@@ -809,7 +809,7 @@ impl AntiConstraintViolation for CircleRotor {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g0[2] * self[e315]) + (anti_reverse_g1[0] * self[e321]) + (anti_reverse_g1[3] * self[e415]) + (anti_reverse_g2[1] * self[e412]),
@@ -825,7 +825,7 @@ impl AntiConstraintViolation for CircleRotor {
                 - (anti_reverse_g2[0] * self[e415])
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -849,7 +849,7 @@ impl AntiConstraintViolation for CircleRotorAligningOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g0[2] * self[e315]) + (anti_reverse_g2[1] * self[e412]),
@@ -865,7 +865,7 @@ impl AntiConstraintViolation for CircleRotorAligningOrigin {
                 - (anti_reverse_g2[0] * self[e415])
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -888,7 +888,7 @@ impl AntiConstraintViolation for CircleRotorAligningOriginAtInfinity {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             -(anti_reverse_g0[0] * self[e235])
                 - (anti_reverse_g0[1] * self[e315])
@@ -896,7 +896,7 @@ impl AntiConstraintViolation for CircleRotorAligningOriginAtInfinity {
                 - (anti_reverse_g1[0] * self[e415])
                 - (anti_reverse_g1[1] * self[e425])
                 - (anti_reverse_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -924,7 +924,7 @@ impl AntiConstraintViolation for CircleRotorAtInfinity {
             anti_reverse_g0[3] * self[e425],
             anti_reverse_g0[3] * self[e435],
         ]) + (Simd32x4::from(self[e321]) * anti_reverse_g0.wxyz());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -934,7 +934,7 @@ impl AntiConstraintViolation for CircleRotorAtInfinity {
                 - (anti_reverse_g1[0] * self[e415])
                 - (anti_reverse_g1[1] * self[e425])
                 - (anti_reverse_g1[2] * self[e435]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -957,7 +957,7 @@ impl AntiConstraintViolation for CircleRotorOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             -(anti_reverse_g1[0] * self[e423])
                 - (anti_reverse_g1[1] * self[e431])
@@ -965,7 +965,7 @@ impl AntiConstraintViolation for CircleRotorOnOrigin {
                 - (anti_reverse_g0[0] * self[e415])
                 - (anti_reverse_g0[1] * self[e425])
                 - (anti_reverse_g0[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Dipole {
@@ -989,7 +989,7 @@ impl AntiConstraintViolation for Dipole {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g0[2] * self[e25]) - (anti_reverse_g2[1] * self[e43]),
@@ -1007,7 +1007,7 @@ impl AntiConstraintViolation for Dipole {
                 + (anti_reverse_g1[0] * self[e15])
                 + (anti_reverse_g1[1] * self[e25])
                 + (anti_reverse_g1[2] * self[e35]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleAligningOrigin {
@@ -1028,12 +1028,12 @@ impl AntiConstraintViolation for DipoleAligningOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (anti_reverse_g1.zxy() * self.group0().yzx()) + (self.group1().zxy() * anti_reverse_g0.yzx())
                 - (anti_reverse_g1.yzx() * self.group0().zxy())
                 - (self.group1().yzx() * anti_reverse_g0.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleAtInfinity {
@@ -1059,7 +1059,7 @@ impl AntiConstraintViolation for DipoleAtInfinity {
         let geometric_anti_product_g0 = Simd32x4::from([(anti_reverse_g0[2] * self[e12]) - (anti_reverse_g0[3] * self[e45]), 0.0, 0.0, 0.0])
             + (anti_reverse_g0.xxyz() * self.group0().xwww())
             + (anti_reverse_g0.ywww() * self.group0().yxyz());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -1069,7 +1069,7 @@ impl AntiConstraintViolation for DipoleAtInfinity {
                 + (anti_reverse_g0[0] * self[e15])
                 + (anti_reverse_g0[1] * self[e25])
                 + (anti_reverse_g0[2] * self[e35]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleAtOrigin {
@@ -1087,12 +1087,12 @@ impl AntiConstraintViolation for DipoleAtOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (anti_reverse_g0.yzx() * self.group1().zxy()) + (anti_reverse_g1.zxy() * self.group0().yzx())
                 - (anti_reverse_g0.zxy() * self.group1().yzx())
                 - (anti_reverse_g1.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversion {
@@ -1116,7 +1116,7 @@ impl AntiConstraintViolation for DipoleInversion {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g2[3] * self[e15]) - (self[e12] * self[e4315]),
@@ -1150,7 +1150,7 @@ impl AntiConstraintViolation for DipoleInversion {
                 - (anti_reverse_g2[0] * self[e4235])
                 - (anti_reverse_g2[1] * self[e4315])
                 - (anti_reverse_g2[2] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -1173,7 +1173,7 @@ impl AntiConstraintViolation for DipoleInversionAligningOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e4125]]) * anti_reverse_g1.zyz().with_w(anti_reverse_g0[2]))
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e4315]]) * anti_reverse_g1.xxy().with_w(anti_reverse_g0[1]))
@@ -1189,7 +1189,7 @@ impl AntiConstraintViolation for DipoleInversionAligningOrigin {
                 - (anti_reverse_g1[0] * self[e4235])
                 - (anti_reverse_g1[1] * self[e4315])
                 - (anti_reverse_g1[2] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -1223,7 +1223,7 @@ impl AntiConstraintViolation for DipoleInversionAtInfinity {
             + (anti_reverse_g0.xxxy() * self.group0().xw().with_zw(self[e4125], self[e4235]))
             + (anti_reverse_g0.zwww() * self.group0().zxyz())
             - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * anti_reverse_g0.wyzx());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -1241,7 +1241,7 @@ impl AntiConstraintViolation for DipoleInversionAtInfinity {
                 - (anti_reverse_g1[1] * self[e4315])
                 - (anti_reverse_g1[2] * self[e4125])
                 - (anti_reverse_g0[3] * self[e3215]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -1263,7 +1263,7 @@ impl AntiConstraintViolation for DipoleInversionAtOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group0().xyz())
                 + (Simd32x3::from([self[e42], self[e1234], self[e1234]]) * anti_reverse_g1.zyz())
@@ -1273,7 +1273,7 @@ impl AntiConstraintViolation for DipoleInversionAtOrigin {
                 - (Simd32x3::from([self[e3215], self[e35], self[e15]]) * anti_reverse_g0.xxy())
                 - (Simd32x3::from([self[e25], self[e3215], self[e3215]]) * anti_reverse_g0.zyz())
                 - (anti_reverse_g1.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -1294,14 +1294,14 @@ impl AntiConstraintViolation for DipoleInversionOnOrigin {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g0[0] * self[e4235]) + (anti_reverse_g0[1] * self[e4315]) + (anti_reverse_g0[2] * self[e4125]) + (anti_reverse_g0[3] * self[e1234])
                 - (self[e41] * self[e4235])
                 - (self[e42] * self[e4315])
                 - (self[e43] * self[e4125])
                 - (self[e45] * self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -1325,7 +1325,7 @@ impl AntiConstraintViolation for DipoleInversionOrthogonalOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g0[0] * self[e3215]) - (anti_reverse_g0[2] * self[e25]) - (anti_reverse_g2[1] * self[e43]) - (anti_reverse_g2[3] * self[e15]),
@@ -1343,7 +1343,7 @@ impl AntiConstraintViolation for DipoleInversionOrthogonalOrigin {
                 + (anti_reverse_g2[0] * self[e23])
                 + (anti_reverse_g2[1] * self[e31])
                 + (anti_reverse_g2[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -1367,7 +1367,7 @@ impl AntiConstraintViolation for DipoleOrthogonalOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g0[2] * self[e25]) - (anti_reverse_g2[1] * self[e43]),
@@ -1383,7 +1383,7 @@ impl AntiConstraintViolation for DipoleOrthogonalOrigin {
                 + (anti_reverse_g2[0] * self[e23])
                 + (anti_reverse_g2[1] * self[e31])
                 + (anti_reverse_g2[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DualNum {
@@ -1399,7 +1399,7 @@ impl AntiConstraintViolation for DualNum {
     // f32        0        2        0
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * self[e12345] * 2.0);
+        Origin::from_groups(/* e4 */ self[e4] * self[e12345] * 2.0)
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Flector {
@@ -1420,14 +1420,14 @@ impl AntiConstraintViolation for Flector {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (self[e15] * self[e4235]) + (self[e25] * self[e4315]) + (self[e35] * self[e4125]) + (self[e45] * self[e3215])
                 - (anti_reverse_g0[0] * self[e4235])
                 - (anti_reverse_g0[1] * self[e4315])
                 - (anti_reverse_g0[2] * self[e4125])
                 - (anti_reverse_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Line {
@@ -1449,7 +1449,7 @@ impl AntiConstraintViolation for Line {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             -(anti_reverse_g0[0] * self[e235])
                 - (anti_reverse_g0[1] * self[e315])
@@ -1457,7 +1457,7 @@ impl AntiConstraintViolation for Line {
                 - (anti_reverse_g1[0] * self[e415])
                 - (anti_reverse_g1[1] * self[e425])
                 - (anti_reverse_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Motor {
@@ -1479,7 +1479,7 @@ impl AntiConstraintViolation for Motor {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Infinity::from_groups(
+        Infinity::from_groups(
             // e5
             (anti_reverse_g0[3] * self[e5]) + (anti_reverse_g1[3] * self[e12345])
                 - (anti_reverse_g0[0] * self[e235])
@@ -1488,7 +1488,7 @@ impl AntiConstraintViolation for Motor {
                 - (anti_reverse_g1[0] * self[e415])
                 - (anti_reverse_g1[1] * self[e425])
                 - (anti_reverse_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MultiVector {
@@ -1520,7 +1520,7 @@ impl AntiConstraintViolation for MultiVector {
         let anti_reverse_g6 = self.group6() * Simd32x4::from(-1.0);
         let anti_reverse_g7 = self.group7() * Simd32x3::from(-1.0);
         let anti_reverse_g8 = self.group8() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 2.0 * (self[e4] * self[e3215])
@@ -1699,7 +1699,7 @@ impl AntiConstraintViolation for MultiVector {
                 - (self[e235] * self[e4235])
                 - (self[e315] * self[e4315])
                 - (self[e125] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryCircle {
@@ -1720,10 +1720,10 @@ impl AntiConstraintViolation for MysteryCircle {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e321]) * anti_reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryCircleRotor {
@@ -1744,10 +1744,10 @@ impl AntiConstraintViolation for MysteryCircleRotor {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e321]) * anti_reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryDipole {
@@ -1768,10 +1768,10 @@ impl AntiConstraintViolation for MysteryDipole {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e45]) * anti_reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1793,7 +1793,7 @@ impl AntiConstraintViolation for MysteryDipoleInversion {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             Simd32x3::from([
                 (self[e31] * self[e4125]) - (self[e12] * self[e4315]),
@@ -1803,7 +1803,7 @@ impl AntiConstraintViolation for MysteryDipoleInversion {
                 + (Simd32x3::from([self[e45], self[e4125], self[e4235]]) * anti_reverse_g0.xxy())
                 + (Simd32x3::from([self[e4315], self[e45], self[e45]]) * anti_reverse_g0.zyz())
                 - (self.group1().zxy() * anti_reverse_g0.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryVersorEven {
@@ -1825,7 +1825,7 @@ impl AntiConstraintViolation for MysteryVersorEven {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             Simd32x3::from(2.0) * (Simd32x3::from(self[e12345]) * Simd32x3::from([self[e1], self[e2], self[e3]]))
                 + Simd32x3::from([
@@ -1837,7 +1837,7 @@ impl AntiConstraintViolation for MysteryVersorEven {
                 + (Simd32x3::from([self[e2], self[e321], self[e321]]) * anti_reverse_g1.zyz())
                 + (Simd32x3::from([self[e321], self[e3], self[e1]]) * anti_reverse_g1.xxy())
                 - (Simd32x3::from([self[e3], self[e1], self[e2]]) * anti_reverse_g1.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MysteryVersorOdd {
@@ -1859,7 +1859,7 @@ impl AntiConstraintViolation for MysteryVersorOdd {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             Simd32x3::from(2.0) * (Simd32x3::from(self[scalar]) * Simd32x3::from([self[e4235], self[e4315], self[e4125]]))
                 + Simd32x3::from([
@@ -1871,7 +1871,7 @@ impl AntiConstraintViolation for MysteryVersorOdd {
                 + (Simd32x3::from([self[e4315], self[e45], self[e45]]) * anti_reverse_g1.zyz())
                 + (Simd32x3::from([self[e45], self[e4125], self[e4235]]) * anti_reverse_g1.xxy())
                 - (Simd32x3::from([self[e4125], self[e4235], self[e4315]]) * anti_reverse_g1.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEven {
@@ -1895,7 +1895,7 @@ impl AntiConstraintViolation for VersorEven {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g2[1] * self[e412]) + (self[e12345] * self[e1]) + (self[e425] * self[e3]) + (self[e235] * self[e4]),
@@ -1931,7 +1931,7 @@ impl AntiConstraintViolation for VersorEven {
                 - (anti_reverse_g2[1] * self[e2])
                 - (anti_reverse_g2[2] * self[e435])
                 - (anti_reverse_g2[2] * self[e3]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1955,7 +1955,7 @@ impl AntiConstraintViolation for VersorEvenAligningOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 (anti_reverse_g1[3] * self[e235]) + (anti_reverse_g2[1] * self[e412]),
@@ -1976,7 +1976,7 @@ impl AntiConstraintViolation for VersorEvenAligningOrigin {
                 - (anti_reverse_g2[0] * self[e415])
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -2007,7 +2007,7 @@ impl AntiConstraintViolation for VersorEvenAtInfinity {
             + (Simd32x4::from([anti_reverse_g1[3], self[e3], self[e435], self[e415]]) * self.group1().wy().with_zw(self[e1], self[e2]))
             - (Simd32x4::from([self[e1], self[e435], self[e415], self[e425]]) * self.group0().yzwy())
             - (Simd32x4::from([self[e2], anti_reverse_g1[1], self[e1], self[e2]]) * self.group0().zw().with_zw(anti_reverse_g1[2], anti_reverse_g1[0]));
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -2027,7 +2027,7 @@ impl AntiConstraintViolation for VersorEvenAtInfinity {
                 - (anti_reverse_g2[1] * self[e425])
                 - (anti_reverse_g2[2] * self[e3])
                 - (anti_reverse_g2[2] * self[e435]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -2049,7 +2049,7 @@ impl AntiConstraintViolation for VersorEvenAtOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiPlaneOnOrigin::from_groups(
+        AntiPlaneOnOrigin::from_groups(
             // e1, e2, e3
             (Simd32x3::from(anti_reverse_g0[3]) * self.group1().xyz())
                 + (Simd32x3::from([self[e315], self[e5], self[e5]]) * anti_reverse_g0.zyz())
@@ -2059,7 +2059,7 @@ impl AntiConstraintViolation for VersorEvenAtOrigin {
                 - (Simd32x3::from([self[e431], self[e4], self[e4]]) * anti_reverse_g1.zyz())
                 - (Simd32x3::from([self[e4], self[e412], self[e423]]) * anti_reverse_g1.xxy())
                 - (anti_reverse_g0.yzx() * self.group1().zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -2081,7 +2081,7 @@ impl AntiConstraintViolation for VersorEvenOnOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             (anti_reverse_g0[3] * self[e4]) + (anti_reverse_g1[3] * self[e12345])
                 - (anti_reverse_g0[0] * self[e415])
@@ -2090,7 +2090,7 @@ impl AntiConstraintViolation for VersorEvenOnOrigin {
                 - (anti_reverse_g1[0] * self[e423])
                 - (anti_reverse_g1[1] * self[e431])
                 - (anti_reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -2113,7 +2113,7 @@ impl AntiConstraintViolation for VersorEvenOrthogonalOrigin {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             (anti_reverse_g0.xxyx() * self.group1().wzx().with_w(self[e1]))
                 + (anti_reverse_g0.zyzy() * self.group1().yww().with_w(self[e2]))
@@ -2129,7 +2129,7 @@ impl AntiConstraintViolation for VersorEvenOrthogonalOrigin {
                 - (anti_reverse_g1[0] * self[e1])
                 - (anti_reverse_g1[1] * self[e2])
                 - (anti_reverse_g1[2] * self[e3]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorOdd {
@@ -2153,7 +2153,7 @@ impl AntiConstraintViolation for VersorOdd {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e41]]) * anti_reverse_g2.zyz().with_w(anti_reverse_g1[0]))
                 + (Simd32x4::from([self[scalar], self[e12], self[e23], self[e42]]) * self.group3().xxy().with_w(anti_reverse_g1[1]))
@@ -2188,7 +2188,7 @@ impl AntiConstraintViolation for VersorOdd {
                 - (anti_reverse_g2[1] * self[e4315])
                 - (anti_reverse_g2[2] * self[e4125])
                 - (self[scalar] * self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorOddAtInfinity {
@@ -2219,7 +2219,7 @@ impl AntiConstraintViolation for VersorOddAtInfinity {
             + (anti_reverse_g1.xx() * self.group1().xw()).with_zw(anti_reverse_g0[0] * self[e4315], anti_reverse_g0[0] * self[e4125])
             - Simd32x4::from([anti_reverse_g0[0] * self[scalar], self[e12] * self[e4315], self[e23] * self[e4125], self[e31] * self[e4235]])
             - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * anti_reverse_g1.wyzx());
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from([
             geometric_anti_product_g0[1],
             geometric_anti_product_g0[2],
             geometric_anti_product_g0[3],
@@ -2239,7 +2239,7 @@ impl AntiConstraintViolation for VersorOddAtInfinity {
                 - (anti_reverse_g0[3] * self[e4125])
                 - (anti_reverse_g1[3] * self[e3215])
                 - (self[scalar] * self[e3215]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -2263,7 +2263,7 @@ impl AntiConstraintViolation for VersorOddOrthogonalOrigin {
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(anti_reverse_g2[1] * self[e43]) - (anti_reverse_g2[3] * self[e15]),
@@ -2285,6 +2285,6 @@ impl AntiConstraintViolation for VersorOddOrthogonalOrigin {
                 + (anti_reverse_g2[2] * self[e12])
                 - (anti_reverse_g0[3] * self[e3215])
                 - (anti_reverse_g1[3] * self[scalar]),
-        );
+        )
     }
 }

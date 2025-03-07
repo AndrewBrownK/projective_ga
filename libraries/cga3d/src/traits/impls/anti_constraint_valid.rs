@@ -31,7 +31,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for AntiFlatPoint {
 }
 impl AntiConstraintValid for AntiFlatPoint {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for AntiPlane {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for AntiPlane {
 }
 impl AntiConstraintValid for AntiPlane {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for AntiScalar {
@@ -63,7 +63,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for AntiScalar {
 }
 impl AntiConstraintValid for AntiScalar {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for FlatPoint {
@@ -79,7 +79,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for FlatPoint {
 }
 impl AntiConstraintValid for FlatPoint {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Plane {
@@ -95,7 +95,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Plane {
 }
 impl AntiConstraintValid for Plane {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for RoundPoint {
@@ -111,7 +111,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for RoundPoint {
 }
 impl AntiConstraintValid for RoundPoint {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Scalar {
@@ -127,7 +127,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Scalar {
 }
 impl AntiConstraintValid for Scalar {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Sphere {
@@ -143,6 +143,6 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Sphere {
 }
 impl AntiConstraintValid for Sphere {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }

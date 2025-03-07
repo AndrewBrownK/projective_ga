@@ -112,7 +112,7 @@ impl nearly::NearlyEqEps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOnO
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOnOrigin {
@@ -126,7 +126,7 @@ impl nearly::NearlyEqUlps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOn
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOnOrigin {}
@@ -151,7 +151,7 @@ impl nearly::NearlyOrdUlps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenO
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiVersorEvenOnOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -173,7 +173,7 @@ impl nearly::NearlyOrdUlps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenO
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOnOrigin {
@@ -196,7 +196,7 @@ impl nearly::NearlyOrdEps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOn
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiVersorEvenOnOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -218,7 +218,7 @@ impl nearly::NearlyOrdEps<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOn
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiVersorEvenOnOrigin, f32, f32> for AntiVersorEvenOnOrigin {}
@@ -289,14 +289,14 @@ impl encase::ShaderType for AntiVersorEvenOnOrigin {
     type ExtraMetadata = <AntiVersorEvenOnOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiVersorEvenOnOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiVersorEvenOnOriginGroups as encase::ShaderType>::min_size();
+        <AntiVersorEvenOnOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiVersorEvenOnOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiVersorEvenOnOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiVersorEvenOnOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

@@ -27,7 +27,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
 impl FlatWeightNormSquared for AntiCircleRotor {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -39,7 +39,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorAtIn
 impl FlatWeightNormSquared for AntiCircleRotorAtInfinity {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -54,7 +54,7 @@ impl FlatWeightNormSquared for AntiDipoleInversion {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -69,7 +69,7 @@ impl FlatWeightNormSquared for AntiDipoleInversionAtInfinity {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -84,7 +84,7 @@ impl FlatWeightNormSquared for AntiDipoleInversionOrthogonalOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -96,7 +96,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryCircleRo
 impl FlatWeightNormSquared for AntiMysteryCircleRotor {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -111,7 +111,7 @@ impl FlatWeightNormSquared for AntiMysteryDipoleInversion {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for AntiScalar {
@@ -128,7 +128,7 @@ impl std::ops::DivAssign<FlatWeightNormSquaredPrefixOrPostfix> for AntiScalar {
 impl FlatWeightNormSquared for AntiScalar {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * self[e12345]);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * self[e12345])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Circle {
@@ -143,7 +143,7 @@ impl FlatWeightNormSquared for Circle {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAligningOrigin {
@@ -158,7 +158,7 @@ impl FlatWeightNormSquared for CircleAligningOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleAtInfinity {
@@ -173,7 +173,7 @@ impl FlatWeightNormSquared for CircleAtInfinity {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleOnOrigin {
@@ -188,7 +188,7 @@ impl FlatWeightNormSquared for CircleOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -203,10 +203,10 @@ impl FlatWeightNormSquared for CircleRotor {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -221,10 +221,10 @@ impl FlatWeightNormSquared for CircleRotorAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -239,10 +239,10 @@ impl FlatWeightNormSquared for CircleRotorAligningOriginAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -257,10 +257,10 @@ impl FlatWeightNormSquared for CircleRotorAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -275,10 +275,10 @@ impl FlatWeightNormSquared for CircleRotorOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Dipole {
@@ -290,7 +290,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Dipole {
 impl FlatWeightNormSquared for Dipole {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAligningOrigin {
@@ -302,7 +302,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAligningOrigi
 impl FlatWeightNormSquared for DipoleAligningOrigin {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAtInfinity {
@@ -314,7 +314,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleAtInfinity {
 impl FlatWeightNormSquared for DipoleAtInfinity {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -329,10 +329,10 @@ impl FlatWeightNormSquared for DipoleInversion {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -347,10 +347,10 @@ impl FlatWeightNormSquared for DipoleInversionAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -365,10 +365,10 @@ impl FlatWeightNormSquared for DipoleInversionAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -383,10 +383,10 @@ impl FlatWeightNormSquared for DipoleInversionOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
@@ -398,7 +398,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
 impl FlatWeightNormSquared for DipoleOnOrigin {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DualNum {
@@ -410,7 +410,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for DualNum {
 impl FlatWeightNormSquared for DualNum {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * self[e12345]);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * self[e12345])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatOrigin {
@@ -422,7 +422,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatOrigin {
 impl FlatWeightNormSquared for FlatOrigin {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatPoint {
@@ -434,7 +434,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlatPoint {
 impl FlatWeightNormSquared for FlatPoint {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Flector {
@@ -449,10 +449,10 @@ impl FlatWeightNormSquared for Flector {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for FlectorOnOrigin {
@@ -467,10 +467,10 @@ impl FlatWeightNormSquared for FlectorOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Line {
@@ -485,7 +485,7 @@ impl FlatWeightNormSquared for Line {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for LineOnOrigin {
@@ -500,7 +500,7 @@ impl FlatWeightNormSquared for LineOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Motor {
@@ -515,10 +515,10 @@ impl FlatWeightNormSquared for Motor {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MotorOnOrigin {
@@ -533,10 +533,10 @@ impl FlatWeightNormSquared for MotorOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MultiVector {
@@ -551,7 +551,7 @@ impl FlatWeightNormSquared for MultiVector {
     // f32        7        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345]
                 + self[e45] * self[e45]
@@ -561,7 +561,7 @@ impl FlatWeightNormSquared for MultiVector {
                 + self[e4235] * self[e4235]
                 + self[e4315] * self[e4315]
                 + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircle {
@@ -576,7 +576,7 @@ impl FlatWeightNormSquared for MysteryCircle {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
+        AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryCircleRotor {
@@ -591,10 +591,10 @@ impl FlatWeightNormSquared for MysteryCircleRotor {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipole {
@@ -606,7 +606,7 @@ impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipole {
 impl FlatWeightNormSquared for MysteryDipole {
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45]);
+        AntiScalar::from_groups(/* e12345 */ self[e45] * self[e45])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryDipoleInversion {
@@ -621,10 +621,10 @@ impl FlatWeightNormSquared for MysteryDipoleInversion {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorEven {
@@ -639,10 +639,10 @@ impl FlatWeightNormSquared for MysteryVersorEven {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for MysteryVersorOdd {
@@ -657,10 +657,10 @@ impl FlatWeightNormSquared for MysteryVersorOdd {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125] + self[e45] * self[e45],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Plane {
@@ -675,7 +675,7 @@ impl FlatWeightNormSquared for Plane {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
+        AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for PlaneOnOrigin {
@@ -690,7 +690,7 @@ impl FlatWeightNormSquared for PlaneOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
+        AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for Sphere {
@@ -705,7 +705,7 @@ impl FlatWeightNormSquared for Sphere {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
+        AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for SphereOnOrigin {
@@ -720,7 +720,7 @@ impl FlatWeightNormSquared for SphereOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
+        AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125])
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEven {
@@ -735,10 +735,10 @@ impl FlatWeightNormSquared for VersorEven {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -753,10 +753,10 @@ impl FlatWeightNormSquared for VersorEvenAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -771,10 +771,10 @@ impl FlatWeightNormSquared for VersorEvenAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -789,10 +789,10 @@ impl FlatWeightNormSquared for VersorEvenOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -807,10 +807,10 @@ impl FlatWeightNormSquared for VersorOdd {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatWeightNormSquaredPrefixOrPostfix> for VersorOddAtInfinity {
@@ -825,9 +825,9 @@ impl FlatWeightNormSquared for VersorOddAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
-        );
+        )
     }
 }

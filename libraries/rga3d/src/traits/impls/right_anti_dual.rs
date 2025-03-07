@@ -28,7 +28,7 @@ impl RightAntiDual for DualNum {
     type Output = AntiScalar;
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[scalar]);
+        AntiScalar::from_groups(/* e1234 */ self[scalar])
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Flector {
@@ -50,12 +50,12 @@ impl RightAntiDual for Flector {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(self[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e423, e431, e412, e321
             self.group0().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Horizon {
@@ -71,7 +71,7 @@ impl RightAntiDual for Horizon {
     // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e321] * -1.0);
+        Origin::from_groups(/* e4 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Line {
@@ -92,7 +92,7 @@ impl RightAntiDual for Line {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn right_anti_dual(self) -> Self::Output {
-        return Line::from_groups(/* e41, e42, e43 */ self.group1() * Simd32x3::from(-1.0), /* e23, e31, e12 */ Simd32x3::from(0.0));
+        Line::from_groups(/* e41, e42, e43 */ self.group1() * Simd32x3::from(-1.0), /* e23, e31, e12 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Motor {
@@ -113,12 +113,12 @@ impl RightAntiDual for Motor {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MultiVector {
@@ -143,7 +143,7 @@ impl RightAntiDual for MultiVector {
     //  no simd        0        7        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([0.0, self[scalar]]),
             // e1, e2, e3, e4
@@ -154,7 +154,7 @@ impl RightAntiDual for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             self.group1().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Plane {
@@ -170,7 +170,7 @@ impl RightAntiDual for Plane {
     // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e321] * -1.0);
+        Origin::from_groups(/* e4 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Point {
@@ -182,7 +182,7 @@ impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Point {
 impl RightAntiDual for Point {
     type Output = Plane;
     fn right_anti_dual(self) -> Self::Output {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(0.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Scalar {
@@ -195,6 +195,6 @@ impl RightAntiDual for Scalar {
     type Output = AntiScalar;
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[scalar]);
+        AntiScalar::from_groups(/* e1234 */ self[scalar])
     }
 }

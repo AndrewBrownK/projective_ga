@@ -28,7 +28,7 @@ impl RightComplement for AntiScalar {
     type Output = Scalar;
     fn right_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1234]);
+        Scalar::from_groups(/* scalar */ self[e1234])
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for DualNum {
@@ -45,7 +45,7 @@ impl std::ops::DivAssign<RightComplementPrefixOrPostfix> for DualNum {
 impl RightComplement for DualNum {
     type Output = DualNum;
     fn right_complement(self) -> Self::Output {
-        return DualNum::from_groups(/* scalar, e1234 */ self.group0().yx());
+        DualNum::from_groups(/* scalar, e1234 */ self.group0().yx())
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Flector {
@@ -66,7 +66,7 @@ impl RightComplement for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn right_complement(self) -> Self::Output {
-        return Flector::from_groups(/* e1, e2, e3, e4 */ self.group1() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group0());
+        Flector::from_groups(/* e1, e2, e3, e4 */ self.group1() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group0())
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Horizon {
@@ -82,7 +82,7 @@ impl RightComplement for Horizon {
     // f32        0        1        0
     fn right_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e321] * -1.0);
+        Origin::from_groups(/* e4 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Line {
@@ -103,12 +103,12 @@ impl RightComplement for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn right_complement(self) -> Self::Output {
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Motor {
@@ -129,12 +129,12 @@ impl RightComplement for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn right_complement(self) -> Self::Output {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for MultiVector {
@@ -158,7 +158,7 @@ impl RightComplement for MultiVector {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn right_complement(self) -> Self::Output {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0().yx(),
             // e1, e2, e3, e4
@@ -169,7 +169,7 @@ impl RightComplement for MultiVector {
             self.group2() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Origin {
@@ -182,7 +182,7 @@ impl RightComplement for Origin {
     type Output = Horizon;
     fn right_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e4]);
+        Horizon::from_groups(/* e321 */ self[e4])
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Plane {
@@ -198,7 +198,7 @@ impl RightComplement for Plane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn right_complement(self) -> Self::Output {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Point {
@@ -210,7 +210,7 @@ impl std::ops::Div<RightComplementPrefixOrPostfix> for Point {
 impl RightComplement for Point {
     type Output = Plane;
     fn right_complement(self) -> Self::Output {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0())
     }
 }
 impl std::ops::Div<RightComplementPrefixOrPostfix> for Scalar {
@@ -223,6 +223,6 @@ impl RightComplement for Scalar {
     type Output = AntiScalar;
     fn right_complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[scalar]);
+        AntiScalar::from_groups(/* e1234 */ self[scalar])
     }
 }

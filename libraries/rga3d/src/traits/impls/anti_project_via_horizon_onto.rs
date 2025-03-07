@@ -31,7 +31,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for AntiScalar {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[scalar] * other[scalar] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[scalar] * other[scalar] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for AntiScalar {
@@ -48,14 +48,14 @@ impl AntiProjectViaHorizonOnto<Flector> for AntiScalar {
         use crate::elements::*;
         let anti_wedge_g0_w = self[e1234] * other[e321] * -1.0;
         let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (other.group0().wwwx() * Simd32x3::from(0.0).with_w(anti_wedge_g1_xyz[0]))
                 + Simd32x3::from(0.0).with_w((anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3]) - (anti_wedge_g0_w * other[e321]))
                 - (Simd32x3::from(0.0).with_w(anti_wedge_g0_w).wwwx() * other.group0().xyz().with_w(other[e423])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for AntiScalar {
@@ -65,7 +65,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for AntiScalar {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for AntiScalar {
@@ -80,7 +80,7 @@ impl AntiProjectViaHorizonOnto<Line> for AntiScalar {
     fn anti_project_via_horizon_onto(self, other: Line) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x3::from(self[e1234]) * other.group1() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(/* e1234 */ -(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]));
+        AntiScalar::from_groups(/* e1234 */ -(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]))
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for AntiScalar {
@@ -95,13 +95,13 @@ impl AntiProjectViaHorizonOnto<Motor> for AntiScalar {
     fn anti_project_via_horizon_onto(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (anti_wedge_g0 * Simd32x4::from(other[scalar]))
                 + Simd32x3::from(0.0).with_w(-(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for AntiScalar {
@@ -121,7 +121,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for AntiScalar {
         let anti_wedge_g1 = Simd32x3::from(0.0).with_w(self[e1234] * other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let anti_wedge_g2 = Simd32x3::from(self[e1234]) * other.group3() * Simd32x3::from(-1.0);
         let anti_wedge_g4_xyz = Simd32x3::from(self[e1234]) * other.group1().xyz();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
@@ -153,7 +153,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for AntiScalar {
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (anti_wedge_g2.zxy() * other.group1().yzx()).with_w(0.0)
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for AntiScalar {
@@ -163,7 +163,7 @@ impl AntiProjectViaHorizonOnto<Plane> for AntiScalar {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for AntiScalar {
@@ -178,10 +178,10 @@ impl AntiProjectViaHorizonOnto<Point> for AntiScalar {
     fn anti_project_via_horizon_onto(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e1234
             (anti_wedge_g0_xyz[0] * other[e1]) + (anti_wedge_g0_xyz[1] * other[e2]) + (anti_wedge_g0_xyz[2] * other[e3]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for AntiScalar {
@@ -191,7 +191,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for AntiScalar {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[scalar] * other[scalar] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[scalar] * other[scalar] * self[e1234])
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for DualNum {
@@ -212,10 +212,10 @@ impl AntiProjectViaHorizonOnto<DualNum> for DualNum {
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x2::from(other[scalar]) * self.group0();
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([
             anti_wedge_g0[0] * other[scalar],
             (anti_wedge_g0[0] * other[e1234]) + (anti_wedge_g0[1] * other[scalar]),
-        ]));
+        ]))
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for DualNum {
@@ -232,14 +232,14 @@ impl AntiProjectViaHorizonOnto<Flector> for DualNum {
         use crate::elements::*;
         let anti_wedge_g0_w = self[e1234] * other[e321] * -1.0;
         let anti_wedge_g1_xyz = other.group0().xyz() * self.group0().yy().with_z(self[e1234]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (other.group0().wwwx() * Simd32x3::from(0.0).with_w(anti_wedge_g1_xyz[0]))
                 + Simd32x3::from(0.0).with_w((anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3]) - (anti_wedge_g0_w * other[e321]))
                 - (Simd32x3::from(0.0).with_w(anti_wedge_g0_w).wwwx() * other.group0().xyz().with_w(other[e423])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for DualNum {
@@ -249,7 +249,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for DualNum {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for DualNum {
@@ -264,7 +264,7 @@ impl AntiProjectViaHorizonOnto<Line> for DualNum {
     fn anti_project_via_horizon_onto(self, other: Line) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x3::from(self[e1234]) * other.group1() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(/* e1234 */ -(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]));
+        AntiScalar::from_groups(/* e1234 */ -(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]))
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for DualNum {
@@ -282,14 +282,14 @@ impl AntiProjectViaHorizonOnto<Motor> for DualNum {
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_wedge_g0 = right_dual_g0 * Simd32x4::from(self[e1234]);
         let anti_wedge_g1_w = right_dual_g0[3] * self[scalar];
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (anti_wedge_g0 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g1_w) * other.group0())
                 + Simd32x3::from(0.0).with_w(-(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12])),
             // e23, e31, e12, scalar
             (Simd32x3::from(anti_wedge_g1_w) * other.group1().xyz()).with_w(anti_wedge_g1_w * other[scalar]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for DualNum {
@@ -309,7 +309,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for DualNum {
         let anti_wedge_g1 = Simd32x3::from(0.0).with_w(self[e1234] * other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let anti_wedge_g2 = Simd32x3::from(self[e1234]) * other.group3() * Simd32x3::from(-1.0);
         let anti_wedge_g4 = (other.group1().xyz() * self.group0().yy().with_z(self[e1234])).with_w(0.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0[0] * other[scalar],
@@ -344,7 +344,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for DualNum {
                 + (Simd32x4::from(anti_wedge_g0[0]) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(0.0))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for DualNum {
@@ -354,7 +354,7 @@ impl AntiProjectViaHorizonOnto<Plane> for DualNum {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for DualNum {
@@ -369,10 +369,10 @@ impl AntiProjectViaHorizonOnto<Point> for DualNum {
     fn anti_project_via_horizon_onto(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0_xyz = other.group0().xyz() * self.group0().yy().with_z(self[e1234]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e1234
             (anti_wedge_g0_xyz[0] * other[e1]) + (anti_wedge_g0_xyz[1] * other[e2]) + (anti_wedge_g0_xyz[2] * other[e3]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for DualNum {
@@ -383,7 +383,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for DualNum {
     // no simd        0        2        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0());
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0())
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Flector {
@@ -400,12 +400,12 @@ impl AntiProjectViaHorizonOnto<DualNum> for Flector {
     // no simd        0        8        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Flector {
@@ -426,7 +426,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Flector {
             + Simd32x3::from(0.0)
                 .with_w((other[e2] * self[e2]) + (other[e3] * self[e3]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]))
             - (self.group1().wwwx() * other.group0().xyz().with_w(right_dual_g0[0]));
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(anti_wedge_g1[3]) * other.group0(),
             // e423, e431, e412, e321
@@ -437,7 +437,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Flector {
                 -(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
             ]) + (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(anti_wedge_g1[3] * other[e321])
                 - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for Flector {
@@ -447,7 +447,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for Flector {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for Flector {
@@ -465,7 +465,7 @@ impl AntiProjectViaHorizonOnto<Line> for Flector {
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
         let anti_wedge_g0 = (Simd32x4::from([self[e321], self[e321], self[e321], 1.0]) * right_dual_g0.with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412])))
             - (self.group1().yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0]));
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from([
                 (anti_wedge_g0[2] * other[e42]) + (anti_wedge_g0[3] * other[e23]),
@@ -473,7 +473,7 @@ impl AntiProjectViaHorizonOnto<Line> for Flector {
                 (anti_wedge_g0[1] * other[e41]) + (anti_wedge_g0[3] * other[e12]),
                 -(anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
             ]) - (anti_wedge_g0.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Flector {
@@ -493,7 +493,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Flector {
             + (Simd32x4::from([self[e321], self[e321], self[e321], 1.0]) * right_dual_g0.xyz().with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412])))
             - (self.group1().yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0]));
         let anti_wedge_g1 = Simd32x4::from(right_dual_g0[3]) * self.group1();
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             anti_wedge_g0 * Simd32x4::from(other[scalar]),
             // e423, e431, e412, e321
@@ -504,7 +504,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Flector {
                 -(anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
             ]) + (anti_wedge_g0.zxy() * other.group0().yzx()).with_w(anti_wedge_g1[3] * other[scalar])
                 - (anti_wedge_g0.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Flector {
@@ -532,7 +532,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Flector {
         let anti_wedge_g2 = (self.group1().zxy() * other.group1().yzx()) - (self.group1().yzx() * other.group1().zxy());
         let anti_wedge_g3 = Simd32x3::from(self[e321]) * other.group1().xyz() * Simd32x3::from(-1.0);
         let anti_wedge_g4 = Simd32x4::from(other[scalar]) * self.group1();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -570,7 +570,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Flector {
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for Flector {
@@ -584,7 +584,7 @@ impl AntiProjectViaHorizonOnto<Plane> for Flector {
     //  no simd        0        5        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Flector {
@@ -602,7 +602,7 @@ impl AntiProjectViaHorizonOnto<Point> for Flector {
         let anti_wedge_g0_xyz = (self.group1().zxy() * other.group0().yzx()) - (self.group1().yzx() * other.group0().zxy());
         let anti_wedge_g1 = ((Simd32x3::from(self[e321]) * other.group0().xyz()).with_w((self[e2] * other[e2]) + (self[e3] * other[e3])) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
             + (other.group0().xyz().with_w(0.0).wwwx() * self.group1().xyz().with_w(self[e1]));
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(anti_wedge_g1[3]) * other.group0(),
             // e423, e431, e412, e321
@@ -612,7 +612,7 @@ impl AntiProjectViaHorizonOnto<Point> for Flector {
                 (anti_wedge_g0_xyz[0] * other[e2]) + (anti_wedge_g1[2] * other[e4]),
                 -(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
             ]) - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Flector {
@@ -623,12 +623,12 @@ impl AntiProjectViaHorizonOnto<Scalar> for Flector {
     // no simd        0        8        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Horizon {
@@ -644,7 +644,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for Horizon {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321])
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Horizon {
@@ -659,7 +659,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Horizon {
     fn anti_project_via_horizon_onto(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g1 = Simd32x4::from(self[e321]) * other.group0().xyz().with_w(other[e321] * -1.0) * Simd32x4::from(-1.0);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(anti_wedge_g1[3]) * other.group0(),
             // e423, e431, e412, e321
@@ -670,7 +670,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Horizon {
                 -(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
             ]) + Simd32x3::from(0.0).with_w(anti_wedge_g1[3] * other[e321])
                 - (other.group0().yzxx() * Simd32x3::from(0.0).with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for Horizon {
@@ -680,7 +680,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for Horizon {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for Horizon {
@@ -695,11 +695,11 @@ impl AntiProjectViaHorizonOnto<Line> for Horizon {
     fn anti_project_via_horizon_onto(self, other: Line) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0_xyz = Simd32x3::from(self[e321]) * other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             ((anti_wedge_g0_xyz.zxy() * other.group0().yzx()) - (anti_wedge_g0_xyz.yzx() * other.group0().zxy()))
                 .with_w(-(anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Horizon {
@@ -716,14 +716,14 @@ impl AntiProjectViaHorizonOnto<Motor> for Horizon {
         use crate::elements::*;
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_wedge_g0_xyz = Simd32x3::from(self[e321]) * right_dual_g0.xyz();
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (anti_wedge_g0_xyz * other.group1().www()).with_w(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(-(anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12]))
                 + (anti_wedge_g0_xyz.zxy() * other.group0().yzx()).with_w(right_dual_g0[3] * self[e321] * other[scalar])
                 - (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Horizon {
@@ -743,7 +743,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Horizon {
         let anti_wedge_g1 = (Simd32x3::from(self[e321]) * other.group3() * Simd32x3::from(-1.0)).with_w(0.0);
         let anti_wedge_g3 = Simd32x3::from(self[e321]) * other.group1().xyz() * Simd32x3::from(-1.0);
         let anti_wedge_g4 = Simd32x3::from(0.0).with_w(self[e321] * other[scalar]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0[0] * other[scalar],
@@ -778,7 +778,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Horizon {
                 + (Simd32x4::from(anti_wedge_g0[0]) * other.group4())
                 - (other.group1().yzxx() * Simd32x3::from(0.0).with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for Horizon {
@@ -792,7 +792,7 @@ impl AntiProjectViaHorizonOnto<Plane> for Horizon {
     //  no simd        0        5        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Horizon {
@@ -808,11 +808,11 @@ impl AntiProjectViaHorizonOnto<Point> for Horizon {
     fn anti_project_via_horizon_onto(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g1 = Simd32x3::from(self[e321]) * other.group0().xyz() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             (Simd32x4::from([other[e4], other[e4], other[e4], 1.0]) * anti_wedge_g1.with_w(-(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3])))
                 - (other.group0().yzxx() * Simd32x3::from(0.0).with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Horizon {
@@ -822,7 +822,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for Horizon {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321])
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Line {
@@ -839,12 +839,12 @@ impl AntiProjectViaHorizonOnto<DualNum> for Line {
     // no simd        0        6        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Line {
@@ -861,7 +861,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Line {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from([other[e3] * self[e31], other[e1] * self[e12], other[e2] * self[e23], -(other[e2] * self[e42]) - (other[e3] * self[e43])])
             - (self.group1().zxy() * other.group0().yzx()).with_w(0.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x4::from([other[e4], other[e4], other[e4], 1.0])
                 * anti_wedge_g0
@@ -870,7 +870,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Line {
                 - (anti_wedge_g0.wwwx() * other.group0().xyz().with_w(other[e423])),
             // e23, e31, e12, scalar
             ((anti_wedge_g0.zxy() * other.group0().yzx()) - (anti_wedge_g0.yzx() * other.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for Line {
@@ -886,12 +886,12 @@ impl AntiProjectViaHorizonOnto<Line> for Line {
         use crate::elements::*;
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
         let anti_wedge_g0 = -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]);
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::from(anti_wedge_g0) * other.group0(),
             // e23, e31, e12
             Simd32x3::from(anti_wedge_g0) * other.group1(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Line {
@@ -910,7 +910,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Line {
         let anti_wedge_g0 = (self.group0() * right_dual_g0.www()).with_w(0.0);
         let anti_wedge_g1_xyz = Simd32x3::from(right_dual_g0[3]) * self.group1();
         let anti_wedge_g1_w = -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (anti_wedge_g0 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g1_w) * other.group0())
@@ -924,7 +924,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Line {
                 ),
             // e23, e31, e12, scalar
             ((anti_wedge_g1_xyz * Simd32x3::from(other[scalar])) + (Simd32x3::from(anti_wedge_g1_w) * other.group1().xyz())).with_w(anti_wedge_g1_w * other[scalar]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Line {
@@ -945,7 +945,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Line {
             - (self.group1().zxy() * other.group1().yzx()).with_w(0.0);
         let anti_wedge_g2 = Simd32x3::from(other[scalar]) * self.group0();
         let anti_wedge_g3 = Simd32x3::from(other[scalar]) * self.group1();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -978,7 +978,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Line {
             ]) + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Line {
@@ -995,12 +995,12 @@ impl AntiProjectViaHorizonOnto<Point> for Line {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from([self[e31] * other[e3], self[e12] * other[e1], self[e23] * other[e2], -(self[e42] * other[e2]) - (self[e43] * other[e3])])
             - (self.group1().zxy() * other.group0().yzx()).with_w(0.0);
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             (Simd32x3::from(other[e4]) * anti_wedge_g0.xyz()) - (Simd32x3::from(anti_wedge_g0[3]) * other.group0().xyz()),
             // e23, e31, e12
             (anti_wedge_g0.zxy() * other.group0().yzx()) - (anti_wedge_g0.yzx() * other.group0().zxy()),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Line {
@@ -1011,12 +1011,12 @@ impl AntiProjectViaHorizonOnto<Scalar> for Line {
     // no simd        0        6        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Motor {
@@ -1038,12 +1038,12 @@ impl AntiProjectViaHorizonOnto<DualNum> for Motor {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(other[scalar]) * self.group0();
         let anti_wedge_g1 = Simd32x4::from(other[scalar]) * self.group1();
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             other.group0().xx().with_zw(other[scalar], (anti_wedge_g0[3] * other[scalar]) + (anti_wedge_g1[3] * other[e1234])) * anti_wedge_g0.xyz().with_w(1.0),
             // e23, e31, e12, scalar
             anti_wedge_g1 * Simd32x4::from(other[scalar]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Motor {
@@ -1062,7 +1062,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Motor {
             + (Simd32x4::from(self[e1234]) * Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]))
             - (other.group0().yzx() * self.group1().zxy()).with_w(0.0);
         let anti_wedge_g1_xyz = other.group0().xyz() * self.group0().www();
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (other.group0().wwwx() * anti_wedge_g0.xyz().with_w(anti_wedge_g1_xyz[0]))
                 + Simd32x3::from(0.0).with_w(
@@ -1074,7 +1074,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Motor {
                 - (anti_wedge_g0.wwwx() * other.group0().xyz().with_w(other[e423])),
             // e23, e31, e12, scalar
             ((anti_wedge_g0.zxy() * other.group0().yzx()) - (anti_wedge_g0.yzx() * other.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for Motor {
@@ -1084,7 +1084,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for Motor {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for Motor {
@@ -1101,13 +1101,13 @@ impl AntiProjectViaHorizonOnto<Line> for Motor {
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
         let anti_wedge_g0_xyz = right_dual_g0 * self.group0().www();
         let anti_wedge_g1_w = -(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x3::from(anti_wedge_g1_w) * other.group0())
                 .with_w(-(anti_wedge_g0_xyz[0] * other[e23]) - (anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12])),
             // e23, e31, e12, scalar
             (Simd32x3::from(anti_wedge_g1_w) * other.group1()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Motor {
@@ -1126,7 +1126,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Motor {
         let anti_wedge_g0 = ((Simd32x3::from(right_dual_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e1234]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * self[e1234]);
         let anti_wedge_g1 = (Simd32x4::from(right_dual_g0[3]) * self.group1())
             + Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * self[e23]) - (right_dual_g0[1] * self[e31]) - (right_dual_g0[2] * self[e12]));
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (anti_wedge_g0 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g1[3]) * other.group0())
@@ -1140,7 +1140,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Motor {
                 ),
             // e23, e31, e12, scalar
             ((Simd32x3::from(anti_wedge_g1[3]) * other.group1().xyz()) + (Simd32x3::from(other[scalar]) * anti_wedge_g1.xyz())).with_w(anti_wedge_g1[3] * other[scalar]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Motor {
@@ -1168,7 +1168,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Motor {
         let anti_wedge_g2 = (right_dual_g2 * Simd32x3::from(self[e1234])) + (Simd32x3::from(other[scalar]) * self.group0().xyz());
         let anti_wedge_g3 = Simd32x3::from(other[scalar]) * self.group1().xyz();
         let anti_wedge_g4 = (other.group1().xyz() * self.group0().www()).with_w(0.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -1207,7 +1207,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Motor {
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for Motor {
@@ -1217,7 +1217,7 @@ impl AntiProjectViaHorizonOnto<Plane> for Motor {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Motor {
@@ -1235,13 +1235,13 @@ impl AntiProjectViaHorizonOnto<Point> for Motor {
         let anti_wedge_g0 = Simd32x4::from([self[e31] * other[e3], self[e12] * other[e1], self[e23] * other[e2], -(self[e42] * other[e2]) - (self[e43] * other[e3])])
             - (self.group1().zxy() * other.group0().yzx()).with_w(0.0);
         let anti_wedge_g1_xyz = other.group0().xyz() * self.group0().www();
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (other.group0().wwwx() * anti_wedge_g0.xyz().with_w(anti_wedge_g1_xyz[0]))
                 + (other.group0().xyz() * anti_wedge_g0.www() * Simd32x3::from(-1.0)).with_w((anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3])),
             // e23, e31, e12, scalar
             ((anti_wedge_g0.zxy() * other.group0().yzx()) - (anti_wedge_g0.yzx() * other.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Motor {
@@ -1252,12 +1252,12 @@ impl AntiProjectViaHorizonOnto<Scalar> for Motor {
     // no simd        0        8        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12, scalar
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for MultiVector {
@@ -1280,7 +1280,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for MultiVector {
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x2::from(other[scalar]) * self.group0();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([anti_wedge_g0[0] * other[scalar], (anti_wedge_g0[0] * other[e1234]) + (anti_wedge_g0[1] * other[scalar])]),
             // e1, e2, e3, e4
@@ -1291,7 +1291,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for MultiVector {
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group4(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for MultiVector {
@@ -1318,7 +1318,7 @@ impl AntiProjectViaHorizonOnto<Flector> for MultiVector {
         let anti_wedge_g2 = (other.group0().yzx() * self.group4().zxy()) - (other.group0().zxy() * self.group4().yzx());
         let anti_wedge_g3 = Simd32x3::from(self[e321]) * other.group0().xyz() * Simd32x3::from(-1.0);
         let anti_wedge_g4_xyz = other.group0().xyz() * self.group0().yy().with_z(self[e1234]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
@@ -1342,7 +1342,7 @@ impl AntiProjectViaHorizonOnto<Flector> for MultiVector {
                 -(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]),
             ]) + (Simd32x4::from(anti_wedge_g0_x) * other.group1())
                 - (other.group0().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for MultiVector {
@@ -1357,7 +1357,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for MultiVector {
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other[e321] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([1.0, right_dual_g0 * other[e321] * self[e1234]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -1368,7 +1368,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(right_dual_g0 * other[e321] * self[e321] * -1.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for MultiVector {
@@ -1388,7 +1388,7 @@ impl AntiProjectViaHorizonOnto<Line> for MultiVector {
         let anti_wedge_g1 = (Simd32x4::from([self[e321], self[e321], self[e321], 1.0]) * right_dual_g0.with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412])))
             - (self.group4().yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0]));
         let anti_wedge_g2 = right_dual_g0 * Simd32x3::from(self[e1234]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([0.0, -(anti_wedge_g2[0] * other[e23]) - (anti_wedge_g2[1] * other[e31]) - (anti_wedge_g2[2] * other[e12])]),
             // e1, e2, e3, e4
@@ -1404,7 +1404,7 @@ impl AntiProjectViaHorizonOnto<Line> for MultiVector {
                 (anti_wedge_g1[1] * other[e41]) + (anti_wedge_g1[3] * other[e12]),
                 -(anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]),
             ]) - (anti_wedge_g1.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for MultiVector {
@@ -1427,7 +1427,7 @@ impl AntiProjectViaHorizonOnto<Motor> for MultiVector {
         let anti_wedge_g2 = (Simd32x3::from(right_dual_g0[3]) * self.group2()) + (Simd32x3::from(self[e1234]) * right_dual_g0.xyz());
         let anti_wedge_g3 = Simd32x3::from(right_dual_g0[3]) * self.group3();
         let anti_wedge_g4 = Simd32x4::from(right_dual_g0[3]) * self.group4();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -1453,7 +1453,7 @@ impl AntiProjectViaHorizonOnto<Motor> for MultiVector {
                 -(anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]),
             ]) + (anti_wedge_g1.zxy() * other.group0().yzx()).with_w(anti_wedge_g4[3] * other[scalar])
                 - (anti_wedge_g1.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for MultiVector {
@@ -1491,7 +1491,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for MultiVector {
             - (other.group1().zxy() * self.group4().yzx());
         let anti_wedge_g3 = (Simd32x3::from(other[scalar]) * self.group3()) - (Simd32x3::from(self[e321]) * other.group1().xyz());
         let anti_wedge_g4 = (Simd32x4::from(other[scalar]) * self.group4()) + (Simd32x4::from(self[e1234]) * other.group1().xyz().with_w(0.0));
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -1530,7 +1530,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for MultiVector {
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for MultiVector {
@@ -1546,7 +1546,7 @@ impl AntiProjectViaHorizonOnto<Plane> for MultiVector {
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other[e321] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([1.0, right_dual_g0 * self[e1234] * other[e321]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -1557,7 +1557,7 @@ impl AntiProjectViaHorizonOnto<Plane> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(right_dual_g0 * self[e321] * -1.0) * other.group0(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for MultiVector {
@@ -1577,7 +1577,7 @@ impl AntiProjectViaHorizonOnto<Point> for MultiVector {
         let anti_wedge_g2 = (self.group4().zxy() * other.group0().yzx()) - (self.group4().yzx() * other.group0().zxy());
         let anti_wedge_g3 = Simd32x3::from(self[e321]) * other.group0().xyz() * Simd32x3::from(-1.0);
         let anti_wedge_g4_xyz = other.group0().xyz() * self.group0().yy().with_z(self[e1234]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([0.0, (anti_wedge_g4_xyz[0] * other[e1]) + (anti_wedge_g4_xyz[1] * other[e2]) + (anti_wedge_g4_xyz[2] * other[e3])]),
             // e1, e2, e3, e4
@@ -1593,7 +1593,7 @@ impl AntiProjectViaHorizonOnto<Point> for MultiVector {
                 (anti_wedge_g2[0] * other[e2]) + (anti_wedge_g3[2] * other[e4]),
                 -(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]),
             ]) - (other.group0().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for MultiVector {
@@ -1608,7 +1608,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for MultiVector {
     //  no simd        0       16        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0(),
             // e1, e2, e3, e4
@@ -1619,7 +1619,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for MultiVector {
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group4(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Origin {
@@ -1635,7 +1635,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for Origin {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4]);
+        Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4])
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Origin {
@@ -1650,12 +1650,12 @@ impl AntiProjectViaHorizonOnto<Motor> for Origin {
     fn anti_project_via_horizon_onto(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = other[scalar] * self[e4];
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(anti_wedge_g0 * other[scalar]),
             // e423, e431, e412, e321
             (Simd32x3::from(anti_wedge_g0) * other.group1().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Origin {
@@ -1671,7 +1671,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Origin {
     fn anti_project_via_horizon_onto(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = other[scalar] * self[e4];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([1.0, anti_wedge_g0 * other[e321]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -1682,7 +1682,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Origin {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (Simd32x3::from(anti_wedge_g0) * other.group3()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Origin {
@@ -1692,7 +1692,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for Origin {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4]);
+        Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4])
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Plane {
@@ -1709,7 +1709,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for Plane {
     // no simd        0        4        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Plane {
@@ -1728,7 +1728,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Plane {
         let anti_wedge_g0_xyz = (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx());
         let anti_wedge_g1 = Simd32x3::from(0.0).with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]) - (right_dual_g0[3] * self[e321]))
             - (self.group0().wwwx() * other.group0().xyz().with_w(right_dual_g0[0]));
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(anti_wedge_g1[3]) * other.group0(),
             // e423, e431, e412, e321
@@ -1739,7 +1739,7 @@ impl AntiProjectViaHorizonOnto<Flector> for Plane {
                 -(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
             ]) + (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(anti_wedge_g1[3] * other[e321])
                 - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Horizon> for Plane {
@@ -1749,7 +1749,7 @@ impl AntiProjectViaHorizonOnto<Horizon> for Plane {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321])
     }
 }
 impl AntiProjectViaHorizonOnto<Line> for Plane {
@@ -1767,7 +1767,7 @@ impl AntiProjectViaHorizonOnto<Line> for Plane {
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
         let anti_wedge_g0 = (Simd32x4::from([self[e321], self[e321], self[e321], 1.0]) * right_dual_g0.with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412])))
             - (self.group0().yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0]));
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from([
                 (anti_wedge_g0[2] * other[e42]) + (anti_wedge_g0[3] * other[e23]),
@@ -1775,7 +1775,7 @@ impl AntiProjectViaHorizonOnto<Line> for Plane {
                 (anti_wedge_g0[1] * other[e41]) + (anti_wedge_g0[3] * other[e12]),
                 -(anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
             ]) - (anti_wedge_g0.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Plane {
@@ -1795,7 +1795,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Plane {
             * right_dual_g0.xyz().with_w(-(right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412])))
             - (self.group0().yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0]));
         let anti_wedge_g1 = Simd32x4::from(right_dual_g0[3]) * self.group0();
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             anti_wedge_g0 * Simd32x4::from(other[scalar]),
             // e423, e431, e412, e321
@@ -1806,7 +1806,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Plane {
                 -(anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
             ]) + (anti_wedge_g0.zxy() * other.group0().yzx()).with_w(anti_wedge_g1[3] * other[scalar])
                 - (anti_wedge_g0.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Plane {
@@ -1829,7 +1829,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Plane {
         let anti_wedge_g2 = (other.group1().yzx() * self.group0().zxy()) - (other.group1().zxy() * self.group0().yzx());
         let anti_wedge_g3 = Simd32x3::from(self[e321]) * other.group1().xyz() * Simd32x3::from(-1.0);
         let anti_wedge_g4 = Simd32x4::from(other[scalar]) * self.group0();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -1867,7 +1867,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Plane {
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0]))
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(anti_wedge_g3[1] * other[e2]),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Plane> for Plane {
@@ -1881,7 +1881,7 @@ impl AntiProjectViaHorizonOnto<Plane> for Plane {
     //  no simd        0        5        0
     fn anti_project_via_horizon_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(other[e321] * self[e321]) * other.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(other[e321] * self[e321]) * other.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Plane {
@@ -1898,7 +1898,7 @@ impl AntiProjectViaHorizonOnto<Point> for Plane {
         use crate::elements::*;
         let anti_wedge_g0 = (self.group0().zxy() * other.group0().yzx()) - (self.group0().yzx() * other.group0().zxy());
         let anti_wedge_g1 = Simd32x3::from(self[e321]) * other.group0().xyz() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from([
                 (anti_wedge_g0[1] * other[e3]) + (anti_wedge_g1[0] * other[e4]),
@@ -1906,7 +1906,7 @@ impl AntiProjectViaHorizonOnto<Point> for Plane {
                 (anti_wedge_g0[0] * other[e2]) + (anti_wedge_g1[2] * other[e4]),
                 -(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
             ]) - (other.group0().yzxx() * anti_wedge_g0.zxy().with_w(anti_wedge_g1[0])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Plane {
@@ -1917,7 +1917,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for Plane {
     // no simd        0        4        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0())
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Point {
@@ -1934,7 +1934,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for Point {
     // no simd        0        4        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0());
+        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Flector> for Point {
@@ -1949,12 +1949,12 @@ impl AntiProjectViaHorizonOnto<Flector> for Point {
     fn anti_project_via_horizon_onto(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(anti_wedge_g0) * other.group0(),
             // e423, e431, e412, e321
             Simd32x4::from(anti_wedge_g0) * other.group1(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Point {
@@ -1969,7 +1969,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Point {
     fn anti_project_via_horizon_onto(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(other[scalar]) * self.group0();
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             anti_wedge_g0 * Simd32x4::from(other[scalar]),
             // e423, e431, e412, e321
@@ -1979,7 +1979,7 @@ impl AntiProjectViaHorizonOnto<Motor> for Point {
                 (anti_wedge_g0[1] * other[e41]) + (anti_wedge_g0[3] * other[e12]),
                 -(anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
             ]) - (anti_wedge_g0.yzxx() * other.group0().zxy().with_w(other[e23])),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Point {
@@ -1996,7 +1996,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Point {
         use crate::elements::*;
         let anti_wedge_g0_x = (other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3]);
         let anti_wedge_g1 = Simd32x4::from(other[scalar]) * self.group0();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
@@ -2020,7 +2020,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Point {
                 -(anti_wedge_g1[0] * other[e23]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]),
             ]) + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
                 - (other.group2().zxy() * anti_wedge_g1.yzx()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Point> for Point {
@@ -2034,10 +2034,10 @@ impl AntiProjectViaHorizonOnto<Point> for Point {
     //  no simd        2        7        0
     fn anti_project_via_horizon_onto(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from((other[e1] * self[e1]) + (other[e2] * self[e2]) + (other[e3] * self[e3])) * other.group0(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Point {
@@ -2048,7 +2048,7 @@ impl AntiProjectViaHorizonOnto<Scalar> for Point {
     // no simd        0        4        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0());
+        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0())
     }
 }
 impl std::ops::Div<AntiProjectViaHorizonOntoInfix> for Scalar {
@@ -2068,7 +2068,7 @@ impl AntiProjectViaHorizonOnto<DualNum> for Scalar {
     //  no simd        0        3        0
     fn anti_project_via_horizon_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar] * self[scalar]) * other.group0());
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar] * self[scalar]) * other.group0())
     }
 }
 impl AntiProjectViaHorizonOnto<Motor> for Scalar {
@@ -2083,12 +2083,12 @@ impl AntiProjectViaHorizonOnto<Motor> for Scalar {
     fn anti_project_via_horizon_onto(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = other[scalar] * self[scalar];
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(anti_wedge_g0) * other.group0(),
             // e23, e31, e12, scalar
             Simd32x4::from(anti_wedge_g0) * other.group1(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<MultiVector> for Scalar {
@@ -2105,7 +2105,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Scalar {
     fn anti_project_via_horizon_onto(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = other[scalar] * self[scalar];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(anti_wedge_g0) * other.group0(),
             // e1, e2, e3, e4
@@ -2116,7 +2116,7 @@ impl AntiProjectViaHorizonOnto<MultiVector> for Scalar {
             Simd32x3::from(anti_wedge_g0) * other.group3(),
             // e423, e431, e412, e321
             Simd32x4::from(anti_wedge_g0) * other.group4(),
-        );
+        )
     }
 }
 impl AntiProjectViaHorizonOnto<Scalar> for Scalar {
@@ -2126,6 +2126,6 @@ impl AntiProjectViaHorizonOnto<Scalar> for Scalar {
     // f32        0        1        0
     fn anti_project_via_horizon_onto(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * other[scalar] * self[scalar])
     }
 }

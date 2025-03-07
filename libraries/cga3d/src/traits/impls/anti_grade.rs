@@ -20,61 +20,61 @@
 //  Maximum:         0       0       0
 impl AntiGrade for AntiFlatPoint {
     fn anti_grade() -> usize {
-        return 2;
+        2
     }
 }
 impl AntiGrade for AntiLine {
     fn anti_grade() -> usize {
-        return 3;
+        3
     }
 }
 impl AntiGrade for AntiPlane {
     fn anti_grade() -> usize {
-        return 4;
+        4
     }
 }
 impl AntiGrade for AntiScalar {
     fn anti_grade() -> usize {
-        return 0;
+        0
     }
 }
 impl AntiGrade for Circle {
     fn anti_grade() -> usize {
-        return 2;
+        2
     }
 }
 impl AntiGrade for Dipole {
     fn anti_grade() -> usize {
-        return 3;
+        3
     }
 }
 impl AntiGrade for FlatPoint {
     fn anti_grade() -> usize {
-        return 3;
+        3
     }
 }
 impl AntiGrade for Line {
     fn anti_grade() -> usize {
-        return 2;
+        2
     }
 }
 impl AntiGrade for Plane {
     fn anti_grade() -> usize {
-        return 1;
+        1
     }
 }
 impl AntiGrade for RoundPoint {
     fn anti_grade() -> usize {
-        return 4;
+        4
     }
 }
 impl AntiGrade for Scalar {
     fn anti_grade() -> usize {
-        return 5;
+        5
     }
 }
 impl AntiGrade for Sphere {
     fn anti_grade() -> usize {
-        return 1;
+        1
     }
 }

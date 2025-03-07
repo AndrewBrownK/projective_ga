@@ -31,7 +31,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleOnOrigin
 }
 impl DoubleComplement for AntiCircleOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiCircleRotor {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleRotor {
 }
 impl DoubleComplement for AntiCircleRotor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -63,7 +63,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAli
 }
 impl DoubleComplement for AntiCircleRotorAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -79,7 +79,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAli
 }
 impl DoubleComplement for AntiCircleRotorAligningOriginAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -95,7 +95,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleRotorAtI
 }
 impl DoubleComplement for AntiCircleRotorAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -111,7 +111,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiCircleRotorOnO
 }
 impl DoubleComplement for AntiCircleRotorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDipoleInversion {
@@ -127,7 +127,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDipoleInversio
 }
 impl DoubleComplement for AntiDipoleInversion {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -143,7 +143,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDipoleInversio
 }
 impl DoubleComplement for AntiDipoleInversionAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -159,7 +159,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDipoleInversio
 }
 impl DoubleComplement for AntiDipoleInversionOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -175,7 +175,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDipoleInversio
 }
 impl DoubleComplement for AntiDipoleInversionOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -191,7 +191,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDipoleOnOrigin
 }
 impl DoubleComplement for AntiDipoleOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiDualNum {
@@ -207,7 +207,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiDualNum {
 }
 impl DoubleComplement for AntiDualNum {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiFlatOrigin {
@@ -223,7 +223,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiFlatOrigin {
 }
 impl DoubleComplement for AntiFlatOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiFlatPoint {
@@ -239,7 +239,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiFlatPoint {
 }
 impl DoubleComplement for AntiFlatPoint {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiFlector {
@@ -255,7 +255,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiFlector {
 }
 impl DoubleComplement for AntiFlector {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -271,7 +271,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiFlectorOnOrigi
 }
 impl DoubleComplement for AntiFlectorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiLine {
@@ -287,7 +287,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiLine {
 }
 impl DoubleComplement for AntiLine {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiLineOnOrigin {
@@ -303,7 +303,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiLineOnOrigin {
 }
 impl DoubleComplement for AntiLineOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiMotor {
@@ -319,7 +319,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiMotor {
 }
 impl DoubleComplement for AntiMotor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -335,7 +335,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiMotorOnOrigin 
 }
 impl DoubleComplement for AntiMotorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -351,7 +351,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiMysteryCircleR
 }
 impl DoubleComplement for AntiMysteryCircleRotor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -367,7 +367,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiMysteryDipoleI
 }
 impl DoubleComplement for AntiMysteryDipoleInversion {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiPlane {
@@ -383,7 +383,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiPlane {
 }
 impl DoubleComplement for AntiPlane {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -399,7 +399,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiPlaneOnOrigin 
 }
 impl DoubleComplement for AntiPlaneOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiScalar {
@@ -415,7 +415,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiScalar {
 }
 impl DoubleComplement for AntiScalar {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -431,7 +431,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiSphereOnOrigin
 }
 impl DoubleComplement for AntiSphereOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -447,7 +447,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for AntiVersorEvenOnOr
 }
 impl DoubleComplement for AntiVersorEvenOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Circle {
@@ -463,7 +463,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Circle {
 }
 impl DoubleComplement for Circle {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleAligningOrigin {
@@ -479,7 +479,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleAligningOrig
 }
 impl DoubleComplement for CircleAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleAtInfinity {
@@ -495,7 +495,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleAtInfinity {
 }
 impl DoubleComplement for CircleAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleAtOrigin {
@@ -511,7 +511,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleAtOrigin {
 }
 impl DoubleComplement for CircleAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleOnOrigin {
@@ -527,7 +527,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleOnOrigin {
 }
 impl DoubleComplement for CircleOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -543,7 +543,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleOrthogonalOr
 }
 impl DoubleComplement for CircleOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleRotor {
@@ -559,7 +559,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleRotor {
 }
 impl DoubleComplement for CircleRotor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -575,7 +575,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleRotorAlignin
 }
 impl DoubleComplement for CircleRotorAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -591,7 +591,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleRotorAlignin
 }
 impl DoubleComplement for CircleRotorAligningOriginAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -607,7 +607,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleRotorAtInfin
 }
 impl DoubleComplement for CircleRotorAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -623,7 +623,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for CircleRotorOnOrigi
 }
 impl DoubleComplement for CircleRotorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Dipole {
@@ -639,7 +639,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Dipole {
 }
 impl DoubleComplement for Dipole {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleAligningOrigin {
@@ -655,7 +655,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleAligningOrig
 }
 impl DoubleComplement for DipoleAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleAtInfinity {
@@ -671,7 +671,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleAtInfinity {
 }
 impl DoubleComplement for DipoleAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleAtOrigin {
@@ -687,7 +687,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleAtOrigin {
 }
 impl DoubleComplement for DipoleAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversion {
@@ -703,7 +703,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversion {
 }
 impl DoubleComplement for DipoleInversion {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -719,7 +719,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversionAli
 }
 impl DoubleComplement for DipoleInversionAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -735,7 +735,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversionAtI
 }
 impl DoubleComplement for DipoleInversionAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -751,7 +751,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversionAtO
 }
 impl DoubleComplement for DipoleInversionAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -767,7 +767,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversionOnO
 }
 impl DoubleComplement for DipoleInversionOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -783,7 +783,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleInversionOrt
 }
 impl DoubleComplement for DipoleInversionOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleOnOrigin {
@@ -799,7 +799,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleOnOrigin {
 }
 impl DoubleComplement for DipoleOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -815,7 +815,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DipoleOrthogonalOr
 }
 impl DoubleComplement for DipoleOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for DualNum {
@@ -831,7 +831,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for DualNum {
 }
 impl DoubleComplement for DualNum {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for FlatOrigin {
@@ -847,7 +847,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for FlatOrigin {
 }
 impl DoubleComplement for FlatOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for FlatPoint {
@@ -863,7 +863,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for FlatPoint {
 }
 impl DoubleComplement for FlatPoint {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for FlatPointAtInfinity {
@@ -879,7 +879,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for FlatPointAtInfinit
 }
 impl DoubleComplement for FlatPointAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Flector {
@@ -895,7 +895,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Flector {
 }
 impl DoubleComplement for Flector {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for FlectorAtInfinity {
@@ -911,7 +911,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for FlectorAtInfinity 
 }
 impl DoubleComplement for FlectorAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for FlectorOnOrigin {
@@ -927,7 +927,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for FlectorOnOrigin {
 }
 impl DoubleComplement for FlectorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Horizon {
@@ -943,7 +943,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Horizon {
 }
 impl DoubleComplement for Horizon {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Infinity {
@@ -959,7 +959,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Infinity {
 }
 impl DoubleComplement for Infinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Line {
@@ -975,7 +975,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Line {
 }
 impl DoubleComplement for Line {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for LineAtInfinity {
@@ -991,7 +991,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for LineAtInfinity {
 }
 impl DoubleComplement for LineAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for LineOnOrigin {
@@ -1007,7 +1007,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for LineOnOrigin {
 }
 impl DoubleComplement for LineOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Motor {
@@ -1023,7 +1023,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Motor {
 }
 impl DoubleComplement for Motor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MotorAtInfinity {
@@ -1039,7 +1039,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MotorAtInfinity {
 }
 impl DoubleComplement for MotorAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MotorOnOrigin {
@@ -1055,7 +1055,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MotorOnOrigin {
 }
 impl DoubleComplement for MotorOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MultiVector {
@@ -1071,7 +1071,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MultiVector {
 }
 impl DoubleComplement for MultiVector {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryCircle {
@@ -1087,7 +1087,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryCircle {
 }
 impl DoubleComplement for MysteryCircle {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryCircleRotor {
@@ -1103,7 +1103,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryCircleRotor
 }
 impl DoubleComplement for MysteryCircleRotor {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryDipole {
@@ -1119,7 +1119,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryDipole {
 }
 impl DoubleComplement for MysteryDipole {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1135,7 +1135,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryDipoleInver
 }
 impl DoubleComplement for MysteryDipoleInversion {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryVersorEven {
@@ -1151,7 +1151,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryVersorEven 
 }
 impl DoubleComplement for MysteryVersorEven {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for MysteryVersorOdd {
@@ -1167,7 +1167,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MysteryVersorOdd {
 }
 impl DoubleComplement for MysteryVersorOdd {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for NullCircleAtOrigin {
@@ -1183,7 +1183,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for NullCircleAtOrigin
 }
 impl DoubleComplement for NullCircleAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -1199,7 +1199,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for NullDipoleAtOrigin
 }
 impl DoubleComplement for NullDipoleAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -1215,7 +1215,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for NullDipoleInversio
 }
 impl DoubleComplement for NullDipoleInversionAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for NullSphereAtOrigin {
@@ -1231,7 +1231,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for NullSphereAtOrigin
 }
 impl DoubleComplement for NullSphereAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -1247,7 +1247,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for NullVersorEvenAtOr
 }
 impl DoubleComplement for NullVersorEvenAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Origin {
@@ -1263,7 +1263,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Origin {
 }
 impl DoubleComplement for Origin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Plane {
@@ -1279,7 +1279,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Plane {
 }
 impl DoubleComplement for Plane {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for PlaneOnOrigin {
@@ -1295,7 +1295,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for PlaneOnOrigin {
 }
 impl DoubleComplement for PlaneOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for RoundPoint {
@@ -1311,7 +1311,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for RoundPoint {
 }
 impl DoubleComplement for RoundPoint {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for RoundPointAtOrigin {
@@ -1327,7 +1327,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for RoundPointAtOrigin
 }
 impl DoubleComplement for RoundPointAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Scalar {
@@ -1343,7 +1343,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Scalar {
 }
 impl DoubleComplement for Scalar {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for Sphere {
@@ -1359,7 +1359,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Sphere {
 }
 impl DoubleComplement for Sphere {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for SphereAtOrigin {
@@ -1375,7 +1375,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for SphereAtOrigin {
 }
 impl DoubleComplement for SphereAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for SphereOnOrigin {
@@ -1391,7 +1391,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for SphereOnOrigin {
 }
 impl DoubleComplement for SphereOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEven {
@@ -1407,7 +1407,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEven {
 }
 impl DoubleComplement for VersorEven {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1423,7 +1423,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEvenAligning
 }
 impl DoubleComplement for VersorEvenAligningOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1439,7 +1439,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEvenAtInfini
 }
 impl DoubleComplement for VersorEvenAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -1455,7 +1455,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEvenAtOrigin
 }
 impl DoubleComplement for VersorEvenAtOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -1471,7 +1471,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEvenOnOrigin
 }
 impl DoubleComplement for VersorEvenOnOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -1487,7 +1487,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorEvenOrthogon
 }
 impl DoubleComplement for VersorEvenOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorOdd {
@@ -1503,7 +1503,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorOdd {
 }
 impl DoubleComplement for VersorOdd {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorOddAtInfinity {
@@ -1519,7 +1519,7 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorOddAtInfinit
 }
 impl DoubleComplement for VersorOddAtInfinity {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -1535,6 +1535,6 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for VersorOddOrthogona
 }
 impl DoubleComplement for VersorOddOrthogonalOrigin {
     fn double_complement(self) -> Self {
-        return self;
+        self
     }
 }

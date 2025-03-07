@@ -107,7 +107,7 @@ impl nearly::NearlyEqEps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfin
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfinity {
@@ -121,7 +121,7 @@ impl nearly::NearlyEqUlps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfi
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfinity {}
@@ -146,7 +146,7 @@ impl nearly::NearlyOrdUlps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInf
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &CircleRotorAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -168,7 +168,7 @@ impl nearly::NearlyOrdUlps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInf
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfinity {
@@ -191,7 +191,7 @@ impl nearly::NearlyOrdEps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfi
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &CircleRotorAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -213,7 +213,7 @@ impl nearly::NearlyOrdEps<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfi
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<CircleRotorAtInfinity, f32, f32> for CircleRotorAtInfinity {}
@@ -284,14 +284,14 @@ impl encase::ShaderType for CircleRotorAtInfinity {
     type ExtraMetadata = <CircleRotorAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <CircleRotorAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <CircleRotorAtInfinityGroups as encase::ShaderType>::min_size();
+        <CircleRotorAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <CircleRotorAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <CircleRotorAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <CircleRotorAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

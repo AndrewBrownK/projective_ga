@@ -166,7 +166,7 @@ impl nearly::NearlyEqEps<MultiVector, f32, f32> for MultiVector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<MultiVector, f32, f32> for MultiVector {
@@ -180,7 +180,7 @@ impl nearly::NearlyEqUlps<MultiVector, f32, f32> for MultiVector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<MultiVector, f32, f32> for MultiVector {}
@@ -205,7 +205,7 @@ impl nearly::NearlyOrdUlps<MultiVector, f32, f32> for MultiVector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &MultiVector, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -227,7 +227,7 @@ impl nearly::NearlyOrdUlps<MultiVector, f32, f32> for MultiVector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<MultiVector, f32, f32> for MultiVector {
@@ -250,7 +250,7 @@ impl nearly::NearlyOrdEps<MultiVector, f32, f32> for MultiVector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &MultiVector, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -272,7 +272,7 @@ impl nearly::NearlyOrdEps<MultiVector, f32, f32> for MultiVector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<MultiVector, f32, f32> for MultiVector {}
@@ -343,14 +343,14 @@ impl encase::ShaderType for MultiVector {
     type ExtraMetadata = <MultiVectorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <MultiVectorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <MultiVectorGroups as encase::ShaderType>::min_size();
+        <MultiVectorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <MultiVectorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <MultiVectorGroups as encase::ShaderType>::assert_uniform_compat();
+        <MultiVectorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

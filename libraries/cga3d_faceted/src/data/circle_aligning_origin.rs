@@ -119,7 +119,7 @@ impl nearly::NearlyEqEps<CircleAligningOrigin, f32, f32> for CircleAligningOrigi
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<CircleAligningOrigin, f32, f32> for CircleAligningOrigin {
@@ -133,7 +133,7 @@ impl nearly::NearlyEqUlps<CircleAligningOrigin, f32, f32> for CircleAligningOrig
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<CircleAligningOrigin, f32, f32> for CircleAligningOrigin {}
@@ -158,7 +158,7 @@ impl nearly::NearlyOrdUlps<CircleAligningOrigin, f32, f32> for CircleAligningOri
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &CircleAligningOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -180,7 +180,7 @@ impl nearly::NearlyOrdUlps<CircleAligningOrigin, f32, f32> for CircleAligningOri
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<CircleAligningOrigin, f32, f32> for CircleAligningOrigin {
@@ -203,7 +203,7 @@ impl nearly::NearlyOrdEps<CircleAligningOrigin, f32, f32> for CircleAligningOrig
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &CircleAligningOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -225,7 +225,7 @@ impl nearly::NearlyOrdEps<CircleAligningOrigin, f32, f32> for CircleAligningOrig
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<CircleAligningOrigin, f32, f32> for CircleAligningOrigin {}
@@ -296,14 +296,14 @@ impl encase::ShaderType for CircleAligningOrigin {
     type ExtraMetadata = <CircleAligningOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <CircleAligningOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <CircleAligningOriginGroups as encase::ShaderType>::min_size();
+        <CircleAligningOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <CircleAligningOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <CircleAligningOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <CircleAligningOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

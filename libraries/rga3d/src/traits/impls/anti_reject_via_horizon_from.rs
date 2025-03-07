@@ -28,7 +28,7 @@ impl AntiRejectViaHorizonFrom<DualNum> for AntiScalar {
     type Output = AntiScalar;
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234] * f32::powi(other[scalar], 2));
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * f32::powi(other[scalar], 2))
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for AntiScalar {
@@ -42,12 +42,12 @@ impl AntiRejectViaHorizonFrom<Motor> for AntiScalar {
     //  no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(self[e1234] * other[scalar]) * Simd32x4::from([other[e23] * -1.0, other[e31] * -1.0, other[e12] * -1.0, other[scalar]]),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for AntiScalar {
@@ -63,7 +63,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for AntiScalar {
     fn anti_reject_via_horizon_from(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = self[e1234] * other[scalar];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([1.0, wedge_g0 * other[scalar]]) * Simd32x2::from([0.0, 1.0]),
             // e1, e2, e3, e4
@@ -74,14 +74,14 @@ impl AntiRejectViaHorizonFrom<MultiVector> for AntiScalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (Simd32x3::from(wedge_g0) * other.group1().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for AntiScalar {
     type Output = AntiScalar;
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234] * f32::powi(other[scalar], 2));
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * f32::powi(other[scalar], 2))
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for DualNum {
@@ -101,10 +101,10 @@ impl AntiRejectViaHorizonFrom<DualNum> for DualNum {
     //  no simd        1        5        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(
+        DualNum::from_groups(
             // scalar, e1234
             Simd32x2::from(other[scalar]) * Simd32x2::from([other[scalar] * self[scalar], (other[scalar] * self[e1234]) + (other[e1234] * self[scalar])]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for DualNum {
@@ -122,7 +122,7 @@ impl AntiRejectViaHorizonFrom<Flector> for DualNum {
         let wedge_g0 = Simd32x4::from(self[scalar]) * other.group0();
         let wedge_g1 = Simd32x4::from(self[scalar]) * other.group1();
         let right_dual_g0 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((wedge_g1.zxy() * other.group0().yzx()) - (wedge_g1.yzx() * other.group0().zxy())).with_w(0.0),
             // e23, e31, e12, scalar
@@ -131,14 +131,14 @@ impl AntiRejectViaHorizonFrom<Flector> for DualNum {
                     (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]) - (right_dual_g0[3] * wedge_g1[3]),
                 )
                 - (wedge_g1.wwwx() * other.group0().xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for DualNum {
     type Output = Scalar;
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2));
+        Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2))
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for DualNum {
@@ -154,10 +154,10 @@ impl AntiRejectViaHorizonFrom<Line> for DualNum {
         use crate::elements::*;
         let wedge_g1 = Simd32x3::from(self[scalar]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for DualNum {
@@ -175,13 +175,13 @@ impl AntiRejectViaHorizonFrom<Motor> for DualNum {
         let wedge_g0 = self.group0().xx().with_zw(self[scalar], (self[scalar] * other[e1234]) + (self[e1234] * other[scalar])) * other.group0().xyz().with_w(1.0);
         let wedge_g1 = Simd32x4::from(self[scalar]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((Simd32x3::from(right_dual_g0[3]) * wedge_g0.xyz()) + (Simd32x3::from(wedge_g0[3]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * wedge_g0[3]),
             // e23, e31, e12, scalar
             (wedge_g1 * Simd32x4::from(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for DualNum {
@@ -203,7 +203,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for DualNum {
         let wedge_g4 = Simd32x4::from(self[scalar]) * other.group4();
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3]) + (self[scalar] * f32::powi(other[scalar], 2))
@@ -233,14 +233,14 @@ impl AntiRejectViaHorizonFrom<MultiVector> for DualNum {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for DualNum {
     type Output = Scalar;
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2));
+        Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2))
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for DualNum {
@@ -255,7 +255,7 @@ impl AntiRejectViaHorizonFrom<Point> for DualNum {
     fn anti_reject_via_horizon_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from(self[scalar]) * other.group0();
-        return Scalar::from_groups(/* scalar */ (wedge_g0[0] * other[e1]) + (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]));
+        Scalar::from_groups(/* scalar */ (wedge_g0[0] * other[e1]) + (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]))
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for DualNum {
@@ -269,10 +269,10 @@ impl AntiRejectViaHorizonFrom<Scalar> for DualNum {
     //  no simd        0        4        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(
+        DualNum::from_groups(
             // scalar, e1234
             Simd32x2::from(other[scalar]) * Simd32x2::from([self[scalar] * other[scalar], self[e1234] * other[scalar]]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Flector {
@@ -289,12 +289,12 @@ impl AntiRejectViaHorizonFrom<DualNum> for Flector {
     // no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Flector {
@@ -315,14 +315,14 @@ impl AntiRejectViaHorizonFrom<Flector> for Flector {
             )
             - (other.group0().wwwx() * self.group0().xyz().with_w(self[e423]));
         let wedge_g1_xyz = (other.group0().zxy() * self.group0().yzx()) - (other.group0().yzx() * self.group0().zxy());
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from(wedge_g0[3]) * Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]))
                 + (wedge_g1_xyz.yzx() * other.group0().zxy()).with_w(-(wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3]))
                 - (wedge_g1_xyz.zxy() * other.group0().yzx()).with_w(0.0),
             // e423, e431, e412, e321
             (other.group0().xyz() * wedge_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for Flector {
@@ -332,7 +332,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for Flector {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[e321], 2) * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[e321], 2) * -1.0)
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Flector {
@@ -354,11 +354,11 @@ impl AntiRejectViaHorizonFrom<Line> for Flector {
             -(self[e2] * other[e31]) - (self[e3] * other[e12]),
         ]) - (self.group0().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             (right_dual_g0 * Simd32x3::from(wedge_g0[3])).with_w(-(right_dual_g0[1] * wedge_g0[1]) - (right_dual_g0[2] * wedge_g0[2]))
                 - (wedge_g0.yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Flector {
@@ -381,14 +381,14 @@ impl AntiRejectViaHorizonFrom<Motor> for Flector {
         ]) + (self.group0().zxy() * other.group0().yzx()).with_w(self[e321] * other[scalar])
             - (self.group0().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from(right_dual_g0[3]) * Simd32x4::from(other[scalar]) * self.group0())
                 + (Simd32x3::from(wedge_g1[3]) * right_dual_g0.xyz()).with_w(-(right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]))
                 - (wedge_g1.yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0])),
             // e423, e431, e412, e321
             wedge_g1 * Simd32x4::from(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Flector {
@@ -420,7 +420,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Flector {
             - (self.group0().yzxx() * other.group2().zxy().with_w(other[e23]));
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3])
@@ -450,7 +450,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Flector {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for Flector {
@@ -460,10 +460,10 @@ impl AntiRejectViaHorizonFrom<Plane> for Flector {
     // f32        3        7        0
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             -(other[e321] * other[e321] * self[e4]) - (self[e1] * other[e423] * other[e321]) - (self[e2] * other[e431] * other[e321]) - (self[e3] * other[e412] * other[e321]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Flector {
@@ -481,12 +481,12 @@ impl AntiRejectViaHorizonFrom<Point> for Flector {
         let wedge_g0 = (Simd32x3::from(self[e4]) * other.group0().xyz()).with_w(-(self[e431] * other[e2]) - (self[e412] * other[e3]) - (self[e321] * other[e4]))
             - (other.group0().wwwx() * self.group0().xyz().with_w(self[e423]));
         let wedge_g1_xyz = (self.group0().yzx() * other.group0().zxy()) - (self.group0().zxy() * other.group0().yzx());
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             ((wedge_g1_xyz.yzx() * other.group0().zxy()) - (wedge_g1_xyz.zxy() * other.group0().yzx())).with_w(-(wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3])),
             // e423, e431, e412, e321
             (other.group0().xyz() * wedge_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Flector {
@@ -497,12 +497,12 @@ impl AntiRejectViaHorizonFrom<Scalar> for Flector {
     // no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Horizon {
@@ -518,7 +518,7 @@ impl AntiRejectViaHorizonFrom<DualNum> for Horizon {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321]);
+        Horizon::from_groups(/* e321 */ other[scalar] * other[scalar] * self[e321])
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Horizon {
@@ -533,12 +533,12 @@ impl AntiRejectViaHorizonFrom<Flector> for Horizon {
     fn anti_reject_via_horizon_from(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = other[e4] * self[e321] * -1.0;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(wedge_g0 * other[e321] * -1.0),
             // e423, e431, e412, e321
             (Simd32x3::from(wedge_g0) * other.group0().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Horizon {
@@ -555,12 +555,12 @@ impl AntiRejectViaHorizonFrom<Motor> for Horizon {
         use crate::elements::*;
         let wedge_g0 = self[e321] * other[scalar];
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x3::from(wedge_g0) * right_dual_g0.xyz()).with_w(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(wedge_g0 * right_dual_g0[3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Horizon {
@@ -580,7 +580,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Horizon {
         let wedge_g4 = Simd32x3::from(0.0).with_w(self[e321] * other[scalar]);
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g0[0] * other[scalar])
@@ -600,7 +600,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Horizon {
             Simd32x3::from(wedge_g4[3]) * other.group1().xyz() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0[1]) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Horizon {
@@ -614,14 +614,14 @@ impl AntiRejectViaHorizonFrom<Point> for Horizon {
     //  no simd        0        5        0
     fn anti_reject_via_horizon_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(self[e321] * other[e4] * -1.0) * other.group0().xyz()).with_w(0.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(self[e321] * other[e4] * -1.0) * other.group0().xyz()).with_w(0.0))
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Horizon {
     type Output = Horizon;
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e321] * f32::powi(other[scalar], 2));
+        Horizon::from_groups(/* e321 */ self[e321] * f32::powi(other[scalar], 2))
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Line {
@@ -638,12 +638,12 @@ impl AntiRejectViaHorizonFrom<DualNum> for Line {
     // no simd        0        6        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Line {
@@ -665,13 +665,13 @@ impl AntiRejectViaHorizonFrom<Flector> for Line {
             -(other[e2] * self[e31]) - (other[e3] * self[e12]),
         ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]));
         let right_dual_g0 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((wedge_g0.zxy() * other.group0().yzx()) - (wedge_g0.yzx() * other.group0().zxy())).with_w(0.0),
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(right_dual_g0[1] * wedge_g0[1]) - (right_dual_g0[2] * wedge_g0[2]) - (right_dual_g0[3] * wedge_g0[3]))
                 - (wedge_g0.wwwx() * other.group0().xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Line {
@@ -685,14 +685,14 @@ impl AntiRejectViaHorizonFrom<Line> for Line {
     //  no simd        5       12        0
     fn anti_reject_via_horizon_from(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::from(
                 -(other[e41] * self[e23]) - (other[e42] * self[e31]) - (other[e43] * self[e12]) - (other[e23] * self[e41]) - (other[e31] * self[e42]) - (other[e12] * self[e43]),
             ) * Simd32x3::from([other[e23] * -1.0, other[e31] * -1.0, other[e12] * -1.0]),
             // e23, e31, e12
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Line {
@@ -711,14 +711,14 @@ impl AntiRejectViaHorizonFrom<Motor> for Line {
             -(self[e41] * other[e23]) - (self[e42] * other[e31]) - (self[e43] * other[e12]) - (self[e23] * other[e41]) - (self[e31] * other[e42]) - (self[e12] * other[e43]);
         let wedge_g1 = (self.group1() * other.group1().www()).with_w(0.0);
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((Simd32x3::from(wedge_g0_w) * right_dual_g0.xyz()) + (Simd32x3::from(right_dual_g0[3]) * Simd32x3::from(other[scalar]) * self.group0()))
                 .with_w(wedge_g0_w * right_dual_g0[3]),
             // e23, e31, e12, scalar
             (wedge_g1 * Simd32x4::from(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Line {
@@ -745,7 +745,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Line {
         ]) - (other.group1().yzxx() * self.group0().zxy().with_w(self[e23]));
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 -(right_dual_g2[0] * wedge_g3[0])
@@ -773,7 +773,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Line {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Line {
@@ -794,12 +794,12 @@ impl AntiRejectViaHorizonFrom<Point> for Line {
             (self[e41] * other[e2]) + (self[e12] * other[e4]),
             -(self[e31] * other[e2]) - (self[e12] * other[e3]),
         ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]));
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             (wedge_g0.zxy() * other.group0().yzx()) - (wedge_g0.yzx() * other.group0().zxy()),
             // e23, e31, e12
             Simd32x3::from(wedge_g0[3]) * other.group0().xyz() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Line {
@@ -810,12 +810,12 @@ impl AntiRejectViaHorizonFrom<Scalar> for Line {
     // no simd        0        6        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Motor {
@@ -835,14 +835,14 @@ impl AntiRejectViaHorizonFrom<DualNum> for Motor {
     //  no simd        1       14        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(other[scalar])
                 * other.group0().xx().with_zw(other[scalar], (other[scalar] * self[e1234]) + (other[e1234] * self[scalar]))
                 * self.group0().xyz().with_w(1.0),
             // e23, e31, e12, scalar
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Motor {
@@ -866,7 +866,7 @@ impl AntiRejectViaHorizonFrom<Flector> for Motor {
         ]) + (other.group0().zxy() * self.group0().yzx()).with_w(other[e321] * self[scalar])
             - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]));
         let right_dual_g0 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((wedge_g1.zxy() * other.group0().yzx()) - (wedge_g1.yzx() * other.group0().zxy())).with_w(0.0),
             // e23, e31, e12, scalar
@@ -875,7 +875,7 @@ impl AntiRejectViaHorizonFrom<Flector> for Motor {
                     (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]) - (right_dual_g0[3] * wedge_g1[3]),
                 )
                 - (wedge_g1.wwwx() * other.group0().xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for Motor {
@@ -885,7 +885,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for Motor {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar])
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Motor {
@@ -901,7 +901,7 @@ impl AntiRejectViaHorizonFrom<Line> for Motor {
         use crate::elements::*;
         let wedge_g1_xyz = other.group1() * self.group1().www();
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (right_dual_g0
                 * Simd32x3::from(
@@ -915,7 +915,7 @@ impl AntiRejectViaHorizonFrom<Line> for Motor {
             .with_w(0.0),
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * wedge_g1_xyz[0]) - (right_dual_g0[1] * wedge_g1_xyz[1]) - (right_dual_g0[2] * wedge_g1_xyz[2])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Motor {
@@ -937,13 +937,13 @@ impl AntiRejectViaHorizonFrom<Motor> for Motor {
             );
         let wedge_g1 = ((Simd32x3::from(other[scalar]) * self.group1().xyz()) + (Simd32x3::from(self[scalar]) * other.group1().xyz())).with_w(other[scalar] * self[scalar]);
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((Simd32x3::from(right_dual_g0[3]) * wedge_g0.xyz()) + (Simd32x3::from(wedge_g0[3]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * wedge_g0[3]),
             // e23, e31, e12, scalar
             (wedge_g1 * Simd32x4::from(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Motor {
@@ -977,7 +977,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Motor {
             - (other.group1().yzxx() * self.group0().zxy().with_w(self[e23]));
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3]) + (self[scalar] * f32::powi(other[scalar], 2))
@@ -1007,14 +1007,14 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Motor {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for Motor {
     type Output = Scalar;
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2));
+        Scalar::from_groups(/* scalar */ self[scalar] * f32::powi(other[e321], 2))
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Motor {
@@ -1036,13 +1036,13 @@ impl AntiRejectViaHorizonFrom<Point> for Motor {
             (self[e41] * other[e2]) + (self[e12] * other[e4]),
             -(self[e31] * other[e2]) - (self[e12] * other[e3]),
         ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]));
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((wedge_g1.zxy() * other.group0().yzx()) - (wedge_g1.yzx() * other.group0().zxy())).with_w(0.0),
             // e23, e31, e12, scalar
             (other.group0().xyz().with_w(0.0).wwwx() * wedge_g1.xyz().with_w(wedge_g0[0]))
                 + (other.group0().xyz() * wedge_g1.www() * Simd32x3::from(-1.0)).with_w((wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Motor {
@@ -1053,12 +1053,12 @@ impl AntiRejectViaHorizonFrom<Scalar> for Motor {
     // no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group0(),
             // e23, e31, e12, scalar
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for MultiVector {
@@ -1080,7 +1080,7 @@ impl AntiRejectViaHorizonFrom<DualNum> for MultiVector {
     //  no simd        1       19        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(other[scalar]) * Simd32x2::from([other[scalar] * self[scalar], (other[scalar] * self[e1234]) + (other[e1234] * self[scalar])]),
             // e1, e2, e3, e4
@@ -1091,7 +1091,7 @@ impl AntiRejectViaHorizonFrom<DualNum> for MultiVector {
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group4(),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for MultiVector {
@@ -1122,7 +1122,7 @@ impl AntiRejectViaHorizonFrom<Flector> for MultiVector {
         ]) + (Simd32x4::from(self[scalar]) * other.group1())
             - (other.group0().yzxx() * self.group2().zxy().with_w(self[e23]));
         let right_dual_g0 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3])
@@ -1141,7 +1141,7 @@ impl AntiRejectViaHorizonFrom<Flector> for MultiVector {
             Simd32x3::from(wedge_g4[3]) * other.group0().xyz() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             (Simd32x3::from(wedge_g0_y) * other.group0().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for MultiVector {
@@ -1156,7 +1156,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for MultiVector {
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other[e321] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([right_dual_g0 * other[e321] * self[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1167,7 +1167,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for MultiVector {
@@ -1190,7 +1190,7 @@ impl AntiRejectViaHorizonFrom<Line> for MultiVector {
             -(other[e31] * self[e2]) - (other[e12] * self[e3]),
         ]) - (self.group1().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([-(right_dual_g0[0] * wedge_g3[0]) - (right_dual_g0[1] * wedge_g3[1]) - (right_dual_g0[2] * wedge_g3[2]), 0.0]),
             // e1, e2, e3, e4
@@ -1210,7 +1210,7 @@ impl AntiRejectViaHorizonFrom<Line> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for MultiVector {
@@ -1242,7 +1242,7 @@ impl AntiRejectViaHorizonFrom<Motor> for MultiVector {
         ]) + (other.group0().yzx() * self.group1().zxy()).with_w(other[scalar] * self[e321])
             - (self.group1().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (right_dual_g0[3] * other[scalar] * self[scalar]) - (wedge_g3[0] * right_dual_g0[0]) - (wedge_g3[1] * right_dual_g0[1]) - (wedge_g3[2] * right_dual_g0[2]),
@@ -1259,7 +1259,7 @@ impl AntiRejectViaHorizonFrom<Motor> for MultiVector {
             wedge_g3 * Simd32x3::from(right_dual_g0[3]),
             // e423, e431, e412, e321
             wedge_g4 * Simd32x4::from(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for MultiVector {
@@ -1306,7 +1306,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for MultiVector {
             - (self.group2().zxy() * other.group1().yzx()).with_w(other[e31] * self[e2]);
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3]) + (other[scalar] * other[scalar] * self[scalar])
@@ -1336,7 +1336,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for MultiVector {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for MultiVector {
@@ -1351,7 +1351,7 @@ impl AntiRejectViaHorizonFrom<Plane> for MultiVector {
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_dual_g0 = other[e321] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([right_dual_g0 * self[scalar] * other[e321], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1367,7 +1367,7 @@ impl AntiRejectViaHorizonFrom<Plane> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for MultiVector {
@@ -1391,7 +1391,7 @@ impl AntiRejectViaHorizonFrom<Point> for MultiVector {
             (self[e41] * other[e2]) + (self[e12] * other[e4]),
             -(self[e31] * other[e2]) - (self[e12] * other[e3]),
         ]) - (other.group0().yzxx() * self.group2().zxy().with_w(self[e23]));
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([(wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3]), 0.0]),
             // e1, e2, e3, e4
@@ -1402,7 +1402,7 @@ impl AntiRejectViaHorizonFrom<Point> for MultiVector {
             Simd32x3::from(wedge_g4[3]) * other.group0().xyz() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             (Simd32x3::from(-(self[e423] * other[e1]) - (self[e431] * other[e2]) - (self[e412] * other[e3]) - (self[e321] * other[e4])) * other.group0().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for MultiVector {
@@ -1417,7 +1417,7 @@ impl AntiRejectViaHorizonFrom<Scalar> for MultiVector {
     //  no simd        0       16        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0(),
             // e1, e2, e3, e4
@@ -1428,7 +1428,7 @@ impl AntiRejectViaHorizonFrom<Scalar> for MultiVector {
             Simd32x3::powi(Simd32x3::from(other[scalar]), 2) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::powi(Simd32x4::from(other[scalar]), 2) * self.group4(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Origin {
@@ -1444,7 +1444,7 @@ impl AntiRejectViaHorizonFrom<DualNum> for Origin {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4]);
+        Origin::from_groups(/* e4 */ other[scalar] * other[scalar] * self[e4])
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Origin {
@@ -1460,12 +1460,12 @@ impl AntiRejectViaHorizonFrom<Flector> for Origin {
     fn anti_reject_via_horizon_from(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from(self[e4]) * other.group0().xyz().with_w(other[e321]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(-(wedge_g0[0] * other[e1]) - (wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3]) - (wedge_g0[3] * other[e321])),
             // e423, e431, e412, e321
             (other.group0().xyz() * wedge_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for Origin {
@@ -1475,7 +1475,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for Origin {
     // f32        0        2        0
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ other[e321] * other[e321] * self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ other[e321] * other[e321] * self[e4] * -1.0)
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Origin {
@@ -1491,10 +1491,10 @@ impl AntiRejectViaHorizonFrom<Line> for Origin {
         use crate::elements::*;
         let wedge_g0_xyz = Simd32x3::from(self[e4]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             -(right_dual_g0[0] * wedge_g0_xyz[0]) - (right_dual_g0[1] * wedge_g0_xyz[1]) - (right_dual_g0[2] * wedge_g0_xyz[2]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Origin {
@@ -1511,14 +1511,14 @@ impl AntiRejectViaHorizonFrom<Motor> for Origin {
         use crate::elements::*;
         let wedge_g1_xyz = Simd32x3::from(self[e4]) * other.group1().xyz();
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(
                 (right_dual_g0[3] * other[scalar] * self[e4]) - (wedge_g1_xyz[0] * right_dual_g0[0]) - (wedge_g1_xyz[1] * right_dual_g0[1]) - (wedge_g1_xyz[2] * right_dual_g0[2]),
             ),
             // e423, e431, e412, e321
             (wedge_g1_xyz * right_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Origin {
@@ -1537,7 +1537,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Origin {
         let wedge_g2 = Simd32x3::from(self[e4]) * other.group1().xyz();
         let wedge_g4_xyz = Simd32x3::from(self[e4]) * other.group3();
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([1.0, wedge_g0[1] * other[scalar]]) * Simd32x2::from([0.0, 1.0]),
             // e1, e2, e3, e4
@@ -1558,7 +1558,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Origin {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             ((wedge_g4_xyz * Simd32x3::from(other[scalar])) + (Simd32x3::from(wedge_g0[1]) * other.group1().xyz())).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for Origin {
@@ -1568,7 +1568,7 @@ impl AntiRejectViaHorizonFrom<Plane> for Origin {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[e321], 2) * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[e321], 2) * -1.0)
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Origin {
@@ -1583,14 +1583,14 @@ impl AntiRejectViaHorizonFrom<Point> for Origin {
     fn anti_reject_via_horizon_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = Simd32x3::from(self[e4]) * other.group0().xyz();
-        return Origin::from_groups(/* e4 */ -(wedge_g0[0] * other[e1]) - (wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3]));
+        Origin::from_groups(/* e4 */ -(wedge_g0[0] * other[e1]) - (wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3]))
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Origin {
     type Output = Origin;
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[scalar], 2));
+        Origin::from_groups(/* e4 */ self[e4] * f32::powi(other[scalar], 2))
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Plane {
@@ -1610,10 +1610,10 @@ impl AntiRejectViaHorizonFrom<DualNum> for Plane {
     //  no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(other[scalar]) * Simd32x4::from([other[scalar] * self[e423], other[scalar] * self[e431], other[scalar] * self[e412], other[scalar] * self[e321]]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Plane {
@@ -1628,12 +1628,12 @@ impl AntiRejectViaHorizonFrom<Flector> for Plane {
     fn anti_reject_via_horizon_from(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = -(other[e1] * self[e423]) - (other[e2] * self[e431]) - (other[e3] * self[e412]) - (other[e4] * self[e321]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(wedge_g0 * other[e321] * -1.0),
             // e423, e431, e412, e321
             (Simd32x3::from(wedge_g0) * other.group0().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Plane {
@@ -1650,13 +1650,13 @@ impl AntiRejectViaHorizonFrom<Motor> for Plane {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from(other[scalar]) * self.group0();
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x3::from(wedge_g0[3]) * right_dual_g0.xyz()).with_w(-(right_dual_g0[1] * wedge_g0[1]) - (right_dual_g0[2] * wedge_g0[2]))
                 - (wedge_g0.yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0])),
             // e423, e431, e412, e321
             wedge_g0 * Simd32x4::from(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Plane {
@@ -1675,7 +1675,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Plane {
         let wedge_g4 = Simd32x4::from(other[scalar]) * self.group0();
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 -(right_dual_g1[0] * wedge_g4[0]) - (right_dual_g1[1] * wedge_g4[1]) - (right_dual_g1[2] * wedge_g4[2]) - (right_dual_g1[3] * wedge_g4[3]),
@@ -1691,7 +1691,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Plane {
             Simd32x3::from(wedge_g4[3]) * other.group1().xyz() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Plane {
@@ -1705,10 +1705,10 @@ impl AntiRejectViaHorizonFrom<Point> for Plane {
     //  no simd        3        7        0
     fn anti_reject_via_horizon_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             (Simd32x3::from(-(self[e423] * other[e1]) - (self[e431] * other[e2]) - (self[e412] * other[e3]) - (self[e321] * other[e4])) * other.group0().xyz()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Plane {
@@ -1722,10 +1722,10 @@ impl AntiRejectViaHorizonFrom<Scalar> for Plane {
     //  no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(other[scalar]) * Simd32x4::from([self[e423] * other[scalar], self[e431] * other[scalar], self[e412] * other[scalar], self[e321] * other[scalar]]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Point {
@@ -1745,10 +1745,10 @@ impl AntiRejectViaHorizonFrom<DualNum> for Point {
     //  no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[scalar]) * Simd32x4::from([other[scalar] * self[e1], other[scalar] * self[e2], other[scalar] * self[e3], other[scalar] * self[e4]]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Point {
@@ -1767,14 +1767,14 @@ impl AntiRejectViaHorizonFrom<Flector> for Point {
             * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
             + (self.group0().wwwx() * other.group0().xyz().with_w(other[e423]));
         let wedge_g1_xyz = (other.group0().zxy() * self.group0().yzx()) - (other.group0().yzx() * self.group0().zxy());
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from(wedge_g0[3]) * Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]))
                 + (wedge_g1_xyz.yzx() * other.group0().zxy()).with_w(-(wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3]))
                 - (wedge_g1_xyz.zxy() * other.group0().yzx()).with_w(0.0),
             // e423, e431, e412, e321
             (other.group0().xyz() * wedge_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for Point {
@@ -1784,7 +1784,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for Point {
     // f32        0        2        0
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ other[e321] * other[e321] * self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ other[e321] * other[e321] * self[e4] * -1.0)
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Point {
@@ -1806,11 +1806,11 @@ impl AntiRejectViaHorizonFrom<Line> for Point {
             -(other[e31] * self[e2]) - (other[e12] * self[e3]),
         ]) - (self.group0().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             (right_dual_g0 * Simd32x3::from(wedge_g0[3])).with_w(-(right_dual_g0[1] * wedge_g0[1]) - (right_dual_g0[2] * wedge_g0[2]))
                 - (wedge_g0.yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Point {
@@ -1832,14 +1832,14 @@ impl AntiRejectViaHorizonFrom<Motor> for Point {
             -(other[e31] * self[e2]) - (other[e12] * self[e3]),
         ]) - (self.group0().yzxx() * other.group0().zxy().with_w(other[e23]));
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x4::from(right_dual_g0[3]) * Simd32x4::from(other[scalar]) * self.group0())
                 + (Simd32x3::from(wedge_g1[3]) * right_dual_g0.xyz()).with_w(-(right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]))
                 - (wedge_g1.yzxx() * Simd32x3::from(0.0).with_w(right_dual_g0[0])),
             // e423, e431, e412, e321
             wedge_g1 * Simd32x4::from(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Point {
@@ -1866,7 +1866,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Point {
         ]) - (self.group0().yzxx() * other.group2().zxy().with_w(other[e23]));
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3])
@@ -1896,7 +1896,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Point {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0_y) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for Point {
@@ -1906,10 +1906,10 @@ impl AntiRejectViaHorizonFrom<Plane> for Point {
     // f32        3        7        0
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(
+        Origin::from_groups(
             // e4
             -(other[e321] * other[e321] * self[e4]) - (other[e423] * other[e321] * self[e1]) - (other[e431] * other[e321] * self[e2]) - (other[e412] * other[e321] * self[e3]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Point {
@@ -1925,10 +1925,10 @@ impl AntiRejectViaHorizonFrom<Point> for Point {
         use crate::elements::*;
         let wedge_g0 = (Simd32x3::from(self[e4]) * other.group0().xyz()) - (Simd32x3::from(other[e4]) * self.group0().xyz());
         let wedge_g1 = (other.group0().zxy() * self.group0().yzx()) - (other.group0().yzx() * self.group0().zxy());
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             ((wedge_g1.yzx() * other.group0().zxy()) - (wedge_g1.zxy() * other.group0().yzx())).with_w(-(wedge_g0[1] * other[e2]) - (wedge_g0[2] * other[e3])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Point {
@@ -1942,10 +1942,10 @@ impl AntiRejectViaHorizonFrom<Scalar> for Point {
     //  no simd        0        8        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[scalar]) * Simd32x4::from([self[e1] * other[scalar], self[e2] * other[scalar], self[e3] * other[scalar], self[e4] * other[scalar]]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiRejectViaHorizonFromInfix> for Scalar {
@@ -1965,10 +1965,10 @@ impl AntiRejectViaHorizonFrom<DualNum> for Scalar {
     //  no simd        0        4        0
     fn anti_reject_via_horizon_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(
+        DualNum::from_groups(
             // scalar, e1234
             Simd32x2::from(other[scalar]) * Simd32x2::from([other[scalar] * self[scalar], other[e1234] * self[scalar]]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Flector> for Scalar {
@@ -1986,7 +1986,7 @@ impl AntiRejectViaHorizonFrom<Flector> for Scalar {
         let wedge_g0 = Simd32x4::from(self[scalar]) * other.group0();
         let wedge_g1 = Simd32x4::from(self[scalar]) * other.group1();
         let right_dual_g0 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((wedge_g1.zxy() * other.group0().yzx()) - (wedge_g1.yzx() * other.group0().zxy())).with_w(0.0),
             // e23, e31, e12, scalar
@@ -1995,7 +1995,7 @@ impl AntiRejectViaHorizonFrom<Flector> for Scalar {
                     (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]) - (right_dual_g0[3] * wedge_g1[3]),
                 )
                 - (wedge_g1.wwwx() * other.group0().xyz().with_w(right_dual_g0[0])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Horizon> for Scalar {
@@ -2005,7 +2005,7 @@ impl AntiRejectViaHorizonFrom<Horizon> for Scalar {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar])
     }
 }
 impl AntiRejectViaHorizonFrom<Line> for Scalar {
@@ -2021,10 +2021,10 @@ impl AntiRejectViaHorizonFrom<Line> for Scalar {
         use crate::elements::*;
         let wedge_g1 = Simd32x3::from(self[scalar]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2]),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Motor> for Scalar {
@@ -2042,13 +2042,13 @@ impl AntiRejectViaHorizonFrom<Motor> for Scalar {
         let wedge_g0 = Simd32x4::from(self[scalar]) * other.group0();
         let wedge_g1 = Simd32x4::from(self[scalar]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             ((Simd32x3::from(right_dual_g0[3]) * wedge_g0.xyz()) + (Simd32x3::from(wedge_g0[3]) * right_dual_g0.xyz())).with_w(right_dual_g0[3] * wedge_g0[3]),
             // e23, e31, e12, scalar
             (wedge_g1 * Simd32x4::from(right_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(-(right_dual_g0[0] * wedge_g1[0]) - (right_dual_g0[1] * wedge_g1[1]) - (right_dual_g0[2] * wedge_g1[2])),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<MultiVector> for Scalar {
@@ -2071,7 +2071,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Scalar {
         let wedge_g4 = Simd32x4::from(self[scalar]) * other.group4();
         let right_dual_g1 = Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]);
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 (wedge_g0[0] * other[scalar]) + (wedge_g1[0] * other[e1]) + (wedge_g1[1] * other[e2]) + (wedge_g1[2] * other[e3])
@@ -2101,7 +2101,7 @@ impl AntiRejectViaHorizonFrom<MultiVector> for Scalar {
             (wedge_g3 * Simd32x3::from(other[scalar])) - (Simd32x3::from(wedge_g4[3]) * other.group1().xyz()),
             // e423, e431, e412, e321
             (wedge_g4 * Simd32x4::from(other[scalar])) + (Simd32x4::from(wedge_g0[1]) * other.group1().xyz().with_w(0.0)),
-        );
+        )
     }
 }
 impl AntiRejectViaHorizonFrom<Plane> for Scalar {
@@ -2111,7 +2111,7 @@ impl AntiRejectViaHorizonFrom<Plane> for Scalar {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[e321] * other[e321] * self[scalar])
     }
 }
 impl AntiRejectViaHorizonFrom<Point> for Scalar {
@@ -2126,7 +2126,7 @@ impl AntiRejectViaHorizonFrom<Point> for Scalar {
     fn anti_reject_via_horizon_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from(self[scalar]) * other.group0();
-        return Scalar::from_groups(/* scalar */ (wedge_g0[0] * other[e1]) + (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]));
+        Scalar::from_groups(/* scalar */ (wedge_g0[0] * other[e1]) + (wedge_g0[1] * other[e2]) + (wedge_g0[2] * other[e3]))
     }
 }
 impl AntiRejectViaHorizonFrom<Scalar> for Scalar {
@@ -2136,6 +2136,6 @@ impl AntiRejectViaHorizonFrom<Scalar> for Scalar {
     // f32        0        1        0
     fn anti_reject_via_horizon_from(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] * other[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] * other[scalar] * self[scalar])
     }
 }

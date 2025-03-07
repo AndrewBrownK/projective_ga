@@ -87,7 +87,7 @@ impl nearly::NearlyEqEps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
@@ -101,7 +101,7 @@ impl nearly::NearlyEqUlps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {}
@@ -126,7 +126,7 @@ impl nearly::NearlyOrdUlps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &FlectorAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -148,7 +148,7 @@ impl nearly::NearlyOrdUlps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
@@ -171,7 +171,7 @@ impl nearly::NearlyOrdEps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &FlectorAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -193,7 +193,7 @@ impl nearly::NearlyOrdEps<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<FlectorAtInfinity, f32, f32> for FlectorAtInfinity {}
@@ -264,14 +264,14 @@ impl encase::ShaderType for FlectorAtInfinity {
     type ExtraMetadata = <FlectorAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <FlectorAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <FlectorAtInfinityGroups as encase::ShaderType>::min_size();
+        <FlectorAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <FlectorAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <FlectorAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <FlectorAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

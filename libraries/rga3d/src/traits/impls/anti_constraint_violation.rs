@@ -31,7 +31,7 @@ impl AntiConstraintViolation for DualNum {
     // f32        0        2        0
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[e1234] * 2.0);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[e1234] * 2.0)
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Flector {
@@ -52,14 +52,14 @@ impl AntiConstraintViolation for Flector {
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (self[e1] * self[e423]) + (self[e2] * self[e431]) + (self[e3] * self[e412]) + (self[e4] * self[e321])
                 - (anti_reverse_g0[0] * self[e423])
                 - (anti_reverse_g0[1] * self[e431])
                 - (anti_reverse_g0[2] * self[e412])
                 - (anti_reverse_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Line {
@@ -81,7 +81,7 @@ impl AntiConstraintViolation for Line {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let anti_reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             -(anti_reverse_g0[0] * self[e23])
                 - (anti_reverse_g0[1] * self[e31])
@@ -89,7 +89,7 @@ impl AntiConstraintViolation for Line {
                 - (anti_reverse_g1[0] * self[e41])
                 - (anti_reverse_g1[1] * self[e42])
                 - (anti_reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for Motor {
@@ -111,7 +111,7 @@ impl AntiConstraintViolation for Motor {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             (anti_reverse_g0[3] * self[scalar]) + (anti_reverse_g1[3] * self[e1234])
                 - (anti_reverse_g0[0] * self[e23])
@@ -120,7 +120,7 @@ impl AntiConstraintViolation for Motor {
                 - (anti_reverse_g1[0] * self[e41])
                 - (anti_reverse_g1[1] * self[e42])
                 - (anti_reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for MultiVector {
@@ -149,7 +149,7 @@ impl AntiConstraintViolation for MultiVector {
         let anti_reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let anti_reverse_g2 = self.group2() * Simd32x3::from(-1.0);
         let anti_reverse_g3 = self.group3() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 2.0 * (self[scalar] * self[e1234]) + (self[e1] * self[e423]) + (self[e2] * self[e431]) + (self[e3] * self[e412]) + (self[e4] * self[e321])
@@ -190,6 +190,6 @@ impl AntiConstraintViolation for MultiVector {
                 )
                 - (anti_reverse_g2.yzx() * self.group4().zxy()).with_w(self[scalar] * self[e4])
                 - (self.group2().zxy() * self.group4().yzx()).with_w(anti_reverse_g2[0] * self[e1]),
-        );
+        )
     }
 }

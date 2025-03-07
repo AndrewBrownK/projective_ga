@@ -80,7 +80,7 @@ impl nearly::NearlyEqEps<AntiDualNum, f32, f32> for AntiDualNum {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiDualNum, f32, f32> for AntiDualNum {
@@ -94,7 +94,7 @@ impl nearly::NearlyEqUlps<AntiDualNum, f32, f32> for AntiDualNum {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiDualNum, f32, f32> for AntiDualNum {}
@@ -119,7 +119,7 @@ impl nearly::NearlyOrdUlps<AntiDualNum, f32, f32> for AntiDualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiDualNum, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -141,7 +141,7 @@ impl nearly::NearlyOrdUlps<AntiDualNum, f32, f32> for AntiDualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiDualNum, f32, f32> for AntiDualNum {
@@ -164,7 +164,7 @@ impl nearly::NearlyOrdEps<AntiDualNum, f32, f32> for AntiDualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiDualNum, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -186,7 +186,7 @@ impl nearly::NearlyOrdEps<AntiDualNum, f32, f32> for AntiDualNum {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiDualNum, f32, f32> for AntiDualNum {}
@@ -257,14 +257,14 @@ impl encase::ShaderType for AntiDualNum {
     type ExtraMetadata = <AntiDualNumGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiDualNumGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiDualNumGroups as encase::ShaderType>::min_size();
+        <AntiDualNumGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiDualNumGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiDualNumGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiDualNumGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

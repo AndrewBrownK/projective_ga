@@ -97,7 +97,7 @@ impl nearly::NearlyEqEps<Sphere, f32, f32> for Sphere {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Sphere, f32, f32> for Sphere {
@@ -111,7 +111,7 @@ impl nearly::NearlyEqUlps<Sphere, f32, f32> for Sphere {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Sphere, f32, f32> for Sphere {}
@@ -136,7 +136,7 @@ impl nearly::NearlyOrdUlps<Sphere, f32, f32> for Sphere {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Sphere, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -158,7 +158,7 @@ impl nearly::NearlyOrdUlps<Sphere, f32, f32> for Sphere {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Sphere, f32, f32> for Sphere {
@@ -181,7 +181,7 @@ impl nearly::NearlyOrdEps<Sphere, f32, f32> for Sphere {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Sphere, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -203,7 +203,7 @@ impl nearly::NearlyOrdEps<Sphere, f32, f32> for Sphere {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Sphere, f32, f32> for Sphere {}
@@ -274,14 +274,14 @@ impl encase::ShaderType for Sphere {
     type ExtraMetadata = <SphereGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <SphereGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <SphereGroups as encase::ShaderType>::min_size();
+        <SphereGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <SphereGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <SphereGroups as encase::ShaderType>::assert_uniform_compat();
+        <SphereGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

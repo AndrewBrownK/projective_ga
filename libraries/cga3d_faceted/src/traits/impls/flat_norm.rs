@@ -30,7 +30,7 @@ impl FlatNorm for AntiCircleRotor {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -53,7 +53,7 @@ impl FlatNorm for AntiCircleRotor {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -68,7 +68,7 @@ impl FlatNorm for AntiCircleRotorAtInfinity {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -91,7 +91,7 @@ impl FlatNorm for AntiCircleRotorAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -111,7 +111,7 @@ impl FlatNorm for AntiDipoleInversion {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from([self[e5], self[e235], self[e315], self[e125]]) * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -137,7 +137,7 @@ impl FlatNorm for AntiDipoleInversion {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -157,7 +157,7 @@ impl FlatNorm for AntiDipoleInversionAtInfinity {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1().with_w(self[e5]).wxyz() * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -183,7 +183,7 @@ impl FlatNorm for AntiDipoleInversionAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -203,7 +203,7 @@ impl FlatNorm for AntiDipoleInversionOrthogonalOrigin {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = Simd32x4::from([self[e5], self[e235], self[e315], self[e125]]) * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -229,7 +229,7 @@ impl FlatNorm for AntiDipoleInversionOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Circle {
@@ -249,7 +249,7 @@ impl FlatNorm for Circle {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -275,7 +275,7 @@ impl FlatNorm for Circle {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleAligningOrigin {
@@ -295,7 +295,7 @@ impl FlatNorm for CircleAligningOrigin {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -321,7 +321,7 @@ impl FlatNorm for CircleAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleAtInfinity {
@@ -341,7 +341,7 @@ impl FlatNorm for CircleAtInfinity {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -367,7 +367,7 @@ impl FlatNorm for CircleAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleRotor {
@@ -387,7 +387,7 @@ impl FlatNorm for CircleRotor {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -413,7 +413,7 @@ impl FlatNorm for CircleRotor {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -433,7 +433,7 @@ impl FlatNorm for CircleRotorAligningOrigin {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -459,7 +459,7 @@ impl FlatNorm for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -479,7 +479,7 @@ impl FlatNorm for CircleRotorAligningOriginAtInfinity {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -505,7 +505,7 @@ impl FlatNorm for CircleRotorAligningOriginAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -525,7 +525,7 @@ impl FlatNorm for CircleRotorAtInfinity {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -551,7 +551,7 @@ impl FlatNorm for CircleRotorAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Dipole {
@@ -566,7 +566,7 @@ impl FlatNorm for Dipole {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -589,7 +589,7 @@ impl FlatNorm for Dipole {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleAligningOrigin {
@@ -604,7 +604,7 @@ impl FlatNorm for DipoleAligningOrigin {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -627,7 +627,7 @@ impl FlatNorm for DipoleAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleAtInfinity {
@@ -642,7 +642,7 @@ impl FlatNorm for DipoleAtInfinity {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -665,7 +665,7 @@ impl FlatNorm for DipoleAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleInversion {
@@ -680,7 +680,7 @@ impl FlatNorm for DipoleInversion {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -706,7 +706,7 @@ impl FlatNorm for DipoleInversion {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -721,7 +721,7 @@ impl FlatNorm for DipoleInversionAligningOrigin {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -747,7 +747,7 @@ impl FlatNorm for DipoleInversionAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -762,7 +762,7 @@ impl FlatNorm for DipoleInversionAtInfinity {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -788,7 +788,7 @@ impl FlatNorm for DipoleInversionAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for FlatPoint {
@@ -803,7 +803,7 @@ impl FlatNorm for FlatPoint {
     // f32        2        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35], self[e45]]),
             // e1, e2, e3, e4
@@ -826,7 +826,7 @@ impl FlatNorm for FlatPoint {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Flector {
@@ -841,7 +841,7 @@ impl FlatNorm for Flector {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -867,7 +867,7 @@ impl FlatNorm for Flector {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Line {
@@ -887,7 +887,7 @@ impl FlatNorm for Line {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2],
@@ -913,7 +913,7 @@ impl FlatNorm for Line {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Motor {
@@ -933,7 +933,7 @@ impl FlatNorm for Motor {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group1().wxyz() * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -959,7 +959,7 @@ impl FlatNorm for Motor {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for MultiVector {
@@ -986,7 +986,7 @@ impl FlatNorm for MultiVector {
         use crate::elements::*;
         let wedge_g0 = Simd32x2::from([1.0, self[e3215]]) * Simd32x2::from([0.0, 1.0]);
         let wedge_g9 = Simd32x4::from([0.0, self[e235], self[e315], self[e125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 wedge_g0[0] * wedge_g0[0] + self[e5] * self[e5]
@@ -1026,7 +1026,7 @@ impl FlatNorm for MultiVector {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Plane {
@@ -1045,7 +1045,7 @@ impl FlatNorm for Plane {
     //  no simd        2        2        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e3215], self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -1068,7 +1068,7 @@ impl FlatNorm for Plane {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for Sphere {
@@ -1087,7 +1087,7 @@ impl FlatNorm for Sphere {
     //  no simd        2        2        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e3215], self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -1110,7 +1110,7 @@ impl FlatNorm for Sphere {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorEven {
@@ -1130,7 +1130,7 @@ impl FlatNorm for VersorEven {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2().wxyz() * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -1156,7 +1156,7 @@ impl FlatNorm for VersorEven {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1176,7 +1176,7 @@ impl FlatNorm for VersorEvenAligningOrigin {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2().wxyz() * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -1202,7 +1202,7 @@ impl FlatNorm for VersorEvenAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1222,7 +1222,7 @@ impl FlatNorm for VersorEvenAtInfinity {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group2().wxyz() * Simd32x4::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
@@ -1248,7 +1248,7 @@ impl FlatNorm for VersorEvenAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorOdd {
@@ -1263,7 +1263,7 @@ impl FlatNorm for VersorOdd {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -1289,7 +1289,7 @@ impl FlatNorm for VersorOdd {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorOddAtInfinity {
@@ -1304,7 +1304,7 @@ impl FlatNorm for VersorOddAtInfinity {
     // f32        6        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35] - self[e3215] * self[e3215],
@@ -1330,6 +1330,6 @@ impl FlatNorm for VersorOddAtInfinity {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }

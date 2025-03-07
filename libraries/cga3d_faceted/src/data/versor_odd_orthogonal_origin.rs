@@ -122,7 +122,7 @@ impl nearly::NearlyEqEps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrtho
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrthogonalOrigin {
@@ -136,7 +136,7 @@ impl nearly::NearlyEqUlps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrth
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrthogonalOrigin {}
@@ -161,7 +161,7 @@ impl nearly::NearlyOrdUlps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrt
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &VersorOddOrthogonalOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -183,7 +183,7 @@ impl nearly::NearlyOrdUlps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrt
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrthogonalOrigin {
@@ -206,7 +206,7 @@ impl nearly::NearlyOrdEps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrth
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &VersorOddOrthogonalOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -228,7 +228,7 @@ impl nearly::NearlyOrdEps<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrth
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<VersorOddOrthogonalOrigin, f32, f32> for VersorOddOrthogonalOrigin {}
@@ -299,14 +299,14 @@ impl encase::ShaderType for VersorOddOrthogonalOrigin {
     type ExtraMetadata = <VersorOddOrthogonalOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <VersorOddOrthogonalOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <VersorOddOrthogonalOriginGroups as encase::ShaderType>::min_size();
+        <VersorOddOrthogonalOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <VersorOddOrthogonalOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <VersorOddOrthogonalOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <VersorOddOrthogonalOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

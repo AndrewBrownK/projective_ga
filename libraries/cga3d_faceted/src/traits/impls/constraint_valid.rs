@@ -31,7 +31,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiDipoleOnOrigin 
 }
 impl ConstraintValid for AntiDipoleOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiFlatOrigin {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlatOrigin {
 }
 impl ConstraintValid for AntiFlatOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiFlatPoint {
@@ -63,7 +63,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlatPoint {
 }
 impl ConstraintValid for AntiFlatPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -79,7 +79,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlectorOnOrigin
 }
 impl ConstraintValid for AntiFlectorOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiLineOnOrigin {
@@ -95,7 +95,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiLineOnOrigin {
 }
 impl ConstraintValid for AntiLineOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -111,7 +111,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiMotorOnOrigin {
 }
 impl ConstraintValid for AntiMotorOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiPlane {
@@ -127,7 +127,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiPlane {
 }
 impl ConstraintValid for AntiPlane {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -143,7 +143,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiPlaneOnOrigin {
 }
 impl ConstraintValid for AntiPlaneOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiScalar {
@@ -159,7 +159,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiScalar {
 }
 impl ConstraintValid for AntiScalar {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -175,7 +175,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiSphereOnOrigin 
 }
 impl ConstraintValid for AntiSphereOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for DipoleOnOrigin {
@@ -191,7 +191,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for DipoleOnOrigin {
 }
 impl ConstraintValid for DipoleOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlatOrigin {
@@ -207,7 +207,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlatOrigin {
 }
 impl ConstraintValid for FlatOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlatPoint {
@@ -223,7 +223,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlatPoint {
 }
 impl ConstraintValid for FlatPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlatPointAtInfinity {
@@ -239,7 +239,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlatPointAtInfinity
 }
 impl ConstraintValid for FlatPointAtInfinity {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlectorAtInfinity {
@@ -255,7 +255,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlectorAtInfinity {
 }
 impl ConstraintValid for FlectorAtInfinity {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlectorOnOrigin {
@@ -271,7 +271,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlectorOnOrigin {
 }
 impl ConstraintValid for FlectorOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Horizon {
@@ -287,7 +287,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Horizon {
 }
 impl ConstraintValid for Horizon {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Infinity {
@@ -303,7 +303,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Infinity {
 }
 impl ConstraintValid for Infinity {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for LineAtInfinity {
@@ -319,7 +319,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for LineAtInfinity {
 }
 impl ConstraintValid for LineAtInfinity {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for LineOnOrigin {
@@ -335,7 +335,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for LineOnOrigin {
 }
 impl ConstraintValid for LineOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for MotorAtInfinity {
@@ -351,7 +351,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for MotorAtInfinity {
 }
 impl ConstraintValid for MotorAtInfinity {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for MotorOnOrigin {
@@ -367,7 +367,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for MotorOnOrigin {
 }
 impl ConstraintValid for MotorOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for NullCircleAtOrigin {
@@ -383,7 +383,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for NullCircleAtOrigin 
 }
 impl ConstraintValid for NullCircleAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -399,7 +399,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for NullDipoleAtOrigin 
 }
 impl ConstraintValid for NullDipoleAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -415,7 +415,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for NullDipoleInversion
 }
 impl ConstraintValid for NullDipoleInversionAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for NullSphereAtOrigin {
@@ -431,7 +431,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for NullSphereAtOrigin 
 }
 impl ConstraintValid for NullSphereAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -447,7 +447,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for NullVersorEvenAtOri
 }
 impl ConstraintValid for NullVersorEvenAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Origin {
@@ -463,7 +463,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Origin {
 }
 impl ConstraintValid for Origin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Plane {
@@ -479,7 +479,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Plane {
 }
 impl ConstraintValid for Plane {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for PlaneOnOrigin {
@@ -495,7 +495,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for PlaneOnOrigin {
 }
 impl ConstraintValid for PlaneOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for RoundPoint {
@@ -511,7 +511,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for RoundPoint {
 }
 impl ConstraintValid for RoundPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for RoundPointAtOrigin {
@@ -527,7 +527,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for RoundPointAtOrigin 
 }
 impl ConstraintValid for RoundPointAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Scalar {
@@ -543,7 +543,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Scalar {
 }
 impl ConstraintValid for Scalar {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Sphere {
@@ -559,7 +559,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Sphere {
 }
 impl ConstraintValid for Sphere {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for SphereAtOrigin {
@@ -575,7 +575,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for SphereAtOrigin {
 }
 impl ConstraintValid for SphereAtOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for SphereOnOrigin {
@@ -591,6 +591,6 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for SphereOnOrigin {
 }
 impl ConstraintValid for SphereOnOrigin {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }

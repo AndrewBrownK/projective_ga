@@ -41,14 +41,14 @@ impl Unitize for AntiCircleRotor {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDipoleInversion {
@@ -74,7 +74,7 @@ impl Unitize for AntiDipoleInversion {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
@@ -83,7 +83,7 @@ impl Unitize for AntiDipoleInversion {
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e1, e2, e3, e5
             Simd32x4::from(geometric_anti_product_g0) * self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Circle {
@@ -109,14 +109,14 @@ impl Unitize for Circle {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125
             Simd32x3::from(geometric_anti_product_g0) * self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for CircleRotor {
@@ -142,14 +142,14 @@ impl Unitize for CircleRotor {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Dipole {
@@ -175,14 +175,14 @@ impl Unitize for Dipole {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35
             Simd32x3::from(geometric_anti_product_g0) * self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversion {
@@ -208,7 +208,7 @@ impl Unitize for DipoleInversion {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
@@ -217,7 +217,7 @@ impl Unitize for DipoleInversion {
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for MultiVector {
@@ -251,7 +251,7 @@ impl Unitize for MultiVector {
             + self[e431] * self[e431]
             + self[e412] * self[e412]
             + self[e1234] * self[e1234];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),
             // e1, e2, e3, e4
@@ -274,7 +274,7 @@ impl Unitize for MultiVector {
             Simd32x4::from(geometric_anti_product_g0) * self.group9(),
             // e1234
             geometric_anti_product_g0 * self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for RoundPoint {
@@ -299,12 +299,12 @@ impl Unitize for RoundPoint {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e4];
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e5
             geometric_anti_product_g0 * self[e5],
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Sphere {
@@ -329,12 +329,12 @@ impl Unitize for Sphere {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e1234];
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e1234
             geometric_anti_product_g0 * self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEven {
@@ -359,7 +359,7 @@ impl Unitize for VersorEven {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
@@ -368,7 +368,7 @@ impl Unitize for VersorEven {
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for VersorOdd {
@@ -393,7 +393,7 @@ impl Unitize for VersorOdd {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
@@ -402,6 +402,6 @@ impl Unitize for VersorOdd {
             Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group3(),
-        );
+        )
     }
 }

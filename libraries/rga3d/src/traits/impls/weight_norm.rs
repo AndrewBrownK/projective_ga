@@ -31,7 +31,7 @@ impl std::ops::DivAssign<WeightNormPrefixOrPostfix> for AntiScalar {
 }
 impl WeightNorm for AntiScalar {
     fn weight_norm(self) -> AntiScalar {
-        return self;
+        self
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for DualNum {
@@ -43,7 +43,7 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for DualNum {
 impl WeightNorm for DualNum {
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Flector {
@@ -58,7 +58,7 @@ impl WeightNorm for Flector {
     // f32        3        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
+        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Line {
@@ -73,7 +73,7 @@ impl WeightNorm for Line {
     // f32        2        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Motor {
@@ -88,7 +88,7 @@ impl WeightNorm for Motor {
     // f32        3        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for MultiVector {
@@ -103,7 +103,7 @@ impl WeightNorm for MultiVector {
     // f32        7        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e1234
             self[e1234] * self[e1234]
                 + self[e4] * self[e4]
@@ -113,7 +113,7 @@ impl WeightNorm for MultiVector {
                 + self[e423] * self[e423]
                 + self[e431] * self[e431]
                 + self[e412] * self[e412],
-        );
+        )
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Origin {
@@ -125,7 +125,7 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Origin {
 impl WeightNorm for Origin {
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4]);
+        AntiScalar::from_groups(/* e1234 */ self[e4])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Plane {
@@ -140,7 +140,7 @@ impl WeightNorm for Plane {
     // f32        2        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
+        AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
     }
 }
 impl std::ops::Div<WeightNormPrefixOrPostfix> for Point {
@@ -152,6 +152,6 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Point {
 impl WeightNorm for Point {
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4]);
+        AntiScalar::from_groups(/* e1234 */ self[e4])
     }
 }

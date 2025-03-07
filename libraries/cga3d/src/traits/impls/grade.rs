@@ -20,61 +20,61 @@
 //  Maximum:         0       0       0
 impl Grade for AntiFlatPoint {
     fn grade() -> usize {
-        return 3;
+        3
     }
 }
 impl Grade for AntiLine {
     fn grade() -> usize {
-        return 2;
+        2
     }
 }
 impl Grade for AntiPlane {
     fn grade() -> usize {
-        return 1;
+        1
     }
 }
 impl Grade for AntiScalar {
     fn grade() -> usize {
-        return 5;
+        5
     }
 }
 impl Grade for Circle {
     fn grade() -> usize {
-        return 3;
+        3
     }
 }
 impl Grade for Dipole {
     fn grade() -> usize {
-        return 2;
+        2
     }
 }
 impl Grade for FlatPoint {
     fn grade() -> usize {
-        return 2;
+        2
     }
 }
 impl Grade for Line {
     fn grade() -> usize {
-        return 3;
+        3
     }
 }
 impl Grade for Plane {
     fn grade() -> usize {
-        return 4;
+        4
     }
 }
 impl Grade for RoundPoint {
     fn grade() -> usize {
-        return 1;
+        1
     }
 }
 impl Grade for Scalar {
     fn grade() -> usize {
-        return 0;
+        0
     }
 }
 impl Grade for Sphere {
     fn grade() -> usize {
-        return 4;
+        4
     }
 }

@@ -27,14 +27,14 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotor {
 impl RoundWeight for AntiCircleRotor {
     type Output = Dipole;
     fn round_weight(self) -> Self::Output {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(0.0),
             // e15, e25, e35
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleInversion {
@@ -52,7 +52,7 @@ impl RoundWeight for AntiDipoleInversion {
     type Output = AntiDipoleInversion;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
@@ -61,7 +61,7 @@ impl RoundWeight for AntiDipoleInversion {
             Simd32x3::from(0.0).with_w(self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Circle {
@@ -78,14 +78,14 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for Circle {
 impl RoundWeight for Circle {
     type Output = Circle;
     fn round_weight(self) -> Self::Output {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotor {
@@ -97,14 +97,14 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotor {
 impl RoundWeight for CircleRotor {
     type Output = Circle;
     fn round_weight(self) -> Self::Output {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Dipole {
@@ -121,14 +121,14 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for Dipole {
 impl RoundWeight for Dipole {
     type Output = Dipole;
     fn round_weight(self) -> Self::Output {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(0.0),
             // e15, e25, e35
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversion {
@@ -146,7 +146,7 @@ impl RoundWeight for DipoleInversion {
     type Output = DipoleInversion;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
@@ -155,7 +155,7 @@ impl RoundWeight for DipoleInversion {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for MultiVector {
@@ -173,7 +173,7 @@ impl RoundWeight for MultiVector {
     type Output = MultiVector;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -196,7 +196,7 @@ impl RoundWeight for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for RoundPoint {
@@ -214,7 +214,7 @@ impl RoundWeight for RoundPoint {
     type Output = RoundPoint;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x3::from(0.0).with_w(self[e4]), /* e5 */ 0.0);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x3::from(0.0).with_w(self[e4]), /* e5 */ 0.0)
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Sphere {
@@ -232,7 +232,7 @@ impl RoundWeight for Sphere {
     type Output = Sphere;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(0.0), /* e1234 */ self[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(0.0), /* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEven {
@@ -245,7 +245,7 @@ impl RoundWeight for VersorEven {
     type Output = AntiDipoleInversion;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0().xyz(),
             // e415, e425, e435, e321
@@ -254,7 +254,7 @@ impl RoundWeight for VersorEven {
             Simd32x3::from(0.0).with_w(self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorOdd {
@@ -267,7 +267,7 @@ impl RoundWeight for VersorOdd {
     type Output = DipoleInversion;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0().xyz(),
             // e23, e31, e12, e45
@@ -276,6 +276,6 @@ impl RoundWeight for VersorOdd {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }

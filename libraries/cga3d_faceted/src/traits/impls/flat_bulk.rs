@@ -27,7 +27,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotor {
 impl FlatBulk for AntiCircleRotor {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2().xyz());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -39,7 +39,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
 impl FlatBulk for AntiCircleRotorAligningOrigin {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2().xyz());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -51,7 +51,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAligningOriginAtI
 impl FlatBulk for AntiCircleRotorAligningOriginAtInfinity {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1().xyz());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -63,7 +63,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiCircleRotorAtInfinity {
 impl FlatBulk for AntiCircleRotorAtInfinity {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1().xyz());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiDipoleInversion {
@@ -76,7 +76,7 @@ impl FlatBulk for AntiDipoleInversion {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -89,7 +89,7 @@ impl FlatBulk for AntiDipoleInversionAtInfinity {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1().with_w(self[e5]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1().with_w(self[e5]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -102,7 +102,7 @@ impl FlatBulk for AntiDipoleInversionOrthogonalOrigin {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiFlatPoint {
@@ -114,7 +114,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiFlatPoint {
 impl FlatBulk for AntiFlatPoint {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0().xyz());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiFlector {
@@ -127,7 +127,7 @@ impl FlatBulk for AntiFlector {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ Simd32x4::from([self[e235], self[e315], self[e125], self[e5]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiLine {
@@ -139,7 +139,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiLine {
 impl FlatBulk for AntiLine {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiMotor {
@@ -151,7 +151,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiMotor {
 impl FlatBulk for AntiMotor {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group1());
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for AntiPlane {
@@ -164,7 +164,7 @@ impl FlatBulk for AntiPlane {
     type Output = Infinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Infinity::from_groups(/* e5 */ self[e5]);
+        Infinity::from_groups(/* e5 */ self[e5])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Circle {
@@ -176,7 +176,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for Circle {
 impl FlatBulk for Circle {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAligningOrigin {
@@ -188,7 +188,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAligningOrigin {
 impl FlatBulk for CircleAligningOrigin {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAtInfinity {
@@ -200,7 +200,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAtInfinity {
 impl FlatBulk for CircleAtInfinity {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAtOrigin {
@@ -212,7 +212,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleAtOrigin {
 impl FlatBulk for CircleAtOrigin {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -224,7 +224,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleOrthogonalOrigin {
 impl FlatBulk for CircleOrthogonalOrigin {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotor {
@@ -236,7 +236,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotor {
 impl FlatBulk for CircleRotor {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2().xyz());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -248,7 +248,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAligningOrigin {
 impl FlatBulk for CircleRotorAligningOrigin {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2().xyz());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group2().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -260,7 +260,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAligningOriginAtInfin
 impl FlatBulk for CircleRotorAligningOriginAtInfinity {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1().xyz());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -272,7 +272,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for CircleRotorAtInfinity {
 impl FlatBulk for CircleRotorAtInfinity {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1().xyz());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Dipole {
@@ -284,7 +284,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for Dipole {
 impl FlatBulk for Dipole {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAligningOrigin {
@@ -296,7 +296,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAligningOrigin {
 impl FlatBulk for DipoleAligningOrigin {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAtInfinity {
@@ -308,7 +308,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAtInfinity {
 impl FlatBulk for DipoleAtInfinity {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAtOrigin {
@@ -320,7 +320,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleAtOrigin {
 impl FlatBulk for DipoleAtOrigin {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleInversion {
@@ -333,7 +333,7 @@ impl FlatBulk for DipoleInversion {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -346,7 +346,7 @@ impl FlatBulk for DipoleInversionAligningOrigin {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -359,7 +359,7 @@ impl FlatBulk for DipoleInversionAtInfinity {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group1().with_w(self[e3215]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group1().with_w(self[e3215]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -372,7 +372,7 @@ impl FlatBulk for DipoleInversionAtOrigin {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -385,7 +385,7 @@ impl FlatBulk for DipoleInversionOrthogonalOrigin {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -397,7 +397,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for DipoleOrthogonalOrigin {
 impl FlatBulk for DipoleOrthogonalOrigin {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for FlatPoint {
@@ -409,7 +409,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for FlatPoint {
 impl FlatBulk for FlatPoint {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0().xyz());
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for FlatPointAtInfinity {
@@ -426,7 +426,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for FlatPointAtInfinity {
 impl FlatBulk for FlatPointAtInfinity {
     type Output = FlatPointAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Flector {
@@ -439,7 +439,7 @@ impl FlatBulk for Flector {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for FlectorAtInfinity {
@@ -456,7 +456,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for FlectorAtInfinity {
 impl FlatBulk for FlectorAtInfinity {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Horizon {
@@ -473,7 +473,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for Horizon {
 impl FlatBulk for Horizon {
     type Output = Horizon;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Infinity {
@@ -490,7 +490,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for Infinity {
 impl FlatBulk for Infinity {
     type Output = Infinity;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Line {
@@ -502,7 +502,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for Line {
 impl FlatBulk for Line {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1());
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for LineAtInfinity {
@@ -519,7 +519,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for LineAtInfinity {
 impl FlatBulk for LineAtInfinity {
     type Output = LineAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Motor {
@@ -531,7 +531,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for Motor {
 impl FlatBulk for Motor {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for MotorAtInfinity {
@@ -548,7 +548,7 @@ impl std::ops::DivAssign<FlatBulkPrefixOrPostfix> for MotorAtInfinity {
 impl FlatBulk for MotorAtInfinity {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for MultiVector {
@@ -566,7 +566,7 @@ impl FlatBulk for MultiVector {
     type Output = MultiVector;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -589,7 +589,7 @@ impl FlatBulk for MultiVector {
             Simd32x4::from(0.0),
             // e3215
             self[e3215],
-        );
+        )
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Plane {
@@ -602,7 +602,7 @@ impl FlatBulk for Plane {
     type Output = Horizon;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e3215 */ self[e3215]);
+        Horizon::from_groups(/* e3215 */ self[e3215])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for RoundPoint {
@@ -615,7 +615,7 @@ impl FlatBulk for RoundPoint {
     type Output = Infinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Infinity::from_groups(/* e5 */ self[e5]);
+        Infinity::from_groups(/* e5 */ self[e5])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for RoundPointAtOrigin {
@@ -628,7 +628,7 @@ impl FlatBulk for RoundPointAtOrigin {
     type Output = Infinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Infinity::from_groups(/* e5 */ self[e5]);
+        Infinity::from_groups(/* e5 */ self[e5])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for Sphere {
@@ -641,7 +641,7 @@ impl FlatBulk for Sphere {
     type Output = Horizon;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e3215 */ self[e3215]);
+        Horizon::from_groups(/* e3215 */ self[e3215])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for SphereAtOrigin {
@@ -654,7 +654,7 @@ impl FlatBulk for SphereAtOrigin {
     type Output = Horizon;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e3215 */ self[e3215]);
+        Horizon::from_groups(/* e3215 */ self[e3215])
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEven {
@@ -666,7 +666,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEven {
 impl FlatBulk for VersorEven {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -678,7 +678,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAligningOrigin {
 impl FlatBulk for VersorEvenAligningOrigin {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -690,7 +690,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAtInfinity {
 impl FlatBulk for VersorEvenAtInfinity {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group2())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -702,7 +702,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenAtOrigin {
 impl FlatBulk for VersorEvenAtOrigin {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -714,7 +714,7 @@ impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
 impl FlatBulk for VersorEvenOrthogonalOrigin {
     type Output = MotorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1());
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group1())
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorOdd {
@@ -727,7 +727,7 @@ impl FlatBulk for VersorOdd {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorOddAtInfinity {
@@ -740,7 +740,7 @@ impl FlatBulk for VersorOddAtInfinity {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }
 impl std::ops::Div<FlatBulkPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -753,6 +753,6 @@ impl FlatBulk for VersorOddOrthogonalOrigin {
     type Output = FlectorAtInfinity;
     fn flat_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ Simd32x4::from([self[e15], self[e25], self[e35], self[e3215]]))
     }
 }

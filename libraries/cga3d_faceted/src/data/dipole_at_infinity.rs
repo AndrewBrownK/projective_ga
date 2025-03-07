@@ -106,7 +106,7 @@ impl nearly::NearlyEqEps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
@@ -120,7 +120,7 @@ impl nearly::NearlyEqUlps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {}
@@ -145,7 +145,7 @@ impl nearly::NearlyOrdUlps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &DipoleAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -167,7 +167,7 @@ impl nearly::NearlyOrdUlps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
@@ -190,7 +190,7 @@ impl nearly::NearlyOrdEps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &DipoleAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -212,7 +212,7 @@ impl nearly::NearlyOrdEps<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<DipoleAtInfinity, f32, f32> for DipoleAtInfinity {}
@@ -283,14 +283,14 @@ impl encase::ShaderType for DipoleAtInfinity {
     type ExtraMetadata = <DipoleAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <DipoleAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <DipoleAtInfinityGroups as encase::ShaderType>::min_size();
+        <DipoleAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <DipoleAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <DipoleAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <DipoleAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

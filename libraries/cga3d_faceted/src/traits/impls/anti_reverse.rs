@@ -35,12 +35,12 @@ impl AntiReverse for AntiCircleOnOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleOnOrigin::from_groups(
+        AntiCircleOnOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotor {
@@ -63,14 +63,14 @@ impl AntiReverse for AntiCircleRotor {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -93,14 +93,14 @@ impl AntiReverse for AntiCircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleRotorAligningOrigin::from_groups(
+        AntiCircleRotorAligningOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -123,12 +123,12 @@ impl AntiReverse for AntiCircleRotorAligningOriginAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleRotorAligningOriginAtInfinity::from_groups(
+        AntiCircleRotorAligningOriginAtInfinity::from_groups(
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -148,12 +148,12 @@ impl AntiReverse for AntiCircleRotorAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleRotorAtInfinity::from_groups(
+        AntiCircleRotorAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -176,12 +176,12 @@ impl AntiReverse for AntiCircleRotorOnOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return AntiCircleRotorOnOrigin::from_groups(
+        AntiCircleRotorOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDipoleInversion {
@@ -204,7 +204,7 @@ impl AntiReverse for AntiDipoleInversion {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -213,7 +213,7 @@ impl AntiReverse for AntiDipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -236,14 +236,14 @@ impl AntiReverse for AntiDipoleInversionAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return AntiDipoleInversionAtInfinity::from_groups(
+        AntiDipoleInversionAtInfinity::from_groups(
             // e415, e425, e435, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
             // e1, e2, e3, e5
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -263,7 +263,7 @@ impl AntiReverse for AntiDipoleInversionOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiDipoleInversionOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0), /* e4, e1, e2, e3 */ self.group1());
+        AntiDipoleInversionOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0), /* e4, e1, e2, e3 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -286,14 +286,14 @@ impl AntiReverse for AntiDipoleInversionOrthogonalOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return AntiDipoleInversionOrthogonalOrigin::from_groups(
+        AntiDipoleInversionOrthogonalOrigin::from_groups(
             // e423, e431, e412, e5
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e4
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -313,7 +313,7 @@ impl AntiReverse for AntiDipoleOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiDualNum {
@@ -329,7 +329,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiDualNum {
 }
 impl AntiReverse for AntiDualNum {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiFlatOrigin {
@@ -349,7 +349,7 @@ impl AntiReverse for AntiFlatOrigin {
     // f32        0        1        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return AntiFlatOrigin::from_groups(/* e321 */ self[e321] * -1.0);
+        AntiFlatOrigin::from_groups(/* e321 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiFlatPoint {
@@ -369,7 +369,7 @@ impl AntiReverse for AntiFlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiFlector {
@@ -389,7 +389,7 @@ impl AntiReverse for AntiFlector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1());
+        AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -409,7 +409,7 @@ impl AntiReverse for AntiFlectorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiFlectorOnOrigin::from_groups(/* e321, e1, e2, e3 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]));
+        AntiFlectorOnOrigin::from_groups(/* e321, e1, e2, e3 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiLine {
@@ -429,12 +429,12 @@ impl AntiReverse for AntiLine {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiLineOnOrigin {
@@ -454,7 +454,7 @@ impl AntiReverse for AntiLineOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0));
+        AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiMotor {
@@ -474,12 +474,12 @@ impl AntiReverse for AntiMotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e3215
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiMotorOnOrigin {
@@ -499,7 +499,7 @@ impl AntiReverse for AntiMotorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -520,7 +520,7 @@ impl AntiReverse for AntiMysteryCircleRotor {
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[scalar]);
+        AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[scalar])
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -540,7 +540,7 @@ impl AntiReverse for AntiMysteryDipoleInversion {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return AntiMysteryDipoleInversion::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3 */ self.group1());
+        AntiMysteryDipoleInversion::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiPlane {
@@ -556,7 +556,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiPlane {
 }
 impl AntiReverse for AntiPlane {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -572,7 +572,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiPlaneOnOrigin {
 }
 impl AntiReverse for AntiPlaneOnOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiScalar {
@@ -588,7 +588,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiScalar {
 }
 impl AntiReverse for AntiScalar {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiSphereOnOrigin {
@@ -604,7 +604,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiSphereOnOrigin {
 }
 impl AntiReverse for AntiSphereOnOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -624,12 +624,12 @@ impl AntiReverse for AntiVersorEvenOnOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Circle {
@@ -652,14 +652,14 @@ impl AntiReverse for Circle {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_reverse(self) -> Self {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleAligningOrigin {
@@ -679,14 +679,14 @@ impl AntiReverse for CircleAligningOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn anti_reverse(self) -> Self {
-        return CircleAligningOrigin::from_groups(
+        CircleAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleAtInfinity {
@@ -709,12 +709,12 @@ impl AntiReverse for CircleAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return CircleAtInfinity::from_groups(
+        CircleAtInfinity::from_groups(
             // e415, e425, e435, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleAtOrigin {
@@ -734,12 +734,12 @@ impl AntiReverse for CircleAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return CircleAtOrigin::from_groups(
+        CircleAtOrigin::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleOnOrigin {
@@ -759,12 +759,12 @@ impl AntiReverse for CircleOnOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return CircleOnOrigin::from_groups(
+        CircleOnOrigin::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -787,12 +787,12 @@ impl AntiReverse for CircleOrthogonalOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return CircleOrthogonalOrigin::from_groups(
+        CircleOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleRotor {
@@ -815,14 +815,14 @@ impl AntiReverse for CircleRotor {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -845,14 +845,14 @@ impl AntiReverse for CircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_reverse(self) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e12345
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -875,12 +875,12 @@ impl AntiReverse for CircleRotorAligningOriginAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return CircleRotorAligningOriginAtInfinity::from_groups(
+        CircleRotorAligningOriginAtInfinity::from_groups(
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125, e12345
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleRotorAtInfinity {
@@ -900,12 +900,12 @@ impl AntiReverse for CircleRotorAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return CircleRotorAtInfinity::from_groups(
+        CircleRotorAtInfinity::from_groups(
             // e415, e425, e435, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for CircleRotorOnOrigin {
@@ -928,12 +928,12 @@ impl AntiReverse for CircleRotorOnOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return CircleRotorOnOrigin::from_groups(
+        CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Dipole {
@@ -956,14 +956,14 @@ impl AntiReverse for Dipole {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_reverse(self) -> Self {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleAligningOrigin {
@@ -986,12 +986,12 @@ impl AntiReverse for DipoleAligningOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return DipoleAligningOrigin::from_groups(
+        DipoleAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleAtInfinity {
@@ -1014,12 +1014,12 @@ impl AntiReverse for DipoleAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return DipoleAtInfinity::from_groups(
+        DipoleAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleAtOrigin {
@@ -1039,12 +1039,12 @@ impl AntiReverse for DipoleAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return DipoleAtOrigin::from_groups(
+        DipoleAtOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversion {
@@ -1067,7 +1067,7 @@ impl AntiReverse for DipoleInversion {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -1076,7 +1076,7 @@ impl AntiReverse for DipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -1096,14 +1096,14 @@ impl AntiReverse for DipoleInversionAligningOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -1126,14 +1126,14 @@ impl AntiReverse for DipoleInversionAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversionAtInfinity::from_groups(
+        DipoleInversionAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -1153,12 +1153,12 @@ impl AntiReverse for DipoleInversionAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -1178,7 +1178,7 @@ impl AntiReverse for DipoleInversionOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversionOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0), /* e1234, e4235, e4315, e4125 */ self.group1());
+        DipoleInversionOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0), /* e1234, e4235, e4315, e4125 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -1201,14 +1201,14 @@ impl AntiReverse for DipoleInversionOrthogonalOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_reverse(self) -> Self {
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleOnOrigin {
@@ -1228,7 +1228,7 @@ impl AntiReverse for DipoleOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0));
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -1248,14 +1248,14 @@ impl AntiReverse for DipoleOrthogonalOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn anti_reverse(self) -> Self {
-        return DipoleOrthogonalOrigin::from_groups(
+        DipoleOrthogonalOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for DualNum {
@@ -1271,7 +1271,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for DualNum {
 }
 impl AntiReverse for DualNum {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for FlatOrigin {
@@ -1291,7 +1291,7 @@ impl AntiReverse for FlatOrigin {
     // f32        0        1        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45] * -1.0);
+        FlatOrigin::from_groups(/* e45 */ self[e45] * -1.0)
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for FlatPoint {
@@ -1311,7 +1311,7 @@ impl AntiReverse for FlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for FlatPointAtInfinity {
@@ -1331,7 +1331,7 @@ impl AntiReverse for FlatPointAtInfinity {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0));
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Flector {
@@ -1351,7 +1351,7 @@ impl AntiReverse for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return Flector::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125, e3215 */ self.group1());
+        Flector::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125, e3215 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for FlectorAtInfinity {
@@ -1371,7 +1371,7 @@ impl AntiReverse for FlectorAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for FlectorOnOrigin {
@@ -1391,7 +1391,7 @@ impl AntiReverse for FlectorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Horizon {
@@ -1407,7 +1407,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Horizon {
 }
 impl AntiReverse for Horizon {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Infinity {
@@ -1423,7 +1423,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Infinity {
 }
 impl AntiReverse for Infinity {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Line {
@@ -1443,12 +1443,12 @@ impl AntiReverse for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_reverse(self) -> Self {
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for LineAtInfinity {
@@ -1468,7 +1468,7 @@ impl AntiReverse for LineAtInfinity {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0() * Simd32x3::from(-1.0));
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for LineOnOrigin {
@@ -1488,7 +1488,7 @@ impl AntiReverse for LineOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0() * Simd32x3::from(-1.0));
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Motor {
@@ -1508,12 +1508,12 @@ impl AntiReverse for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MotorAtInfinity {
@@ -1533,7 +1533,7 @@ impl AntiReverse for MotorAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MotorOnOrigin {
@@ -1553,7 +1553,7 @@ impl AntiReverse for MotorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MultiVector {
@@ -1577,7 +1577,7 @@ impl AntiReverse for MultiVector {
     //  no simd        0       20        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             self.group0(),
             // e1, e2, e3, e4
@@ -1600,7 +1600,7 @@ impl AntiReverse for MultiVector {
             self.group9(),
             // e3215
             self[e3215],
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryCircle {
@@ -1620,7 +1620,7 @@ impl AntiReverse for MysteryCircle {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MysteryCircle::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0));
+        MysteryCircle::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryCircleRotor {
@@ -1641,7 +1641,7 @@ impl AntiReverse for MysteryCircleRotor {
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
-        return MysteryCircleRotor::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e12345 */ self[e12345]);
+        MysteryCircleRotor::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e12345 */ self[e12345])
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryDipole {
@@ -1661,7 +1661,7 @@ impl AntiReverse for MysteryDipole {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0));
+        MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryDipoleInversion {
@@ -1681,7 +1681,7 @@ impl AntiReverse for MysteryDipoleInversion {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MysteryDipoleInversion::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125 */ self.group1());
+        MysteryDipoleInversion::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125 */ self.group1())
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryVersorEven {
@@ -1701,7 +1701,7 @@ impl AntiReverse for MysteryVersorEven {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MysteryVersorEven::from_groups(/* e12345, e1, e2, e3 */ self.group0(), /* e415, e425, e435, e321 */ self.group1() * Simd32x4::from(-1.0));
+        MysteryVersorEven::from_groups(/* e12345, e1, e2, e3 */ self.group0(), /* e415, e425, e435, e321 */ self.group1() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for MysteryVersorOdd {
@@ -1721,7 +1721,7 @@ impl AntiReverse for MysteryVersorOdd {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return MysteryVersorOdd::from_groups(/* scalar, e4235, e4315, e4125 */ self.group0(), /* e23, e31, e12, e45 */ self.group1() * Simd32x4::from(-1.0));
+        MysteryVersorOdd::from_groups(/* scalar, e4235, e4315, e4125 */ self.group0(), /* e23, e31, e12, e45 */ self.group1() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for NullCircleAtOrigin {
@@ -1741,7 +1741,7 @@ impl AntiReverse for NullCircleAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0() * Simd32x3::from(-1.0));
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for NullDipoleAtOrigin {
@@ -1761,7 +1761,7 @@ impl AntiReverse for NullDipoleAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_reverse(self) -> Self {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0));
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -1781,7 +1781,7 @@ impl AntiReverse for NullDipoleInversionAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for NullSphereAtOrigin {
@@ -1797,7 +1797,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for NullSphereAtOrigin {
 }
 impl AntiReverse for NullSphereAtOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -1817,7 +1817,7 @@ impl AntiReverse for NullVersorEvenAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_reverse(self) -> Self {
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Origin {
@@ -1833,7 +1833,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Origin {
 }
 impl AntiReverse for Origin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Plane {
@@ -1849,7 +1849,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Plane {
 }
 impl AntiReverse for Plane {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for PlaneOnOrigin {
@@ -1865,7 +1865,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for PlaneOnOrigin {
 }
 impl AntiReverse for PlaneOnOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for RoundPoint {
@@ -1881,7 +1881,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for RoundPoint {
 }
 impl AntiReverse for RoundPoint {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for RoundPointAtOrigin {
@@ -1897,7 +1897,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for RoundPointAtOrigin {
 }
 impl AntiReverse for RoundPointAtOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Scalar {
@@ -1913,7 +1913,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Scalar {
 }
 impl AntiReverse for Scalar {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for Sphere {
@@ -1929,7 +1929,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Sphere {
 }
 impl AntiReverse for Sphere {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for SphereAtOrigin {
@@ -1945,7 +1945,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for SphereAtOrigin {
 }
 impl AntiReverse for SphereAtOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for SphereOnOrigin {
@@ -1961,7 +1961,7 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for SphereOnOrigin {
 }
 impl AntiReverse for SphereOnOrigin {
     fn anti_reverse(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEven {
@@ -1981,7 +1981,7 @@ impl AntiReverse for VersorEven {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_reverse(self) -> Self {
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -1990,7 +1990,7 @@ impl AntiReverse for VersorEven {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -2010,14 +2010,14 @@ impl AntiReverse for VersorEvenAligningOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_reverse(self) -> Self {
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e4
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEvenAtInfinity {
@@ -2037,14 +2037,14 @@ impl AntiReverse for VersorEvenAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return VersorEvenAtInfinity::from_groups(
+        VersorEvenAtInfinity::from_groups(
             // e12345, e1, e2, e3
             self.group0(),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEvenAtOrigin {
@@ -2064,12 +2064,12 @@ impl AntiReverse for VersorEvenAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return VersorEvenAtOrigin::from_groups(
+        VersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEvenOnOrigin {
@@ -2089,12 +2089,12 @@ impl AntiReverse for VersorEvenOnOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e4
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -2114,14 +2114,14 @@ impl AntiReverse for VersorEvenOrthogonalOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return VersorEvenOrthogonalOrigin::from_groups(
+        VersorEvenOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorOdd {
@@ -2141,7 +2141,7 @@ impl AntiReverse for VersorOdd {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_reverse(self) -> Self {
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e45
@@ -2150,7 +2150,7 @@ impl AntiReverse for VersorOdd {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorOddAtInfinity {
@@ -2170,14 +2170,14 @@ impl AntiReverse for VersorOddAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_reverse(self) -> Self {
-        return VersorOddAtInfinity::from_groups(
+        VersorOddAtInfinity::from_groups(
             // scalar, e15, e25, e35
             self.group0() * Simd32x4::from([1.0, -1.0, -1.0, -1.0]),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiReversePrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -2197,13 +2197,13 @@ impl AntiReverse for VersorOddOrthogonalOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_reverse(self) -> Self {
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e3215
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }

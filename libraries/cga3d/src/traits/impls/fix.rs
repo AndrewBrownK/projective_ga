@@ -39,7 +39,7 @@ impl Fix for AntiFlatPoint {
     //  no simd        0        4        1
     fn fix(self) -> Self {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0())
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for AntiPlane {
@@ -63,10 +63,10 @@ impl Fix for AntiPlane {
     //  no simd        2        4        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for AntiScalar {
@@ -82,7 +82,7 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for AntiScalar {
 }
 impl Fix for AntiScalar {
     fn fix(self) -> Self {
-        return AntiScalar::from_groups(/* e12345 */ -1.0);
+        AntiScalar::from_groups(/* e12345 */ -1.0)
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for FlatPoint {
@@ -106,7 +106,7 @@ impl Fix for FlatPoint {
     //  no simd        0        5        1
     fn fix(self) -> Self {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(1.0 / self[e45] * -1.0) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(1.0 / self[e45] * -1.0) * self.group0())
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Plane {
@@ -130,10 +130,10 @@ impl Fix for Plane {
     //  no simd        2        4        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(-self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for RoundPoint {
@@ -158,12 +158,12 @@ impl Fix for RoundPoint {
     fn fix(self) -> Self {
         use crate::elements::*;
         let geometric_product_g0 = self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] - 2.0 * (self[e4] * self[e5]);
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_product_g0) * self.group0(),
             // e5
             geometric_product_g0 * self[e5],
-        );
+        )
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Scalar {
@@ -179,7 +179,7 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Scalar {
 }
 impl Fix for Scalar {
     fn fix(self) -> Self {
-        return Scalar::from_groups(/* scalar */ 1.0);
+        Scalar::from_groups(/* scalar */ 1.0)
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Sphere {
@@ -204,11 +204,11 @@ impl Fix for Sphere {
     fn fix(self) -> Self {
         use crate::elements::*;
         let geometric_product_g0 = 2.0 * (self[e3215] * self[e1234]) - self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125];
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(geometric_product_g0) * self.group0(),
             // e1234
             geometric_product_g0 * self[e1234],
-        );
+        )
     }
 }

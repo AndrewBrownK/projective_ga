@@ -31,7 +31,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for AntiScalar {
 }
 impl AntiConstraintValid for AntiScalar {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Horizon {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Horizon {
 }
 impl AntiConstraintValid for Horizon {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Origin {
@@ -63,7 +63,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Origin {
 }
 impl AntiConstraintValid for Origin {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Plane {
@@ -79,7 +79,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Plane {
 }
 impl AntiConstraintValid for Plane {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Point {
@@ -95,7 +95,7 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Point {
 }
 impl AntiConstraintValid for Point {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Scalar {
@@ -111,6 +111,6 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Scalar {
 }
 impl AntiConstraintValid for Scalar {
     fn anti_constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }

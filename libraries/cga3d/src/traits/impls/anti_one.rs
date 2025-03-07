@@ -20,34 +20,34 @@
 //  Maximum:         0       0       0
 impl AntiOne for AntiScalar {
     fn anti_one() -> Self {
-        return AntiScalar::from_groups(/* e12345 */ 1.0);
+        AntiScalar::from_groups(/* e12345 */ 1.0)
     }
 }
 impl AntiOne for CircleRotor {
     fn anti_one() -> Self {
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(1.0),
-        );
+        )
     }
 }
 impl AntiOne for DualNum {
     fn anti_one() -> Self {
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([0.0, 1.0]));
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([0.0, 1.0]))
     }
 }
 impl AntiOne for Motor {
     fn anti_one() -> Self {
-        return Motor::from_groups(/* e415, e425, e435, e12345 */ Simd32x3::from(0.0).with_w(1.0), /* e235, e315, e125, e5 */ Simd32x4::from(0.0));
+        Motor::from_groups(/* e415, e425, e435, e12345 */ Simd32x3::from(0.0).with_w(1.0), /* e235, e315, e125, e5 */ Simd32x4::from(0.0))
     }
 }
 impl AntiOne for MultiVector {
     fn anti_one() -> Self {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, 1.0]),
             // e1, e2, e3, e4
@@ -70,12 +70,12 @@ impl AntiOne for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl AntiOne for VersorEven {
     fn anti_one() -> Self {
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(1.0),
             // e415, e425, e435, e321
@@ -84,6 +84,6 @@ impl AntiOne for VersorEven {
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
-        );
+        )
     }
 }

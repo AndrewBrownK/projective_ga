@@ -81,7 +81,7 @@ impl nearly::NearlyEqEps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
@@ -95,7 +95,7 @@ impl nearly::NearlyEqUlps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {}
@@ -120,7 +120,7 @@ impl nearly::NearlyOrdUlps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin 
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &RoundPointAtOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -142,7 +142,7 @@ impl nearly::NearlyOrdUlps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin 
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
@@ -165,7 +165,7 @@ impl nearly::NearlyOrdEps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &RoundPointAtOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -187,7 +187,7 @@ impl nearly::NearlyOrdEps<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<RoundPointAtOrigin, f32, f32> for RoundPointAtOrigin {}
@@ -258,14 +258,14 @@ impl encase::ShaderType for RoundPointAtOrigin {
     type ExtraMetadata = <RoundPointAtOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <RoundPointAtOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <RoundPointAtOriginGroups as encase::ShaderType>::min_size();
+        <RoundPointAtOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <RoundPointAtOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <RoundPointAtOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <RoundPointAtOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

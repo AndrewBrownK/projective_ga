@@ -89,7 +89,7 @@ impl nearly::NearlyEqEps<MysteryCircle, f32, f32> for MysteryCircle {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<MysteryCircle, f32, f32> for MysteryCircle {
@@ -103,7 +103,7 @@ impl nearly::NearlyEqUlps<MysteryCircle, f32, f32> for MysteryCircle {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<MysteryCircle, f32, f32> for MysteryCircle {}
@@ -128,7 +128,7 @@ impl nearly::NearlyOrdUlps<MysteryCircle, f32, f32> for MysteryCircle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &MysteryCircle, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -150,7 +150,7 @@ impl nearly::NearlyOrdUlps<MysteryCircle, f32, f32> for MysteryCircle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<MysteryCircle, f32, f32> for MysteryCircle {
@@ -173,7 +173,7 @@ impl nearly::NearlyOrdEps<MysteryCircle, f32, f32> for MysteryCircle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &MysteryCircle, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -195,7 +195,7 @@ impl nearly::NearlyOrdEps<MysteryCircle, f32, f32> for MysteryCircle {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<MysteryCircle, f32, f32> for MysteryCircle {}
@@ -266,14 +266,14 @@ impl encase::ShaderType for MysteryCircle {
     type ExtraMetadata = <MysteryCircleGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <MysteryCircleGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <MysteryCircleGroups as encase::ShaderType>::min_size();
+        <MysteryCircleGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <MysteryCircleGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <MysteryCircleGroups as encase::ShaderType>::assert_uniform_compat();
+        <MysteryCircleGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

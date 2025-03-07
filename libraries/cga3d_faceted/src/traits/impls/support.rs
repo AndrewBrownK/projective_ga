@@ -32,7 +32,7 @@ impl Support for AntiCircleRotor {
     // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e45]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -48,7 +48,7 @@ impl Support for AntiCircleRotorAligningOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -64,7 +64,7 @@ impl Support for AntiCircleRotorAligningOriginAtInfinity {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -81,7 +81,7 @@ impl Support for AntiCircleRotorAtInfinity {
     // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e45]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiDipoleInversion {
@@ -101,12 +101,12 @@ impl Support for AntiDipoleInversion {
     //  no simd        0        9        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorOnOrigin::from_groups(
+        CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435
             (self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -126,12 +126,12 @@ impl Support for AntiDipoleInversionAtInfinity {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorOnOrigin::from_groups(
+        CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435
             self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -151,12 +151,12 @@ impl Support for AntiDipoleInversionOrthogonalOrigin {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorOnOrigin::from_groups(
+        CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group1().with_w(self[e5] * -1.0),
             // e415, e425, e435
             (self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlatPoint {
@@ -168,7 +168,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlatPoint {
 impl Support for AntiFlatPoint {
     type Output = LineOnOrigin;
     fn support(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlector {
@@ -188,10 +188,10 @@ impl Support for AntiFlector {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(
+        MotorOnOrigin::from_groups(
             // e415, e425, e435, e12345
             (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiLine {
@@ -207,7 +207,7 @@ impl Support for AntiLine {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiMotor {
@@ -223,7 +223,7 @@ impl Support for AntiMotor {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -236,7 +236,7 @@ impl Support for AntiMysteryCircleRotor {
     type Output = NullSphereAtOrigin;
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e45]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -248,7 +248,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiMysteryDipoleInversion {
 impl Support for AntiMysteryDipoleInversion {
     type Output = NullCircleAtOrigin;
     fn support(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiPlane {
@@ -264,7 +264,7 @@ impl Support for AntiPlane {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiScalar {
@@ -280,7 +280,7 @@ impl Support for AntiScalar {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e12345] * -1.0);
+        Origin::from_groups(/* e4 */ self[e12345] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Circle {
@@ -296,12 +296,12 @@ impl Support for Circle {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn support(self) -> Self::Output {
-        return CircleOnOrigin::from_groups(
+        CircleOnOrigin::from_groups(
             // e423, e431, e412
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
             // e415, e425, e435
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleAligningOrigin {
@@ -313,7 +313,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for CircleAligningOrigin {
 impl Support for CircleAligningOrigin {
     type Output = CircleOnOrigin;
     fn support(self) -> Self::Output {
-        return CircleOnOrigin::from_groups(/* e423, e431, e412 */ self.group1(), /* e415, e425, e435 */ self.group2());
+        CircleOnOrigin::from_groups(/* e423, e431, e412 */ self.group1(), /* e415, e425, e435 */ self.group2())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleAtInfinity {
@@ -329,12 +329,12 @@ impl Support for CircleAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn support(self) -> Self::Output {
-        return CircleOnOrigin::from_groups(
+        CircleOnOrigin::from_groups(
             // e423, e431, e412
             (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
             // e415, e425, e435
             self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleAtOrigin {
@@ -346,7 +346,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for CircleAtOrigin {
 impl Support for CircleAtOrigin {
     type Output = LineOnOrigin;
     fn support(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleOnOrigin {
@@ -358,7 +358,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for CircleOnOrigin {
 impl Support for CircleOnOrigin {
     type Output = NullCircleAtOrigin;
     fn support(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group1());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group1())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -370,7 +370,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for CircleOrthogonalOrigin {
 impl Support for CircleOrthogonalOrigin {
     type Output = LineOnOrigin;
     fn support(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotor {
@@ -386,12 +386,12 @@ impl Support for CircleRotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn support(self) -> Self::Output {
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(0.0),
             // e415, e425, e435, e4
             self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -407,12 +407,12 @@ impl Support for CircleRotorAligningOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn support(self) -> Self::Output {
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group1().with_w(0.0),
             // e415, e425, e435, e4
             self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -428,12 +428,12 @@ impl Support for CircleRotorAligningOriginAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn support(self) -> Self::Output {
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(0.0),
             // e415, e425, e435, e4
             self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -449,12 +449,12 @@ impl Support for CircleRotorAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn support(self) -> Self::Output {
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(0.0),
             // e415, e425, e435, e4
             self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -470,7 +470,7 @@ impl Support for CircleRotorOnOrigin {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group1().with_w(self[e12345] * -1.0));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group1().with_w(self[e12345] * -1.0))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Dipole {
@@ -487,7 +487,7 @@ impl Support for Dipole {
     // no simd        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group2() * Simd32x3::from(-1.0)).with_w(self[e45]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group2() * Simd32x3::from(-1.0)).with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleAligningOrigin {
@@ -504,7 +504,7 @@ impl Support for DipoleAligningOrigin {
     // no simd        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleAtInfinity {
@@ -521,7 +521,7 @@ impl Support for DipoleAtInfinity {
     // no simd        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleAtOrigin {
@@ -537,7 +537,7 @@ impl Support for DipoleAtOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversion {
@@ -555,12 +555,12 @@ impl Support for DipoleInversion {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             self.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e45], right_anti_dual_g2[0], right_anti_dual_g2[1], right_anti_dual_g2[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -578,12 +578,12 @@ impl Support for DipoleInversionAligningOrigin {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = self.group1().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             (self.group2().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(right_anti_dual_g1[3]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e45], right_anti_dual_g1[0], right_anti_dual_g1[1], right_anti_dual_g1[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -604,12 +604,12 @@ impl Support for DipoleInversionAtInfinity {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = self.group1() * Simd32x3::from(-1.0);
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e45], right_anti_dual_g1[0], right_anti_dual_g1[1], right_anti_dual_g1[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -625,7 +625,7 @@ impl Support for DipoleInversionAtOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -642,7 +642,7 @@ impl Support for DipoleInversionOnOrigin {
     // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group1() * Simd32x4::from([1.0, -1.0, -1.0, -1.0])).yzw().with_w(self[e45]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group1() * Simd32x4::from([1.0, -1.0, -1.0, -1.0])).yzw().with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -660,10 +660,10 @@ impl Support for DipoleInversionOrthogonalOrigin {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return FlectorOnOrigin::from_groups(
+        FlectorOnOrigin::from_groups(
             // e45, e4235, e4315, e4125
             Simd32x4::from([self[e3215], right_anti_dual_g2[0], right_anti_dual_g2[1], right_anti_dual_g2[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleOnOrigin {
@@ -676,7 +676,7 @@ impl Support for DipoleOnOrigin {
     type Output = NullSphereAtOrigin;
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e45]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -692,7 +692,7 @@ impl Support for DipoleOrthogonalOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for DualNum {
@@ -708,7 +708,7 @@ impl Support for DualNum {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e12345] * -1.0);
+        Origin::from_groups(/* e4 */ self[e12345] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for FlatOrigin {
@@ -721,7 +721,7 @@ impl Support for FlatOrigin {
     type Output = NullSphereAtOrigin;
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e45]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for FlatPoint {
@@ -737,7 +737,7 @@ impl Support for FlatPoint {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ Simd32x4::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0, self[e45]]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ Simd32x4::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0, self[e45]]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for FlatPointAtInfinity {
@@ -753,7 +753,7 @@ impl Support for FlatPointAtInfinity {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ Simd32x3::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Flector {
@@ -769,12 +769,12 @@ impl Support for Flector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn support(self) -> Self::Output {
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1234, e4235, e4315, e4125
             (self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).wxyz(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for FlectorAtInfinity {
@@ -790,7 +790,7 @@ impl Support for FlectorAtInfinity {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for FlectorOnOrigin {
@@ -806,7 +806,7 @@ impl Support for FlectorOnOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0, self[e45]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0, self[e45]]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Horizon {
@@ -819,7 +819,7 @@ impl Support for Horizon {
     type Output = FlatOrigin;
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e3215]);
+        FlatOrigin::from_groups(/* e45 */ self[e3215])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Infinity {
@@ -835,7 +835,7 @@ impl Support for Infinity {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Line {
@@ -847,7 +847,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for Line {
 impl Support for Line {
     type Output = CircleOnOrigin;
     fn support(self) -> Self::Output {
-        return CircleOnOrigin::from_groups(/* e423, e431, e412 */ self.group0(), /* e415, e425, e435 */ self.group1());
+        CircleOnOrigin::from_groups(/* e423, e431, e412 */ self.group0(), /* e415, e425, e435 */ self.group1())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for LineAtInfinity {
@@ -859,7 +859,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for LineAtInfinity {
 impl Support for LineAtInfinity {
     type Output = LineOnOrigin;
     fn support(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for LineOnOrigin {
@@ -871,7 +871,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for LineOnOrigin {
 impl Support for LineOnOrigin {
     type Output = NullCircleAtOrigin;
     fn support(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Motor {
@@ -889,12 +889,12 @@ impl Support for Motor {
     fn support(self) -> Self::Output {
         let right_anti_dual_g0 = self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[3]),
             // e415, e425, e435, e4
             right_anti_dual_g1.xyz().with_w(right_anti_dual_g0[3]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MotorAtInfinity {
@@ -910,7 +910,7 @@ impl Support for MotorAtInfinity {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().xyz().with_w(self[e5] * -1.0));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().xyz().with_w(self[e5] * -1.0))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MotorOnOrigin {
@@ -926,7 +926,7 @@ impl Support for MotorOnOrigin {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0().xyz().with_w(self[e12345] * -1.0));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0().xyz().with_w(self[e12345] * -1.0))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MultiVector {
@@ -954,7 +954,7 @@ impl Support for MultiVector {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g8 = self.group4() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, self[e5] * -1.0]) * Simd32x2::from([0.0, 1.0]),
             // e1, e2, e3, e4
@@ -977,7 +977,7 @@ impl Support for MultiVector {
             Simd32x4::from([self[e45], right_anti_dual_g8[0], right_anti_dual_g8[1], right_anti_dual_g8[2]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryCircle {
@@ -989,7 +989,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for MysteryCircle {
 impl Support for MysteryCircle {
     type Output = NullCircleAtOrigin;
     fn support(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryCircleRotor {
@@ -1009,10 +1009,10 @@ impl Support for MysteryCircleRotor {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(
+        NullVersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
             (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryDipole {
@@ -1025,7 +1025,7 @@ impl Support for MysteryDipole {
     type Output = NullSphereAtOrigin;
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e45]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1042,7 +1042,7 @@ impl Support for MysteryDipoleInversion {
     // no simd        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group1() * Simd32x3::from(-1.0)).with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryVersorEven {
@@ -1062,10 +1062,10 @@ impl Support for MysteryVersorEven {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(
+        NullVersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for MysteryVersorOdd {
@@ -1082,7 +1082,7 @@ impl Support for MysteryVersorOdd {
     // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group0() * Simd32x4::from([1.0, -1.0, -1.0, -1.0])).yzw().with_w(self[e45]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ (self.group0() * Simd32x4::from([1.0, -1.0, -1.0, -1.0])).yzw().with_w(self[e45]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Plane {
@@ -1098,7 +1098,7 @@ impl Support for Plane {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ Simd32x4::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0, self[e3215]]));
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ Simd32x4::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0, self[e3215]]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for PlaneOnOrigin {
@@ -1114,7 +1114,7 @@ impl Support for PlaneOnOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ Simd32x3::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0]));
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ Simd32x3::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for RoundPoint {
@@ -1130,7 +1130,7 @@ impl Support for RoundPoint {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for RoundPointAtOrigin {
@@ -1146,7 +1146,7 @@ impl Support for RoundPointAtOrigin {
     // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Sphere {
@@ -1163,10 +1163,10 @@ impl Support for Sphere {
     // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleOnOrigin::from_groups(
+        DipoleOnOrigin::from_groups(
             // e41, e42, e43, e45
             (self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for SphereAtOrigin {
@@ -1178,7 +1178,7 @@ impl std::ops::Div<SupportPrefixOrPostfix> for SphereAtOrigin {
 impl Support for SphereAtOrigin {
     type Output = FlatOrigin;
     fn support(self) -> Self::Output {
-        return FlatOrigin::from_groups(/* e45 */ self.group0().yx()[1]);
+        FlatOrigin::from_groups(/* e45 */ self.group0().yx()[1])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for SphereOnOrigin {
@@ -1194,7 +1194,7 @@ impl Support for SphereOnOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ Simd32x3::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0]));
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ Simd32x3::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0]))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEven {
@@ -1214,12 +1214,12 @@ impl Support for VersorEven {
     //  no simd        0       10        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435, e4
             (self.group2().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1239,12 +1239,12 @@ impl Support for VersorEvenAligningOrigin {
     //  no simd        0        9        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group1().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e415, e425, e435, e4
             (self.group2().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1264,12 +1264,12 @@ impl Support for VersorEvenAtInfinity {
     //  no simd        0        9        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435, e4
             (Simd32x4::from([self[e12345], self[e235], self[e315], self[e125]]) * Simd32x4::from([-1.0, 1.0, 1.0, 1.0])).yzwx(),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -1289,10 +1289,10 @@ impl Support for VersorEvenAtOrigin {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(
+        MotorOnOrigin::from_groups(
             // e415, e425, e435, e12345
             (self.group1().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -1312,10 +1312,10 @@ impl Support for VersorEvenOnOrigin {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(
+        NullVersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
             (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -1335,10 +1335,10 @@ impl Support for VersorEvenOrthogonalOrigin {
     //  no simd        0        5        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return MotorOnOrigin::from_groups(
+        MotorOnOrigin::from_groups(
             // e415, e425, e435, e12345
             (self.group1().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e5] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorOdd {
@@ -1356,12 +1356,12 @@ impl Support for VersorOdd {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = self.group2().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             (self.group3().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(right_anti_dual_g2[3]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e45], right_anti_dual_g2[0], right_anti_dual_g2[1], right_anti_dual_g2[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorOddAtInfinity {
@@ -1379,14 +1379,14 @@ impl Support for VersorOddAtInfinity {
     fn support(self) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = self.group0().yzw().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             (Simd32x4::from([self[scalar], self[e4235], self[e4315], self[e4125]]) * Simd32x4::from([1.0, -1.0, -1.0, -1.0]))
                 .yzw()
                 .with_w(right_anti_dual_g2[3]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e45], right_anti_dual_g2[0], right_anti_dual_g2[1], right_anti_dual_g2[2]]),
-        );
+        )
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -1402,6 +1402,6 @@ impl Support for VersorOddOrthogonalOrigin {
     // f32        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e3215], self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0]))
     }
 }

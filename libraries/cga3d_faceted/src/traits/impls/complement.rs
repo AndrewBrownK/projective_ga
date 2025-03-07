@@ -31,12 +31,12 @@ impl Complement for AntiCircleOnOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotor {
@@ -56,14 +56,14 @@ impl Complement for AntiCircleRotor {
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
             self.group0().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -83,14 +83,14 @@ impl Complement for AntiCircleRotorAligningOrigin {
     //  no simd        0       10        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e12345
             self.group0().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -109,12 +109,12 @@ impl Complement for AntiCircleRotorAligningOriginAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return CircleRotorOnOrigin::from_groups(
+        CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -134,14 +134,14 @@ impl Complement for AntiCircleRotorAtInfinity {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group1().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -160,12 +160,12 @@ impl Complement for AntiCircleRotorOnOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return CircleRotorAligningOriginAtInfinity::from_groups(
+        CircleRotorAligningOriginAtInfinity::from_groups(
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleInversion {
@@ -185,7 +185,7 @@ impl Complement for AntiDipoleInversion {
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -194,7 +194,7 @@ impl Complement for AntiDipoleInversion {
             self.group0().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e1], self[e2], self[e3], self[e4]]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -214,7 +214,7 @@ impl Complement for AntiDipoleInversionAtInfinity {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -223,7 +223,7 @@ impl Complement for AntiDipoleInversionAtInfinity {
             Simd32x3::from(0.0).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -239,12 +239,12 @@ impl Complement for AntiDipoleInversionOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             self.group0() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group1().yzwx(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -263,14 +263,14 @@ impl Complement for AntiDipoleInversionOrthogonalOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -286,7 +286,7 @@ impl Complement for AntiDipoleOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDualNum {
@@ -299,12 +299,12 @@ impl Complement for AntiDualNum {
     type Output = Motor;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x3::from(0.0).with_w(self[scalar]),
             // e235, e315, e125, e5
             Simd32x3::from(0.0).with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlatOrigin {
@@ -320,7 +320,7 @@ impl Complement for AntiFlatOrigin {
     // f32        0        1        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e321] * -1.0);
+        FlatOrigin::from_groups(/* e45 */ self[e321] * -1.0)
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlatPoint {
@@ -336,7 +336,7 @@ impl Complement for AntiFlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0));
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlector {
@@ -352,12 +352,12 @@ impl Complement for AntiFlector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e1234, e4235, e4315, e4125
             self.group1().wxyz(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -373,7 +373,7 @@ impl Complement for AntiFlectorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiLine {
@@ -389,12 +389,12 @@ impl Complement for AntiLine {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return CircleOnOrigin::from_groups(
+        CircleOnOrigin::from_groups(
             // e423, e431, e412
             self.group1() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiLineOnOrigin {
@@ -410,7 +410,7 @@ impl Complement for AntiLineOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0() * Simd32x3::from(-1.0));
+        LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiMotor {
@@ -427,12 +427,12 @@ impl Complement for AntiMotor {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenOnOrigin::from_groups(
+        VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group1().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e4
             self.group0().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -448,7 +448,7 @@ impl Complement for AntiMotorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -465,7 +465,7 @@ impl Complement for AntiMysteryCircleRotor {
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return MysteryCircleRotor::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e12345 */ self[scalar]);
+        MysteryCircleRotor::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e12345 */ self[scalar])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -481,7 +481,7 @@ impl Complement for AntiMysteryDipoleInversion {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MysteryDipoleInversion::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125 */ self.group1());
+        MysteryDipoleInversion::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125 */ self.group1())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiPlane {
@@ -493,7 +493,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiPlane {
 impl Complement for AntiPlane {
     type Output = SphereOnOrigin;
     fn complement(self) -> Self::Output {
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0());
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -505,7 +505,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiPlaneOnOrigin {
 impl Complement for AntiPlaneOnOrigin {
     type Output = PlaneOnOrigin;
     fn complement(self) -> Self::Output {
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiScalar {
@@ -518,7 +518,7 @@ impl Complement for AntiScalar {
     type Output = Scalar;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e12345]);
+        Scalar::from_groups(/* scalar */ self[e12345])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -530,7 +530,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiSphereOnOrigin {
 impl Complement for AntiSphereOnOrigin {
     type Output = Plane;
     fn complement(self) -> Self::Output {
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -547,12 +547,12 @@ impl Complement for AntiVersorEvenOnOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group1().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Circle {
@@ -571,14 +571,14 @@ impl Complement for Circle {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn complement(self) -> Self::Output {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group2() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleAligningOrigin {
@@ -594,14 +594,14 @@ impl Complement for CircleAligningOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn complement(self) -> Self::Output {
-        return DipoleOrthogonalOrigin::from_groups(
+        DipoleOrthogonalOrigin::from_groups(
             // e41, e42, e43
             self.group2() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleAtInfinity {
@@ -620,14 +620,14 @@ impl Complement for CircleAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleAtOrigin {
@@ -643,12 +643,12 @@ impl Complement for CircleAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return DipoleAtOrigin::from_groups(
+        DipoleAtOrigin::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleOnOrigin {
@@ -664,12 +664,12 @@ impl Complement for CircleOnOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -689,12 +689,12 @@ impl Complement for CircleOrthogonalOrigin {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleAligningOrigin::from_groups(
+        DipoleAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group1().with_w(self[e321]) * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group0().xyz() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotor {
@@ -714,14 +714,14 @@ impl Complement for CircleRotor {
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group0().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -741,14 +741,14 @@ impl Complement for CircleRotorAligningOrigin {
     //  no simd        0       10        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotorAligningOrigin::from_groups(
+        AntiCircleRotorAligningOrigin::from_groups(
             // e41, e42, e43
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group0().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -767,12 +767,12 @@ impl Complement for CircleRotorAligningOriginAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return AntiCircleRotorOnOrigin::from_groups(
+        AntiCircleRotorOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -792,14 +792,14 @@ impl Complement for CircleRotorAtInfinity {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group1().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             Simd32x3::from(0.0).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -818,12 +818,12 @@ impl Complement for CircleRotorOnOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return AntiCircleRotorAligningOriginAtInfinity::from_groups(
+        AntiCircleRotorAligningOriginAtInfinity::from_groups(
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Dipole {
@@ -842,14 +842,14 @@ impl Complement for Dipole {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn complement(self) -> Self::Output {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group2() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleAligningOrigin {
@@ -869,12 +869,12 @@ impl Complement for DipoleAligningOrigin {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return CircleOrthogonalOrigin::from_groups(
+        CircleOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             self.group1().with_w(self[e45]) * Simd32x4::from(-1.0),
             // e235, e315, e125
             self.group0().xyz() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleAtInfinity {
@@ -893,14 +893,14 @@ impl Complement for DipoleAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group1() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125
             Simd32x3::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleAtOrigin {
@@ -916,12 +916,12 @@ impl Complement for DipoleAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return CircleAtOrigin::from_groups(
+        CircleAtOrigin::from_groups(
             // e423, e431, e412
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversion {
@@ -941,7 +941,7 @@ impl Complement for DipoleInversion {
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group2().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -950,7 +950,7 @@ impl Complement for DipoleInversion {
             self.group0().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e4235], self[e4315], self[e4125], self[e1234]]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -967,14 +967,14 @@ impl Complement for DipoleInversionAligningOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenOrthogonalOrigin::from_groups(
+        VersorEvenOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             self.group1().xyz().with_w(self[e45]) * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -994,7 +994,7 @@ impl Complement for DipoleInversionAtInfinity {
     //  no simd        0        7        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group1() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -1003,7 +1003,7 @@ impl Complement for DipoleInversionAtInfinity {
             Simd32x3::from(0.0).with_w(self[e3215]),
             // e1, e2, e3, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -1020,12 +1020,12 @@ impl Complement for DipoleInversionAtOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAtOrigin::from_groups(
+        VersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
             self.group1().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -1041,7 +1041,7 @@ impl Complement for DipoleInversionOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1().yzwx());
+        AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1().yzwx())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -1060,14 +1060,14 @@ impl Complement for DipoleInversionOrthogonalOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn complement(self) -> Self::Output {
-        return AntiDipoleInversionOrthogonalOrigin::from_groups(
+        AntiDipoleInversionOrthogonalOrigin::from_groups(
             // e423, e431, e412, e5
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e4
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleOnOrigin {
@@ -1083,7 +1083,7 @@ impl Complement for DipoleOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -1099,14 +1099,14 @@ impl Complement for DipoleOrthogonalOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn complement(self) -> Self::Output {
-        return CircleAligningOrigin::from_groups(
+        CircleAligningOrigin::from_groups(
             // e423, e431, e412
             self.group2() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for DualNum {
@@ -1119,12 +1119,12 @@ impl Complement for DualNum {
     type Output = AntiMotor;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(self[e12345]),
             // e15, e25, e35, e3215
             Simd32x3::from(0.0).with_w(self[e4]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for FlatOrigin {
@@ -1140,7 +1140,7 @@ impl Complement for FlatOrigin {
     // f32        0        1        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatOrigin::from_groups(/* e321 */ self[e45] * -1.0);
+        AntiFlatOrigin::from_groups(/* e321 */ self[e45] * -1.0)
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for FlatPoint {
@@ -1156,7 +1156,7 @@ impl Complement for FlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for FlatPointAtInfinity {
@@ -1172,7 +1172,7 @@ impl Complement for FlatPointAtInfinity {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0() * Simd32x3::from(-1.0));
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Flector {
@@ -1188,7 +1188,7 @@ impl Complement for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiDipoleInversionOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0), /* e4, e1, e2, e3 */ self.group1().wxyz());
+        AntiDipoleInversionOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0), /* e4, e1, e2, e3 */ self.group1().wxyz())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for FlectorAtInfinity {
@@ -1204,7 +1204,7 @@ impl Complement for FlectorAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for FlectorOnOrigin {
@@ -1220,7 +1220,7 @@ impl Complement for FlectorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiFlectorOnOrigin::from_groups(/* e321, e1, e2, e3 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]));
+        AntiFlectorOnOrigin::from_groups(/* e321, e1, e2, e3 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Horizon {
@@ -1233,7 +1233,7 @@ impl Complement for Horizon {
     type Output = Origin;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e3215]);
+        Origin::from_groups(/* e4 */ self[e3215])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Infinity {
@@ -1246,7 +1246,7 @@ impl Complement for Infinity {
     type Output = NullSphereAtOrigin;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e5]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e5])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Line {
@@ -1262,12 +1262,12 @@ impl Complement for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn complement(self) -> Self::Output {
-        return AntiCircleOnOrigin::from_groups(
+        AntiCircleOnOrigin::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for LineAtInfinity {
@@ -1283,7 +1283,7 @@ impl Complement for LineAtInfinity {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0));
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for LineOnOrigin {
@@ -1299,7 +1299,7 @@ impl Complement for LineOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0));
+        AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Motor {
@@ -1316,12 +1316,12 @@ impl Complement for Motor {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group1().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e1234
             self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MotorAtInfinity {
@@ -1337,7 +1337,7 @@ impl Complement for MotorAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MotorOnOrigin {
@@ -1353,7 +1353,7 @@ impl Complement for MotorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MultiVector {
@@ -1378,7 +1378,7 @@ impl Complement for MultiVector {
     //  no simd        0       20        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             self.group0().yx(),
             // e1, e2, e3, e4
@@ -1401,7 +1401,7 @@ impl Complement for MultiVector {
             Simd32x4::from([self[e5], self[e1], self[e2], self[e3]]),
             // e3215
             self[e4],
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryCircle {
@@ -1417,7 +1417,7 @@ impl Complement for MysteryCircle {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0));
+        MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryCircleRotor {
@@ -1434,7 +1434,7 @@ impl Complement for MysteryCircleRotor {
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[e12345]);
+        AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[e12345])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryDipole {
@@ -1450,7 +1450,7 @@ impl Complement for MysteryDipole {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MysteryCircle::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0));
+        MysteryCircle::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1466,7 +1466,7 @@ impl Complement for MysteryDipoleInversion {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return AntiMysteryDipoleInversion::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3 */ self.group1());
+        AntiMysteryDipoleInversion::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3 */ self.group1())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryVersorEven {
@@ -1482,7 +1482,7 @@ impl Complement for MysteryVersorEven {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MysteryVersorOdd::from_groups(/* scalar, e4235, e4315, e4125 */ self.group0(), /* e23, e31, e12, e45 */ self.group1() * Simd32x4::from(-1.0));
+        MysteryVersorOdd::from_groups(/* scalar, e4235, e4315, e4125 */ self.group0(), /* e23, e31, e12, e45 */ self.group1() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for MysteryVersorOdd {
@@ -1498,7 +1498,7 @@ impl Complement for MysteryVersorOdd {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MysteryVersorEven::from_groups(/* e12345, e1, e2, e3 */ self.group0(), /* e415, e425, e435, e321 */ self.group1() * Simd32x4::from(-1.0));
+        MysteryVersorEven::from_groups(/* e12345, e1, e2, e3 */ self.group0(), /* e415, e425, e435, e321 */ self.group1() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for NullCircleAtOrigin {
@@ -1514,7 +1514,7 @@ impl Complement for NullCircleAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0));
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -1530,7 +1530,7 @@ impl Complement for NullDipoleAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn complement(self) -> Self::Output {
-        return LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0() * Simd32x3::from(-1.0));
+        LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -1546,7 +1546,7 @@ impl Complement for NullDipoleInversionAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for NullSphereAtOrigin {
@@ -1559,7 +1559,7 @@ impl Complement for NullSphereAtOrigin {
     type Output = Infinity;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Infinity::from_groups(/* e5 */ self[e1234]);
+        Infinity::from_groups(/* e5 */ self[e1234])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -1575,7 +1575,7 @@ impl Complement for NullVersorEvenAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn complement(self) -> Self::Output {
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Origin {
@@ -1588,7 +1588,7 @@ impl Complement for Origin {
     type Output = Horizon;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e3215 */ self[e4]);
+        Horizon::from_groups(/* e3215 */ self[e4])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Plane {
@@ -1600,7 +1600,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Plane {
 impl Complement for Plane {
     type Output = AntiSphereOnOrigin;
     fn complement(self) -> Self::Output {
-        return AntiSphereOnOrigin::from_groups(/* e1, e2, e3, e4 */ self.group0());
+        AntiSphereOnOrigin::from_groups(/* e1, e2, e3, e4 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for PlaneOnOrigin {
@@ -1612,7 +1612,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for PlaneOnOrigin {
 impl Complement for PlaneOnOrigin {
     type Output = AntiPlaneOnOrigin;
     fn complement(self) -> Self::Output {
-        return AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ self.group0());
+        AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for RoundPoint {
@@ -1625,7 +1625,7 @@ impl Complement for RoundPoint {
     type Output = Sphere;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0(), /* e1234 */ self[e5]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0(), /* e1234 */ self[e5])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for RoundPointAtOrigin {
@@ -1637,7 +1637,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for RoundPointAtOrigin {
 impl Complement for RoundPointAtOrigin {
     type Output = SphereAtOrigin;
     fn complement(self) -> Self::Output {
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ self.group0());
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Scalar {
@@ -1650,7 +1650,7 @@ impl Complement for Scalar {
     type Output = AntiScalar;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[scalar])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for Sphere {
@@ -1663,7 +1663,7 @@ impl Complement for Sphere {
     type Output = RoundPoint;
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e5 */ self[e1234]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e5 */ self[e1234])
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for SphereAtOrigin {
@@ -1675,7 +1675,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for SphereAtOrigin {
 impl Complement for SphereAtOrigin {
     type Output = RoundPointAtOrigin;
     fn complement(self) -> Self::Output {
-        return RoundPointAtOrigin::from_groups(/* e4, e5 */ self.group0());
+        RoundPointAtOrigin::from_groups(/* e4, e5 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for SphereOnOrigin {
@@ -1687,7 +1687,7 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for SphereOnOrigin {
 impl Complement for SphereOnOrigin {
     type Output = AntiPlane;
     fn complement(self) -> Self::Output {
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0())
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEven {
@@ -1704,7 +1704,7 @@ impl Complement for VersorEven {
     // no simd        0       12        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group2().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e45
@@ -1713,7 +1713,7 @@ impl Complement for VersorEven {
             self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1730,14 +1730,14 @@ impl Complement for VersorEvenAligningOrigin {
     // no simd        0       12        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group2().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e3215
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e1234
             self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1754,7 +1754,7 @@ impl Complement for VersorEvenAtInfinity {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group2().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, e45
@@ -1763,7 +1763,7 @@ impl Complement for VersorEvenAtInfinity {
             Simd32x3::from(0.0).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e1], self[e2], self[e3], 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -1780,12 +1780,12 @@ impl Complement for VersorEvenAtOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group1().xyz().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e1234
             self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -1802,12 +1802,12 @@ impl Complement for VersorEvenOnOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group1().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e15, e25, e35, e3215
             self.group0().xyz().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -1824,14 +1824,14 @@ impl Complement for VersorEvenOrthogonalOrigin {
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group1().xyz().with_w(self[e321]) * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorOdd {
@@ -1848,7 +1848,7 @@ impl Complement for VersorOdd {
     // no simd        0       12        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group2().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -1857,7 +1857,7 @@ impl Complement for VersorOdd {
             self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorOddAtInfinity {
@@ -1873,7 +1873,7 @@ impl Complement for VersorOddAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn complement(self) -> Self::Output {
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().yzwx() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -1882,7 +1882,7 @@ impl Complement for VersorOddAtInfinity {
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Div<ComplementPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -1899,13 +1899,13 @@ impl Complement for VersorOddOrthogonalOrigin {
     // no simd        0       12        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group2().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e4
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }

@@ -88,7 +88,7 @@ impl nearly::NearlyEqEps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<LineAtInfinity, f32, f32> for LineAtInfinity {
@@ -102,7 +102,7 @@ impl nearly::NearlyEqUlps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<LineAtInfinity, f32, f32> for LineAtInfinity {}
@@ -127,7 +127,7 @@ impl nearly::NearlyOrdUlps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &LineAtInfinity, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -149,7 +149,7 @@ impl nearly::NearlyOrdUlps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<LineAtInfinity, f32, f32> for LineAtInfinity {
@@ -172,7 +172,7 @@ impl nearly::NearlyOrdEps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &LineAtInfinity, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -194,7 +194,7 @@ impl nearly::NearlyOrdEps<LineAtInfinity, f32, f32> for LineAtInfinity {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<LineAtInfinity, f32, f32> for LineAtInfinity {}
@@ -265,14 +265,14 @@ impl encase::ShaderType for LineAtInfinity {
     type ExtraMetadata = <LineAtInfinityGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <LineAtInfinityGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <LineAtInfinityGroups as encase::ShaderType>::min_size();
+        <LineAtInfinityGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <LineAtInfinityGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <LineAtInfinityGroups as encase::ShaderType>::assert_uniform_compat();
+        <LineAtInfinityGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

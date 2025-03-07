@@ -24,19 +24,19 @@ impl std::ops::Add<AntiCircleOnOrigin> for NullSphereAtOrigin {
     type Output = AntiVersorEvenOnOrigin;
     fn add(self, other: AntiCircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0().with_w(0.0),
             // e23, e31, e12, e1234
             other.group1().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotor> for NullSphereAtOrigin {
     type Output = VersorOdd;
     fn add(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0().with_w(other[scalar]),
             // e23, e31, e12, e45
@@ -45,42 +45,42 @@ impl std::ops::Add<AntiCircleRotor> for NullSphereAtOrigin {
             other.group2().xyz().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAligningOrigin> for NullSphereAtOrigin {
     type Output = VersorOddOrthogonalOrigin;
     fn add(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0().with_w(other[scalar]),
             // e23, e31, e12, e3215
             other.group1().with_w(0.0),
             // e15, e25, e35, e1234
             other.group2().xyz().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
     type Output = VersorOddOrthogonalOrigin;
     fn add(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e3215
             other.group0().with_w(0.0),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
     type Output = VersorOdd;
     fn add(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e45
@@ -89,21 +89,21 @@ impl std::ops::Add<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
             other.group1().xyz().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorOnOrigin> for NullSphereAtOrigin {
     type Output = AntiVersorEvenOnOrigin;
     fn add(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(/* e41, e42, e43, scalar */ other.group0(), /* e23, e31, e12, e1234 */ other.group1().with_w(self[e1234]));
+        AntiVersorEvenOnOrigin::from_groups(/* e41, e42, e43, scalar */ other.group0(), /* e23, e31, e12, e1234 */ other.group1().with_w(self[e1234]))
     }
 }
 impl std::ops::Add<AntiDipoleInversion> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -126,14 +126,14 @@ impl std::ops::Add<AntiDipoleInversion> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -156,14 +156,14 @@ impl std::ops::Add<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -186,14 +186,14 @@ impl std::ops::Add<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -216,14 +216,14 @@ impl std::ops::Add<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -246,7 +246,7 @@ impl std::ops::Add<AntiDipoleOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDualNum> for NullSphereAtOrigin {
@@ -257,14 +257,14 @@ impl std::ops::Add<AntiDualNum> for NullSphereAtOrigin {
     // no simd        2        0        0
     fn add(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], 0.0]) + other.group0());
+        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], 0.0]) + other.group0())
     }
 }
 impl std::ops::Add<AntiFlatOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiFlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -287,14 +287,14 @@ impl std::ops::Add<AntiFlatOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlatPoint> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -317,14 +317,14 @@ impl std::ops::Add<AntiFlatPoint> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlector> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -347,14 +347,14 @@ impl std::ops::Add<AntiFlector> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlectorOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiFlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -377,61 +377,61 @@ impl std::ops::Add<AntiFlectorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiLine> for NullSphereAtOrigin {
     type Output = DipoleInversionOrthogonalOrigin;
     fn add(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x4::from(0.0),
             // e23, e31, e12
             other.group0(),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiLineOnOrigin> for NullSphereAtOrigin {
     type Output = AntiVersorEvenOnOrigin;
     fn add(self, other: AntiLineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(/* e41, e42, e43, scalar */ Simd32x4::from(0.0), /* e23, e31, e12, e1234 */ other.group0().with_w(self[e1234]));
+        AntiVersorEvenOnOrigin::from_groups(/* e41, e42, e43, scalar */ Simd32x4::from(0.0), /* e23, e31, e12, e1234 */ other.group0().with_w(self[e1234]))
     }
 }
 impl std::ops::Add<AntiMotor> for NullSphereAtOrigin {
     type Output = VersorOddOrthogonalOrigin;
     fn add(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e3215
             Simd32x4::from([other[e23], other[e31], other[e12], other[e3215]]),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMotorOnOrigin> for NullSphereAtOrigin {
     type Output = AntiVersorEvenOnOrigin;
     fn add(self, other: AntiMotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e1234
             other.group0().xyz().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMysteryCircleRotor> for NullSphereAtOrigin {
     type Output = VersorOdd;
     fn add(self, other: AntiMysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e45
@@ -440,14 +440,14 @@ impl std::ops::Add<AntiMysteryCircleRotor> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiMysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -470,14 +470,14 @@ impl std::ops::Add<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiPlane> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -500,14 +500,14 @@ impl std::ops::Add<AntiPlane> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiPlaneOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiPlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -530,14 +530,14 @@ impl std::ops::Add<AntiPlaneOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiScalar> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -560,14 +560,14 @@ impl std::ops::Add<AntiScalar> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiSphereOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiSphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -590,7 +590,7 @@ impl std::ops::Add<AntiSphereOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
@@ -601,19 +601,19 @@ impl std::ops::Add<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0(),
             // e23, e31, e12, e1234
             other.group1() + Simd32x3::from(0.0).with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<Circle> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -636,14 +636,14 @@ impl std::ops::Add<Circle> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleAligningOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -666,14 +666,14 @@ impl std::ops::Add<CircleAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -696,14 +696,14 @@ impl std::ops::Add<CircleAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleAtOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -726,14 +726,14 @@ impl std::ops::Add<CircleAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -756,14 +756,14 @@ impl std::ops::Add<CircleOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleOrthogonalOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -786,14 +786,14 @@ impl std::ops::Add<CircleOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotor> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -816,14 +816,14 @@ impl std::ops::Add<CircleRotor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorAligningOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -846,14 +846,14 @@ impl std::ops::Add<CircleRotorAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -876,14 +876,14 @@ impl std::ops::Add<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -906,14 +906,14 @@ impl std::ops::Add<CircleRotorAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: CircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -936,14 +936,14 @@ impl std::ops::Add<CircleRotorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Dipole> for NullSphereAtOrigin {
     type Output = DipoleInversion;
     fn add(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12, e45
@@ -952,28 +952,28 @@ impl std::ops::Add<Dipole> for NullSphereAtOrigin {
             other.group2().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAligningOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionAligningOrigin;
     fn add(self, other: DipoleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0(),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAtInfinity> for NullSphereAtOrigin {
     type Output = DipoleInversion;
     fn add(self, other: DipoleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -982,19 +982,19 @@ impl std::ops::Add<DipoleAtInfinity> for NullSphereAtOrigin {
             other.group1().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAtOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionAtOrigin;
     fn add(self, other: DipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0().with_w(0.0),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversion> for NullSphereAtOrigin {
@@ -1005,7 +1005,7 @@ impl std::ops::Add<DipoleInversion> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12, e45
@@ -1014,7 +1014,7 @@ impl std::ops::Add<DipoleInversion> for NullSphereAtOrigin {
             other.group2() + Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
@@ -1025,21 +1025,21 @@ impl std::ops::Add<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: DipoleInversionAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0(),
             // e15, e25, e35, e1234
             other.group1() + Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAtInfinity> for NullSphereAtOrigin {
     type Output = DipoleInversion;
     fn add(self, other: DipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -1048,7 +1048,7 @@ impl std::ops::Add<DipoleInversionAtInfinity> for NullSphereAtOrigin {
             other.group1().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAtOrigin> for NullSphereAtOrigin {
@@ -1059,12 +1059,12 @@ impl std::ops::Add<DipoleInversionAtOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: DipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0(),
             // e15, e25, e35, e1234
             other.group1() + Simd32x3::from(0.0).with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionOnOrigin> for NullSphereAtOrigin {
@@ -1075,12 +1075,12 @@ impl std::ops::Add<DipoleInversionOnOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: DipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0(),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]) + other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
@@ -1091,47 +1091,47 @@ impl std::ops::Add<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0(),
             // e23, e31, e12
             other.group1(),
             // e15, e25, e35, e1234
             other.group2() + Simd32x3::from(0.0).with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleOnOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionOnOrigin;
     fn add(self, other: DipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0(),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleOrthogonalOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionOrthogonalOrigin;
     fn add(self, other: DipoleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0().with_w(0.0),
             // e23, e31, e12
             other.group1(),
             // e15, e25, e35, e1234
             other.group2().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<DualNum> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1154,92 +1154,92 @@ impl std::ops::Add<DualNum> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<FlatOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionOnOrigin;
     fn add(self, other: FlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<FlatPoint> for NullSphereAtOrigin {
     type Output = DipoleInversionAligningOrigin;
     fn add(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<FlatPointAtInfinity> for NullSphereAtOrigin {
     type Output = DipoleInversionAtOrigin;
     fn add(self, other: FlatPointAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e3215 */ Simd32x4::from(0.0), /* e15, e25, e35, e1234 */ other.group0().with_w(self[e1234]));
+        DipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e3215 */ Simd32x4::from(0.0), /* e15, e25, e35, e1234 */ other.group0().with_w(self[e1234]))
     }
 }
 impl std::ops::Add<Flector> for NullSphereAtOrigin {
     type Output = DipoleInversionAligningOrigin;
     fn add(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Add<FlectorAtInfinity> for NullSphereAtOrigin {
     type Output = DipoleInversionAtOrigin;
     fn add(self, other: FlectorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x3::from(0.0).with_w(other[e3215]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Add<FlectorOnOrigin> for NullSphereAtOrigin {
     type Output = DipoleInversionOnOrigin;
     fn add(self, other: FlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], other[e4235], other[e4315], other[e4125]]),
-        );
+        )
     }
 }
 impl std::ops::Add<Horizon> for NullSphereAtOrigin {
     type Output = SphereAtOrigin;
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234]]));
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234]]))
     }
 }
 impl std::ops::Add<Infinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: Infinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1262,14 +1262,14 @@ impl std::ops::Add<Infinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Line> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1292,14 +1292,14 @@ impl std::ops::Add<Line> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<LineAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: LineAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1322,14 +1322,14 @@ impl std::ops::Add<LineAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<LineOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: LineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1352,14 +1352,14 @@ impl std::ops::Add<LineOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Motor> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1382,14 +1382,14 @@ impl std::ops::Add<Motor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MotorAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: MotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1412,14 +1412,14 @@ impl std::ops::Add<MotorAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MotorOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: MotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1442,7 +1442,7 @@ impl std::ops::Add<MotorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MultiVector> for NullSphereAtOrigin {
@@ -1453,7 +1453,7 @@ impl std::ops::Add<MultiVector> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             other.group0(),
             // e1, e2, e3, e4
@@ -1476,14 +1476,14 @@ impl std::ops::Add<MultiVector> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]) + other.group9(),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryCircle> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryCircle) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1506,14 +1506,14 @@ impl std::ops::Add<MysteryCircle> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryCircleRotor> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1536,14 +1536,14 @@ impl std::ops::Add<MysteryCircleRotor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryDipole> for NullSphereAtOrigin {
     type Output = DipoleInversion;
     fn add(self, other: MysteryDipole) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -1552,14 +1552,14 @@ impl std::ops::Add<MysteryDipole> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryDipoleInversion> for NullSphereAtOrigin {
     type Output = DipoleInversion;
     fn add(self, other: MysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -1568,14 +1568,14 @@ impl std::ops::Add<MysteryDipoleInversion> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group1().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryVersorEven> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryVersorEven) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1598,14 +1598,14 @@ impl std::ops::Add<MysteryVersorEven> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryVersorOdd> for NullSphereAtOrigin {
     type Output = VersorOdd;
     fn add(self, other: MysteryVersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e45
@@ -1614,14 +1614,14 @@ impl std::ops::Add<MysteryVersorOdd> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([other[e4235], other[e4315], other[e4125], 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<NullCircleAtOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: NullCircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1644,14 +1644,14 @@ impl std::ops::Add<NullCircleAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<NullDipoleAtOrigin> for NullSphereAtOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn add(self, other: NullDipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0().with_w(self[e1234]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0().with_w(self[e1234]))
     }
 }
 impl std::ops::Add<NullDipoleInversionAtOrigin> for NullSphereAtOrigin {
@@ -1662,7 +1662,7 @@ impl std::ops::Add<NullDipoleInversionAtOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: NullDipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0() + Simd32x3::from(0.0).with_w(self[e1234]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0() + Simd32x3::from(0.0).with_w(self[e1234]))
     }
 }
 impl std::ops::Add<NullSphereAtOrigin> for NullSphereAtOrigin {
@@ -1672,7 +1672,7 @@ impl std::ops::Add<NullSphereAtOrigin> for NullSphereAtOrigin {
     // f32        1        0        0
     fn add(self, other: NullSphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ other[e1234] + self[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ other[e1234] + self[e1234])
     }
 }
 impl std::ops::AddAssign<NullSphereAtOrigin> for NullSphereAtOrigin {
@@ -1685,7 +1685,7 @@ impl std::ops::Add<NullVersorEvenAtOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: NullVersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1708,14 +1708,14 @@ impl std::ops::Add<NullVersorEvenAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Origin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1738,28 +1738,28 @@ impl std::ops::Add<Origin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Plane> for NullSphereAtOrigin {
     type Output = Sphere;
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0(), /* e1234 */ self[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0(), /* e1234 */ self[e1234])
     }
 }
 impl std::ops::Add<PlaneOnOrigin> for NullSphereAtOrigin {
     type Output = SphereOnOrigin;
     fn add(self, other: PlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0().with_w(self[e1234]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0().with_w(self[e1234]))
     }
 }
 impl std::ops::Add<RoundPoint> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1782,14 +1782,14 @@ impl std::ops::Add<RoundPoint> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<RoundPointAtOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: RoundPointAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1812,14 +1812,14 @@ impl std::ops::Add<RoundPointAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Scalar> for NullSphereAtOrigin {
     type Output = AntiDualNum;
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], other[scalar]]));
+        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], other[scalar]]))
     }
 }
 impl std::ops::Add<Sphere> for NullSphereAtOrigin {
@@ -1829,7 +1829,7 @@ impl std::ops::Add<Sphere> for NullSphereAtOrigin {
     // f32        1        0        0
     fn add(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0(), /* e1234 */ self[e1234] + other[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0(), /* e1234 */ self[e1234] + other[e1234])
     }
 }
 impl std::ops::Add<SphereAtOrigin> for NullSphereAtOrigin {
@@ -1840,7 +1840,7 @@ impl std::ops::Add<SphereAtOrigin> for NullSphereAtOrigin {
     // no simd        2        0        0
     fn add(self, other: SphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([0.0, self[e1234]]) + other.group0());
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([0.0, self[e1234]]) + other.group0())
     }
 }
 impl std::ops::Add<SphereOnOrigin> for NullSphereAtOrigin {
@@ -1851,14 +1851,14 @@ impl std::ops::Add<SphereOnOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: SphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0() + Simd32x3::from(0.0).with_w(self[e1234]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0() + Simd32x3::from(0.0).with_w(self[e1234]))
     }
 }
 impl std::ops::Add<VersorEven> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1881,14 +1881,14 @@ impl std::ops::Add<VersorEven> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAligningOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEvenAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1911,14 +1911,14 @@ impl std::ops::Add<VersorEvenAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAtInfinity> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEvenAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -1941,14 +1941,14 @@ impl std::ops::Add<VersorEvenAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAtOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1971,14 +1971,14 @@ impl std::ops::Add<VersorEvenAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenOnOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, other[e12345]]),
             // e1, e2, e3, e4
@@ -2001,14 +2001,14 @@ impl std::ops::Add<VersorEvenOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -2031,7 +2031,7 @@ impl std::ops::Add<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOdd> for NullSphereAtOrigin {
@@ -2042,7 +2042,7 @@ impl std::ops::Add<VersorOdd> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0(),
             // e23, e31, e12, e45
@@ -2051,14 +2051,14 @@ impl std::ops::Add<VersorOdd> for NullSphereAtOrigin {
             other.group2() + Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOddAtInfinity> for NullSphereAtOrigin {
     type Output = VersorOdd;
     fn add(self, other: VersorOddAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]),
             // e23, e31, e12, e45
@@ -2067,7 +2067,7 @@ impl std::ops::Add<VersorOddAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([other[e15], other[e25], other[e35], self[e1234]]),
             // e4235, e4315, e4125, e3215
             other.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
@@ -2078,14 +2078,14 @@ impl std::ops::Add<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
     // no simd        4        0        0
     fn add(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0(),
             // e23, e31, e12, e3215
             other.group1(),
             // e15, e25, e35, e1234
             other.group2() + Simd32x3::from(0.0).with_w(self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Mul<AntiCircleOnOrigin> for NullSphereAtOrigin {
@@ -2095,7 +2095,7 @@ impl std::ops::Mul<AntiCircleOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: AntiCircleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotor> for NullSphereAtOrigin {
@@ -2108,7 +2108,7 @@ impl std::ops::Mul<AntiCircleRotor> for NullSphereAtOrigin {
     // yes simd        1        6        0
     //  no simd        1       14        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAligningOrigin> for NullSphereAtOrigin {
@@ -2121,7 +2121,7 @@ impl std::ops::Mul<AntiCircleRotorAligningOrigin> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       13        0
     fn mul(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
@@ -2134,7 +2134,7 @@ impl std::ops::Mul<AntiCircleRotorAligningOriginAtInfinity> for NullSphereAtOrig
     // yes simd        0        5        0
     //  no simd        0       13        0
     fn mul(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
@@ -2147,7 +2147,7 @@ impl std::ops::Mul<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
     // yes simd        1        6        0
     //  no simd        1       14        0
     fn mul(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorOnOrigin> for NullSphereAtOrigin {
@@ -2157,7 +2157,7 @@ impl std::ops::Mul<AntiCircleRotorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversion> for NullSphereAtOrigin {
@@ -2171,7 +2171,7 @@ impl std::ops::Mul<AntiDipoleInversion> for NullSphereAtOrigin {
     // yes simd        1        6        0
     //  no simd        3       19        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
@@ -2185,7 +2185,7 @@ impl std::ops::Mul<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
     // yes simd        1        6        0
     //  no simd        3       19        0
     fn mul(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
@@ -2195,7 +2195,7 @@ impl std::ops::Mul<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
@@ -2208,7 +2208,7 @@ impl std::ops::Mul<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn mul(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleOnOrigin> for NullSphereAtOrigin {
@@ -2217,7 +2217,7 @@ impl std::ops::Mul<AntiDipoleOnOrigin> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        2        0
     fn mul(self, other: AntiDipoleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDualNum> for NullSphereAtOrigin {
@@ -2226,7 +2226,7 @@ impl std::ops::Mul<AntiDualNum> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: AntiDualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<AntiDualNum> for NullSphereAtOrigin {
@@ -2240,7 +2240,7 @@ impl std::ops::Mul<AntiFlatOrigin> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        2        0
     fn mul(self, other: AntiFlatOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlatPoint> for NullSphereAtOrigin {
@@ -2254,7 +2254,7 @@ impl std::ops::Mul<AntiFlatPoint> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       11        0
     fn mul(self, other: AntiFlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlector> for NullSphereAtOrigin {
@@ -2264,7 +2264,7 @@ impl std::ops::Mul<AntiFlector> for NullSphereAtOrigin {
     //   simd4        0        5        0
     // no simd        0       20        0
     fn mul(self, other: AntiFlector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlectorOnOrigin> for NullSphereAtOrigin {
@@ -2274,7 +2274,7 @@ impl std::ops::Mul<AntiFlectorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: AntiFlectorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiLine> for NullSphereAtOrigin {
@@ -2284,7 +2284,7 @@ impl std::ops::Mul<AntiLine> for NullSphereAtOrigin {
     //   simd3        0        4        0
     // no simd        0       12        0
     fn mul(self, other: AntiLine) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiLineOnOrigin> for NullSphereAtOrigin {
@@ -2294,7 +2294,7 @@ impl std::ops::Mul<AntiLineOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: AntiLineOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMotor> for NullSphereAtOrigin {
@@ -2308,7 +2308,7 @@ impl std::ops::Mul<AntiMotor> for NullSphereAtOrigin {
     // yes simd        0        6        0
     //  no simd        0       19        0
     fn mul(self, other: AntiMotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMotorOnOrigin> for NullSphereAtOrigin {
@@ -2318,7 +2318,7 @@ impl std::ops::Mul<AntiMotorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: AntiMotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMysteryCircleRotor> for NullSphereAtOrigin {
@@ -2331,7 +2331,7 @@ impl std::ops::Mul<AntiMysteryCircleRotor> for NullSphereAtOrigin {
     // yes simd        1        3        0
     //  no simd        1        5        0
     fn mul(self, other: AntiMysteryCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
@@ -2344,7 +2344,7 @@ impl std::ops::Mul<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
     // yes simd        1        4        0
     //  no simd        3        8        0
     fn mul(self, other: AntiMysteryDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiPlane> for NullSphereAtOrigin {
@@ -2357,7 +2357,7 @@ impl std::ops::Mul<AntiPlane> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0        8        0
     fn mul(self, other: AntiPlane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiPlaneOnOrigin> for NullSphereAtOrigin {
@@ -2367,7 +2367,7 @@ impl std::ops::Mul<AntiPlaneOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn mul(self, other: AntiPlaneOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiScalar> for NullSphereAtOrigin {
@@ -2376,7 +2376,7 @@ impl std::ops::Mul<AntiScalar> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: AntiScalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiSphereOnOrigin> for NullSphereAtOrigin {
@@ -2386,7 +2386,7 @@ impl std::ops::Mul<AntiSphereOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn mul(self, other: AntiSphereOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
@@ -2396,7 +2396,7 @@ impl std::ops::Mul<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Circle> for NullSphereAtOrigin {
@@ -2410,7 +2410,7 @@ impl std::ops::Mul<Circle> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       14        0
     fn mul(self, other: Circle) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAligningOrigin> for NullSphereAtOrigin {
@@ -2420,7 +2420,7 @@ impl std::ops::Mul<CircleAligningOrigin> for NullSphereAtOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn mul(self, other: CircleAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAtInfinity> for NullSphereAtOrigin {
@@ -2434,7 +2434,7 @@ impl std::ops::Mul<CircleAtInfinity> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       14        0
     fn mul(self, other: CircleAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAtOrigin> for NullSphereAtOrigin {
@@ -2444,7 +2444,7 @@ impl std::ops::Mul<CircleAtOrigin> for NullSphereAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn mul(self, other: CircleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleOnOrigin> for NullSphereAtOrigin {
@@ -2454,7 +2454,7 @@ impl std::ops::Mul<CircleOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: CircleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleOrthogonalOrigin> for NullSphereAtOrigin {
@@ -2468,7 +2468,7 @@ impl std::ops::Mul<CircleOrthogonalOrigin> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       11        0
     fn mul(self, other: CircleOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotor> for NullSphereAtOrigin {
@@ -2481,7 +2481,7 @@ impl std::ops::Mul<CircleRotor> for NullSphereAtOrigin {
     // yes simd        1        5        0
     //  no simd        1       11        0
     fn mul(self, other: CircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAligningOrigin> for NullSphereAtOrigin {
@@ -2494,7 +2494,7 @@ impl std::ops::Mul<CircleRotorAligningOrigin> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       10        0
     fn mul(self, other: CircleRotorAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
@@ -2507,7 +2507,7 @@ impl std::ops::Mul<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       10        0
     fn mul(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAtInfinity> for NullSphereAtOrigin {
@@ -2520,7 +2520,7 @@ impl std::ops::Mul<CircleRotorAtInfinity> for NullSphereAtOrigin {
     // yes simd        1        5        0
     //  no simd        1       11        0
     fn mul(self, other: CircleRotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorOnOrigin> for NullSphereAtOrigin {
@@ -2530,7 +2530,7 @@ impl std::ops::Mul<CircleRotorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: CircleRotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Dipole> for NullSphereAtOrigin {
@@ -2543,7 +2543,7 @@ impl std::ops::Mul<Dipole> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       13        0
     fn mul(self, other: Dipole) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAligningOrigin> for NullSphereAtOrigin {
@@ -2556,7 +2556,7 @@ impl std::ops::Mul<DipoleAligningOrigin> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       10        0
     fn mul(self, other: DipoleAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAtInfinity> for NullSphereAtOrigin {
@@ -2569,7 +2569,7 @@ impl std::ops::Mul<DipoleAtInfinity> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       13        0
     fn mul(self, other: DipoleAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAtOrigin> for NullSphereAtOrigin {
@@ -2579,7 +2579,7 @@ impl std::ops::Mul<DipoleAtOrigin> for NullSphereAtOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn mul(self, other: DipoleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversion> for NullSphereAtOrigin {
@@ -2593,7 +2593,7 @@ impl std::ops::Mul<DipoleInversion> for NullSphereAtOrigin {
     // yes simd        1        8        0
     //  no simd        3       22        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
@@ -2607,7 +2607,7 @@ impl std::ops::Mul<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
     // yes simd        0        6        0
     //  no simd        0       19        0
     fn mul(self, other: DipoleInversionAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAtInfinity> for NullSphereAtOrigin {
@@ -2621,7 +2621,7 @@ impl std::ops::Mul<DipoleInversionAtInfinity> for NullSphereAtOrigin {
     // yes simd        1        8        0
     //  no simd        3       22        0
     fn mul(self, other: DipoleInversionAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAtOrigin> for NullSphereAtOrigin {
@@ -2631,7 +2631,7 @@ impl std::ops::Mul<DipoleInversionAtOrigin> for NullSphereAtOrigin {
     //   simd4        0        4        0
     // no simd        0       16        0
     fn mul(self, other: DipoleInversionAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionOnOrigin> for NullSphereAtOrigin {
@@ -2641,7 +2641,7 @@ impl std::ops::Mul<DipoleInversionOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: DipoleInversionOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
@@ -2654,7 +2654,7 @@ impl std::ops::Mul<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     // yes simd        0        5        0
     //  no simd        0       18        0
     fn mul(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleOnOrigin> for NullSphereAtOrigin {
@@ -2663,7 +2663,7 @@ impl std::ops::Mul<DipoleOnOrigin> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: DipoleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<DipoleOnOrigin> for NullSphereAtOrigin {
@@ -2678,7 +2678,7 @@ impl std::ops::Mul<DipoleOrthogonalOrigin> for NullSphereAtOrigin {
     //   simd3        0        4        0
     // no simd        0       12        0
     fn mul(self, other: DipoleOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DualNum> for NullSphereAtOrigin {
@@ -2687,7 +2687,7 @@ impl std::ops::Mul<DualNum> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: DualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatOrigin> for NullSphereAtOrigin {
@@ -2696,7 +2696,7 @@ impl std::ops::Mul<FlatOrigin> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: FlatOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<FlatOrigin> for NullSphereAtOrigin {
@@ -2714,7 +2714,7 @@ impl std::ops::Mul<FlatPoint> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0       10        0
     fn mul(self, other: FlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatPointAtInfinity> for NullSphereAtOrigin {
@@ -2724,7 +2724,7 @@ impl std::ops::Mul<FlatPointAtInfinity> for NullSphereAtOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn mul(self, other: FlatPointAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Flector> for NullSphereAtOrigin {
@@ -2738,7 +2738,7 @@ impl std::ops::Mul<Flector> for NullSphereAtOrigin {
     // yes simd        0        6        0
     //  no simd        0       19        0
     fn mul(self, other: Flector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlectorAtInfinity> for NullSphereAtOrigin {
@@ -2748,7 +2748,7 @@ impl std::ops::Mul<FlectorAtInfinity> for NullSphereAtOrigin {
     //   simd4        0        4        0
     // no simd        0       16        0
     fn mul(self, other: FlectorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlectorOnOrigin> for NullSphereAtOrigin {
@@ -2758,7 +2758,7 @@ impl std::ops::Mul<FlectorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: FlectorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Horizon> for NullSphereAtOrigin {
@@ -2771,7 +2771,7 @@ impl std::ops::Mul<Horizon> for NullSphereAtOrigin {
     // yes simd        0        3        0
     //  no simd        0        6        0
     fn mul(self, other: Horizon) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Infinity> for NullSphereAtOrigin {
@@ -2780,7 +2780,7 @@ impl std::ops::Mul<Infinity> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        2        0
     fn mul(self, other: Infinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Line> for NullSphereAtOrigin {
@@ -2790,7 +2790,7 @@ impl std::ops::Mul<Line> for NullSphereAtOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn mul(self, other: Line) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<LineAtInfinity> for NullSphereAtOrigin {
@@ -2800,7 +2800,7 @@ impl std::ops::Mul<LineAtInfinity> for NullSphereAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn mul(self, other: LineAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<LineOnOrigin> for NullSphereAtOrigin {
@@ -2810,7 +2810,7 @@ impl std::ops::Mul<LineOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: LineOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Motor> for NullSphereAtOrigin {
@@ -2820,7 +2820,7 @@ impl std::ops::Mul<Motor> for NullSphereAtOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn mul(self, other: Motor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MotorAtInfinity> for NullSphereAtOrigin {
@@ -2830,7 +2830,7 @@ impl std::ops::Mul<MotorAtInfinity> for NullSphereAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: MotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MotorOnOrigin> for NullSphereAtOrigin {
@@ -2840,7 +2840,7 @@ impl std::ops::Mul<MotorOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: MotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MultiVector> for NullSphereAtOrigin {
@@ -2855,7 +2855,7 @@ impl std::ops::Mul<MultiVector> for NullSphereAtOrigin {
     // yes simd        4       18        0
     //  no simd        8       37        0
     fn mul(self, other: MultiVector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryCircle> for NullSphereAtOrigin {
@@ -2865,7 +2865,7 @@ impl std::ops::Mul<MysteryCircle> for NullSphereAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: MysteryCircle) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryCircleRotor> for NullSphereAtOrigin {
@@ -2878,7 +2878,7 @@ impl std::ops::Mul<MysteryCircleRotor> for NullSphereAtOrigin {
     // yes simd        1        3        0
     //  no simd        1        5        0
     fn mul(self, other: MysteryCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryDipole> for NullSphereAtOrigin {
@@ -2888,7 +2888,7 @@ impl std::ops::Mul<MysteryDipole> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: MysteryDipole) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryDipoleInversion> for NullSphereAtOrigin {
@@ -2901,7 +2901,7 @@ impl std::ops::Mul<MysteryDipoleInversion> for NullSphereAtOrigin {
     // yes simd        1        3        0
     //  no simd        3        7        0
     fn mul(self, other: MysteryDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryVersorEven> for NullSphereAtOrigin {
@@ -2911,7 +2911,7 @@ impl std::ops::Mul<MysteryVersorEven> for NullSphereAtOrigin {
     //   simd4        1        2        0
     // no simd        4        8        0
     fn mul(self, other: MysteryVersorEven) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryVersorOdd> for NullSphereAtOrigin {
@@ -2921,7 +2921,7 @@ impl std::ops::Mul<MysteryVersorOdd> for NullSphereAtOrigin {
     //   simd4        1        2        0
     // no simd        4        8        0
     fn mul(self, other: MysteryVersorOdd) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Plane> for NullSphereAtOrigin {
@@ -2935,7 +2935,7 @@ impl std::ops::Mul<Plane> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0        9        0
     fn mul(self, other: Plane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<PlaneOnOrigin> for NullSphereAtOrigin {
@@ -2945,7 +2945,7 @@ impl std::ops::Mul<PlaneOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: PlaneOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<RoundPoint> for NullSphereAtOrigin {
@@ -2958,7 +2958,7 @@ impl std::ops::Mul<RoundPoint> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0        8        0
     fn mul(self, other: RoundPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<RoundPointAtOrigin> for NullSphereAtOrigin {
@@ -2967,7 +2967,7 @@ impl std::ops::Mul<RoundPointAtOrigin> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        2        0
     fn mul(self, other: RoundPointAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Scalar> for NullSphereAtOrigin {
@@ -2976,7 +2976,7 @@ impl std::ops::Mul<Scalar> for NullSphereAtOrigin {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: Scalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<Scalar> for NullSphereAtOrigin {
@@ -2995,7 +2995,7 @@ impl std::ops::Mul<Sphere> for NullSphereAtOrigin {
     // yes simd        0        4        0
     //  no simd        0        9        0
     fn mul(self, other: Sphere) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<SphereAtOrigin> for NullSphereAtOrigin {
@@ -3008,7 +3008,7 @@ impl std::ops::Mul<SphereAtOrigin> for NullSphereAtOrigin {
     // yes simd        0        3        0
     //  no simd        0        6        0
     fn mul(self, other: SphereAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<SphereOnOrigin> for NullSphereAtOrigin {
@@ -3018,7 +3018,7 @@ impl std::ops::Mul<SphereOnOrigin> for NullSphereAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn mul(self, other: SphereOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEven> for NullSphereAtOrigin {
@@ -3032,7 +3032,7 @@ impl std::ops::Mul<VersorEven> for NullSphereAtOrigin {
     // yes simd        2        7        0
     //  no simd        4       16        0
     fn mul(self, other: VersorEven) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAligningOrigin> for NullSphereAtOrigin {
@@ -3042,7 +3042,7 @@ impl std::ops::Mul<VersorEvenAligningOrigin> for NullSphereAtOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn mul(self, other: VersorEvenAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAtInfinity> for NullSphereAtOrigin {
@@ -3056,7 +3056,7 @@ impl std::ops::Mul<VersorEvenAtInfinity> for NullSphereAtOrigin {
     // yes simd        2        7        0
     //  no simd        4       16        0
     fn mul(self, other: VersorEvenAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAtOrigin> for NullSphereAtOrigin {
@@ -3066,7 +3066,7 @@ impl std::ops::Mul<VersorEvenAtOrigin> for NullSphereAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: VersorEvenAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenOnOrigin> for NullSphereAtOrigin {
@@ -3076,7 +3076,7 @@ impl std::ops::Mul<VersorEvenOnOrigin> for NullSphereAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: VersorEvenOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
@@ -3086,7 +3086,7 @@ impl std::ops::Mul<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
     //   simd4        0        5        0
     // no simd        0       20        0
     fn mul(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOdd> for NullSphereAtOrigin {
@@ -3100,7 +3100,7 @@ impl std::ops::Mul<VersorOdd> for NullSphereAtOrigin {
     // yes simd        2        9        0
     //  no simd        4       23        0
     fn mul(self, other: VersorOdd) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOddAtInfinity> for NullSphereAtOrigin {
@@ -3114,7 +3114,7 @@ impl std::ops::Mul<VersorOddAtInfinity> for NullSphereAtOrigin {
     // yes simd        2        9        0
     //  no simd        4       23        0
     fn mul(self, other: VersorOddAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
@@ -3128,7 +3128,7 @@ impl std::ops::Mul<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
     // yes simd        0        6        0
     //  no simd        0       19        0
     fn mul(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Neg for NullSphereAtOrigin {
@@ -3138,13 +3138,13 @@ impl std::ops::Neg for NullSphereAtOrigin {
     // f32        0        1        0
     fn neg(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * -1.0);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * -1.0)
     }
 }
 impl std::ops::Not for NullSphereAtOrigin {
     type Output = Origin;
     fn not(self) -> Self::Output {
-        return self.right_dual();
+        self.right_dual()
     }
 }
 impl std::ops::Sub<AntiCircleOnOrigin> for NullSphereAtOrigin {
@@ -3158,12 +3158,12 @@ impl std::ops::Sub<AntiCircleOnOrigin> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiCircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12, e1234
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotor> for NullSphereAtOrigin {
@@ -3174,7 +3174,7 @@ impl std::ops::Sub<AntiCircleRotor> for NullSphereAtOrigin {
     // no simd        0       12        0
     fn sub(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0().with_w(other[scalar]) * Simd32x4::from(-1.0),
             // e23, e31, e12, e45
@@ -3183,7 +3183,7 @@ impl std::ops::Sub<AntiCircleRotor> for NullSphereAtOrigin {
             other.group2().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAligningOrigin> for NullSphereAtOrigin {
@@ -3197,14 +3197,14 @@ impl std::ops::Sub<AntiCircleRotorAligningOrigin> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0().with_w(other[scalar]) * Simd32x4::from(-1.0),
             // e23, e31, e12, e3215
             (other.group1() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e1234
             other.group2().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
@@ -3218,14 +3218,14 @@ impl std::ops::Sub<AntiCircleRotorAligningOriginAtInfinity> for NullSphereAtOrig
     //  no simd        0       11        0
     fn sub(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e3215
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
@@ -3236,7 +3236,7 @@ impl std::ops::Sub<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
     // no simd        0       12        0
     fn sub(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e45
@@ -3245,7 +3245,7 @@ impl std::ops::Sub<AntiCircleRotorAtInfinity> for NullSphereAtOrigin {
             other.group1().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorOnOrigin> for NullSphereAtOrigin {
@@ -3256,12 +3256,12 @@ impl std::ops::Sub<AntiCircleRotorOnOrigin> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e1234
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversion> for NullSphereAtOrigin {
@@ -3276,7 +3276,7 @@ impl std::ops::Sub<AntiDipoleInversion> for NullSphereAtOrigin {
     //  no simd        0       15        0
     fn sub(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3299,7 +3299,7 @@ impl std::ops::Sub<AntiDipoleInversion> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
@@ -3314,7 +3314,7 @@ impl std::ops::Sub<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3337,7 +3337,7 @@ impl std::ops::Sub<AntiDipoleInversionAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
@@ -3351,7 +3351,7 @@ impl std::ops::Sub<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3374,7 +3374,7 @@ impl std::ops::Sub<AntiDipoleInversionOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
@@ -3389,7 +3389,7 @@ impl std::ops::Sub<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        0       14        0
     fn sub(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3412,7 +3412,7 @@ impl std::ops::Sub<AntiDipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleOnOrigin> for NullSphereAtOrigin {
@@ -3426,7 +3426,7 @@ impl std::ops::Sub<AntiDipoleOnOrigin> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiDipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3449,7 +3449,7 @@ impl std::ops::Sub<AntiDipoleOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDualNum> for NullSphereAtOrigin {
@@ -3463,7 +3463,7 @@ impl std::ops::Sub<AntiDualNum> for NullSphereAtOrigin {
     //  no simd        1        2        0
     fn sub(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234] - other[e1234], other[scalar]]) * Simd32x2::from([1.0, -1.0]));
+        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234] - other[e1234], other[scalar]]) * Simd32x2::from([1.0, -1.0]))
     }
 }
 impl std::ops::Sub<AntiFlatOrigin> for NullSphereAtOrigin {
@@ -3474,7 +3474,7 @@ impl std::ops::Sub<AntiFlatOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: AntiFlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3497,7 +3497,7 @@ impl std::ops::Sub<AntiFlatOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlatPoint> for NullSphereAtOrigin {
@@ -3511,7 +3511,7 @@ impl std::ops::Sub<AntiFlatPoint> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3534,7 +3534,7 @@ impl std::ops::Sub<AntiFlatPoint> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlector> for NullSphereAtOrigin {
@@ -3549,7 +3549,7 @@ impl std::ops::Sub<AntiFlector> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3572,7 +3572,7 @@ impl std::ops::Sub<AntiFlector> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlectorOnOrigin> for NullSphereAtOrigin {
@@ -3586,7 +3586,7 @@ impl std::ops::Sub<AntiFlectorOnOrigin> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiFlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3609,7 +3609,7 @@ impl std::ops::Sub<AntiFlectorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiLine> for NullSphereAtOrigin {
@@ -3623,14 +3623,14 @@ impl std::ops::Sub<AntiLine> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x4::from(0.0),
             // e23, e31, e12
             other.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiLineOnOrigin> for NullSphereAtOrigin {
@@ -3641,12 +3641,12 @@ impl std::ops::Sub<AntiLineOnOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: AntiLineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(0.0),
             // e23, e31, e12, e1234
             other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMotor> for NullSphereAtOrigin {
@@ -3657,14 +3657,14 @@ impl std::ops::Sub<AntiMotor> for NullSphereAtOrigin {
     // no simd        0       12        0
     fn sub(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e3215
             other.group0().xyz().with_w(other[e3215]) * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMotorOnOrigin> for NullSphereAtOrigin {
@@ -3675,12 +3675,12 @@ impl std::ops::Sub<AntiMotorOnOrigin> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: AntiMotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e1234
             other.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMysteryCircleRotor> for NullSphereAtOrigin {
@@ -3691,7 +3691,7 @@ impl std::ops::Sub<AntiMysteryCircleRotor> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: AntiMysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e45
@@ -3700,7 +3700,7 @@ impl std::ops::Sub<AntiMysteryCircleRotor> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
@@ -3714,7 +3714,7 @@ impl std::ops::Sub<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiMysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3737,7 +3737,7 @@ impl std::ops::Sub<AntiMysteryDipoleInversion> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiPlane> for NullSphereAtOrigin {
@@ -3751,7 +3751,7 @@ impl std::ops::Sub<AntiPlane> for NullSphereAtOrigin {
     //  no simd        0        4        0
     fn sub(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3774,7 +3774,7 @@ impl std::ops::Sub<AntiPlane> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiPlaneOnOrigin> for NullSphereAtOrigin {
@@ -3785,7 +3785,7 @@ impl std::ops::Sub<AntiPlaneOnOrigin> for NullSphereAtOrigin {
     // no simd        0        3        0
     fn sub(self, other: AntiPlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3808,7 +3808,7 @@ impl std::ops::Sub<AntiPlaneOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiScalar> for NullSphereAtOrigin {
@@ -3819,7 +3819,7 @@ impl std::ops::Sub<AntiScalar> for NullSphereAtOrigin {
     // no simd        0        2        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -3842,7 +3842,7 @@ impl std::ops::Sub<AntiScalar> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiSphereOnOrigin> for NullSphereAtOrigin {
@@ -3853,7 +3853,7 @@ impl std::ops::Sub<AntiSphereOnOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: AntiSphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3876,7 +3876,7 @@ impl std::ops::Sub<AntiSphereOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
@@ -3890,12 +3890,12 @@ impl std::ops::Sub<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
     //  no simd        1        8        0
     fn sub(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e1234
             other.group1().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Circle> for NullSphereAtOrigin {
@@ -3909,7 +3909,7 @@ impl std::ops::Sub<Circle> for NullSphereAtOrigin {
     //  no simd        0       10        0
     fn sub(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3932,7 +3932,7 @@ impl std::ops::Sub<Circle> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleAligningOrigin> for NullSphereAtOrigin {
@@ -3943,7 +3943,7 @@ impl std::ops::Sub<CircleAligningOrigin> for NullSphereAtOrigin {
     // no simd        0        9        0
     fn sub(self, other: CircleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -3966,7 +3966,7 @@ impl std::ops::Sub<CircleAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleAtInfinity> for NullSphereAtOrigin {
@@ -3980,7 +3980,7 @@ impl std::ops::Sub<CircleAtInfinity> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: CircleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4003,7 +4003,7 @@ impl std::ops::Sub<CircleAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleAtOrigin> for NullSphereAtOrigin {
@@ -4014,7 +4014,7 @@ impl std::ops::Sub<CircleAtOrigin> for NullSphereAtOrigin {
     // no simd        0        6        0
     fn sub(self, other: CircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4037,7 +4037,7 @@ impl std::ops::Sub<CircleAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleOnOrigin> for NullSphereAtOrigin {
@@ -4048,7 +4048,7 @@ impl std::ops::Sub<CircleOnOrigin> for NullSphereAtOrigin {
     // no simd        0        6        0
     fn sub(self, other: CircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4071,7 +4071,7 @@ impl std::ops::Sub<CircleOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleOrthogonalOrigin> for NullSphereAtOrigin {
@@ -4085,7 +4085,7 @@ impl std::ops::Sub<CircleOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        0       10        0
     fn sub(self, other: CircleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4108,7 +4108,7 @@ impl std::ops::Sub<CircleOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotor> for NullSphereAtOrigin {
@@ -4123,7 +4123,7 @@ impl std::ops::Sub<CircleRotor> for NullSphereAtOrigin {
     //  no simd        0       12        0
     fn sub(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4146,7 +4146,7 @@ impl std::ops::Sub<CircleRotor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorAligningOrigin> for NullSphereAtOrigin {
@@ -4160,7 +4160,7 @@ impl std::ops::Sub<CircleRotorAligningOrigin> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: CircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4183,7 +4183,7 @@ impl std::ops::Sub<CircleRotorAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
@@ -4197,7 +4197,7 @@ impl std::ops::Sub<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
     //  no simd        0        8        0
     fn sub(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4220,7 +4220,7 @@ impl std::ops::Sub<CircleRotorAligningOriginAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorAtInfinity> for NullSphereAtOrigin {
@@ -4235,7 +4235,7 @@ impl std::ops::Sub<CircleRotorAtInfinity> for NullSphereAtOrigin {
     //  no simd        0        9        0
     fn sub(self, other: CircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4258,7 +4258,7 @@ impl std::ops::Sub<CircleRotorAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorOnOrigin> for NullSphereAtOrigin {
@@ -4272,7 +4272,7 @@ impl std::ops::Sub<CircleRotorOnOrigin> for NullSphereAtOrigin {
     //  no simd        0        8        0
     fn sub(self, other: CircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4295,7 +4295,7 @@ impl std::ops::Sub<CircleRotorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Dipole> for NullSphereAtOrigin {
@@ -4309,7 +4309,7 @@ impl std::ops::Sub<Dipole> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             other.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -4318,7 +4318,7 @@ impl std::ops::Sub<Dipole> for NullSphereAtOrigin {
             other.group2().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAligningOrigin> for NullSphereAtOrigin {
@@ -4329,14 +4329,14 @@ impl std::ops::Sub<DipoleAligningOrigin> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: DipoleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAtInfinity> for NullSphereAtOrigin {
@@ -4347,7 +4347,7 @@ impl std::ops::Sub<DipoleAtInfinity> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: DipoleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -4356,7 +4356,7 @@ impl std::ops::Sub<DipoleAtInfinity> for NullSphereAtOrigin {
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAtOrigin> for NullSphereAtOrigin {
@@ -4370,12 +4370,12 @@ impl std::ops::Sub<DipoleAtOrigin> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: DipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e1234
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversion> for NullSphereAtOrigin {
@@ -4390,7 +4390,7 @@ impl std::ops::Sub<DipoleInversion> for NullSphereAtOrigin {
     //  no simd        1       15        0
     fn sub(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             other.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -4399,7 +4399,7 @@ impl std::ops::Sub<DipoleInversion> for NullSphereAtOrigin {
             other.group2().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
@@ -4413,14 +4413,14 @@ impl std::ops::Sub<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
     //  no simd        1       12        0
     fn sub(self, other: DipoleInversionAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAtInfinity> for NullSphereAtOrigin {
@@ -4431,7 +4431,7 @@ impl std::ops::Sub<DipoleInversionAtInfinity> for NullSphereAtOrigin {
     // no simd        0       12        0
     fn sub(self, other: DipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -4440,7 +4440,7 @@ impl std::ops::Sub<DipoleInversionAtInfinity> for NullSphereAtOrigin {
             other.group1().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAtOrigin> for NullSphereAtOrigin {
@@ -4454,12 +4454,12 @@ impl std::ops::Sub<DipoleInversionAtOrigin> for NullSphereAtOrigin {
     //  no simd        1        8        0
     fn sub(self, other: DipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             other.group1().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionOnOrigin> for NullSphereAtOrigin {
@@ -4473,12 +4473,12 @@ impl std::ops::Sub<DipoleInversionOnOrigin> for NullSphereAtOrigin {
     //  no simd        1        8        0
     fn sub(self, other: DipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0() * Simd32x4::from(-1.0),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234] - other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([1.0, -1.0, -1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
@@ -4493,14 +4493,14 @@ impl std::ops::Sub<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        1       11        0
     fn sub(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12
             other.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             other.group2().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleOnOrigin> for NullSphereAtOrigin {
@@ -4511,12 +4511,12 @@ impl std::ops::Sub<DipoleOnOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: DipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             other.group0() * Simd32x4::from(-1.0),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleOrthogonalOrigin> for NullSphereAtOrigin {
@@ -4530,14 +4530,14 @@ impl std::ops::Sub<DipoleOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        0       10        0
     fn sub(self, other: DipoleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12
             other.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             other.group2().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<DualNum> for NullSphereAtOrigin {
@@ -4551,7 +4551,7 @@ impl std::ops::Sub<DualNum> for NullSphereAtOrigin {
     //  no simd        0        6        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4574,7 +4574,7 @@ impl std::ops::Sub<DualNum> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatOrigin> for NullSphereAtOrigin {
@@ -4585,12 +4585,12 @@ impl std::ops::Sub<FlatOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: FlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatPoint> for NullSphereAtOrigin {
@@ -4601,14 +4601,14 @@ impl std::ops::Sub<FlatPoint> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatPointAtInfinity> for NullSphereAtOrigin {
@@ -4619,12 +4619,12 @@ impl std::ops::Sub<FlatPointAtInfinity> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: FlatPointAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x4::from(0.0),
             // e15, e25, e35, e1234
             other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Flector> for NullSphereAtOrigin {
@@ -4635,14 +4635,14 @@ impl std::ops::Sub<Flector> for NullSphereAtOrigin {
     // no simd        0       12        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlectorAtInfinity> for NullSphereAtOrigin {
@@ -4653,12 +4653,12 @@ impl std::ops::Sub<FlectorAtInfinity> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: FlectorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e1234
             other.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlectorOnOrigin> for NullSphereAtOrigin {
@@ -4669,12 +4669,12 @@ impl std::ops::Sub<FlectorOnOrigin> for NullSphereAtOrigin {
     // no simd        0        8        0
     fn sub(self, other: FlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x3::from(0.0).with_w(other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234, e4235, e4315, e4125
             Simd32x4::from([self[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([1.0, -1.0, -1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Horizon> for NullSphereAtOrigin {
@@ -4685,7 +4685,7 @@ impl std::ops::Sub<Horizon> for NullSphereAtOrigin {
     // no simd        0        2        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234]]) * Simd32x2::from([-1.0, 1.0]));
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234]]) * Simd32x2::from([-1.0, 1.0]))
     }
 }
 impl std::ops::Sub<Infinity> for NullSphereAtOrigin {
@@ -4695,7 +4695,7 @@ impl std::ops::Sub<Infinity> for NullSphereAtOrigin {
     // f32        0        1        0
     fn sub(self, other: Infinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4718,7 +4718,7 @@ impl std::ops::Sub<Infinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Line> for NullSphereAtOrigin {
@@ -4729,7 +4729,7 @@ impl std::ops::Sub<Line> for NullSphereAtOrigin {
     // no simd        0        6        0
     fn sub(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4752,7 +4752,7 @@ impl std::ops::Sub<Line> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<LineAtInfinity> for NullSphereAtOrigin {
@@ -4763,7 +4763,7 @@ impl std::ops::Sub<LineAtInfinity> for NullSphereAtOrigin {
     // no simd        0        3        0
     fn sub(self, other: LineAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4786,7 +4786,7 @@ impl std::ops::Sub<LineAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<LineOnOrigin> for NullSphereAtOrigin {
@@ -4797,7 +4797,7 @@ impl std::ops::Sub<LineOnOrigin> for NullSphereAtOrigin {
     // no simd        0        3        0
     fn sub(self, other: LineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4820,7 +4820,7 @@ impl std::ops::Sub<LineOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Motor> for NullSphereAtOrigin {
@@ -4835,7 +4835,7 @@ impl std::ops::Sub<Motor> for NullSphereAtOrigin {
     //  no simd        0        9        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4858,7 +4858,7 @@ impl std::ops::Sub<Motor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MotorAtInfinity> for NullSphereAtOrigin {
@@ -4872,7 +4872,7 @@ impl std::ops::Sub<MotorAtInfinity> for NullSphereAtOrigin {
     //  no simd        0        4        0
     fn sub(self, other: MotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -4895,7 +4895,7 @@ impl std::ops::Sub<MotorAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MotorOnOrigin> for NullSphereAtOrigin {
@@ -4909,7 +4909,7 @@ impl std::ops::Sub<MotorOnOrigin> for NullSphereAtOrigin {
     //  no simd        0        5        0
     fn sub(self, other: MotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -4932,7 +4932,7 @@ impl std::ops::Sub<MotorOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MultiVector> for NullSphereAtOrigin {
@@ -4948,7 +4948,7 @@ impl std::ops::Sub<MultiVector> for NullSphereAtOrigin {
     //  no simd        1       32        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             other.group0() * Simd32x2::from(-1.0),
             // e1, e2, e3, e4
@@ -4971,7 +4971,7 @@ impl std::ops::Sub<MultiVector> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234] - other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([1.0, -1.0, -1.0, -1.0]),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryCircle> for NullSphereAtOrigin {
@@ -4982,7 +4982,7 @@ impl std::ops::Sub<MysteryCircle> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: MysteryCircle) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5005,7 +5005,7 @@ impl std::ops::Sub<MysteryCircle> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryCircleRotor> for NullSphereAtOrigin {
@@ -5019,7 +5019,7 @@ impl std::ops::Sub<MysteryCircleRotor> for NullSphereAtOrigin {
     //  no simd        0        6        0
     fn sub(self, other: MysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5042,7 +5042,7 @@ impl std::ops::Sub<MysteryCircleRotor> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryDipole> for NullSphereAtOrigin {
@@ -5053,7 +5053,7 @@ impl std::ops::Sub<MysteryDipole> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: MysteryDipole) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -5062,7 +5062,7 @@ impl std::ops::Sub<MysteryDipole> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryDipoleInversion> for NullSphereAtOrigin {
@@ -5076,7 +5076,7 @@ impl std::ops::Sub<MysteryDipoleInversion> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: MysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -5085,7 +5085,7 @@ impl std::ops::Sub<MysteryDipoleInversion> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             (other.group1() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryVersorEven> for NullSphereAtOrigin {
@@ -5100,7 +5100,7 @@ impl std::ops::Sub<MysteryVersorEven> for NullSphereAtOrigin {
     //  no simd        0        9        0
     fn sub(self, other: MysteryVersorEven) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5123,7 +5123,7 @@ impl std::ops::Sub<MysteryVersorEven> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryVersorOdd> for NullSphereAtOrigin {
@@ -5137,7 +5137,7 @@ impl std::ops::Sub<MysteryVersorOdd> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: MysteryVersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e45
@@ -5146,7 +5146,7 @@ impl std::ops::Sub<MysteryVersorOdd> for NullSphereAtOrigin {
             Simd32x3::from(0.0).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             (other.group0().yzw() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<NullCircleAtOrigin> for NullSphereAtOrigin {
@@ -5157,7 +5157,7 @@ impl std::ops::Sub<NullCircleAtOrigin> for NullSphereAtOrigin {
     // no simd        0        3        0
     fn sub(self, other: NullCircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5180,7 +5180,7 @@ impl std::ops::Sub<NullCircleAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<NullDipoleAtOrigin> for NullSphereAtOrigin {
@@ -5191,7 +5191,7 @@ impl std::ops::Sub<NullDipoleAtOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: NullDipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Sub<NullDipoleInversionAtOrigin> for NullSphereAtOrigin {
@@ -5205,10 +5205,10 @@ impl std::ops::Sub<NullDipoleInversionAtOrigin> for NullSphereAtOrigin {
     //  no simd        1        4        0
     fn sub(self, other: NullDipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(
+        NullDipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e1234
             other.group0().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<NullSphereAtOrigin> for NullSphereAtOrigin {
@@ -5218,7 +5218,7 @@ impl std::ops::Sub<NullSphereAtOrigin> for NullSphereAtOrigin {
     // f32        1        0        0
     fn sub(self, other: NullSphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] - other[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] - other[e1234])
     }
 }
 impl std::ops::SubAssign<NullSphereAtOrigin> for NullSphereAtOrigin {
@@ -5238,7 +5238,7 @@ impl std::ops::Sub<NullVersorEvenAtOrigin> for NullSphereAtOrigin {
     //  no simd        0        7        0
     fn sub(self, other: NullVersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5261,7 +5261,7 @@ impl std::ops::Sub<NullVersorEvenAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Origin> for NullSphereAtOrigin {
@@ -5272,7 +5272,7 @@ impl std::ops::Sub<Origin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5295,7 +5295,7 @@ impl std::ops::Sub<Origin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Plane> for NullSphereAtOrigin {
@@ -5306,7 +5306,7 @@ impl std::ops::Sub<Plane> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234])
     }
 }
 impl std::ops::Sub<PlaneOnOrigin> for NullSphereAtOrigin {
@@ -5317,7 +5317,7 @@ impl std::ops::Sub<PlaneOnOrigin> for NullSphereAtOrigin {
     // no simd        0        4        0
     fn sub(self, other: PlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ other.group0().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Sub<RoundPoint> for NullSphereAtOrigin {
@@ -5331,7 +5331,7 @@ impl std::ops::Sub<RoundPoint> for NullSphereAtOrigin {
     //  no simd        0        5        0
     fn sub(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5354,7 +5354,7 @@ impl std::ops::Sub<RoundPoint> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<RoundPointAtOrigin> for NullSphereAtOrigin {
@@ -5368,7 +5368,7 @@ impl std::ops::Sub<RoundPointAtOrigin> for NullSphereAtOrigin {
     //  no simd        0        5        0
     fn sub(self, other: RoundPointAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5391,7 +5391,7 @@ impl std::ops::Sub<RoundPointAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Scalar> for NullSphereAtOrigin {
@@ -5402,7 +5402,7 @@ impl std::ops::Sub<Scalar> for NullSphereAtOrigin {
     // no simd        0        2        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], other[scalar]]) * Simd32x2::from([1.0, -1.0]));
+        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([self[e1234], other[scalar]]) * Simd32x2::from([1.0, -1.0]))
     }
 }
 impl std::ops::Sub<Sphere> for NullSphereAtOrigin {
@@ -5416,7 +5416,7 @@ impl std::ops::Sub<Sphere> for NullSphereAtOrigin {
     //  no simd        1        4        0
     fn sub(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234] - other[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ other.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234] - other[e1234])
     }
 }
 impl std::ops::Sub<SphereAtOrigin> for NullSphereAtOrigin {
@@ -5430,7 +5430,7 @@ impl std::ops::Sub<SphereAtOrigin> for NullSphereAtOrigin {
     //  no simd        1        2        0
     fn sub(self, other: SphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234] - other[e1234]]) * Simd32x2::from([-1.0, 1.0]));
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([other[e3215], self[e1234] - other[e1234]]) * Simd32x2::from([-1.0, 1.0]))
     }
 }
 impl std::ops::Sub<SphereOnOrigin> for NullSphereAtOrigin {
@@ -5444,10 +5444,10 @@ impl std::ops::Sub<SphereOnOrigin> for NullSphereAtOrigin {
     //  no simd        1        4        0
     fn sub(self, other: SphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(
+        SphereOnOrigin::from_groups(
             // e4235, e4315, e4125, e1234
             other.group0().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEven> for NullSphereAtOrigin {
@@ -5463,7 +5463,7 @@ impl std::ops::Sub<VersorEven> for NullSphereAtOrigin {
     //  no simd        0       17        0
     fn sub(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5486,7 +5486,7 @@ impl std::ops::Sub<VersorEven> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAligningOrigin> for NullSphereAtOrigin {
@@ -5502,7 +5502,7 @@ impl std::ops::Sub<VersorEvenAligningOrigin> for NullSphereAtOrigin {
     //  no simd        0       16        0
     fn sub(self, other: VersorEvenAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5525,7 +5525,7 @@ impl std::ops::Sub<VersorEvenAligningOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAtInfinity> for NullSphereAtOrigin {
@@ -5541,7 +5541,7 @@ impl std::ops::Sub<VersorEvenAtInfinity> for NullSphereAtOrigin {
     //  no simd        0       13        0
     fn sub(self, other: VersorEvenAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5564,7 +5564,7 @@ impl std::ops::Sub<VersorEvenAtInfinity> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAtOrigin> for NullSphereAtOrigin {
@@ -5579,7 +5579,7 @@ impl std::ops::Sub<VersorEvenAtOrigin> for NullSphereAtOrigin {
     //  no simd        0       11        0
     fn sub(self, other: VersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5602,7 +5602,7 @@ impl std::ops::Sub<VersorEvenAtOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenOnOrigin> for NullSphereAtOrigin {
@@ -5617,7 +5617,7 @@ impl std::ops::Sub<VersorEvenOnOrigin> for NullSphereAtOrigin {
     //  no simd        0       12        0
     fn sub(self, other: VersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([1.0, other[e12345]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
@@ -5640,7 +5640,7 @@ impl std::ops::Sub<VersorEvenOnOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
@@ -5655,7 +5655,7 @@ impl std::ops::Sub<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        0       15        0
     fn sub(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -5678,7 +5678,7 @@ impl std::ops::Sub<VersorEvenOrthogonalOrigin> for NullSphereAtOrigin {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOdd> for NullSphereAtOrigin {
@@ -5692,7 +5692,7 @@ impl std::ops::Sub<VersorOdd> for NullSphereAtOrigin {
     //  no simd        1       16        0
     fn sub(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e45
@@ -5701,7 +5701,7 @@ impl std::ops::Sub<VersorOdd> for NullSphereAtOrigin {
             other.group2().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOddAtInfinity> for NullSphereAtOrigin {
@@ -5712,7 +5712,7 @@ impl std::ops::Sub<VersorOddAtInfinity> for NullSphereAtOrigin {
     // no simd        0       16        0
     fn sub(self, other: VersorOddAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, e45
@@ -5721,7 +5721,7 @@ impl std::ops::Sub<VersorOddAtInfinity> for NullSphereAtOrigin {
             other.group0().yzw().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             other.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
@@ -5735,14 +5735,14 @@ impl std::ops::Sub<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
     //  no simd        1       12        0
     fn sub(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e3215
             other.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             other.group2().xyz().with_w(self[e1234] - other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 
@@ -5765,7 +5765,7 @@ impl TryFrom<AntiDualNum> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ anti_dual_num[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ anti_dual_num[e1234]))
     }
 }
 
@@ -5830,7 +5830,7 @@ impl TryFrom<AntiVersorEvenOnOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ anti_versor_even_on_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ anti_versor_even_on_origin[e1234]))
     }
 }
 
@@ -5944,7 +5944,7 @@ impl TryFrom<DipoleInversion> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion[e1234]))
     }
 }
 
@@ -6037,7 +6037,7 @@ impl TryFrom<DipoleInversionAligningOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_aligning_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_aligning_origin[e1234]))
     }
 }
 
@@ -6102,7 +6102,7 @@ impl TryFrom<DipoleInversionAtOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_at_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_at_origin[e1234]))
     }
 }
 
@@ -6167,7 +6167,7 @@ impl TryFrom<DipoleInversionOnOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_on_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_on_origin[e1234]))
     }
 }
 
@@ -6253,7 +6253,7 @@ impl TryFrom<DipoleInversionOrthogonalOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_orthogonal_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ dipole_inversion_orthogonal_origin[e1234]))
     }
 }
 
@@ -6486,7 +6486,7 @@ impl TryFrom<MultiVector> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ multi_vector[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ multi_vector[e1234]))
     }
 }
 
@@ -6523,7 +6523,7 @@ impl TryFrom<NullDipoleInversionAtOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ null_dipole_inversion_at_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ null_dipole_inversion_at_origin[e1234]))
     }
 }
 
@@ -6567,7 +6567,7 @@ impl TryFrom<Sphere> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere[e1234]))
     }
 }
 
@@ -6590,7 +6590,7 @@ impl TryFrom<SphereAtOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere_at_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere_at_origin[e1234]))
     }
 }
 
@@ -6627,7 +6627,7 @@ impl TryFrom<SphereOnOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere_on_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ sphere_on_origin[e1234]))
     }
 }
 
@@ -6748,7 +6748,7 @@ impl TryFrom<VersorOdd> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ versor_odd[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ versor_odd[e1234]))
     }
 }
 
@@ -6841,6 +6841,6 @@ impl TryFrom<VersorOddOrthogonalOrigin> for NullSphereAtOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(NullSphereAtOrigin::from_groups(/* e1234 */ versor_odd_orthogonal_origin[e1234]));
+        Ok(NullSphereAtOrigin::from_groups(/* e1234 */ versor_odd_orthogonal_origin[e1234]))
     }
 }

@@ -30,7 +30,7 @@ impl RoundBulkNorm for AntiCircleOnOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiCircleRotor {
@@ -45,7 +45,7 @@ impl RoundBulkNorm for AntiCircleRotor {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -60,7 +60,7 @@ impl RoundBulkNorm for AntiCircleRotorAligningOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -75,7 +75,7 @@ impl RoundBulkNorm for AntiCircleRotorAligningOriginAtInfinity {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -90,7 +90,7 @@ impl RoundBulkNorm for AntiCircleRotorAtInfinity {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -105,7 +105,7 @@ impl RoundBulkNorm for AntiCircleRotorOnOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -120,7 +120,7 @@ impl RoundBulkNorm for AntiDipoleInversion {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -135,7 +135,7 @@ impl RoundBulkNorm for AntiDipoleInversionAtInfinity {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -150,7 +150,7 @@ impl RoundBulkNorm for AntiDipoleInversionOnOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -162,7 +162,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDipoleOnOrigin {
 impl RoundBulkNorm for AntiDipoleOnOrigin {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDualNum {
@@ -174,7 +174,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiDualNum {
 impl RoundBulkNorm for AntiDualNum {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlatOrigin {
@@ -186,7 +186,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlatOrigin {
 impl RoundBulkNorm for AntiFlatOrigin {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlatPoint {
@@ -198,7 +198,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlatPoint {
 impl RoundBulkNorm for AntiFlatPoint {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlector {
@@ -213,7 +213,7 @@ impl RoundBulkNorm for AntiFlector {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -228,7 +228,7 @@ impl RoundBulkNorm for AntiFlectorOnOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiLine {
@@ -243,7 +243,7 @@ impl RoundBulkNorm for AntiLine {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiLineOnOrigin {
@@ -258,7 +258,7 @@ impl RoundBulkNorm for AntiLineOnOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiMotor {
@@ -273,7 +273,7 @@ impl RoundBulkNorm for AntiMotor {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -288,7 +288,7 @@ impl RoundBulkNorm for AntiMotorOnOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -303,7 +303,7 @@ impl RoundBulkNorm for AntiMysteryCircleRotor {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -318,7 +318,7 @@ impl RoundBulkNorm for AntiMysteryDipoleInversion {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiPlane {
@@ -333,7 +333,7 @@ impl RoundBulkNorm for AntiPlane {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -348,7 +348,7 @@ impl RoundBulkNorm for AntiPlaneOnOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -363,7 +363,7 @@ impl RoundBulkNorm for AntiSphereOnOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -378,7 +378,7 @@ impl RoundBulkNorm for AntiVersorEvenOnOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for Circle {
@@ -390,7 +390,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for Circle {
 impl RoundBulkNorm for Circle {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleAtInfinity {
@@ -402,7 +402,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleAtInfinity {
 impl RoundBulkNorm for CircleAtInfinity {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -414,7 +414,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleOrthogonalOrigin {
 impl RoundBulkNorm for CircleOrthogonalOrigin {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleRotor {
@@ -426,7 +426,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleRotor {
 impl RoundBulkNorm for CircleRotor {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -438,7 +438,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for CircleRotorAtInfinity {
 impl RoundBulkNorm for CircleRotorAtInfinity {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for Dipole {
@@ -453,7 +453,7 @@ impl RoundBulkNorm for Dipole {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for DipoleAtInfinity {
@@ -468,7 +468,7 @@ impl RoundBulkNorm for DipoleAtInfinity {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for DipoleInversion {
@@ -483,7 +483,7 @@ impl RoundBulkNorm for DipoleInversion {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -498,7 +498,7 @@ impl RoundBulkNorm for DipoleInversionAtInfinity {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -513,7 +513,7 @@ impl RoundBulkNorm for DipoleInversionOrthogonalOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -528,7 +528,7 @@ impl RoundBulkNorm for DipoleOrthogonalOrigin {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MultiVector {
@@ -543,7 +543,7 @@ impl RoundBulkNorm for MultiVector {
     // f32        7        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
+        Scalar::from_groups(
             // scalar
             self[scalar] * self[scalar]
                 + self[e1] * self[e1]
@@ -553,7 +553,7 @@ impl RoundBulkNorm for MultiVector {
                 + self[e31] * self[e31]
                 + self[e12] * self[e12]
                 + self[e321] * self[e321],
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryCircle {
@@ -565,7 +565,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryCircle {
 impl RoundBulkNorm for MysteryCircle {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryCircleRotor {
@@ -577,7 +577,7 @@ impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryCircleRotor {
 impl RoundBulkNorm for MysteryCircleRotor {
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryDipole {
@@ -592,7 +592,7 @@ impl RoundBulkNorm for MysteryDipole {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryDipoleInversion {
@@ -607,7 +607,7 @@ impl RoundBulkNorm for MysteryDipoleInversion {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryVersorEven {
@@ -622,7 +622,7 @@ impl RoundBulkNorm for MysteryVersorEven {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for MysteryVersorOdd {
@@ -637,7 +637,7 @@ impl RoundBulkNorm for MysteryVersorOdd {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for RoundPoint {
@@ -652,7 +652,7 @@ impl RoundBulkNorm for RoundPoint {
     // f32        2        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for Scalar {
@@ -668,7 +668,7 @@ impl std::ops::DivAssign<RoundBulkNormPrefixOrPostfix> for Scalar {
 }
 impl RoundBulkNorm for Scalar {
     fn round_bulk_norm(self) -> Scalar {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorEven {
@@ -683,7 +683,7 @@ impl RoundBulkNorm for VersorEven {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -698,7 +698,7 @@ impl RoundBulkNorm for VersorEvenAtInfinity {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321]);
+        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -713,7 +713,7 @@ impl RoundBulkNorm for VersorEvenOrthogonalOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
+        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorOdd {
@@ -728,7 +728,7 @@ impl RoundBulkNorm for VersorOdd {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorOddAtInfinity {
@@ -743,7 +743,7 @@ impl RoundBulkNorm for VersorOddAtInfinity {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }
 impl std::ops::Div<RoundBulkNormPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -758,6 +758,6 @@ impl RoundBulkNorm for VersorOddOrthogonalOrigin {
     // f32        3        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
+        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
     }
 }

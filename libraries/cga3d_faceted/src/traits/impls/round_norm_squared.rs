@@ -30,7 +30,7 @@ impl RoundNormSquared for AntiCircleOnOrigin {
     // f32        4        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -56,7 +56,7 @@ impl RoundNormSquared for AntiCircleOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiCircleRotor {
@@ -71,7 +71,7 @@ impl RoundNormSquared for AntiCircleRotor {
     // f32        5        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar],
@@ -97,7 +97,7 @@ impl RoundNormSquared for AntiCircleRotor {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -112,7 +112,7 @@ impl RoundNormSquared for AntiCircleRotorAligningOrigin {
     // f32        5        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar],
@@ -138,7 +138,7 @@ impl RoundNormSquared for AntiCircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -153,7 +153,7 @@ impl RoundNormSquared for AntiCircleRotorOnOrigin {
     // f32        5        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -179,7 +179,7 @@ impl RoundNormSquared for AntiCircleRotorOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -195,7 +195,7 @@ impl RoundNormSquared for AntiDipoleInversion {
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -221,7 +221,7 @@ impl RoundNormSquared for AntiDipoleInversion {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -236,7 +236,7 @@ impl RoundNormSquared for AntiDipoleInversionOnOrigin {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -262,7 +262,7 @@ impl RoundNormSquared for AntiDipoleInversionOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -277,7 +277,7 @@ impl RoundNormSquared for AntiDipoleOnOrigin {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321] * self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -300,7 +300,7 @@ impl RoundNormSquared for AntiDipoleOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiDualNum {
@@ -312,7 +312,7 @@ impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiDualNum {
 impl RoundNormSquared for AntiDualNum {
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[scalar] * self[scalar], self[e1234] * self[e1234]]),
             // e1, e2, e3, e4
@@ -335,7 +335,7 @@ impl RoundNormSquared for AntiDualNum {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -350,7 +350,7 @@ impl RoundNormSquared for AntiSphereOnOrigin {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3], self[e4] * self[e4]]),
             // e1, e2, e3, e4
@@ -373,7 +373,7 @@ impl RoundNormSquared for AntiSphereOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -388,7 +388,7 @@ impl RoundNormSquared for AntiVersorEvenOnOrigin {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -414,7 +414,7 @@ impl RoundNormSquared for AntiVersorEvenOnOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for Circle {
@@ -429,7 +429,7 @@ impl RoundNormSquared for Circle {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321] * self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -452,7 +452,7 @@ impl RoundNormSquared for Circle {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -467,7 +467,7 @@ impl RoundNormSquared for CircleOrthogonalOrigin {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321] * self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -490,7 +490,7 @@ impl RoundNormSquared for CircleOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -505,7 +505,7 @@ impl RoundNormSquared for CircleRotor {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e321] * self[e321], self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]),
             // e1, e2, e3, e4
@@ -528,7 +528,7 @@ impl RoundNormSquared for CircleRotor {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for Dipole {
@@ -543,7 +543,7 @@ impl RoundNormSquared for Dipole {
     // f32        4        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -569,7 +569,7 @@ impl RoundNormSquared for Dipole {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -584,7 +584,7 @@ impl RoundNormSquared for DipoleInversion {
     // f32        5        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -610,7 +610,7 @@ impl RoundNormSquared for DipoleInversion {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -625,7 +625,7 @@ impl RoundNormSquared for DipoleInversionOrthogonalOrigin {
     // f32        5        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -651,7 +651,7 @@ impl RoundNormSquared for DipoleInversionOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -666,7 +666,7 @@ impl RoundNormSquared for DipoleOrthogonalOrigin {
     // f32        4        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -692,7 +692,7 @@ impl RoundNormSquared for DipoleOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for MultiVector {
@@ -719,7 +719,7 @@ impl RoundNormSquared for MultiVector {
         use crate::elements::*;
         let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
         let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar]
@@ -760,7 +760,7 @@ impl RoundNormSquared for MultiVector {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for RoundPoint {
@@ -775,7 +775,7 @@ impl RoundNormSquared for RoundPoint {
     // f32        2        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3], self[e4] * self[e4]]),
             // e1, e2, e3, e4
@@ -798,7 +798,7 @@ impl RoundNormSquared for RoundPoint {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for VersorEven {
@@ -813,7 +813,7 @@ impl RoundNormSquared for VersorEven {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -839,7 +839,7 @@ impl RoundNormSquared for VersorEven {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -854,7 +854,7 @@ impl RoundNormSquared for VersorEvenOrthogonalOrigin {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
@@ -880,7 +880,7 @@ impl RoundNormSquared for VersorEvenOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -895,7 +895,7 @@ impl RoundNormSquared for VersorOdd {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -921,7 +921,7 @@ impl RoundNormSquared for VersorOdd {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundNormSquaredPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -936,7 +936,7 @@ impl RoundNormSquared for VersorOddOrthogonalOrigin {
     // f32        6        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
@@ -962,6 +962,6 @@ impl RoundNormSquared for VersorOddOrthogonalOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }

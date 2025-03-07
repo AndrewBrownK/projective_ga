@@ -31,7 +31,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlatPoint {
 }
 impl ConstraintValid for AntiFlatPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiPlane {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiPlane {
 }
 impl ConstraintValid for AntiPlane {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiScalar {
@@ -63,7 +63,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiScalar {
 }
 impl ConstraintValid for AntiScalar {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for FlatPoint {
@@ -79,7 +79,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlatPoint {
 }
 impl ConstraintValid for FlatPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Plane {
@@ -95,7 +95,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Plane {
 }
 impl ConstraintValid for Plane {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for RoundPoint {
@@ -111,7 +111,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for RoundPoint {
 }
 impl ConstraintValid for RoundPoint {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Scalar {
@@ -127,7 +127,7 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Scalar {
 }
 impl ConstraintValid for Scalar {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Sphere {
@@ -143,6 +143,6 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Sphere {
 }
 impl ConstraintValid for Sphere {
     fn constraint_valid(self) -> Self {
-        return self;
+        self
     }
 }

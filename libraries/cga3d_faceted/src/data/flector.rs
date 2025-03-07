@@ -104,7 +104,7 @@ impl nearly::NearlyEqEps<Flector, f32, f32> for Flector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Flector, f32, f32> for Flector {
@@ -118,7 +118,7 @@ impl nearly::NearlyEqUlps<Flector, f32, f32> for Flector {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Flector, f32, f32> for Flector {}
@@ -143,7 +143,7 @@ impl nearly::NearlyOrdUlps<Flector, f32, f32> for Flector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Flector, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -165,7 +165,7 @@ impl nearly::NearlyOrdUlps<Flector, f32, f32> for Flector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Flector, f32, f32> for Flector {
@@ -188,7 +188,7 @@ impl nearly::NearlyOrdEps<Flector, f32, f32> for Flector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Flector, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -210,7 +210,7 @@ impl nearly::NearlyOrdEps<Flector, f32, f32> for Flector {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Flector, f32, f32> for Flector {}
@@ -281,14 +281,14 @@ impl encase::ShaderType for Flector {
     type ExtraMetadata = <FlectorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <FlectorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <FlectorGroups as encase::ShaderType>::min_size();
+        <FlectorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <FlectorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <FlectorGroups as encase::ShaderType>::assert_uniform_compat();
+        <FlectorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

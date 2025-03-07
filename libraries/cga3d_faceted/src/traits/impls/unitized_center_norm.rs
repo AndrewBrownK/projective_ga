@@ -30,10 +30,10 @@ impl UnitizedCenterNorm for AntiCircleRotor {
     // f32        3        0        0
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e41] * self[e41] * f32::powi(self[e23], 2))
+        (self[e41] * self[e41] * f32::powi(self[e23], 2))
             + (self[e41] * self[e41] * f32::powi(self[e31], 2))
             + (self[e41] * self[e41] * f32::powi(self[e12], 2))
-            + (self[e41] * self[e41] * f32::powi(self[scalar], 2));
+            + (self[e41] * self[e41] * f32::powi(self[scalar], 2))
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -49,10 +49,10 @@ impl UnitizedCenterNorm for AntiDipoleInversion {
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
         let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
-        return (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e321], 2))
+        (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e321], 2))
             + (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e1], 2))
             + (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e2], 2))
-            + (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e3], 2));
+            + (wedge_g0[0] * wedge_g0[0] * f32::powi(self[e3], 2))
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for Circle {
@@ -64,7 +64,7 @@ impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for Circle {
 impl UnitizedCenterNorm for Circle {
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e423] * self[e423] * f32::powi(self[e321], 2);
+        self[e423] * self[e423] * f32::powi(self[e321], 2)
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for CircleRotor {
@@ -76,7 +76,7 @@ impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for CircleRotor {
 impl UnitizedCenterNorm for CircleRotor {
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return self[e423] * self[e423] * f32::powi(self[e321], 2);
+        self[e423] * self[e423] * f32::powi(self[e321], 2)
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for Dipole {
@@ -91,7 +91,7 @@ impl UnitizedCenterNorm for Dipole {
     // f32        2        0        0
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2));
+        (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2))
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for DipoleInversion {
@@ -106,7 +106,7 @@ impl UnitizedCenterNorm for DipoleInversion {
     // f32        2        0        0
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2));
+        (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2))
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for MultiVector {
@@ -117,7 +117,7 @@ impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for MultiVector {
 }
 impl UnitizedCenterNorm for MultiVector {
     fn unitized_center_norm(self) -> f32 {
-        return 0.0;
+        0.0
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for VersorEven {
@@ -132,10 +132,10 @@ impl UnitizedCenterNorm for VersorEven {
     // f32        3        0        0
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e321] * self[e321] * f32::powi(self[e4], 2))
+        (self[e321] * self[e321] * f32::powi(self[e4], 2))
             + (self[e1] * self[e1] * f32::powi(self[e4], 2))
             + (self[e2] * self[e2] * f32::powi(self[e4], 2))
-            + (self[e3] * self[e3] * f32::powi(self[e4], 2));
+            + (self[e3] * self[e3] * f32::powi(self[e4], 2))
     }
 }
 impl std::ops::Div<UnitizedCenterNormPrefixOrPostfix> for VersorOdd {
@@ -150,9 +150,9 @@ impl UnitizedCenterNorm for VersorOdd {
     // f32        3        0        0
     fn unitized_center_norm(self) -> f32 {
         use crate::elements::*;
-        return (self[e41] * self[e41] * f32::powi(self[scalar], 2))
+        (self[e41] * self[e41] * f32::powi(self[scalar], 2))
             + (self[e41] * self[e41] * f32::powi(self[e23], 2))
             + (self[e41] * self[e41] * f32::powi(self[e31], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e12], 2));
+            + (self[e41] * self[e41] * f32::powi(self[e12], 2))
     }
 }

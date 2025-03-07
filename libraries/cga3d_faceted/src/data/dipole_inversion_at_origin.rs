@@ -107,7 +107,7 @@ impl nearly::NearlyEqEps<DipoleInversionAtOrigin, f32, f32> for DipoleInversionA
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<DipoleInversionAtOrigin, f32, f32> for DipoleInversionAtOrigin {
@@ -121,7 +121,7 @@ impl nearly::NearlyEqUlps<DipoleInversionAtOrigin, f32, f32> for DipoleInversion
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<DipoleInversionAtOrigin, f32, f32> for DipoleInversionAtOrigin {}
@@ -146,7 +146,7 @@ impl nearly::NearlyOrdUlps<DipoleInversionAtOrigin, f32, f32> for DipoleInversio
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &DipoleInversionAtOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -168,7 +168,7 @@ impl nearly::NearlyOrdUlps<DipoleInversionAtOrigin, f32, f32> for DipoleInversio
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<DipoleInversionAtOrigin, f32, f32> for DipoleInversionAtOrigin {
@@ -191,7 +191,7 @@ impl nearly::NearlyOrdEps<DipoleInversionAtOrigin, f32, f32> for DipoleInversion
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &DipoleInversionAtOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -213,7 +213,7 @@ impl nearly::NearlyOrdEps<DipoleInversionAtOrigin, f32, f32> for DipoleInversion
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<DipoleInversionAtOrigin, f32, f32> for DipoleInversionAtOrigin {}
@@ -284,14 +284,14 @@ impl encase::ShaderType for DipoleInversionAtOrigin {
     type ExtraMetadata = <DipoleInversionAtOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <DipoleInversionAtOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <DipoleInversionAtOriginGroups as encase::ShaderType>::min_size();
+        <DipoleInversionAtOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <DipoleInversionAtOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <DipoleInversionAtOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <DipoleInversionAtOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

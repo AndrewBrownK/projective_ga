@@ -84,7 +84,7 @@ impl nearly::NearlyEqEps<Point, f32, f32> for Point {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Point, f32, f32> for Point {
@@ -98,7 +98,7 @@ impl nearly::NearlyEqUlps<Point, f32, f32> for Point {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Point, f32, f32> for Point {}
@@ -123,7 +123,7 @@ impl nearly::NearlyOrdUlps<Point, f32, f32> for Point {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Point, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -145,7 +145,7 @@ impl nearly::NearlyOrdUlps<Point, f32, f32> for Point {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Point, f32, f32> for Point {
@@ -168,7 +168,7 @@ impl nearly::NearlyOrdEps<Point, f32, f32> for Point {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Point, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -190,7 +190,7 @@ impl nearly::NearlyOrdEps<Point, f32, f32> for Point {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Point, f32, f32> for Point {}
@@ -261,14 +261,14 @@ impl encase::ShaderType for Point {
     type ExtraMetadata = <PointGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <PointGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <PointGroups as encase::ShaderType>::min_size();
+        <PointGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <PointGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <PointGroups as encase::ShaderType>::assert_uniform_compat();
+        <PointGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

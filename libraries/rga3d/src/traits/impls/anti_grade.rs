@@ -20,36 +20,36 @@
 //  Maximum:         0       0       0
 impl AntiGrade for AntiScalar {
     fn anti_grade() -> usize {
-        return 0;
+        0
     }
 }
 impl AntiGrade for Horizon {
     fn anti_grade() -> usize {
-        return 1;
+        1
     }
 }
 impl AntiGrade for Line {
     fn anti_grade() -> usize {
-        return 2;
+        2
     }
 }
 impl AntiGrade for Origin {
     fn anti_grade() -> usize {
-        return 3;
+        3
     }
 }
 impl AntiGrade for Plane {
     fn anti_grade() -> usize {
-        return 1;
+        1
     }
 }
 impl AntiGrade for Point {
     fn anti_grade() -> usize {
-        return 3;
+        3
     }
 }
 impl AntiGrade for Scalar {
     fn anti_grade() -> usize {
-        return 4;
+        4
     }
 }

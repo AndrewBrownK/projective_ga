@@ -80,7 +80,7 @@ impl nearly::NearlyEqEps<AntiScalar, f32, f32> for AntiScalar {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiScalar, f32, f32> for AntiScalar {
@@ -94,7 +94,7 @@ impl nearly::NearlyEqUlps<AntiScalar, f32, f32> for AntiScalar {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiScalar, f32, f32> for AntiScalar {}
@@ -119,7 +119,7 @@ impl nearly::NearlyOrdUlps<AntiScalar, f32, f32> for AntiScalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiScalar, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -141,7 +141,7 @@ impl nearly::NearlyOrdUlps<AntiScalar, f32, f32> for AntiScalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiScalar, f32, f32> for AntiScalar {
@@ -164,7 +164,7 @@ impl nearly::NearlyOrdEps<AntiScalar, f32, f32> for AntiScalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiScalar, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -186,7 +186,7 @@ impl nearly::NearlyOrdEps<AntiScalar, f32, f32> for AntiScalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiScalar, f32, f32> for AntiScalar {}
@@ -257,14 +257,14 @@ impl encase::ShaderType for AntiScalar {
     type ExtraMetadata = <AntiScalarGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiScalarGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiScalarGroups as encase::ShaderType>::min_size();
+        <AntiScalarGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiScalarGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiScalarGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiScalarGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

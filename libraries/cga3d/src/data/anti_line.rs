@@ -100,7 +100,7 @@ impl nearly::NearlyEqEps<AntiLine, f32, f32> for AntiLine {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiLine, f32, f32> for AntiLine {
@@ -114,7 +114,7 @@ impl nearly::NearlyEqUlps<AntiLine, f32, f32> for AntiLine {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiLine, f32, f32> for AntiLine {}
@@ -139,7 +139,7 @@ impl nearly::NearlyOrdUlps<AntiLine, f32, f32> for AntiLine {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiLine, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -161,7 +161,7 @@ impl nearly::NearlyOrdUlps<AntiLine, f32, f32> for AntiLine {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiLine, f32, f32> for AntiLine {
@@ -184,7 +184,7 @@ impl nearly::NearlyOrdEps<AntiLine, f32, f32> for AntiLine {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiLine, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -206,7 +206,7 @@ impl nearly::NearlyOrdEps<AntiLine, f32, f32> for AntiLine {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiLine, f32, f32> for AntiLine {}
@@ -277,14 +277,14 @@ impl encase::ShaderType for AntiLine {
     type ExtraMetadata = <AntiLineGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiLineGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiLineGroups as encase::ShaderType>::min_size();
+        <AntiLineGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiLineGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiLineGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiLineGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

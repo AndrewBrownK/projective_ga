@@ -80,7 +80,7 @@ impl nearly::NearlyEqEps<Scalar, f32, f32> for Scalar {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<Scalar, f32, f32> for Scalar {
@@ -94,7 +94,7 @@ impl nearly::NearlyEqUlps<Scalar, f32, f32> for Scalar {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<Scalar, f32, f32> for Scalar {}
@@ -119,7 +119,7 @@ impl nearly::NearlyOrdUlps<Scalar, f32, f32> for Scalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &Scalar, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -141,7 +141,7 @@ impl nearly::NearlyOrdUlps<Scalar, f32, f32> for Scalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<Scalar, f32, f32> for Scalar {
@@ -164,7 +164,7 @@ impl nearly::NearlyOrdEps<Scalar, f32, f32> for Scalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &Scalar, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -186,7 +186,7 @@ impl nearly::NearlyOrdEps<Scalar, f32, f32> for Scalar {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<Scalar, f32, f32> for Scalar {}
@@ -257,14 +257,14 @@ impl encase::ShaderType for Scalar {
     type ExtraMetadata = <ScalarGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <ScalarGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <ScalarGroups as encase::ShaderType>::min_size();
+        <ScalarGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <ScalarGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <ScalarGroups as encase::ShaderType>::assert_uniform_compat();
+        <ScalarGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

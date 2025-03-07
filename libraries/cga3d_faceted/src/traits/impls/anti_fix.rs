@@ -39,7 +39,7 @@ impl AntiFix for AntiDipoleOnOrigin {
     //  no simd        0        5        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321] * -1.0) * self.group0());
+        AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321] * -1.0) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiFlatOrigin {
@@ -55,7 +55,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for AntiFlatOrigin {
 }
 impl AntiFix for AntiFlatOrigin {
     fn anti_fix(self) -> Self {
-        return AntiFlatOrigin::from_groups(/* e321 */ -1.0);
+        AntiFlatOrigin::from_groups(/* e321 */ -1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiFlatPoint {
@@ -79,7 +79,7 @@ impl AntiFix for AntiFlatPoint {
     //  no simd        0        5        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(1.0 / self[e321] * -1.0) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(1.0 / self[e321] * -1.0) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -104,10 +104,10 @@ impl AntiFix for AntiFlectorOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]);
-        return AntiFlectorOnOrigin::from_groups(
+        AntiFlectorOnOrigin::from_groups(
             // e321, e1, e2, e3
             Simd32x4::from((anti_reverse_g0[0] * self[e321]) - (anti_reverse_g0[1] * self[e1]) - (anti_reverse_g0[2] * self[e2]) - (anti_reverse_g0[3] * self[e3])) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiLineOnOrigin {
@@ -132,10 +132,10 @@ impl AntiFix for AntiLineOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
-        return AntiLineOnOrigin::from_groups(
+        AntiLineOnOrigin::from_groups(
             // e23, e31, e12
             Simd32x3::from((anti_reverse_g0[0] * self[e23]) + (anti_reverse_g0[1] * self[e31]) + (anti_reverse_g0[2] * self[e12])) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -160,11 +160,11 @@ impl AntiFix for AntiMotorOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotorOnOrigin::from_groups(
+        AntiMotorOnOrigin::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from((anti_reverse_g0[0] * self[e23]) + (anti_reverse_g0[1] * self[e31]) + (anti_reverse_g0[2] * self[e12]) - (anti_reverse_g0[3] * self[scalar]))
                 * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiPlane {
@@ -188,10 +188,10 @@ impl AntiFix for AntiPlane {
     //  no simd        2        4        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(-self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -215,7 +215,7 @@ impl AntiFix for AntiPlaneOnOrigin {
     //  no simd        2        3        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ Simd32x3::from(-self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3]) * self.group0());
+        AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ Simd32x3::from(-self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3]) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiScalar {
@@ -231,7 +231,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for AntiScalar {
 }
 impl AntiFix for AntiScalar {
     fn anti_fix(self) -> Self {
-        return AntiScalar::from_groups(/* e12345 */ 1.0);
+        AntiScalar::from_groups(/* e12345 */ 1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -255,10 +255,10 @@ impl AntiFix for AntiSphereOnOrigin {
     //  no simd        2        4        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiSphereOnOrigin::from_groups(
+        AntiSphereOnOrigin::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(-self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for DipoleOnOrigin {
@@ -282,7 +282,7 @@ impl AntiFix for DipoleOnOrigin {
     //  no simd        0        4        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ Simd32x4::from(1.0 / self[e45]) * self.group0());
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ Simd32x4::from(1.0 / self[e45]) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for FlatOrigin {
@@ -298,7 +298,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for FlatOrigin {
 }
 impl AntiFix for FlatOrigin {
     fn anti_fix(self) -> Self {
-        return FlatOrigin::from_groups(/* e45 */ 1.0);
+        FlatOrigin::from_groups(/* e45 */ 1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for FlatPoint {
@@ -322,7 +322,7 @@ impl AntiFix for FlatPoint {
     //  no simd        0        4        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(1.0 / self[e45]) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(1.0 / self[e45]) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for FlectorOnOrigin {
@@ -347,11 +347,11 @@ impl AntiFix for FlectorOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]);
-        return FlectorOnOrigin::from_groups(
+        FlectorOnOrigin::from_groups(
             // e45, e4235, e4315, e4125
             Simd32x4::from((anti_reverse_g0[1] * self[e4235]) + (anti_reverse_g0[2] * self[e4315]) + (anti_reverse_g0[3] * self[e4125]) - (anti_reverse_g0[0] * self[e45]))
                 * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for LineOnOrigin {
@@ -376,10 +376,10 @@ impl AntiFix for LineOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x3::from(-1.0);
-        return LineOnOrigin::from_groups(
+        LineOnOrigin::from_groups(
             // e415, e425, e435
             Simd32x3::from(-(anti_reverse_g0[0] * self[e415]) - (anti_reverse_g0[1] * self[e425]) - (anti_reverse_g0[2] * self[e435])) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for MotorOnOrigin {
@@ -404,11 +404,11 @@ impl AntiFix for MotorOnOrigin {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let anti_reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MotorOnOrigin::from_groups(
+        MotorOnOrigin::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from((anti_reverse_g0[3] * self[e12345]) - (anti_reverse_g0[0] * self[e415]) - (anti_reverse_g0[1] * self[e425]) - (anti_reverse_g0[2] * self[e435]))
                 * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Plane {
@@ -432,10 +432,10 @@ impl AntiFix for Plane {
     //  no simd        2        4        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for PlaneOnOrigin {
@@ -459,10 +459,10 @@ impl AntiFix for PlaneOnOrigin {
     //  no simd        2        3        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             Simd32x3::from(self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for RoundPoint {
@@ -487,12 +487,12 @@ impl AntiFix for RoundPoint {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 2.0 * (self[e4] * self[e5]) - self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3];
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e5
             geometric_anti_product_g0 * self[e5],
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for RoundPointAtOrigin {
@@ -516,7 +516,7 @@ impl AntiFix for RoundPointAtOrigin {
     //  no simd        0        3        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return RoundPointAtOrigin::from_groups(/* e4, e5 */ Simd32x2::from(f32::powf(self[e4], -0.5) * f32::powf(self[e5], -0.5) * 2.0) * self.group0());
+        RoundPointAtOrigin::from_groups(/* e4, e5 */ Simd32x2::from(f32::powf(self[e4], -0.5) * f32::powf(self[e5], -0.5) * 2.0) * self.group0())
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Scalar {
@@ -532,7 +532,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Scalar {
 }
 impl AntiFix for Scalar {
     fn anti_fix(self) -> Self {
-        return Scalar::from_groups(/* scalar */ -1.0);
+        Scalar::from_groups(/* scalar */ -1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Sphere {
@@ -557,12 +557,12 @@ impl AntiFix for Sphere {
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125] - 2.0 * (self[e3215] * self[e1234]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e1234
             geometric_anti_product_g0 * self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for SphereAtOrigin {
@@ -586,10 +586,10 @@ impl AntiFix for SphereAtOrigin {
     //  no simd        0        3        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return SphereAtOrigin::from_groups(
+        SphereAtOrigin::from_groups(
             // e3215, e1234
             Simd32x2::from(f32::powf(self[e3215], -0.5) * f32::powf(self[e1234], -0.5) * -2.0) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for SphereOnOrigin {
@@ -613,9 +613,9 @@ impl AntiFix for SphereOnOrigin {
     //  no simd        2        4        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return SphereOnOrigin::from_groups(
+        SphereOnOrigin::from_groups(
             // e4235, e4315, e4125, e1234
             Simd32x4::from(self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]) * self.group0(),
-        );
+        )
     }
 }

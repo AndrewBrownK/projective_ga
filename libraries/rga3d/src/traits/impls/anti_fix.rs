@@ -31,7 +31,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for AntiScalar {
 }
 impl AntiFix for AntiScalar {
     fn anti_fix(self) -> Self {
-        return AntiScalar::from_groups(/* e1234 */ 1.0);
+        AntiScalar::from_groups(/* e1234 */ 1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Origin {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Origin {
 }
 impl AntiFix for Origin {
     fn anti_fix(self) -> Self {
-        return Origin::from_groups(/* e4 */ 1.0);
+        Origin::from_groups(/* e4 */ 1.0)
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Plane {
@@ -71,10 +71,10 @@ impl AntiFix for Plane {
     //  no simd        2        4        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Point {
@@ -98,6 +98,6 @@ impl AntiFix for Point {
     //  no simd        0        4        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0());
+        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0())
     }
 }

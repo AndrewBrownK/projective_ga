@@ -30,7 +30,7 @@ impl Norm for Flector {
     // f32        3        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
+        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
     }
 }
 impl std::ops::Div<NormPrefixOrPostfix> for Line {
@@ -45,7 +45,7 @@ impl Norm for Line {
     // f32        2        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
     }
 }
 impl std::ops::Div<NormPrefixOrPostfix> for Motor {
@@ -60,7 +60,7 @@ impl Norm for Motor {
     // f32        3        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<NormPrefixOrPostfix> for MultiVector {
@@ -75,7 +75,7 @@ impl Norm for MultiVector {
     // f32        7        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e1234
             self[e1234] * self[e1234]
                 + self[e4] * self[e4]
@@ -85,7 +85,7 @@ impl Norm for MultiVector {
                 + self[e423] * self[e423]
                 + self[e431] * self[e431]
                 + self[e412] * self[e412],
-        );
+        )
     }
 }
 impl std::ops::Div<NormPrefixOrPostfix> for Point {
@@ -97,6 +97,6 @@ impl std::ops::Div<NormPrefixOrPostfix> for Point {
 impl Norm for Point {
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e4]);
+        AntiScalar::from_groups(/* e1234 */ self[e4])
     }
 }

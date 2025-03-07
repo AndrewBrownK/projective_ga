@@ -39,7 +39,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiCircleRotor {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -58,7 +58,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiCircleRotor {
                     - (right_anti_dual_g2[1] * self[e42])
                     - (right_anti_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiCircleRotor {
@@ -76,7 +76,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiCircleRotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -100,7 +100,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiCircleRotor {
             ]) + (self.group0().yzx() * right_anti_dual_g2.zxy()).with_w(right_anti_dual_g3[3] * self[scalar])
                 - (right_anti_dual_g2.yzxx() * self.group0().zxy().with_w(self[e23]))
                 - (other.group0().zxy() * self.group2().yzx()).with_w(right_anti_dual_g2[1] * self[e31]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiCircleRotor {
@@ -111,12 +111,12 @@ impl WeightExpansion<AntiDualNum> for AntiCircleRotor {
     // no simd        0        8        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             other.group0().xx().with_zw(other[e3215], other[scalar]) * self.group0().with_w(self[scalar]),
             // e235, e315, e125, e5
             Simd32x4::from(other[e3215]) * self.group1().xyz().with_w(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiCircleRotor {
@@ -131,7 +131,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiCircleRotor {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
@@ -141,7 +141,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiCircleRotor {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiCircleRotor {
@@ -158,7 +158,7 @@ impl WeightExpansion<AntiFlector> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
@@ -169,7 +169,7 @@ impl WeightExpansion<AntiFlector> for AntiCircleRotor {
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) + (self.group0().yzx() * right_anti_dual_g0.zxy()).with_w(right_anti_dual_g1[3] * self[scalar])
                 - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiCircleRotor {
@@ -185,7 +185,7 @@ impl WeightExpansion<AntiLine> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g0 * Simd32x3::from(self[scalar])).with_w(
                 -(right_anti_dual_g0[0] * self[e23])
@@ -197,7 +197,7 @@ impl WeightExpansion<AntiLine> for AntiCircleRotor {
             ),
             // e235, e315, e125, e5
             (right_anti_dual_g1 * self.group2().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiCircleRotor {
@@ -214,7 +214,7 @@ impl WeightExpansion<AntiMotor> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from([self[scalar], self[scalar], self[scalar], 1.0])
                 * right_anti_dual_g0.xyz().with_w(
@@ -229,7 +229,7 @@ impl WeightExpansion<AntiMotor> for AntiCircleRotor {
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g1[3]) * self.group1().xyz()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g1.xyz()))
                 .with_w(right_anti_dual_g1[3] * self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiCircleRotor {
@@ -243,7 +243,7 @@ impl WeightExpansion<AntiPlane> for AntiCircleRotor {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl WeightExpansion<AntiScalar> for AntiCircleRotor {
@@ -259,14 +259,14 @@ impl WeightExpansion<AntiScalar> for AntiCircleRotor {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
             // e15, e25, e35, scalar
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for AntiCircleRotor {
@@ -282,7 +282,7 @@ impl WeightExpansion<Circle> for AntiCircleRotor {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -304,7 +304,7 @@ impl WeightExpansion<Circle> for AntiCircleRotor {
                 -(right_anti_dual_g1[0] * self[e15]) - (right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]) - (self[e12] * other[e125]),
             ]) - (self.group0().zxy() * other.group2().yzx()).with_w(self[e23] * other[e235])
                 - (other.group0().zxy() * self.group2().yzx()).with_w(self[e31] * other[e315]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiCircleRotor {
@@ -321,7 +321,7 @@ impl WeightExpansion<CircleRotor> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((Simd32x3::from(right_anti_dual_g2[3]) * self.group0()) + (Simd32x3::from(self[scalar]) * other.group0())).with_w(right_anti_dual_g2[3] * self[scalar]),
             // e23, e31, e12, e45
@@ -346,7 +346,7 @@ impl WeightExpansion<CircleRotor> for AntiCircleRotor {
                 -(right_anti_dual_g1[2] * self[e35]) - (right_anti_dual_g2[0] * self[e23]) - (right_anti_dual_g2[1] * self[e31]) - (right_anti_dual_g2[2] * self[e12]),
             ]) - (self.group2().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0]))
                 - (self.group0().zxy() * right_anti_dual_g2.yzx()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiCircleRotor {
@@ -364,7 +364,7 @@ impl WeightExpansion<Dipole> for AntiCircleRotor {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -382,7 +382,7 @@ impl WeightExpansion<Dipole> for AntiCircleRotor {
                     - (right_anti_dual_g1[2] * self[e12])
                     - (right_anti_dual_g1[3] * self[e45]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiCircleRotor {
@@ -401,7 +401,7 @@ impl WeightExpansion<DipoleInversion> for AntiCircleRotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([
                 (right_anti_dual_g0[0] * self[scalar]) + (right_anti_dual_g2[3] * self[e23]) + (right_anti_dual_g3[2] * self[e42]),
@@ -433,7 +433,7 @@ impl WeightExpansion<DipoleInversion> for AntiCircleRotor {
             .with_w(right_anti_dual_g3[3] * self[scalar]),
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * right_anti_dual_g3.xyz().with_w(right_anti_dual_g2[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiCircleRotor {
@@ -450,7 +450,7 @@ impl WeightExpansion<DualNum> for AntiCircleRotor {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0().with_w(self[scalar]),
             // e23, e31, e12, e45
@@ -459,7 +459,7 @@ impl WeightExpansion<DualNum> for AntiCircleRotor {
             (self.group2().xyz() * right_anti_dual_g0.yy().with_z(right_anti_dual_g0[1])).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(right_anti_dual_g0[0] * self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for AntiCircleRotor {
@@ -475,7 +475,7 @@ impl WeightExpansion<FlatPoint> for AntiCircleRotor {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -483,7 +483,7 @@ impl WeightExpansion<FlatPoint> for AntiCircleRotor {
             // e235, e315, e125, e12345
             (right_anti_dual_g0.xyz() * self.group2().www())
                 .with_w(-(right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45])),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for AntiCircleRotor {
@@ -500,7 +500,7 @@ impl WeightExpansion<Flector> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((self.group0().yzx() * right_anti_dual_g1.zxy()) - (self.group0().zxy() * right_anti_dual_g1.yzx()))
                 .with_w(-(right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45])),
@@ -516,7 +516,7 @@ impl WeightExpansion<Flector> for AntiCircleRotor {
             .with_w(right_anti_dual_g1[3] * self[scalar]),
             // e1, e2, e3, e4
             (right_anti_dual_g1.xyz() * self.group2().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiCircleRotor {
@@ -531,7 +531,7 @@ impl WeightExpansion<Line> for AntiCircleRotor {
     //  no simd       13       24        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -545,7 +545,7 @@ impl WeightExpansion<Line> for AntiCircleRotor {
                 (self[e41] * other[e315]) + (self[e45] * other[e435]),
                 -(self[e23] * other[e235]) - (self[e31] * other[e315]) - (self[e12] * other[e125]) - (self[e25] * other[e425]) - (self[e35] * other[e435]),
             ]) - (self.group0().zxy() * other.group1().yzx()).with_w(self[e15] * other[e415]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiCircleRotor {
@@ -562,7 +562,7 @@ impl WeightExpansion<Motor> for AntiCircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0().with_w(self[scalar]),
             // e23, e31, e12, e45
@@ -585,7 +585,7 @@ impl WeightExpansion<Motor> for AntiCircleRotor {
                 ))
                 + (right_anti_dual_g1.zxyw() * self.group0().yzx().with_w(self[scalar]))
                 - (right_anti_dual_g1.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiCircleRotor {
@@ -608,7 +608,7 @@ impl WeightExpansion<MultiVector> for AntiCircleRotor {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[0] * self[scalar],
@@ -665,7 +665,7 @@ impl WeightExpansion<MultiVector> for AntiCircleRotor {
                 - (self[e31] * other[e431])
                 - (self[e12] * other[e412])
                 - (self[scalar] * other[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiCircleRotor {
@@ -681,7 +681,7 @@ impl WeightExpansion<Plane> for AntiCircleRotor {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -692,7 +692,7 @@ impl WeightExpansion<Plane> for AntiCircleRotor {
                 - (right_anti_dual_g0.zxy() * self.group2().yzx()).with_w(0.0),
             // e1, e2, e3, e5
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiCircleRotor {
@@ -706,12 +706,12 @@ impl WeightExpansion<RoundPoint> for AntiCircleRotor {
     //  no simd        0       10        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             self[scalar] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for AntiCircleRotor {
@@ -721,7 +721,7 @@ impl WeightExpansion<Scalar> for AntiCircleRotor {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar])
     }
 }
 impl WeightExpansion<Sphere> for AntiCircleRotor {
@@ -737,7 +737,7 @@ impl WeightExpansion<Sphere> for AntiCircleRotor {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -752,7 +752,7 @@ impl WeightExpansion<Sphere> for AntiCircleRotor {
                 .with_w(right_anti_dual_g0[3] * self[scalar]),
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * right_anti_dual_g0.xyz().with_w(other[e3215]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiCircleRotor {
@@ -771,7 +771,7 @@ impl WeightExpansion<VersorEven> for AntiCircleRotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((Simd32x3::from(right_anti_dual_g0[3]) * self.group0()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g0.xyz())).with_w(right_anti_dual_g0[3] * self[scalar]),
             // e23, e31, e12, e45
@@ -796,7 +796,7 @@ impl WeightExpansion<VersorEven> for AntiCircleRotor {
             ]) + (self.group0().yzx() * right_anti_dual_g2.zxy()).with_w(right_anti_dual_g3[3] * self[scalar])
                 - (right_anti_dual_g2.yzxx() * self.group0().zxy().with_w(self[e23]))
                 - (right_anti_dual_g0.zxy() * self.group2().yzx()).with_w(right_anti_dual_g2[1] * self[e31]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiCircleRotor {
@@ -815,7 +815,7 @@ impl WeightExpansion<VersorOdd> for AntiCircleRotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([
                 (right_anti_dual_g0[0] * self[scalar]) + (right_anti_dual_g3[3] * self[e23]),
@@ -848,7 +848,7 @@ impl WeightExpansion<VersorOdd> for AntiCircleRotor {
             .with_w(right_anti_dual_g2[3] * self[scalar]),
             // e1, e2, e3, e4
             right_anti_dual_g3 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiDipoleInversion {
@@ -872,7 +872,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiDipoleInversion {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[1] * self[e3]) + (right_anti_dual_g2[0] * self[e4]),
@@ -883,7 +883,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiDipoleInversion {
                 - (right_anti_dual_g0 * self.group3().www()).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiDipoleInversion {
@@ -901,7 +901,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiDipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx()),
             // e415, e425, e435, e321
@@ -927,7 +927,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiDipoleInversion {
                 )
                 + (right_anti_dual_g2.zxy() * self.group3().yzx()).with_w(right_anti_dual_g3[3] * self[e4])
                 - (right_anti_dual_g2.yzxx() * self.group3().zxy().with_w(self[e423])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiDipoleInversion {
@@ -938,12 +938,12 @@ impl WeightExpansion<AntiDualNum> for AntiDipoleInversion {
     // no simd        0        8        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[e3215]) * self.group3().xyz().with_w(self[e4]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiDipoleInversion {
@@ -959,7 +959,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiDipoleInversion {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from([self[e4], self[e4], self[e4], 1.0])
                 * right_anti_dual_g0
@@ -968,7 +968,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiDipoleInversion {
                 - (right_anti_dual_g0.wwwx() * self.group3().xyz().with_w(self[e423])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group3().yzx()) - (right_anti_dual_g0.yzx() * self.group3().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiDipoleInversion {
@@ -985,7 +985,7 @@ impl WeightExpansion<AntiFlector> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from(self[e4]) * right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[3]))
                 + Simd32x3::from(0.0).with_w(
@@ -997,7 +997,7 @@ impl WeightExpansion<AntiFlector> for AntiDipoleInversion {
                 - (right_anti_dual_g0.wwwx() * self.group3().xyz().with_w(self[e423])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group3().yzx()) - (right_anti_dual_g0.yzx() * self.group3().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiDipoleInversion {
@@ -1014,7 +1014,7 @@ impl WeightExpansion<AntiLine> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[1] * self[e3]) + (right_anti_dual_g1[0] * self[e4]),
@@ -1022,7 +1022,7 @@ impl WeightExpansion<AntiLine> for AntiDipoleInversion {
                 (right_anti_dual_g0[0] * self[e2]) + (right_anti_dual_g1[2] * self[e4]),
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) - (self.group3().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiDipoleInversion {
@@ -1038,7 +1038,7 @@ impl WeightExpansion<AntiMotor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g1[3]) * self.group3().xyz().with_w(self[e4]),
             // e4235, e4315, e4125, e3215
@@ -1049,7 +1049,7 @@ impl WeightExpansion<AntiMotor> for AntiDipoleInversion {
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) + (Simd32x4::from(right_anti_dual_g1[3]) * self.group0().with_w(self[e321]))
                 - (self.group3().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiDipoleInversion {
@@ -1064,10 +1064,10 @@ impl WeightExpansion<AntiPlane> for AntiDipoleInversion {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for AntiDipoleInversion {
@@ -1083,7 +1083,7 @@ impl WeightExpansion<AntiScalar> for AntiDipoleInversion {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e415, e425, e435, e321
@@ -1092,7 +1092,7 @@ impl WeightExpansion<AntiScalar> for AntiDipoleInversion {
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g0) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for AntiDipoleInversion {
@@ -1108,7 +1108,7 @@ impl WeightExpansion<Circle> for AntiDipoleInversion {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx()),
             // e415, e425, e435, e321
@@ -1133,7 +1133,7 @@ impl WeightExpansion<Circle> for AntiDipoleInversion {
                     - (self[e315] * other[e431])
                     - (self[e125] * other[e412]),
             ]) - (other.group2().yzx() * self.group3().zxy()).with_w(self[e423] * other[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiDipoleInversion {
@@ -1150,7 +1150,7 @@ impl WeightExpansion<CircleRotor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e4]) + (right_anti_dual_g2[3] * self[e423]) + (self[e3] * other[e431]),
@@ -1182,7 +1182,7 @@ impl WeightExpansion<CircleRotor> for AntiDipoleInversion {
             .with_w(right_anti_dual_g2[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g2[3]) * self.group3().xyz().with_w(self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiDipoleInversion {
@@ -1200,7 +1200,7 @@ impl WeightExpansion<Dipole> for AntiDipoleInversion {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g2[0] * self[e4]) + (right_anti_dual_g1[1] * self[e3]),
@@ -1211,7 +1211,7 @@ impl WeightExpansion<Dipole> for AntiDipoleInversion {
                 - (right_anti_dual_g1.zxy() * self.group3().yzx()).with_w(right_anti_dual_g2[1] * self[e2]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiDipoleInversion {
@@ -1230,7 +1230,7 @@ impl WeightExpansion<DipoleInversion> for AntiDipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g2[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -1253,7 +1253,7 @@ impl WeightExpansion<DipoleInversion> for AntiDipoleInversion {
                 - (right_anti_dual_g2.wwwy() * self.group2().xyz().with_w(self[e2]))
                 - (self.group3().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0]))
                 - (right_anti_dual_g3.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiDipoleInversion {
@@ -1268,7 +1268,7 @@ impl WeightExpansion<DualNum> for AntiDipoleInversion {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             right_anti_dual_g0.yy().with_zw(right_anti_dual_g0[1], right_anti_dual_g0[0]) * self.group0().with_w(self[e4]),
             // e415, e425, e435, e321
@@ -1277,7 +1277,7 @@ impl WeightExpansion<DualNum> for AntiDipoleInversion {
             Simd32x4::from(right_anti_dual_g0[1]) * self.group2().xyz().with_w(self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[1]) * self.group3().xyz().with_w(self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for AntiDipoleInversion {
@@ -1293,13 +1293,13 @@ impl WeightExpansion<FlatPoint> for AntiDipoleInversion {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.xyz() * self.group2().www())
                 .with_w(-(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5])),
             // e1234
             right_anti_dual_g0[3] * self[e4],
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for AntiDipoleInversion {
@@ -1316,7 +1316,7 @@ impl WeightExpansion<Flector> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz(),
             // e23, e31, e12, e45
@@ -1332,7 +1332,7 @@ impl WeightExpansion<Flector> for AntiDipoleInversion {
                 + Simd32x3::from(0.0)
                     .with_w((right_anti_dual_g1[2] * self[e125]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5]))
                 - (right_anti_dual_g1.zxy() * self.group1().yzx()).with_w(right_anti_dual_g0[0] * self[e1]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiDipoleInversion {
@@ -1347,7 +1347,7 @@ impl WeightExpansion<Line> for AntiDipoleInversion {
     //  no simd       13       24        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e4]) * other.group0(),
             // e415, e425, e435, e321
@@ -1359,7 +1359,7 @@ impl WeightExpansion<Line> for AntiDipoleInversion {
                 (self[e1] * other[e315]) + (self[e5] * other[e435]),
                 -(self[e431] * other[e315]) - (self[e412] * other[e125]) - (self[e415] * other[e415]) - (self[e425] * other[e425]) - (self[e435] * other[e435]),
             ]) - (other.group1().yzx() * self.group3().zxy()).with_w(self[e423] * other[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiDipoleInversion {
@@ -1376,7 +1376,7 @@ impl WeightExpansion<Motor> for AntiDipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (Simd32x4::from([self[e4], self[e4], self[e4], 1.0])
                 * right_anti_dual_g0.xyz().with_w(
@@ -1402,7 +1402,7 @@ impl WeightExpansion<Motor> for AntiDipoleInversion {
             .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group3().xyz().with_w(self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiDipoleInversion {
@@ -1425,7 +1425,7 @@ impl WeightExpansion<MultiVector> for AntiDipoleInversion {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -1481,7 +1481,7 @@ impl WeightExpansion<MultiVector> for AntiDipoleInversion {
                 - (right_anti_dual_g1[1] * self[e431])
                 - (right_anti_dual_g1[2] * self[e412])
                 - (right_anti_dual_g1[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiDipoleInversion {
@@ -1497,7 +1497,7 @@ impl WeightExpansion<Plane> for AntiDipoleInversion {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz(),
             // e23, e31, e12, e45
@@ -1509,7 +1509,7 @@ impl WeightExpansion<Plane> for AntiDipoleInversion {
             (Simd32x4::from(right_anti_dual_g0[3]) * self.group0().with_w(self[e321]))
                 + (right_anti_dual_g0.yzxx() * self.group1().zxy().with_w(self[e235]))
                 + (right_anti_dual_g0.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiDipoleInversion {
@@ -1524,11 +1524,11 @@ impl WeightExpansion<RoundPoint> for AntiDipoleInversion {
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4])
                 - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for AntiDipoleInversion {
@@ -1544,7 +1544,7 @@ impl WeightExpansion<Sphere> for AntiDipoleInversion {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz()) - (Simd32x3::from(right_anti_dual_g0[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -1561,7 +1561,7 @@ impl WeightExpansion<Sphere> for AntiDipoleInversion {
                 (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]),
             ]) + (Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
                 + (right_anti_dual_g0.yzxx() * self.group1().zxy().with_w(self[e235])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiDipoleInversion {
@@ -1580,7 +1580,7 @@ impl WeightExpansion<VersorEven> for AntiDipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group3().zxyy() * right_anti_dual_g0.yzx().with_w(right_anti_dual_g3[1]))
                 + Simd32x3::from(0.0).with_w(
@@ -1614,7 +1614,7 @@ impl WeightExpansion<VersorEven> for AntiDipoleInversion {
             .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group3().xyz().with_w(self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiDipoleInversion {
@@ -1633,7 +1633,7 @@ impl WeightExpansion<VersorOdd> for AntiDipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g3[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -1655,7 +1655,7 @@ impl WeightExpansion<VersorOdd> for AntiDipoleInversion {
                 - (self.group3().yzxz() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[2]))
                 - (right_anti_dual_g3.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[0] * self[e1])
                 - (self.group2().xyz() * right_anti_dual_g3.www()).with_w(right_anti_dual_g2[1] * self[e2]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiDualNum {
@@ -1675,14 +1675,14 @@ impl WeightExpansion<AntiCircleRotor> for AntiDualNum {
     //  no simd        0       22        0
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e12345
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiDualNum {
@@ -1696,7 +1696,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiDualNum {
     //  no simd        0       27        0
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -1705,7 +1705,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiDualNum {
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiDualNum {
@@ -1716,7 +1716,7 @@ impl WeightExpansion<AntiDualNum> for AntiDualNum {
     // no simd        0        2        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[scalar]) * other.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[scalar]) * other.group0())
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiDualNum {
@@ -1730,7 +1730,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiDualNum {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e321] * -1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e321] * -1.0))
     }
 }
 impl WeightExpansion<AntiFlector> for AntiDualNum {
@@ -1741,12 +1741,12 @@ impl WeightExpansion<AntiFlector> for AntiDualNum {
     // no simd        0       16        0
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiDualNum {
@@ -1757,12 +1757,12 @@ impl WeightExpansion<AntiLine> for AntiDualNum {
     // no simd        0       12        0
     fn weight_expansion(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             Simd32x3::from(self[scalar]) * other.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiDualNum {
@@ -1773,12 +1773,12 @@ impl WeightExpansion<AntiMotor> for AntiDualNum {
     // no simd        0       16        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiDualNum {
@@ -1792,7 +1792,7 @@ impl WeightExpansion<AntiPlane> for AntiDualNum {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl WeightExpansion<AntiScalar> for AntiDualNum {
@@ -1806,7 +1806,7 @@ impl WeightExpansion<AntiScalar> for AntiDualNum {
     //  no simd        0        3        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[e12345] * -1.0) * self.group0());
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Circle> for AntiDualNum {
@@ -1820,14 +1820,14 @@ impl WeightExpansion<Circle> for AntiDualNum {
     //  no simd        0       14        0
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35
             Simd32x3::from(self[scalar]) * other.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiDualNum {
@@ -1843,7 +1843,7 @@ impl WeightExpansion<CircleRotor> for AntiDualNum {
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[scalar]) * other.group0().with_w(right_anti_dual_g2[3]),
             // e23, e31, e12, e45
@@ -1852,7 +1852,7 @@ impl WeightExpansion<CircleRotor> for AntiDualNum {
             (right_anti_dual_g2.xyz() * self.group0().yy().with_z(self[scalar])).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(right_anti_dual_g2[3] * self[e3215]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiDualNum {
@@ -1866,14 +1866,14 @@ impl WeightExpansion<Dipole> for AntiDualNum {
     //  no simd        0       20        0
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125
             Simd32x3::from(self[scalar]) * other.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiDualNum {
@@ -1889,7 +1889,7 @@ impl WeightExpansion<DipoleInversion> for AntiDualNum {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().yy().with_zw(self[scalar], self[e3215]) * (other.group0() * Simd32x3::from(-1.0)).with_w(right_anti_dual_g2[3]),
             // e415, e425, e435, e321
@@ -1898,7 +1898,7 @@ impl WeightExpansion<DipoleInversion> for AntiDualNum {
             Simd32x4::from(self[scalar]) * right_anti_dual_g2.xyz().with_w(right_anti_dual_g3[3]),
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * right_anti_dual_g3.xyz().with_w(right_anti_dual_g2[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiDualNum {
@@ -1913,10 +1913,10 @@ impl WeightExpansion<DualNum> for AntiDualNum {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             (right_anti_dual_g0[0] * self[scalar]) + (right_anti_dual_g0[1] * self[e3215]),
             right_anti_dual_g0[1] * self[scalar],
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<FlatPoint> for AntiDualNum {
@@ -1930,10 +1930,10 @@ impl WeightExpansion<FlatPoint> for AntiDualNum {
     //  no simd        0        7        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * Simd32x4::from([other[e15] * -1.0, other[e25] * -1.0, other[e35] * -1.0, other[e45]]),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for AntiDualNum {
@@ -1944,12 +1944,12 @@ impl WeightExpansion<Flector> for AntiDualNum {
     // no simd        0       16        0
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiDualNum {
@@ -1960,12 +1960,12 @@ impl WeightExpansion<Line> for AntiDualNum {
     // no simd        0        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[scalar]) * other.group0(),
             // e15, e25, e35
             Simd32x3::from(self[scalar]) * other.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiDualNum {
@@ -1981,12 +1981,12 @@ impl WeightExpansion<Motor> for AntiDualNum {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e15, e25, e35, e3215
             self.group0().yy().with_zw(self[scalar], (right_anti_dual_g0[3] * self[e3215]) + (right_anti_dual_g1[3] * self[scalar])) * right_anti_dual_g1.xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiDualNum {
@@ -2005,7 +2005,7 @@ impl WeightExpansion<MultiVector> for AntiDualNum {
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([right_anti_dual_g0[0] * self[scalar], (right_anti_dual_g0[1] * self[scalar]) + (right_anti_dual_g1[3] * self[e3215])]),
             // e1, e2, e3, e4
@@ -2028,7 +2028,7 @@ impl WeightExpansion<MultiVector> for AntiDualNum {
             self.group0().yy().with_zw(self[scalar], (right_anti_dual_g0[0] * self[e3215]) + (right_anti_dual_g9[3] * self[scalar])) * right_anti_dual_g9.xyz().with_w(1.0),
             // e1234
             self[scalar] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiDualNum {
@@ -2042,10 +2042,10 @@ impl WeightExpansion<Plane> for AntiDualNum {
     //  no simd        0        7        0
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiDualNum {
@@ -2059,12 +2059,12 @@ impl WeightExpansion<RoundPoint> for AntiDualNum {
     //  no simd        0       10        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             self[scalar] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for AntiDualNum {
@@ -2074,7 +2074,7 @@ impl WeightExpansion<Scalar> for AntiDualNum {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar])
     }
 }
 impl WeightExpansion<Sphere> for AntiDualNum {
@@ -2089,7 +2089,7 @@ impl WeightExpansion<Sphere> for AntiDualNum {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(right_anti_dual_g0[3] * self[e3215]),
             // e415, e425, e435, e321
@@ -2098,7 +2098,7 @@ impl WeightExpansion<Sphere> for AntiDualNum {
             Simd32x3::from(0.0).with_w(self[scalar] * other[e3215]),
             // e1, e2, e3, e4
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiDualNum {
@@ -2114,7 +2114,7 @@ impl WeightExpansion<VersorEven> for AntiDualNum {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e23, e31, e12, e45
@@ -2123,7 +2123,7 @@ impl WeightExpansion<VersorEven> for AntiDualNum {
             Simd32x4::from(self[scalar]) * other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             self.group0().yy().with_zw(self[scalar], (right_anti_dual_g0[3] * self[e3215]) + (right_anti_dual_g3[3] * self[scalar])) * right_anti_dual_g3.xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiDualNum {
@@ -2139,7 +2139,7 @@ impl WeightExpansion<VersorOdd> for AntiDualNum {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().yy().with_zw(self[scalar], (right_anti_dual_g0[3] * self[scalar]) + (right_anti_dual_g3[3] * self[e3215])) * right_anti_dual_g0.xyz().with_w(1.0),
             // e415, e425, e435, e321
@@ -2148,7 +2148,7 @@ impl WeightExpansion<VersorOdd> for AntiDualNum {
             Simd32x4::from(self[scalar]) * other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             right_anti_dual_g3 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiFlatPoint {
@@ -2164,10 +2164,10 @@ impl WeightExpansion<AntiDipoleInversion> for AntiFlatPoint {
     // f32        3        4        0
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (other[e321] * self[e321]) - (other[e423] * self[e235]) - (other[e431] * self[e315]) - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiFlatPoint {
@@ -2181,7 +2181,7 @@ impl WeightExpansion<AntiDualNum> for AntiFlatPoint {
     //  no simd        0        3        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([other[e3215] * self[e321], 1.0]) * Simd32x2::from([1.0, 0.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([other[e3215] * self[e321], 1.0]) * Simd32x2::from([1.0, 0.0]))
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiFlatPoint {
@@ -2191,7 +2191,7 @@ impl WeightExpansion<AntiFlatPoint> for AntiFlatPoint {
     // f32        0        1        0
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e321] * self[e321]);
+        AntiScalar::from_groups(/* e12345 */ other[e321] * self[e321])
     }
 }
 impl WeightExpansion<AntiFlector> for AntiFlatPoint {
@@ -2201,7 +2201,7 @@ impl WeightExpansion<AntiFlector> for AntiFlatPoint {
     // f32        0        1        0
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e321] * other[e321]);
+        AntiScalar::from_groups(/* e12345 */ self[e321] * other[e321])
     }
 }
 impl WeightExpansion<AntiMotor> for AntiFlatPoint {
@@ -2215,7 +2215,7 @@ impl WeightExpansion<AntiMotor> for AntiFlatPoint {
     //  no simd        0        3        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e321] * other[e3215], 1.0]) * Simd32x2::from([1.0, 0.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e321] * other[e3215], 1.0]) * Simd32x2::from([1.0, 0.0]))
     }
 }
 impl WeightExpansion<AntiScalar> for AntiFlatPoint {
@@ -2229,7 +2229,7 @@ impl WeightExpansion<AntiScalar> for AntiFlatPoint {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Circle> for AntiFlatPoint {
@@ -2239,10 +2239,10 @@ impl WeightExpansion<Circle> for AntiFlatPoint {
     // f32        3        4        0
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiFlatPoint {
@@ -2258,7 +2258,7 @@ impl WeightExpansion<CircleRotor> for AntiFlatPoint {
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -2266,7 +2266,7 @@ impl WeightExpansion<CircleRotor> for AntiFlatPoint {
             // e235, e315, e125, e12345
             (self.group0().xyz() * right_anti_dual_g2.www())
                 .with_w((self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412])),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiFlatPoint {
@@ -2283,13 +2283,13 @@ impl WeightExpansion<DipoleInversion> for AntiFlatPoint {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (self.group0().xyz() * right_anti_dual_g2.www() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g3[0] * self[e235]) + (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]) + (right_anti_dual_g3[3] * self[e321])),
             // e1234
             right_anti_dual_g2[3] * self[e321] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiFlatPoint {
@@ -2303,7 +2303,7 @@ impl WeightExpansion<DualNum> for AntiFlatPoint {
     //  no simd        0        5        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Flector> for AntiFlatPoint {
@@ -2318,10 +2318,10 @@ impl WeightExpansion<Flector> for AntiFlatPoint {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             (right_anti_dual_g1[0] * self[e235]) + (right_anti_dual_g1[1] * self[e315]) + (right_anti_dual_g1[2] * self[e125]) + (right_anti_dual_g1[3] * self[e321]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<Motor> for AntiFlatPoint {
@@ -2335,7 +2335,7 @@ impl WeightExpansion<Motor> for AntiFlatPoint {
     //  no simd        0        5        0
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<MultiVector> for AntiFlatPoint {
@@ -2353,7 +2353,7 @@ impl WeightExpansion<MultiVector> for AntiFlatPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, (self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412])]),
             // e1, e2, e3, e4
@@ -2377,7 +2377,7 @@ impl WeightExpansion<MultiVector> for AntiFlatPoint {
                 .with_w((right_anti_dual_g1[0] * self[e235]) + (right_anti_dual_g1[1] * self[e315]) + (right_anti_dual_g1[2] * self[e125]) + (self[e321] * other[e3215])),
             // e1234
             right_anti_dual_g1[3] * self[e321] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiFlatPoint {
@@ -2392,10 +2392,10 @@ impl WeightExpansion<Plane> for AntiFlatPoint {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             (right_anti_dual_g0[0] * self[e235]) + (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]) + (right_anti_dual_g0[3] * self[e321]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<Sphere> for AntiFlatPoint {
@@ -2411,13 +2411,13 @@ impl WeightExpansion<Sphere> for AntiFlatPoint {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g0[0] * self[e235]) + (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]) + (self[e321] * other[e3215])),
             // e1234
             right_anti_dual_g0[3] * self[e321] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiFlatPoint {
@@ -2433,7 +2433,7 @@ impl WeightExpansion<VersorEven> for AntiFlatPoint {
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -2441,7 +2441,7 @@ impl WeightExpansion<VersorEven> for AntiFlatPoint {
             // e235, e315, e125, e12345
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz())
                 .with_w((self[e321] * other[e321]) - (right_anti_dual_g0[0] * self[e235]) - (right_anti_dual_g0[1] * self[e315]) - (right_anti_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiFlatPoint {
@@ -2457,13 +2457,13 @@ impl WeightExpansion<VersorOdd> for AntiFlatPoint {
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g3[3]) * self.group0().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g3[0] * self[e235]) + (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]) + (self[e321] * other[e3215])),
             // e1234
             right_anti_dual_g3[3] * self[e321] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiFlector {
@@ -2487,14 +2487,14 @@ impl WeightExpansion<AntiCircleRotor> for AntiFlector {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzx() * self.group1().zxy()).with_w(-(right_anti_dual_g1[3] * self[e5]) - (right_anti_dual_g2[2] * self[e3]))
                 - (self.group1().yzxy() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[1]))
                 - (right_anti_dual_g0 * self.group1().www()).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiFlector {
@@ -2512,7 +2512,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiFlector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (other.group0().yzx() * self.group1().zxy()) - (other.group0().zxy() * self.group1().yzx()),
             // e415, e425, e435, e321
@@ -2528,7 +2528,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiFlector {
                         - (other[e412] * self[e125]),
                 )
                 - (right_anti_dual_g2.yzx() * self.group1().zxy()).with_w(other[e423] * self[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiFlector {
@@ -2542,12 +2542,12 @@ impl WeightExpansion<AntiDualNum> for AntiFlector {
     //  no simd        0        4        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             (self.group1().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(other[e3215] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiFlector {
@@ -2562,12 +2562,12 @@ impl WeightExpansion<AntiFlatPoint> for AntiFlector {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(right_anti_dual_g0[3]) * self.group1().xyz().with_w(self[e321]) * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group1().yzx()) - (right_anti_dual_g0.yzx() * self.group1().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiFlector {
@@ -2584,13 +2584,13 @@ impl WeightExpansion<AntiFlector> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g1[0] * self[e1]) + (right_anti_dual_g1[1] * self[e2]) + (right_anti_dual_g1[2] * self[e3]) - (right_anti_dual_g0[3] * self[e321])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group1().yzx()) - (right_anti_dual_g0.yzx() * self.group1().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiFlector {
@@ -2607,11 +2607,11 @@ impl WeightExpansion<AntiLine> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzx() * self.group1().zxy()).with_w(-(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]))
                 - (self.group1().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiFlector {
@@ -2628,14 +2628,14 @@ impl WeightExpansion<AntiMotor> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             (self.group1().xyz() * right_anti_dual_g1.www()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(-(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]))
                 + (right_anti_dual_g0.yzx() * self.group1().zxy()).with_w(right_anti_dual_g1[3] * self[e321])
                 - (self.group1().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiFlector {
@@ -2650,10 +2650,10 @@ impl WeightExpansion<AntiPlane> for AntiFlector {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for AntiFlector {
@@ -2668,12 +2668,12 @@ impl WeightExpansion<AntiScalar> for AntiFlector {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for AntiFlector {
@@ -2689,7 +2689,7 @@ impl WeightExpansion<Circle> for AntiFlector {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (other.group0().yzx() * self.group1().zxy()) - (other.group0().zxy() * self.group1().yzx()),
             // e415, e425, e435, e321
@@ -2702,7 +2702,7 @@ impl WeightExpansion<Circle> for AntiFlector {
                 (right_anti_dual_g1[2] * self[e5]) + (self[e1] * other[e315]),
                 -(right_anti_dual_g1[3] * self[e321]) - (self[e315] * other[e431]) - (self[e125] * other[e412]),
             ]) - (other.group2().yzx() * self.group1().zxy()).with_w(self[e235] * other[e423]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiFlector {
@@ -2719,7 +2719,7 @@ impl WeightExpansion<CircleRotor> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([
                 self[e3] * other[e431],
@@ -2739,7 +2739,7 @@ impl WeightExpansion<CircleRotor> for AntiFlector {
             .with_w(right_anti_dual_g2[3] * self[e5]),
             // e1, e2, e3, e4
             (self.group1().xyz() * right_anti_dual_g2.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiFlector {
@@ -2757,14 +2757,14 @@ impl WeightExpansion<Dipole> for AntiFlector {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzx() * self.group1().zxy()).with_w(-(right_anti_dual_g2[2] * self[e3]) - (right_anti_dual_g1[3] * self[e5]))
                 - (self.group1().wwwx() * right_anti_dual_g0.with_w(right_anti_dual_g2[0]))
                 - (right_anti_dual_g1.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[1] * self[e2]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiFlector {
@@ -2783,7 +2783,7 @@ impl WeightExpansion<DipoleInversion> for AntiFlector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g2[3]) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -2799,7 +2799,7 @@ impl WeightExpansion<DipoleInversion> for AntiFlector {
                 - (Simd32x4::from(self[e5]) * right_anti_dual_g0.with_w(right_anti_dual_g1[3]))
                 - (right_anti_dual_g2.wwwy() * self.group0().xyz().with_w(self[e2]))
                 - (self.group1().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiFlector {
@@ -2813,12 +2813,12 @@ impl WeightExpansion<DualNum> for AntiFlector {
     //  no simd        0       10        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for AntiFlector {
@@ -2833,10 +2833,10 @@ impl WeightExpansion<FlatPoint> for AntiFlector {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             -(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<Flector> for AntiFlector {
@@ -2853,7 +2853,7 @@ impl WeightExpansion<Flector> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((right_anti_dual_g1.zxy() * self.group1().yzx()) - (right_anti_dual_g1.yzx() * self.group1().zxy())).with_w(0.0),
             // e15, e25, e35, e3215
@@ -2865,7 +2865,7 @@ impl WeightExpansion<Flector> for AntiFlector {
                         - (right_anti_dual_g0[3] * self[e5]),
                 )
                 - (self.group1().wwwx() * right_anti_dual_g1.xyz().with_w(right_anti_dual_g0[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiFlector {
@@ -2879,7 +2879,7 @@ impl WeightExpansion<Line> for AntiFlector {
     //  no simd        8       12        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (self[e2] * other[e125]) + (self[e5] * other[e415]),
@@ -2887,7 +2887,7 @@ impl WeightExpansion<Line> for AntiFlector {
                 (self[e1] * other[e315]) + (self[e5] * other[e435]),
                 -(self[e2] * other[e425]) - (self[e3] * other[e435]),
             ]) - (self.group1().zxyx() * other.group1().yzx().with_w(other[e415])),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiFlector {
@@ -2903,7 +2903,7 @@ impl WeightExpansion<Motor> for AntiFlector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g0[0] * self[e5]) + (right_anti_dual_g1[2] * self[e2]),
@@ -2914,7 +2914,7 @@ impl WeightExpansion<Motor> for AntiFlector {
                 - (self.group1().zxyx() * right_anti_dual_g1.yzx().with_w(right_anti_dual_g0[0])),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g0[3]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiFlector {
@@ -2937,7 +2937,7 @@ impl WeightExpansion<MultiVector> for AntiFlector {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -2975,7 +2975,7 @@ impl WeightExpansion<MultiVector> for AntiFlector {
                 - (self.group0().xyz() * right_anti_dual_g1.www()).with_w(right_anti_dual_g8[1] * self[e2]),
             // e1234
             (right_anti_dual_g7[0] * self[e1]) + (right_anti_dual_g7[1] * self[e2]) + (right_anti_dual_g7[2] * self[e3]) - (right_anti_dual_g1[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiFlector {
@@ -2991,7 +2991,7 @@ impl WeightExpansion<Plane> for AntiFlector {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((right_anti_dual_g0.zxy() * self.group1().yzx()) - (right_anti_dual_g0.yzx() * self.group1().zxy())).with_w(0.0),
             // e15, e25, e35, e3215
@@ -3001,7 +3001,7 @@ impl WeightExpansion<Plane> for AntiFlector {
                     .with_w((right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]) + (right_anti_dual_g0[3] * self[e321]))
                 * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
                 + (right_anti_dual_g0.wwwx() * self.group1().xyz().with_w(self[e235])),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiFlector {
@@ -3016,10 +3016,10 @@ impl WeightExpansion<RoundPoint> for AntiFlector {
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for AntiFlector {
@@ -3035,7 +3035,7 @@ impl WeightExpansion<Sphere> for AntiFlector {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -3045,7 +3045,7 @@ impl WeightExpansion<Sphere> for AntiFlector {
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g0[0] * self[e235]) + (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]) + (self[e321] * other[e3215])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiFlector {
@@ -3064,7 +3064,7 @@ impl WeightExpansion<VersorEven> for AntiFlector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group1().zxyx() * right_anti_dual_g0.yzx().with_w(right_anti_dual_g3[0]))
                 + Simd32x3::from(0.0).with_w(
@@ -3085,7 +3085,7 @@ impl WeightExpansion<VersorEven> for AntiFlector {
             .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             (self.group1().xyz() * right_anti_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiFlector {
@@ -3104,7 +3104,7 @@ impl WeightExpansion<VersorOdd> for AntiFlector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g3[3]) * self.group1().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -3120,7 +3120,7 @@ impl WeightExpansion<VersorOdd> for AntiFlector {
                 - (self.group1().yzxy() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[1]))
                 - (self.group1().wwwz() * right_anti_dual_g0.xyz().with_w(right_anti_dual_g2[2]))
                 - (self.group0().xyz() * right_anti_dual_g3.www()).with_w(right_anti_dual_g2[0] * self[e1]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiLine {
@@ -3143,7 +3143,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiLine {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -3151,7 +3151,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiLine {
                 - (right_anti_dual_g1[0] * self[e23])
                 - (right_anti_dual_g1[1] * self[e31])
                 - (right_anti_dual_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiLine {
@@ -3168,7 +3168,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiLine {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[3] * self[e23]) + (other[e431] * self[e35]),
@@ -3182,7 +3182,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiLine {
             ]) - (other.group0().zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[0] * self[e23]),
             // e1234
             -(other[e423] * self[e23]) - (other[e431] * self[e31]) - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiLine {
@@ -3193,7 +3193,7 @@ impl WeightExpansion<AntiDualNum> for AntiLine {
     // no simd        0        3        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0() * other.group0().xx().with_z(other[e3215])).with_w(0.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0() * other.group0().xx().with_z(other[e3215])).with_w(0.0))
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiLine {
@@ -3209,11 +3209,11 @@ impl WeightExpansion<AntiFlatPoint> for AntiLine {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0())
                 .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiLine {
@@ -3229,11 +3229,11 @@ impl WeightExpansion<AntiFlector> for AntiLine {
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0())
                 .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiLine {
@@ -3248,10 +3248,10 @@ impl WeightExpansion<AntiLine> for AntiLine {
     fn weight_expansion(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiLine {
@@ -3267,12 +3267,12 @@ impl WeightExpansion<AntiMotor> for AntiLine {
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x3::from(0.0).with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
             // e235, e315, e125, e5
             (self.group0() * (other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for AntiLine {
@@ -3287,12 +3287,12 @@ impl WeightExpansion<AntiScalar> for AntiLine {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e15, e25, e35
             Simd32x3::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for AntiLine {
@@ -3308,7 +3308,7 @@ impl WeightExpansion<Circle> for AntiLine {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[3] * self[e23]) + (self[e35] * other[e431]),
@@ -3322,7 +3322,7 @@ impl WeightExpansion<Circle> for AntiLine {
             ]) - (self.group1().yzx() * other.group0().zxy()).with_w(self[e23] * other[e235]),
             // e1234
             -(self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiLine {
@@ -3339,7 +3339,7 @@ impl WeightExpansion<CircleRotor> for AntiLine {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -3357,7 +3357,7 @@ impl WeightExpansion<CircleRotor> for AntiLine {
                     - (right_anti_dual_g2[1] * self[e31])
                     - (right_anti_dual_g2[2] * self[e12]),
             ]) - (self.group1().yzx() * other.group0().zxy()).with_w(right_anti_dual_g2[0] * self[e23]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiLine {
@@ -3374,7 +3374,7 @@ impl WeightExpansion<Dipole> for AntiLine {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -3382,7 +3382,7 @@ impl WeightExpansion<Dipole> for AntiLine {
                 - (right_anti_dual_g1[0] * self[e23])
                 - (right_anti_dual_g1[1] * self[e31])
                 - (right_anti_dual_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiLine {
@@ -3401,7 +3401,7 @@ impl WeightExpansion<DipoleInversion> for AntiLine {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -3418,7 +3418,7 @@ impl WeightExpansion<DipoleInversion> for AntiLine {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ]) - (self.group1().yzx() * right_anti_dual_g3.zxy()).with_w(right_anti_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiLine {
@@ -3432,12 +3432,12 @@ impl WeightExpansion<DualNum> for AntiLine {
     //  no simd        0        8        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e15, e25, e35
             Simd32x3::from(right_anti_dual_g0[1]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for AntiLine {
@@ -3452,7 +3452,7 @@ impl WeightExpansion<Flector> for AntiLine {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g1[1] * self[e35]) + (right_anti_dual_g1[3] * self[e23]),
@@ -3460,7 +3460,7 @@ impl WeightExpansion<Flector> for AntiLine {
                 (right_anti_dual_g1[0] * self[e25]) + (right_anti_dual_g1[3] * self[e12]),
                 -(right_anti_dual_g1[1] * self[e31]) - (right_anti_dual_g1[2] * self[e12]),
             ]) - (right_anti_dual_g1.zxyx() * self.group1().yzx().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiLine {
@@ -3470,10 +3470,10 @@ impl WeightExpansion<Line> for AntiLine {
     // f32        5        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             -(self[e23] * other[e235]) - (self[e31] * other[e315]) - (self[e12] * other[e125]) - (self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<Motor> for AntiLine {
@@ -3490,7 +3490,7 @@ impl WeightExpansion<Motor> for AntiLine {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (self.group0() * right_anti_dual_g0.www()).with_w(0.0),
             // e15, e25, e35, e3215
@@ -3502,7 +3502,7 @@ impl WeightExpansion<Motor> for AntiLine {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiLine {
@@ -3523,7 +3523,7 @@ impl WeightExpansion<MultiVector> for AntiLine {
         let right_anti_dual_g3_w = other[e321] * -1.0;
         let right_anti_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -3560,7 +3560,7 @@ impl WeightExpansion<MultiVector> for AntiLine {
             ]) - (self.group1().yzx() * other.group7().zxy()).with_w(self[e23] * other[e235]),
             // e1234
             -(self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiLine {
@@ -3575,7 +3575,7 @@ impl WeightExpansion<Plane> for AntiLine {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g0[1] * self[e35]) + (right_anti_dual_g0[3] * self[e23]),
@@ -3583,7 +3583,7 @@ impl WeightExpansion<Plane> for AntiLine {
                 (right_anti_dual_g0[0] * self[e25]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.zxyx() * self.group1().yzx().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for AntiLine {
@@ -3599,7 +3599,7 @@ impl WeightExpansion<Sphere> for AntiLine {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -3607,7 +3607,7 @@ impl WeightExpansion<Sphere> for AntiLine {
                 .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
             // e235, e315, e125
             (Simd32x3::from(other[e3215]) * self.group0()) + (self.group1().zxy() * right_anti_dual_g0.yzx()) - (self.group1().yzx() * right_anti_dual_g0.zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiLine {
@@ -3625,7 +3625,7 @@ impl WeightExpansion<VersorEven> for AntiLine {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -3644,7 +3644,7 @@ impl WeightExpansion<VersorEven> for AntiLine {
                     - (right_anti_dual_g2[1] * self[e31])
                     - (right_anti_dual_g2[2] * self[e12]),
             ]) - (self.group1().yzx() * right_anti_dual_g0.zxy()).with_w(right_anti_dual_g2[0] * self[e23]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiLine {
@@ -3663,7 +3663,7 @@ impl WeightExpansion<VersorOdd> for AntiLine {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g3[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -3680,7 +3680,7 @@ impl WeightExpansion<VersorOdd> for AntiLine {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ]) - (self.group1().yzx() * right_anti_dual_g3.zxy()).with_w(right_anti_dual_g1[0] * self[e23]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiMotor {
@@ -3704,7 +3704,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiMotor {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -3719,7 +3719,7 @@ impl WeightExpansion<AntiCircleRotor> for AntiMotor {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiMotor {
@@ -3737,7 +3737,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiMotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -3757,7 +3757,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiMotor {
                     - (right_anti_dual_g2[2] * self[e12]),
             ]) + (other.group0().yzx() * self.group1().zxy()).with_w(right_anti_dual_g3[3] * self[scalar])
                 - (other.group0().zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[0] * self[e23]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiMotor {
@@ -3771,12 +3771,12 @@ impl WeightExpansion<AntiDualNum> for AntiMotor {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x3::from(0.0).with_w(other[scalar] * self[scalar]),
             // e235, e315, e125, e5
             Simd32x4::from(other[e3215]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiMotor {
@@ -3792,13 +3792,13 @@ impl WeightExpansion<AntiFlatPoint> for AntiMotor {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiMotor {
@@ -3814,7 +3814,7 @@ impl WeightExpansion<AntiFlector> for AntiMotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
@@ -3823,7 +3823,7 @@ impl WeightExpansion<AntiFlector> for AntiMotor {
                     .xyz()
                     .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])))
                 + (self.group0() * right_anti_dual_g0.www().with_w(right_anti_dual_g1[3])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiMotor {
@@ -3838,13 +3838,13 @@ impl WeightExpansion<AntiLine> for AntiMotor {
     fn weight_expansion(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g0 * Simd32x3::from(self[scalar]))
                 .with_w(-(right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
             // e235, e315, e125, e5
             (other.group1() * self.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiMotor {
@@ -3861,14 +3861,14 @@ impl WeightExpansion<AntiMotor> for AntiMotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g0.xyz() * self.group0().www())
                 .with_w((right_anti_dual_g0[3] * self[scalar]) - (right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12])),
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g1[3]) * self.group0().xyz()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g1.xyz()))
                 .with_w(right_anti_dual_g1[3] * self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiMotor {
@@ -3882,7 +3882,7 @@ impl WeightExpansion<AntiPlane> for AntiMotor {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl WeightExpansion<AntiScalar> for AntiMotor {
@@ -3897,12 +3897,12 @@ impl WeightExpansion<AntiScalar> for AntiMotor {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e15, e25, e35, e3215
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for AntiMotor {
@@ -3918,7 +3918,7 @@ impl WeightExpansion<Circle> for AntiMotor {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -3936,7 +3936,7 @@ impl WeightExpansion<Circle> for AntiMotor {
                     - (self[e31] * other[e315])
                     - (self[e12] * other[e125]),
             ]) - (other.group0().zxy() * self.group1().yzx()).with_w(self[e23] * other[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiMotor {
@@ -3953,7 +3953,7 @@ impl WeightExpansion<CircleRotor> for AntiMotor {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[scalar]) * other.group0().with_w(right_anti_dual_g2[3]),
             // e23, e31, e12, e45
@@ -3976,7 +3976,7 @@ impl WeightExpansion<CircleRotor> for AntiMotor {
                         - (right_anti_dual_g2[2] * self[e12]),
                 )
                 - (self.group1().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiMotor {
@@ -3993,7 +3993,7 @@ impl WeightExpansion<Dipole> for AntiMotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -4007,7 +4007,7 @@ impl WeightExpansion<Dipole> for AntiMotor {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiMotor {
@@ -4026,7 +4026,7 @@ impl WeightExpansion<DipoleInversion> for AntiMotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             ((right_anti_dual_g0 * self.group0().www()) + (self.group0().xyz() * right_anti_dual_g2.www())).with_w(
                 (right_anti_dual_g2[3] * self[e3215])
@@ -4049,7 +4049,7 @@ impl WeightExpansion<DipoleInversion> for AntiMotor {
             .with_w(right_anti_dual_g3[3] * self[scalar]),
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * right_anti_dual_g3.xyz().with_w(right_anti_dual_g2[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiMotor {
@@ -4065,7 +4065,7 @@ impl WeightExpansion<DualNum> for AntiMotor {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e15, e25, e35, e3215
@@ -4073,7 +4073,7 @@ impl WeightExpansion<DualNum> for AntiMotor {
                 .yy()
                 .with_zw(right_anti_dual_g0[1], (right_anti_dual_g0[0] * self[scalar]) + (right_anti_dual_g0[1] * self[e3215]))
                 * self.group1().xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for AntiMotor {
@@ -4087,10 +4087,10 @@ impl WeightExpansion<FlatPoint> for AntiMotor {
     //  no simd        0        7        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * Simd32x4::from([other[e15] * -1.0, other[e25] * -1.0, other[e35] * -1.0, other[e45]]),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for AntiMotor {
@@ -4105,7 +4105,7 @@ impl WeightExpansion<Flector> for AntiMotor {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g1[1] * self[e35]) + (right_anti_dual_g1[3] * self[e23]),
@@ -4116,7 +4116,7 @@ impl WeightExpansion<Flector> for AntiMotor {
                 - (right_anti_dual_g1.zxyx() * self.group1().yzx().with_w(self[e23])),
             // e1, e2, e3, e5
             right_anti_dual_g1 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiMotor {
@@ -4130,7 +4130,7 @@ impl WeightExpansion<Line> for AntiMotor {
     //  no simd        5       12        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             (other.group0() * self.group0().www()).with_w(0.0),
             // e15, e25, e35, e3215
@@ -4142,7 +4142,7 @@ impl WeightExpansion<Line> for AntiMotor {
                     - (self[e25] * other[e425])
                     - (self[e35] * other[e435]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiMotor {
@@ -4159,7 +4159,7 @@ impl WeightExpansion<Motor> for AntiMotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g0.xyz()))
                 .with_w(right_anti_dual_g0[3] * self[scalar]),
@@ -4174,7 +4174,7 @@ impl WeightExpansion<Motor> for AntiMotor {
                         - (right_anti_dual_g1[1] * self[e31])
                         - (right_anti_dual_g1[2] * self[e12]),
                 ),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiMotor {
@@ -4196,7 +4196,7 @@ impl WeightExpansion<MultiVector> for AntiMotor {
         let right_anti_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[0] * self[scalar],
@@ -4238,7 +4238,7 @@ impl WeightExpansion<MultiVector> for AntiMotor {
                 - (self.group1().yzxx() * other.group7().zxy().with_w(other[e415])),
             // e1234
             -(self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]) - (self[scalar] * other[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiMotor {
@@ -4253,7 +4253,7 @@ impl WeightExpansion<Plane> for AntiMotor {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g0[1] * self[e35]) + (right_anti_dual_g0[3] * self[e23]),
@@ -4263,7 +4263,7 @@ impl WeightExpansion<Plane> for AntiMotor {
             ]) - (right_anti_dual_g0.zxyx() * self.group1().yzx().with_w(self[e23])),
             // e1, e2, e3, e5
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiMotor {
@@ -4277,12 +4277,12 @@ impl WeightExpansion<RoundPoint> for AntiMotor {
     //  no simd        0       10        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             self[scalar] * other[e4] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for AntiMotor {
@@ -4292,7 +4292,7 @@ impl WeightExpansion<Scalar> for AntiMotor {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar])
     }
 }
 impl WeightExpansion<Sphere> for AntiMotor {
@@ -4308,7 +4308,7 @@ impl WeightExpansion<Sphere> for AntiMotor {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0().xyz().with_w(self[e3215]),
             // e415, e425, e435, e321
@@ -4319,7 +4319,7 @@ impl WeightExpansion<Sphere> for AntiMotor {
                 .with_w(self[scalar] * other[e3215]),
             // e1, e2, e3, e4
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiMotor {
@@ -4338,7 +4338,7 @@ impl WeightExpansion<VersorEven> for AntiMotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e23, e31, e12, e45
@@ -4359,7 +4359,7 @@ impl WeightExpansion<VersorEven> for AntiMotor {
                 )
                 + (right_anti_dual_g3.xyz() * self.group0().www()).with_w(right_anti_dual_g0[3] * self[e3215])
                 - (right_anti_dual_g0.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[0] * self[e23]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiMotor {
@@ -4378,7 +4378,7 @@ impl WeightExpansion<VersorOdd> for AntiMotor {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group0() * right_anti_dual_g3.www().with_w(right_anti_dual_g0[3]))
                 + Simd32x3::from(0.0).with_w(
@@ -4402,7 +4402,7 @@ impl WeightExpansion<VersorOdd> for AntiMotor {
             .with_w(right_anti_dual_g2[3] * self[scalar]),
             // e1, e2, e3, e4
             right_anti_dual_g3 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiPlane {
@@ -4426,14 +4426,14 @@ impl WeightExpansion<AntiCircleRotor> for AntiPlane {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g1[3] * self[e5]) - (right_anti_dual_g2[2] * self[e3]))
                 - (self.group0().yzxy() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[1]))
                 - (right_anti_dual_g0 * self.group0().www()).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for AntiPlane {
@@ -4451,7 +4451,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiPlane {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -4461,7 +4461,7 @@ impl WeightExpansion<AntiDipoleInversion> for AntiPlane {
             (self.group0().yzxx() * right_anti_dual_g2.zxy().with_w(right_anti_dual_g3[0]))
                 + (self.group0().wwwy() * right_anti_dual_g1.xyz().with_w(right_anti_dual_g3[1]))
                 + (right_anti_dual_g2.yzx() * self.group0().zxy() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g2[3] * self[e5]) + (right_anti_dual_g3[2] * self[e3])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for AntiPlane {
@@ -4472,7 +4472,7 @@ impl WeightExpansion<AntiDualNum> for AntiPlane {
     // no simd        0        3        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0))
     }
 }
 impl WeightExpansion<AntiFlatPoint> for AntiPlane {
@@ -4486,12 +4486,12 @@ impl WeightExpansion<AntiFlatPoint> for AntiPlane {
     //  no simd        3       16        0
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e235, e315, e125
             (right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for AntiPlane {
@@ -4508,13 +4508,13 @@ impl WeightExpansion<AntiFlector> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g1[0] * self[e1]) + (right_anti_dual_g1[1] * self[e2]) + (right_anti_dual_g1[2] * self[e3])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for AntiPlane {
@@ -4531,11 +4531,11 @@ impl WeightExpansion<AntiLine> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]))
                 - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for AntiPlane {
@@ -4552,13 +4552,13 @@ impl WeightExpansion<AntiMotor> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             (self.group0().xyz() * right_anti_dual_g1.www()).with_w(0.0),
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]))
                 - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for AntiPlane {
@@ -4573,10 +4573,10 @@ impl WeightExpansion<AntiPlane> for AntiPlane {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for AntiPlane {
@@ -4590,7 +4590,7 @@ impl WeightExpansion<AntiScalar> for AntiPlane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Circle> for AntiPlane {
@@ -4606,7 +4606,7 @@ impl WeightExpansion<Circle> for AntiPlane {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -4614,7 +4614,7 @@ impl WeightExpansion<Circle> for AntiPlane {
                 - (right_anti_dual_g1.wwwx() * self.group0().xyzx()),
             // e235, e315, e125
             (Simd32x3::from(self[e5]) * right_anti_dual_g1.xyz()) + (other.group2().zxy() * self.group0().yzx()) - (other.group2().yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for AntiPlane {
@@ -4631,7 +4631,7 @@ impl WeightExpansion<CircleRotor> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -4642,7 +4642,7 @@ impl WeightExpansion<CircleRotor> for AntiPlane {
                 - (right_anti_dual_g2.yzx() * self.group0().zxy()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g2[3]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for AntiPlane {
@@ -4660,14 +4660,14 @@ impl WeightExpansion<Dipole> for AntiPlane {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g2[2] * self[e3]) - (right_anti_dual_g1[3] * self[e5]))
                 - (self.group0().wwwx() * right_anti_dual_g0.with_w(right_anti_dual_g2[0]))
                 - (right_anti_dual_g1.zxy() * self.group0().yzx()).with_w(right_anti_dual_g2[1] * self[e2]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for AntiPlane {
@@ -4686,7 +4686,7 @@ impl WeightExpansion<DipoleInversion> for AntiPlane {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -4700,7 +4700,7 @@ impl WeightExpansion<DipoleInversion> for AntiPlane {
             (right_anti_dual_g1.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g2[1] * self[e2]) - (right_anti_dual_g2[2] * self[e3]))
                 - (Simd32x4::from(self[e5]) * right_anti_dual_g0.with_w(right_anti_dual_g1[3]))
                 - (self.group0().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for AntiPlane {
@@ -4714,7 +4714,7 @@ impl WeightExpansion<DualNum> for AntiPlane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<FlatPoint> for AntiPlane {
@@ -4729,10 +4729,10 @@ impl WeightExpansion<FlatPoint> for AntiPlane {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([
             -(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5]),
             0.0,
-        ]));
+        ]))
     }
 }
 impl WeightExpansion<Flector> for AntiPlane {
@@ -4749,13 +4749,13 @@ impl WeightExpansion<Flector> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             ((right_anti_dual_g1.zxy() * self.group0().yzx()) - (right_anti_dual_g1.yzx() * self.group0().zxy())).with_w(0.0),
             // e15, e25, e35, e3215
             (self.group0().xyz() * right_anti_dual_g1.www()).with_w(-(right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5]))
                 - (self.group0().wwwx() * right_anti_dual_g1.xyz().with_w(right_anti_dual_g0[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for AntiPlane {
@@ -4769,7 +4769,7 @@ impl WeightExpansion<Line> for AntiPlane {
     //  no simd        8       12        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (self[e2] * other[e125]) + (self[e5] * other[e415]),
@@ -4777,7 +4777,7 @@ impl WeightExpansion<Line> for AntiPlane {
                 (self[e1] * other[e315]) + (self[e5] * other[e435]),
                 -(self[e2] * other[e425]) - (self[e3] * other[e435]),
             ]) - (self.group0().zxyx() * other.group1().yzx().with_w(other[e415])),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for AntiPlane {
@@ -4793,7 +4793,7 @@ impl WeightExpansion<Motor> for AntiPlane {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from([
                 (right_anti_dual_g0[0] * self[e5]) + (right_anti_dual_g1[2] * self[e2]),
@@ -4803,7 +4803,7 @@ impl WeightExpansion<Motor> for AntiPlane {
             ]) - (self.group0().zxyx() * right_anti_dual_g1.yzx().with_w(right_anti_dual_g0[0])),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for AntiPlane {
@@ -4825,7 +4825,7 @@ impl WeightExpansion<MultiVector> for AntiPlane {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -4854,7 +4854,7 @@ impl WeightExpansion<MultiVector> for AntiPlane {
                 - (right_anti_dual_g6.zxy() * self.group0().yzx()).with_w(right_anti_dual_g8[1] * self[e2]),
             // e1234
             (right_anti_dual_g7[0] * self[e1]) + (right_anti_dual_g7[1] * self[e2]) + (right_anti_dual_g7[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for AntiPlane {
@@ -4869,12 +4869,12 @@ impl WeightExpansion<Plane> for AntiPlane {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             (right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy()),
             // e15, e25, e35
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for AntiPlane {
@@ -4889,10 +4889,10 @@ impl WeightExpansion<RoundPoint> for AntiPlane {
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) - (self[e5] * other[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for AntiPlane {
@@ -4908,14 +4908,14 @@ impl WeightExpansion<Sphere> for AntiPlane {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             ((right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy())).with_w(right_anti_dual_g0[3] * self[e5] * -1.0),
             // e15, e25, e35
             (Simd32x3::from(other[e3215]) * self.group0().xyz()) - (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for AntiPlane {
@@ -4934,7 +4934,7 @@ impl WeightExpansion<VersorEven> for AntiPlane {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group0().zxyx() * right_anti_dual_g0.yzx().with_w(right_anti_dual_g3[0]))
                 + (right_anti_dual_g0.zxy() * self.group0().yzx() * Simd32x3::from(-1.0))
@@ -4947,7 +4947,7 @@ impl WeightExpansion<VersorEven> for AntiPlane {
                 .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             (self.group0().xyz() * right_anti_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for AntiPlane {
@@ -4966,7 +4966,7 @@ impl WeightExpansion<VersorOdd> for AntiPlane {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g3[3]) * self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -4980,7 +4980,7 @@ impl WeightExpansion<VersorOdd> for AntiPlane {
             (right_anti_dual_g1.yzx() * self.group0().zxy()).with_w(-(right_anti_dual_g1[3] * self[e5]) - (right_anti_dual_g2[2] * self[e3]))
                 - (self.group0().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0]))
                 - (self.group0().wwwy() * right_anti_dual_g0.xyz().with_w(right_anti_dual_g2[1])),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for AntiScalar {
@@ -4996,7 +4996,7 @@ impl WeightExpansion<AntiScalar> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e12345] * self[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ other[e12345] * self[e12345] * -1.0)
     }
 }
 impl WeightExpansion<CircleRotor> for AntiScalar {
@@ -5006,7 +5006,7 @@ impl WeightExpansion<CircleRotor> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0)
     }
 }
 impl WeightExpansion<DualNum> for AntiScalar {
@@ -5016,7 +5016,7 @@ impl WeightExpansion<DualNum> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0)
     }
 }
 impl WeightExpansion<Motor> for AntiScalar {
@@ -5026,7 +5026,7 @@ impl WeightExpansion<Motor> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0)
     }
 }
 impl WeightExpansion<MultiVector> for AntiScalar {
@@ -5036,7 +5036,7 @@ impl WeightExpansion<MultiVector> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0)
     }
 }
 impl WeightExpansion<VersorEven> for AntiScalar {
@@ -5046,7 +5046,7 @@ impl WeightExpansion<VersorEven> for AntiScalar {
     // f32        0        2        0
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * other[e12345] * -1.0)
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Circle {
@@ -5068,7 +5068,7 @@ impl WeightExpansion<AntiDipoleInversion> for Circle {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -5080,7 +5080,7 @@ impl WeightExpansion<AntiDipoleInversion> for Circle {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for Circle {
@@ -5091,7 +5091,7 @@ impl WeightExpansion<AntiDualNum> for Circle {
     // no simd        0        4        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
     }
 }
 impl WeightExpansion<AntiFlatPoint> for Circle {
@@ -5106,10 +5106,10 @@ impl WeightExpansion<AntiFlatPoint> for Circle {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for Circle {
@@ -5124,10 +5124,10 @@ impl WeightExpansion<AntiFlector> for Circle {
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for Circle {
@@ -5138,7 +5138,7 @@ impl WeightExpansion<AntiMotor> for Circle {
     // no simd        0        4        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
     }
 }
 impl WeightExpansion<AntiScalar> for Circle {
@@ -5154,14 +5154,14 @@ impl WeightExpansion<AntiScalar> for Circle {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
             // e235, e315, e125
             Simd32x3::from(right_anti_dual_g0) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for Circle {
@@ -5176,7 +5176,7 @@ impl WeightExpansion<Circle> for Circle {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -5188,7 +5188,7 @@ impl WeightExpansion<Circle> for Circle {
                 - (other[e235] * self[e423])
                 - (other[e315] * self[e431])
                 - (other[e125] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Circle {
@@ -5205,7 +5205,7 @@ impl WeightExpansion<CircleRotor> for Circle {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5223,7 +5223,7 @@ impl WeightExpansion<CircleRotor> for Circle {
                     - (self[e315] * other[e431])
                     - (self[e125] * other[e412]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Circle {
@@ -5240,7 +5240,7 @@ impl WeightExpansion<DipoleInversion> for Circle {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g2[3] * self[e235]) - (right_anti_dual_g3[2] * self[e425]),
@@ -5251,7 +5251,7 @@ impl WeightExpansion<DipoleInversion> for Circle {
                 + (right_anti_dual_g3.yzx() * self.group1().zxy()).with_w(right_anti_dual_g3[1] * self[e315]),
             // e1234
             -(right_anti_dual_g2[3] * self[e321]) - (right_anti_dual_g3[0] * self[e423]) - (right_anti_dual_g3[1] * self[e431]) - (right_anti_dual_g3[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Circle {
@@ -5266,14 +5266,14 @@ impl WeightExpansion<DualNum> for Circle {
     //  no simd        0       12        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
             // e235, e315, e125
             Simd32x3::from(right_anti_dual_g0[1]) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for Circle {
@@ -5289,14 +5289,14 @@ impl WeightExpansion<Flector> for Circle {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.wwwx() * self.group0().with_w(self[e235]))
                 + (right_anti_dual_g1.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g1[2] * self[e125]) + (right_anti_dual_g1[3] * self[e321]))
                 + (right_anti_dual_g1.yzx() * self.group1().zxy()).with_w(right_anti_dual_g1[1] * self[e315]),
             // e1234
             -(right_anti_dual_g1[0] * self[e423]) - (right_anti_dual_g1[1] * self[e431]) - (right_anti_dual_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Circle {
@@ -5306,7 +5306,7 @@ impl WeightExpansion<Line> for Circle {
     // f32        5        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(self[e423] * other[e235])
                 - (self[e431] * other[e315])
@@ -5314,7 +5314,7 @@ impl WeightExpansion<Line> for Circle {
                 - (self[e415] * other[e415])
                 - (self[e425] * other[e425])
                 - (self[e435] * other[e435]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Circle {
@@ -5331,7 +5331,7 @@ impl WeightExpansion<Motor> for Circle {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5345,7 +5345,7 @@ impl WeightExpansion<Motor> for Circle {
                     - (right_anti_dual_g1[1] * self[e431])
                     - (right_anti_dual_g1[2] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Circle {
@@ -5363,7 +5363,7 @@ impl WeightExpansion<MultiVector> for Circle {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -5404,7 +5404,7 @@ impl WeightExpansion<MultiVector> for Circle {
                 + (Simd32x3::from(other[e3215]) * self.group0()).with_w(right_anti_dual_g1[0] * self[e235]),
             // e1234
             -(right_anti_dual_g1[0] * self[e423]) - (right_anti_dual_g1[1] * self[e431]) - (right_anti_dual_g1[2] * self[e412]) - (right_anti_dual_g1[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Circle {
@@ -5420,14 +5420,14 @@ impl WeightExpansion<Plane> for Circle {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.wwwx() * self.group0().with_w(self[e235]))
                 + (right_anti_dual_g0.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[2] * self[e125]) + (right_anti_dual_g0[3] * self[e321]))
                 + (right_anti_dual_g0.yzx() * self.group1().zxy()).with_w(right_anti_dual_g0[1] * self[e315]),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Circle {
@@ -5443,7 +5443,7 @@ impl WeightExpansion<Sphere> for Circle {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g0[2] * self[e425]) - (right_anti_dual_g0[3] * self[e235]),
@@ -5454,7 +5454,7 @@ impl WeightExpansion<Sphere> for Circle {
                 + (Simd32x3::from(other[e3215]) * self.group0()).with_w(right_anti_dual_g0[0] * self[e235]),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Circle {
@@ -5472,7 +5472,7 @@ impl WeightExpansion<VersorEven> for Circle {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5490,7 +5490,7 @@ impl WeightExpansion<VersorEven> for Circle {
                     - (right_anti_dual_g2[1] * self[e431])
                     - (right_anti_dual_g2[2] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Circle {
@@ -5507,7 +5507,7 @@ impl WeightExpansion<VersorOdd> for Circle {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g3[2] * self[e425]) - (right_anti_dual_g3[3] * self[e235]),
@@ -5518,7 +5518,7 @@ impl WeightExpansion<VersorOdd> for Circle {
                 + (self.group0() * right_anti_dual_g2.www()).with_w(right_anti_dual_g3[0] * self[e235]),
             // e1234
             -(right_anti_dual_g3[0] * self[e423]) - (right_anti_dual_g3[1] * self[e431]) - (right_anti_dual_g3[2] * self[e412]) - (right_anti_dual_g3[3] * self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for CircleRotor {
@@ -5540,7 +5540,7 @@ impl WeightExpansion<AntiDipoleInversion> for CircleRotor {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -5552,7 +5552,7 @@ impl WeightExpansion<AntiDipoleInversion> for CircleRotor {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for CircleRotor {
@@ -5563,7 +5563,7 @@ impl WeightExpansion<AntiDualNum> for CircleRotor {
     // no simd        0        4        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
     }
 }
 impl WeightExpansion<AntiFlatPoint> for CircleRotor {
@@ -5578,10 +5578,10 @@ impl WeightExpansion<AntiFlatPoint> for CircleRotor {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for CircleRotor {
@@ -5596,10 +5596,10 @@ impl WeightExpansion<AntiFlector> for CircleRotor {
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for CircleRotor {
@@ -5610,7 +5610,7 @@ impl WeightExpansion<AntiMotor> for CircleRotor {
     // no simd        0        4        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
     }
 }
 impl WeightExpansion<AntiScalar> for CircleRotor {
@@ -5626,14 +5626,14 @@ impl WeightExpansion<AntiScalar> for CircleRotor {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for CircleRotor {
@@ -5648,7 +5648,7 @@ impl WeightExpansion<Circle> for CircleRotor {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -5660,7 +5660,7 @@ impl WeightExpansion<Circle> for CircleRotor {
                 - (other[e235] * self[e423])
                 - (other[e315] * self[e431])
                 - (other[e125] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for CircleRotor {
@@ -5677,7 +5677,7 @@ impl WeightExpansion<CircleRotor> for CircleRotor {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5696,7 +5696,7 @@ impl WeightExpansion<CircleRotor> for CircleRotor {
                     - (other[e431] * self[e315])
                     - (other[e412] * self[e125]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for CircleRotor {
@@ -5713,7 +5713,7 @@ impl WeightExpansion<DipoleInversion> for CircleRotor {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g2[3] * self[e235]) - (right_anti_dual_g3[2] * self[e425]),
@@ -5724,7 +5724,7 @@ impl WeightExpansion<DipoleInversion> for CircleRotor {
                 + (self.group0() * right_anti_dual_g3.www()).with_w(right_anti_dual_g3[0] * self[e235]),
             // e1234
             -(right_anti_dual_g2[3] * self[e321]) - (right_anti_dual_g3[0] * self[e423]) - (right_anti_dual_g3[1] * self[e431]) - (right_anti_dual_g3[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for CircleRotor {
@@ -5739,14 +5739,14 @@ impl WeightExpansion<DualNum> for CircleRotor {
     //  no simd        0       13        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e415, e425, e435, e321
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from(right_anti_dual_g0[1]) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for CircleRotor {
@@ -5762,14 +5762,14 @@ impl WeightExpansion<Flector> for CircleRotor {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzxy() * self.group1().zxy().with_w(self[e315]))
                 + (right_anti_dual_g1.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g1[2] * self[e125]) + (right_anti_dual_g1[3] * self[e321]))
                 + (self.group0() * right_anti_dual_g1.www()).with_w(right_anti_dual_g1[0] * self[e235]),
             // e1234
             -(right_anti_dual_g1[0] * self[e423]) - (right_anti_dual_g1[1] * self[e431]) - (right_anti_dual_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for CircleRotor {
@@ -5779,7 +5779,7 @@ impl WeightExpansion<Line> for CircleRotor {
     // f32        5        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(self[e423] * other[e235])
                 - (self[e431] * other[e315])
@@ -5787,7 +5787,7 @@ impl WeightExpansion<Line> for CircleRotor {
                 - (self[e415] * other[e415])
                 - (self[e425] * other[e425])
                 - (self[e435] * other[e435]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for CircleRotor {
@@ -5804,7 +5804,7 @@ impl WeightExpansion<Motor> for CircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5819,7 +5819,7 @@ impl WeightExpansion<Motor> for CircleRotor {
                     - (right_anti_dual_g1[1] * self[e431])
                     - (right_anti_dual_g1[2] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for CircleRotor {
@@ -5837,7 +5837,7 @@ impl WeightExpansion<MultiVector> for CircleRotor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -5878,7 +5878,7 @@ impl WeightExpansion<MultiVector> for CircleRotor {
                 + (right_anti_dual_g1.yzxx() * self.group1().zxy().with_w(self[e235])),
             // e1234
             -(right_anti_dual_g1[0] * self[e423]) - (right_anti_dual_g1[1] * self[e431]) - (right_anti_dual_g1[2] * self[e412]) - (right_anti_dual_g1[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for CircleRotor {
@@ -5894,14 +5894,14 @@ impl WeightExpansion<Plane> for CircleRotor {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzxy() * self.group1().zxy().with_w(self[e315]))
                 + (right_anti_dual_g0.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[2] * self[e125]) + (right_anti_dual_g0[3] * self[e321]))
                 + (self.group0() * right_anti_dual_g0.www()).with_w(right_anti_dual_g0[0] * self[e235]),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for CircleRotor {
@@ -5916,7 +5916,7 @@ impl WeightExpansion<Sphere> for CircleRotor {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g0[2] * self[e425]) - (right_anti_dual_g0[3] * self[e235]),
@@ -5927,7 +5927,7 @@ impl WeightExpansion<Sphere> for CircleRotor {
                 + (right_anti_dual_g0.yzxx() * self.group1().zxy().with_w(self[e235])),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for CircleRotor {
@@ -5945,7 +5945,7 @@ impl WeightExpansion<VersorEven> for CircleRotor {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e415, e425, e435, e321
@@ -5964,7 +5964,7 @@ impl WeightExpansion<VersorEven> for CircleRotor {
                     - (right_anti_dual_g2[1] * self[e431])
                     - (right_anti_dual_g2[2] * self[e412]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for CircleRotor {
@@ -5979,7 +5979,7 @@ impl WeightExpansion<VersorOdd> for CircleRotor {
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g3[2] * self[e425]) - (right_anti_dual_g3[3] * self[e235]),
@@ -5990,7 +5990,7 @@ impl WeightExpansion<VersorOdd> for CircleRotor {
                 + (right_anti_dual_g3.yzxx() * self.group1().zxy().with_w(self[e235])),
             // e1234
             -(right_anti_dual_g3[0] * self[e423]) - (right_anti_dual_g3[1] * self[e431]) - (right_anti_dual_g3[2] * self[e412]) - (right_anti_dual_g3[3] * self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Dipole {
@@ -6014,7 +6014,7 @@ impl WeightExpansion<AntiCircleRotor> for Dipole {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -6026,7 +6026,7 @@ impl WeightExpansion<AntiCircleRotor> for Dipole {
                 - (right_anti_dual_g2[0] * self[e41])
                 - (right_anti_dual_g2[1] * self[e42])
                 - (right_anti_dual_g2[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for Dipole {
@@ -6043,7 +6043,7 @@ impl WeightExpansion<AntiDipoleInversion> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (right_anti_dual_g1[3] * self[e23]) + (right_anti_dual_g2[2] * self[e42]) + (other[e431] * self[e35]),
@@ -6059,7 +6059,7 @@ impl WeightExpansion<AntiDipoleInversion> for Dipole {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for Dipole {
@@ -6070,12 +6070,12 @@ impl WeightExpansion<AntiDualNum> for Dipole {
     // no simd        0        6        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(other[e3215]) * self.group0(),
             // e235, e315, e125
             Simd32x3::from(other[e3215]) * self.group1().xyz(),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for Dipole {
@@ -6090,7 +6090,7 @@ impl WeightExpansion<AntiFlatPoint> for Dipole {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[2] * self[e42]) + (right_anti_dual_g0[3] * self[e23]),
@@ -6098,7 +6098,7 @@ impl WeightExpansion<AntiFlatPoint> for Dipole {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for Dipole {
@@ -6113,7 +6113,7 @@ impl WeightExpansion<AntiFlector> for Dipole {
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[2] * self[e42]) + (right_anti_dual_g0[3] * self[e23]),
@@ -6121,7 +6121,7 @@ impl WeightExpansion<AntiFlector> for Dipole {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for Dipole {
@@ -6137,7 +6137,7 @@ impl WeightExpansion<AntiLine> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e23])
                 - (right_anti_dual_g0[1] * self[e31])
@@ -6145,7 +6145,7 @@ impl WeightExpansion<AntiLine> for Dipole {
                 - (right_anti_dual_g1[0] * self[e41])
                 - (right_anti_dual_g1[1] * self[e42])
                 - (right_anti_dual_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for Dipole {
@@ -6162,7 +6162,7 @@ impl WeightExpansion<AntiMotor> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g1[3]) * self.group0()).with_w(
                 -(right_anti_dual_g0[0] * self[e23])
@@ -6174,7 +6174,7 @@ impl WeightExpansion<AntiMotor> for Dipole {
             ),
             // e235, e315, e125, e5
             (self.group1().xyz() * right_anti_dual_g1.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for Dipole {
@@ -6190,14 +6190,14 @@ impl WeightExpansion<AntiScalar> for Dipole {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
             // e15, e25, e35
             Simd32x3::from(right_anti_dual_g0) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for Dipole {
@@ -6213,7 +6213,7 @@ impl WeightExpansion<Circle> for Dipole {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (right_anti_dual_g1[3] * self[e23]) + (other[e431] * self[e35]) + (other[e125] * self[e42]),
@@ -6229,7 +6229,7 @@ impl WeightExpansion<Circle> for Dipole {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Dipole {
@@ -6246,7 +6246,7 @@ impl WeightExpansion<CircleRotor> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -6268,7 +6268,7 @@ impl WeightExpansion<CircleRotor> for Dipole {
                 -(right_anti_dual_g1[2] * self[e35]) - (right_anti_dual_g2[0] * self[e23]) - (right_anti_dual_g2[1] * self[e31]) - (right_anti_dual_g2[2] * self[e12]),
             ]) - (other.group0().zxy() * self.group2().yzx()).with_w(right_anti_dual_g1[0] * self[e15])
                 - (self.group0().zxy() * right_anti_dual_g2.yzx()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for Dipole {
@@ -6286,7 +6286,7 @@ impl WeightExpansion<Dipole> for Dipole {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -6298,7 +6298,7 @@ impl WeightExpansion<Dipole> for Dipole {
                 - (right_anti_dual_g1[1] * self[e31])
                 - (right_anti_dual_g1[2] * self[e12])
                 - (right_anti_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Dipole {
@@ -6317,7 +6317,7 @@ impl WeightExpansion<DipoleInversion> for Dipole {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g2[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g3.zxy()) - (self.group0().zxy() * right_anti_dual_g3.yzx()),
             // e415, e425, e435, e321
@@ -6342,7 +6342,7 @@ impl WeightExpansion<DipoleInversion> for Dipole {
                     - (right_anti_dual_g2[1] * self[e42])
                     - (right_anti_dual_g2[2] * self[e43]),
             ]) - (self.group2().yzx() * right_anti_dual_g3.zxy()).with_w(right_anti_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Dipole {
@@ -6357,14 +6357,14 @@ impl WeightExpansion<DualNum> for Dipole {
     //  no simd        0       12        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
             // e15, e25, e35
             Simd32x3::from(right_anti_dual_g0[1]) * self.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for Dipole {
@@ -6379,10 +6379,10 @@ impl WeightExpansion<FlatPoint> for Dipole {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for Dipole {
@@ -6399,7 +6399,7 @@ impl WeightExpansion<Flector> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (self.group0().yzx() * right_anti_dual_g1.zxy()) - (self.group0().zxy() * right_anti_dual_g1.yzx()),
             // e415, e425, e435, e321
@@ -6412,7 +6412,7 @@ impl WeightExpansion<Flector> for Dipole {
                 (right_anti_dual_g1[0] * self[e25]) + (right_anti_dual_g1[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45]),
             ]) - (self.group2().yzx() * right_anti_dual_g1.zxy()).with_w(right_anti_dual_g0[0] * self[e41]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Dipole {
@@ -6427,7 +6427,7 @@ impl WeightExpansion<Line> for Dipole {
     //  no simd       13       18        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e42] * other[e125]) + (self[e45] * other[e415]),
@@ -6437,7 +6437,7 @@ impl WeightExpansion<Line> for Dipole {
             ]) - (self.group0().zxy() * other.group1().yzx()).with_w(self[e15] * other[e415]),
             // e1234
             -(self[e41] * other[e415]) - (self[e42] * other[e425]) - (self[e43] * other[e435]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Dipole {
@@ -6454,7 +6454,7 @@ impl WeightExpansion<Motor> for Dipole {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -6473,7 +6473,7 @@ impl WeightExpansion<Motor> for Dipole {
                     - (right_anti_dual_g1[1] * self[e31])
                     - (right_anti_dual_g1[2] * self[e12]),
             ]) - (self.group0().zxy() * right_anti_dual_g1.yzx()).with_w(right_anti_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Dipole {
@@ -6495,7 +6495,7 @@ impl WeightExpansion<MultiVector> for Dipole {
         let right_anti_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -6541,7 +6541,7 @@ impl WeightExpansion<MultiVector> for Dipole {
                 - (self.group2().yzx() * other.group7().zxy()).with_w(self[e25] * other[e425]),
             // e1234
             -(self[e41] * other[e415]) - (self[e42] * other[e425]) - (self[e43] * other[e435]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Dipole {
@@ -6557,7 +6557,7 @@ impl WeightExpansion<Plane> for Dipole {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -6565,7 +6565,7 @@ impl WeightExpansion<Plane> for Dipole {
                 - (right_anti_dual_g0.xyzx() * self.group1().wwwx()),
             // e235, e315, e125
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (self.group2().zxy() * right_anti_dual_g0.yzx()) - (self.group2().yzx() * right_anti_dual_g0.zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Dipole {
@@ -6581,7 +6581,7 @@ impl WeightExpansion<Sphere> for Dipole {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -6593,7 +6593,7 @@ impl WeightExpansion<Sphere> for Dipole {
             ]) - (right_anti_dual_g0.xyzx() * self.group1().wwwx()),
             // e235, e315, e125
             (Simd32x3::from(other[e3215]) * self.group1().xyz()) + (self.group2().zxy() * right_anti_dual_g0.yzx()) - (self.group2().yzx() * right_anti_dual_g0.zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Dipole {
@@ -6611,7 +6611,7 @@ impl WeightExpansion<VersorEven> for Dipole {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -6633,7 +6633,7 @@ impl WeightExpansion<VersorEven> for Dipole {
                 -(right_anti_dual_g1[2] * self[e35]) - (right_anti_dual_g2[0] * self[e23]) - (right_anti_dual_g2[1] * self[e31]) - (right_anti_dual_g2[2] * self[e12]),
             ]) - (self.group0().zxy() * right_anti_dual_g2.yzx()).with_w(right_anti_dual_g1[0] * self[e15])
                 - (self.group2().yzx() * right_anti_dual_g0.zxy()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Dipole {
@@ -6652,7 +6652,7 @@ impl WeightExpansion<VersorOdd> for Dipole {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g3[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g3.zxy()) - (self.group0().zxy() * right_anti_dual_g3.yzx()),
             // e415, e425, e435, e321
@@ -6677,7 +6677,7 @@ impl WeightExpansion<VersorOdd> for Dipole {
                     - (right_anti_dual_g2[1] * self[e42])
                     - (right_anti_dual_g2[2] * self[e43]),
             ]) - (self.group2().yzx() * right_anti_dual_g3.zxy()).with_w(right_anti_dual_g2[0] * self[e41]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for DipoleInversion {
@@ -6701,7 +6701,7 @@ impl WeightExpansion<AntiCircleRotor> for DipoleInversion {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -6713,7 +6713,7 @@ impl WeightExpansion<AntiCircleRotor> for DipoleInversion {
                 - (right_anti_dual_g2[0] * self[e41])
                 - (right_anti_dual_g2[1] * self[e42])
                 - (right_anti_dual_g2[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for DipoleInversion {
@@ -6730,7 +6730,7 @@ impl WeightExpansion<AntiDipoleInversion> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (right_anti_dual_g1[3] * self[e23]) + (right_anti_dual_g2[2] * self[e42]) + (other[e431] * self[e35]),
@@ -6746,7 +6746,7 @@ impl WeightExpansion<AntiDipoleInversion> for DipoleInversion {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for DipoleInversion {
@@ -6760,12 +6760,12 @@ impl WeightExpansion<AntiDualNum> for DipoleInversion {
     //  no simd        0        7        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(other[e3215]) * self.group0().with_w(self[e1234]),
             // e235, e315, e125, e5
             (self.group1().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for DipoleInversion {
@@ -6780,7 +6780,7 @@ impl WeightExpansion<AntiFlatPoint> for DipoleInversion {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[2] * self[e42]) + (right_anti_dual_g0[3] * self[e23]),
@@ -6788,7 +6788,7 @@ impl WeightExpansion<AntiFlatPoint> for DipoleInversion {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for DipoleInversion {
@@ -6803,7 +6803,7 @@ impl WeightExpansion<AntiFlector> for DipoleInversion {
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[2] * self[e42]) + (right_anti_dual_g0[3] * self[e23]),
@@ -6811,7 +6811,7 @@ impl WeightExpansion<AntiFlector> for DipoleInversion {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for DipoleInversion {
@@ -6827,7 +6827,7 @@ impl WeightExpansion<AntiLine> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e23])
                 - (right_anti_dual_g0[1] * self[e31])
@@ -6835,7 +6835,7 @@ impl WeightExpansion<AntiLine> for DipoleInversion {
                 - (right_anti_dual_g1[0] * self[e41])
                 - (right_anti_dual_g1[1] * self[e42])
                 - (right_anti_dual_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for DipoleInversion {
@@ -6852,7 +6852,7 @@ impl WeightExpansion<AntiMotor> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g1[3]) * self.group0()).with_w(
                 (right_anti_dual_g1[3] * self[e1234])
@@ -6865,7 +6865,7 @@ impl WeightExpansion<AntiMotor> for DipoleInversion {
             ),
             // e235, e315, e125, e5
             (self.group1().xyz() * right_anti_dual_g1.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for DipoleInversion {
@@ -6881,7 +6881,7 @@ impl WeightExpansion<AntiScalar> for DipoleInversion {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e23, e31, e12, e45
@@ -6890,7 +6890,7 @@ impl WeightExpansion<AntiScalar> for DipoleInversion {
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for DipoleInversion {
@@ -6906,7 +6906,7 @@ impl WeightExpansion<Circle> for DipoleInversion {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (right_anti_dual_g1[3] * self[e23]) + (other[e431] * self[e35]) + (other[e125] * self[e42]),
@@ -6922,7 +6922,7 @@ impl WeightExpansion<Circle> for DipoleInversion {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for DipoleInversion {
@@ -6939,7 +6939,7 @@ impl WeightExpansion<CircleRotor> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g2[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -6963,7 +6963,7 @@ impl WeightExpansion<CircleRotor> for DipoleInversion {
             ]) + (other.group0().yzx() * self.group2().zxy()).with_w(right_anti_dual_g2[3] * self[e3215])
                 - (self.group2().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0]))
                 - (self.group0().zxy() * right_anti_dual_g2.yzx()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for DipoleInversion {
@@ -6981,7 +6981,7 @@ impl WeightExpansion<Dipole> for DipoleInversion {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15])
                 - (right_anti_dual_g0[1] * self[e25])
@@ -6993,7 +6993,7 @@ impl WeightExpansion<Dipole> for DipoleInversion {
                 - (right_anti_dual_g1[1] * self[e31])
                 - (right_anti_dual_g1[2] * self[e12])
                 - (right_anti_dual_g1[3] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for DipoleInversion {
@@ -7012,7 +7012,7 @@ impl WeightExpansion<DipoleInversion> for DipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g2[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g3.zxy()) - (self.group0().zxy() * right_anti_dual_g3.yzx()),
             // e415, e425, e435, e321
@@ -7038,7 +7038,7 @@ impl WeightExpansion<DipoleInversion> for DipoleInversion {
                 )
                 + (right_anti_dual_g3.yzx() * self.group2().zxy()).with_w(right_anti_dual_g2[3] * self[e3215])
                 - (self.group2().yzxx() * right_anti_dual_g3.zxy().with_w(right_anti_dual_g0[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for DipoleInversion {
@@ -7053,7 +7053,7 @@ impl WeightExpansion<DualNum> for DipoleInversion {
     //  no simd        0       17        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e23, e31, e12, e45
@@ -7062,7 +7062,7 @@ impl WeightExpansion<DualNum> for DipoleInversion {
             Simd32x4::from(right_anti_dual_g0[1]) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0[1]) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for DipoleInversion {
@@ -7077,10 +7077,10 @@ impl WeightExpansion<FlatPoint> for DipoleInversion {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for DipoleInversion {
@@ -7097,7 +7097,7 @@ impl WeightExpansion<Flector> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (self.group0().yzx() * right_anti_dual_g1.zxy()) - (self.group0().zxy() * right_anti_dual_g1.yzx()),
             // e415, e425, e435, e321
@@ -7113,7 +7113,7 @@ impl WeightExpansion<Flector> for DipoleInversion {
                         - (right_anti_dual_g0[3] * self[e45]),
                 )
                 - (right_anti_dual_g1.zxy() * self.group2().yzx()).with_w(right_anti_dual_g0[0] * self[e41]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for DipoleInversion {
@@ -7128,7 +7128,7 @@ impl WeightExpansion<Line> for DipoleInversion {
     //  no simd       13       18        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e42] * other[e125]) + (self[e45] * other[e415]),
@@ -7138,7 +7138,7 @@ impl WeightExpansion<Line> for DipoleInversion {
             ]) - (self.group0().zxy() * other.group1().yzx()).with_w(self[e15] * other[e415]),
             // e1234
             -(self[e41] * other[e415]) - (self[e42] * other[e425]) - (self[e43] * other[e435]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for DipoleInversion {
@@ -7155,7 +7155,7 @@ impl WeightExpansion<Motor> for DipoleInversion {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -7175,7 +7175,7 @@ impl WeightExpansion<Motor> for DipoleInversion {
                     - (right_anti_dual_g1[2] * self[e12]),
             ]) + (self.group0().yzx() * right_anti_dual_g1.zxy()).with_w(right_anti_dual_g0[3] * self[e3215])
                 - (self.group0().zxy() * right_anti_dual_g1.yzx()).with_w(right_anti_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for DipoleInversion {
@@ -7197,7 +7197,7 @@ impl WeightExpansion<MultiVector> for DipoleInversion {
         let right_anti_dual_g6 = other.group5().with_w(other[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -7255,7 +7255,7 @@ impl WeightExpansion<MultiVector> for DipoleInversion {
                 - (self[e23] * other[e423])
                 - (self[e31] * other[e431])
                 - (self[e12] * other[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for DipoleInversion {
@@ -7271,7 +7271,7 @@ impl WeightExpansion<Plane> for DipoleInversion {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -7281,7 +7281,7 @@ impl WeightExpansion<Plane> for DipoleInversion {
             (right_anti_dual_g0.yzxx() * self.group2().zxy().with_w(self[e4235]))
                 + (right_anti_dual_g0.wwwy() * self.group1().xyz().with_w(self[e4315]))
                 + (right_anti_dual_g0.zxy() * self.group2().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[2] * self[e4125]) + (right_anti_dual_g0[3] * self[e1234])),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for DipoleInversion {
@@ -7297,7 +7297,7 @@ impl WeightExpansion<Sphere> for DipoleInversion {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g0.zxy()) - (self.group0().zxy() * right_anti_dual_g0.yzx()),
             // e415, e425, e435, e321
@@ -7312,7 +7312,7 @@ impl WeightExpansion<Sphere> for DipoleInversion {
                 + (right_anti_dual_g0.yzxx() * self.group2().zxy().with_w(self[e4235]))
                 + (right_anti_dual_g0.zxy() * self.group2().yzx() * Simd32x3::from(-1.0))
                     .with_w((right_anti_dual_g0[1] * self[e4315]) + (right_anti_dual_g0[2] * self[e4125]) + (right_anti_dual_g0[3] * self[e3215])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for DipoleInversion {
@@ -7330,7 +7330,7 @@ impl WeightExpansion<VersorEven> for DipoleInversion {
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(right_anti_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -7354,7 +7354,7 @@ impl WeightExpansion<VersorEven> for DipoleInversion {
             ]) + (self.group0().yzx() * right_anti_dual_g2.zxy()).with_w(right_anti_dual_g0[3] * self[e3215])
                 - (right_anti_dual_g2.yzxx() * self.group0().zxy().with_w(self[e23]))
                 - (right_anti_dual_g0.zxy() * self.group2().yzx()).with_w(right_anti_dual_g2[1] * self[e31]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for DipoleInversion {
@@ -7373,7 +7373,7 @@ impl WeightExpansion<VersorOdd> for DipoleInversion {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(right_anti_dual_g3[3]) * self.group1().xyz()) + (self.group0().yzx() * right_anti_dual_g3.zxy()) - (self.group0().zxy() * right_anti_dual_g3.yzx()),
             // e415, e425, e435, e321
@@ -7399,7 +7399,7 @@ impl WeightExpansion<VersorOdd> for DipoleInversion {
                         - (right_anti_dual_g2[2] * self[e43]),
                 )
                 - (right_anti_dual_g3.zxy() * self.group2().yzx()).with_w(right_anti_dual_g2[0] * self[e41]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for DualNum {
@@ -7419,10 +7419,10 @@ impl WeightExpansion<AntiCircleRotor> for DualNum {
     //  no simd        0       11        0
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for DualNum {
@@ -7437,12 +7437,12 @@ impl WeightExpansion<AntiDipoleInversion> for DualNum {
     //  no simd        0       12        0
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(self[e5]) * other.group0().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             ((other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz() * self.group0().xx().with_z(self[e5])).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for DualNum {
@@ -7456,7 +7456,7 @@ impl WeightExpansion<AntiScalar> for DualNum {
     //  no simd        0        3        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[e12345] * -1.0) * self.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Circle> for DualNum {
@@ -7470,12 +7470,12 @@ impl WeightExpansion<Circle> for DualNum {
     //  no simd        0       10        0
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[e5]) * other.group0(),
             // e235, e315, e125
             Simd32x3::from(self[e5]) * (other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for DualNum {
@@ -7487,12 +7487,12 @@ impl WeightExpansion<CircleRotor> for DualNum {
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0().xx().with_zw(self[e5], self[e12345]) * other.group0().with_w(right_anti_dual_g2[3]),
             // e235, e315, e125, e5
             Simd32x4::from(self[e5]) * (other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(right_anti_dual_g2[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for DualNum {
@@ -7506,10 +7506,10 @@ impl WeightExpansion<Dipole> for DualNum {
     //  no simd        0       11        0
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for DualNum {
@@ -7523,12 +7523,12 @@ impl WeightExpansion<DipoleInversion> for DualNum {
     //  no simd        0       23        0
     fn weight_expansion(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e5]) * (other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for DualNum {
@@ -7542,7 +7542,7 @@ impl WeightExpansion<DualNum> for DualNum {
     //  no simd        0        3        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[e12345] * -1.0) * self.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<FlatPoint> for DualNum {
@@ -7556,7 +7556,7 @@ impl WeightExpansion<FlatPoint> for DualNum {
     //  no simd        0        3        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e5] * other[e45], 1.0]) * Simd32x2::from([-1.0, 0.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e5] * other[e45], 1.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl WeightExpansion<Flector> for DualNum {
@@ -7571,12 +7571,12 @@ impl WeightExpansion<Flector> for DualNum {
     //  no simd        0       15        0
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             ((other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz() * self.group0().xx().with_z(self[e5]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(self[e5] * other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for DualNum {
@@ -7587,7 +7587,7 @@ impl WeightExpansion<Line> for DualNum {
     // no simd        0        3        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (other.group0() * self.group0().xx().with_z(self[e5])).with_w(0.0));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (other.group0() * self.group0().xx().with_z(self[e5])).with_w(0.0))
     }
 }
 impl WeightExpansion<Motor> for DualNum {
@@ -7602,12 +7602,12 @@ impl WeightExpansion<Motor> for DualNum {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x3::from(0.0).with_w(right_anti_dual_g0[3] * self[e12345]),
             // e235, e315, e125, e5
             right_anti_dual_g0 * Simd32x4::from(self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for DualNum {
@@ -7624,7 +7624,7 @@ impl WeightExpansion<MultiVector> for DualNum {
     fn weight_expansion(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, (right_anti_dual_g0[0] * self[e12345]) - (self[e5] * other[e4])]),
             // e1, e2, e3, e4
@@ -7647,7 +7647,7 @@ impl WeightExpansion<MultiVector> for DualNum {
             Simd32x4::from(self[e5]) * (other.group4() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for DualNum {
@@ -7661,10 +7661,10 @@ impl WeightExpansion<Plane> for DualNum {
     //  no simd        0        9        0
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             (Simd32x3::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0]) * self.group0().xx().with_z(self[e5]) * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for DualNum {
@@ -7674,7 +7674,7 @@ impl WeightExpansion<RoundPoint> for DualNum {
     // f32        0        2        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * other[e4] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * other[e4] * -1.0)
     }
 }
 impl WeightExpansion<Sphere> for DualNum {
@@ -7688,10 +7688,10 @@ impl WeightExpansion<Sphere> for DualNum {
     //  no simd        0       11        0
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(
+        FlatPoint::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e5]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e1234]]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for DualNum {
@@ -7706,12 +7706,12 @@ impl WeightExpansion<VersorEven> for DualNum {
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0().xx().with_zw(self[e5], (right_anti_dual_g0[3] * self[e12345]) - (self[e5] * other[e4])) * right_anti_dual_g0.xyz().with_w(1.0),
             // e235, e315, e125, e5
             Simd32x4::from(self[e5]) * (other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(right_anti_dual_g0[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for DualNum {
@@ -7722,12 +7722,12 @@ impl WeightExpansion<VersorOdd> for DualNum {
     // no simd        0       20        0
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e5]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for FlatPoint {
@@ -7748,10 +7748,10 @@ impl WeightExpansion<AntiCircleRotor> for FlatPoint {
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for FlatPoint {
@@ -7766,7 +7766,7 @@ impl WeightExpansion<AntiDipoleInversion> for FlatPoint {
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (other[e431] * self[e35]),
@@ -7774,7 +7774,7 @@ impl WeightExpansion<AntiDipoleInversion> for FlatPoint {
                 (right_anti_dual_g1[2] * self[e45]) + (other[e423] * self[e25]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for FlatPoint {
@@ -7788,7 +7788,7 @@ impl WeightExpansion<AntiScalar> for FlatPoint {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Circle> for FlatPoint {
@@ -7803,7 +7803,7 @@ impl WeightExpansion<Circle> for FlatPoint {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (other[e431] * self[e35]),
@@ -7811,7 +7811,7 @@ impl WeightExpansion<Circle> for FlatPoint {
                 (right_anti_dual_g1[2] * self[e45]) + (other[e423] * self[e25]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for FlatPoint {
@@ -7826,7 +7826,7 @@ impl WeightExpansion<CircleRotor> for FlatPoint {
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[e12345] * -1.0) * self.group0(),
             // e4235, e4315, e4125, e3215
@@ -7836,7 +7836,7 @@ impl WeightExpansion<CircleRotor> for FlatPoint {
                 (right_anti_dual_g1[2] * self[e45]) + (other[e423] * self[e25]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for FlatPoint {
@@ -7851,10 +7851,10 @@ impl WeightExpansion<Dipole> for FlatPoint {
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for FlatPoint {
@@ -7871,14 +7871,14 @@ impl WeightExpansion<DipoleInversion> for FlatPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group0().xyz() * (other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).www())
                 .with_w(-(right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (other[e45] * self[e45]))
                 - (self.group0().wwwx() * right_anti_dual_g3.xyz().with_w(right_anti_dual_g0[0])),
             // e235, e315, e125, e5
             ((right_anti_dual_g3.yzx() * self.group0().zxy()) - (right_anti_dual_g3.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for FlatPoint {
@@ -7892,7 +7892,7 @@ impl WeightExpansion<DualNum> for FlatPoint {
     //  no simd        0        5        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<FlatPoint> for FlatPoint {
@@ -7902,7 +7902,7 @@ impl WeightExpansion<FlatPoint> for FlatPoint {
     // f32        0        2        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e45] * self[e45] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ other[e45] * self[e45] * -1.0)
     }
 }
 impl WeightExpansion<Flector> for FlatPoint {
@@ -7917,12 +7917,12 @@ impl WeightExpansion<Flector> for FlatPoint {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(self[e45]) * right_anti_dual_g1.xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             ((right_anti_dual_g1.yzx() * self.group0().zxy()) - (right_anti_dual_g1.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for FlatPoint {
@@ -7936,10 +7936,10 @@ impl WeightExpansion<Line> for FlatPoint {
     //  no simd        2        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e45]) * other.group0()).with_w(-(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435])),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for FlatPoint {
@@ -7955,13 +7955,13 @@ impl WeightExpansion<Motor> for FlatPoint {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e45]) * right_anti_dual_g0.xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35])),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for FlatPoint {
@@ -7978,7 +7978,7 @@ impl WeightExpansion<MultiVector> for FlatPoint {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -8009,7 +8009,7 @@ impl WeightExpansion<MultiVector> for FlatPoint {
             ]) - (self.group0().yzxx() * other.group7().zxy().with_w(other[e415])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for FlatPoint {
@@ -8024,12 +8024,12 @@ impl WeightExpansion<Plane> for FlatPoint {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[e45]) * right_anti_dual_g0.xyz() * Simd32x3::from(-1.0),
             // e235, e315, e125
             (right_anti_dual_g0.yzx() * self.group0().zxy()) - (right_anti_dual_g0.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for FlatPoint {
@@ -8044,12 +8044,12 @@ impl WeightExpansion<Sphere> for FlatPoint {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e45]) * right_anti_dual_g0.xyz()),
             // e235, e315, e125
             (right_anti_dual_g0.yzx() * self.group0().zxy()) - (right_anti_dual_g0.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for FlatPoint {
@@ -8065,7 +8065,7 @@ impl WeightExpansion<VersorEven> for FlatPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
@@ -8075,7 +8075,7 @@ impl WeightExpansion<VersorEven> for FlatPoint {
                 (right_anti_dual_g0[0] * self[e25]) + (right_anti_dual_g1[2] * self[e45]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for FlatPoint {
@@ -8092,13 +8092,13 @@ impl WeightExpansion<VersorOdd> for FlatPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group0().xyz() * right_anti_dual_g3.www()).with_w(-(right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (self[e45] * other[e45]))
                 - (self.group0().wwwx() * right_anti_dual_g3.xyz().with_w(right_anti_dual_g0[0])),
             // e235, e315, e125, e5
             ((right_anti_dual_g3.yzx() * self.group0().zxy()) - (right_anti_dual_g3.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Flector {
@@ -8119,10 +8119,10 @@ impl WeightExpansion<AntiCircleRotor> for Flector {
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for Flector {
@@ -8137,7 +8137,7 @@ impl WeightExpansion<AntiDipoleInversion> for Flector {
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (other[e431] * self[e35]),
@@ -8145,7 +8145,7 @@ impl WeightExpansion<AntiDipoleInversion> for Flector {
                 (right_anti_dual_g1[2] * self[e45]) + (other[e423] * self[e25]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for Flector {
@@ -8160,12 +8160,12 @@ impl WeightExpansion<AntiScalar> for Flector {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for Flector {
@@ -8180,7 +8180,7 @@ impl WeightExpansion<Circle> for Flector {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e45]) + (other[e431] * self[e35]),
@@ -8188,7 +8188,7 @@ impl WeightExpansion<Circle> for Flector {
                 (right_anti_dual_g1[2] * self[e45]) + (other[e423] * self[e25]),
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Flector {
@@ -8205,7 +8205,7 @@ impl WeightExpansion<CircleRotor> for Flector {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g2[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
@@ -8216,7 +8216,7 @@ impl WeightExpansion<CircleRotor> for Flector {
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) + (other.group0().yzx() * self.group0().zxy()).with_w(right_anti_dual_g2[3] * self[e3215])
                 - (self.group0().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for Flector {
@@ -8231,10 +8231,10 @@ impl WeightExpansion<Dipole> for Flector {
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35]) - (other[e45] * self[e45]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Flector {
@@ -8251,7 +8251,7 @@ impl WeightExpansion<DipoleInversion> for Flector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from(other[e1234]) * self.group0().xyz().with_w(self[e3215]))
                 + Simd32x3::from(0.0).with_w(
@@ -8263,7 +8263,7 @@ impl WeightExpansion<DipoleInversion> for Flector {
                 - (self.group0().wwwx() * right_anti_dual_g3.xyz().with_w(right_anti_dual_g0[0])),
             // e235, e315, e125, e5
             ((right_anti_dual_g3.yzx() * self.group0().zxy()) - (right_anti_dual_g3.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Flector {
@@ -8277,12 +8277,12 @@ impl WeightExpansion<DualNum> for Flector {
     //  no simd        0       10        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for Flector {
@@ -8292,7 +8292,7 @@ impl WeightExpansion<FlatPoint> for Flector {
     // f32        0        2        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e45] * self[e45] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ other[e45] * self[e45] * -1.0)
     }
 }
 impl WeightExpansion<Flector> for Flector {
@@ -8308,13 +8308,13 @@ impl WeightExpansion<Flector> for Flector {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(self[e45]) * right_anti_dual_g1.xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g1[0] * self[e4235]) + (right_anti_dual_g1[1] * self[e4315]) + (right_anti_dual_g1[2] * self[e4125]) - (other[e45] * self[e45])),
             // e235, e315, e125, e5
             ((right_anti_dual_g1.yzx() * self.group0().zxy()) - (right_anti_dual_g1.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Flector {
@@ -8328,10 +8328,10 @@ impl WeightExpansion<Line> for Flector {
     //  no simd        2        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e45]) * other.group0()).with_w(-(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435])),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Flector {
@@ -8347,14 +8347,14 @@ impl WeightExpansion<Motor> for Flector {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0 * self.group0().www().with_w(self[e3215]))
                 + (self.group1().xyz() * right_anti_dual_g0.www())
                     .with_w(-(right_anti_dual_g0[0] * self[e15]) - (right_anti_dual_g0[1] * self[e25]) - (right_anti_dual_g0[2] * self[e35])),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Flector {
@@ -8373,7 +8373,7 @@ impl WeightExpansion<MultiVector> for Flector {
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -8409,7 +8409,7 @@ impl WeightExpansion<MultiVector> for Flector {
                 - (self.group0().yzxx() * other.group7().zxy().with_w(other[e415])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Flector {
@@ -8425,13 +8425,13 @@ impl WeightExpansion<Plane> for Flector {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(self[e45]) * right_anti_dual_g0.xyz() * Simd32x3::from(-1.0))
                 .with_w((right_anti_dual_g0[0] * self[e4235]) + (right_anti_dual_g0[1] * self[e4315]) + (right_anti_dual_g0[2] * self[e4125])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.yzx() * self.group0().zxy()) - (right_anti_dual_g0.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Flector {
@@ -8447,7 +8447,7 @@ impl WeightExpansion<Sphere> for Flector {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from([self[e45], self[e45], self[e45], 1.0])
                 * right_anti_dual_g0
@@ -8457,7 +8457,7 @@ impl WeightExpansion<Sphere> for Flector {
                 + (right_anti_dual_g0.wwwx() * self.group0().xyz().with_w(self[e4235])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.yzx() * self.group0().zxy()) - (right_anti_dual_g0.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Flector {
@@ -8473,7 +8473,7 @@ impl WeightExpansion<VersorEven> for Flector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
@@ -8484,7 +8484,7 @@ impl WeightExpansion<VersorEven> for Flector {
                 -(right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]),
             ]) + (right_anti_dual_g0.yzxw() * self.group0().zxy().with_w(self[e3215]))
                 - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Flector {
@@ -8501,7 +8501,7 @@ impl WeightExpansion<VersorOdd> for Flector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g3.wwwx() * self.group0().xyz().with_w(self[e4235]))
                 + Simd32x3::from(0.0).with_w(
@@ -8513,7 +8513,7 @@ impl WeightExpansion<VersorOdd> for Flector {
                 - (self.group0().wwwx() * right_anti_dual_g3.xyz().with_w(right_anti_dual_g0[0])),
             // e235, e315, e125, e5
             ((right_anti_dual_g3.yzx() * self.group0().zxy()) - (right_anti_dual_g3.zxy() * self.group0().yzx())).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Line {
@@ -8534,7 +8534,7 @@ impl WeightExpansion<AntiDipoleInversion> for Line {
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -8542,7 +8542,7 @@ impl WeightExpansion<AntiDipoleInversion> for Line {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for Line {
@@ -8557,12 +8557,12 @@ impl WeightExpansion<AntiScalar> for Line {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(right_anti_dual_g0) * self.group0(),
             // e235, e315, e125
             Simd32x3::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for Line {
@@ -8577,7 +8577,7 @@ impl WeightExpansion<Circle> for Line {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             -(right_anti_dual_g1[0] * self[e415])
                 - (right_anti_dual_g1[1] * self[e425])
@@ -8585,7 +8585,7 @@ impl WeightExpansion<Circle> for Line {
                 - (other[e423] * self[e235])
                 - (other[e431] * self[e315])
                 - (other[e412] * self[e125]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Line {
@@ -8602,7 +8602,7 @@ impl WeightExpansion<CircleRotor> for Line {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g2[3]) * self.group0()).with_w(
                 -(right_anti_dual_g1[0] * self[e415])
@@ -8614,7 +8614,7 @@ impl WeightExpansion<CircleRotor> for Line {
             ),
             // e235, e315, e125, e5
             (self.group1() * right_anti_dual_g2.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Line {
@@ -8630,7 +8630,7 @@ impl WeightExpansion<DipoleInversion> for Line {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g2[3] * self[e235]) - (right_anti_dual_g3[2] * self[e425]),
@@ -8638,7 +8638,7 @@ impl WeightExpansion<DipoleInversion> for Line {
                 -(right_anti_dual_g2[3] * self[e125]) - (right_anti_dual_g3[1] * self[e415]),
                 (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]),
             ]) + (right_anti_dual_g3.yzxx() * self.group0().zxy().with_w(self[e235])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Line {
@@ -8652,12 +8652,12 @@ impl WeightExpansion<DualNum> for Line {
     //  no simd        0        8        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(right_anti_dual_g0[1]) * self.group0(),
             // e235, e315, e125
             Simd32x3::from(right_anti_dual_g0[1]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for Line {
@@ -8673,11 +8673,11 @@ impl WeightExpansion<Flector> for Line {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzxx() * self.group0().zxy().with_w(self[e235]))
                 + (self.group0().yzx() * right_anti_dual_g1.zxy() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g1[1] * self[e315]) + (right_anti_dual_g1[2] * self[e125])),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Line {
@@ -8687,7 +8687,7 @@ impl WeightExpansion<Line> for Line {
     // f32        2        3        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ -(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435]));
+        AntiScalar::from_groups(/* e12345 */ -(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435]))
     }
 }
 impl WeightExpansion<Motor> for Line {
@@ -8703,13 +8703,13 @@ impl WeightExpansion<Motor> for Line {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0())
                 .with_w(-(right_anti_dual_g0[0] * self[e415]) - (right_anti_dual_g0[1] * self[e425]) - (right_anti_dual_g0[2] * self[e435])),
             // e235, e315, e125, e5
             (self.group1() * right_anti_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Line {
@@ -8727,7 +8727,7 @@ impl WeightExpansion<MultiVector> for Line {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -8763,7 +8763,7 @@ impl WeightExpansion<MultiVector> for Line {
             ]) + (right_anti_dual_g1.yzxx() * self.group0().zxy().with_w(self[e235])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Line {
@@ -8779,11 +8779,11 @@ impl WeightExpansion<Plane> for Line {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e235]))
                 + (self.group0().yzx() * right_anti_dual_g0.zxy() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Line {
@@ -8798,7 +8798,7 @@ impl WeightExpansion<Sphere> for Line {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g0[2] * self[e425]) - (right_anti_dual_g0[3] * self[e235]),
@@ -8806,7 +8806,7 @@ impl WeightExpansion<Sphere> for Line {
                 -(right_anti_dual_g0[1] * self[e415]) - (right_anti_dual_g0[3] * self[e125]),
                 (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]),
             ]) + (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e235])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Line {
@@ -8823,7 +8823,7 @@ impl WeightExpansion<VersorEven> for Line {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0()).with_w(
                 -(right_anti_dual_g0[0] * self[e235])
@@ -8835,7 +8835,7 @@ impl WeightExpansion<VersorEven> for Line {
             ),
             // e235, e315, e125, e5
             (self.group1() * right_anti_dual_g0.www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Line {
@@ -8850,7 +8850,7 @@ impl WeightExpansion<VersorOdd> for Line {
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(right_anti_dual_g3[2] * self[e425]) - (right_anti_dual_g3[3] * self[e235]),
@@ -8858,7 +8858,7 @@ impl WeightExpansion<VersorOdd> for Line {
                 -(right_anti_dual_g3[1] * self[e415]) - (right_anti_dual_g3[3] * self[e125]),
                 (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]),
             ]) + (right_anti_dual_g3.yzxx() * self.group0().zxy().with_w(self[e235])),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Motor {
@@ -8878,10 +8878,10 @@ impl WeightExpansion<AntiCircleRotor> for Motor {
     //  no simd        0       11        0
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for Motor {
@@ -8897,7 +8897,7 @@ impl WeightExpansion<AntiDipoleInversion> for Motor {
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(self[e5]) * other.group0()).with_w(
                 -(right_anti_dual_g1[0] * self[e415])
@@ -8910,7 +8910,7 @@ impl WeightExpansion<AntiDipoleInversion> for Motor {
             ),
             // e235, e315, e125, e5
             (right_anti_dual_g1.xyz() * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for Motor {
@@ -8925,12 +8925,12 @@ impl WeightExpansion<AntiScalar> for Motor {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e235, e315, e125, e5
             Simd32x4::from(right_anti_dual_g0) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for Motor {
@@ -8946,7 +8946,7 @@ impl WeightExpansion<Circle> for Motor {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x3::from(self[e5]) * other.group0()).with_w(
                 -(right_anti_dual_g1[0] * self[e415])
@@ -8958,7 +8958,7 @@ impl WeightExpansion<Circle> for Motor {
             ),
             // e235, e315, e125, e5
             (right_anti_dual_g1.xyz() * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Motor {
@@ -8975,7 +8975,7 @@ impl WeightExpansion<CircleRotor> for Motor {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             ((other.group0() * self.group1().www()) + (self.group0().xyz() * right_anti_dual_g2.www())).with_w(
                 (right_anti_dual_g2[3] * self[e12345])
@@ -8988,7 +8988,7 @@ impl WeightExpansion<CircleRotor> for Motor {
             ),
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g2[3]) * self.group1().xyz()) + (Simd32x3::from(self[e5]) * right_anti_dual_g1.xyz())).with_w(right_anti_dual_g2[3] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for Motor {
@@ -9002,10 +9002,10 @@ impl WeightExpansion<Dipole> for Motor {
     //  no simd        0       11        0
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Motor {
@@ -9022,7 +9022,7 @@ impl WeightExpansion<DipoleInversion> for Motor {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[e5]) * right_anti_dual_g3.xyz().with_w(right_anti_dual_g2[3]) * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
@@ -9033,7 +9033,7 @@ impl WeightExpansion<DipoleInversion> for Motor {
                 (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]),
             ]) + (right_anti_dual_g3.yzxx() * self.group0().zxy().with_w(self[e235]))
                 - (Simd32x4::from(self[e5]) * (other.group0() * Simd32x3::from(-1.0)).with_w(other[e45])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Motor {
@@ -9047,12 +9047,12 @@ impl WeightExpansion<DualNum> for Motor {
     //  no simd        0       10        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e235, e315, e125, e5
             Simd32x4::from(right_anti_dual_g0[1]) * self.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for Motor {
@@ -9066,7 +9066,7 @@ impl WeightExpansion<FlatPoint> for Motor {
     //  no simd        0        3        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([other[e45] * self[e5], 1.0]) * Simd32x2::from([-1.0, 0.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([other[e45] * self[e5], 1.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl WeightExpansion<Flector> for Motor {
@@ -9082,14 +9082,14 @@ impl WeightExpansion<Flector> for Motor {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             (right_anti_dual_g1.xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g1.yzxx() * self.group0().zxy().with_w(self[e235]))
                 + Simd32x3::from(0.0).with_w((right_anti_dual_g1[1] * self[e315]) + (right_anti_dual_g1[2] * self[e125]))
                 - (right_anti_dual_g1.zxy() * self.group0().yzx()).with_w(other[e45] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Motor {
@@ -9103,12 +9103,12 @@ impl WeightExpansion<Line> for Motor {
     //  no simd        2        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x3::from(0.0).with_w(-(other[e415] * self[e415]) - (other[e425] * self[e425]) - (other[e435] * self[e435])),
             // e235, e315, e125, e5
             (other.group0() * self.group1().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Motor {
@@ -9124,14 +9124,14 @@ impl WeightExpansion<Motor> for Motor {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group0().xyz() * right_anti_dual_g0.www()).with_w(
                 (right_anti_dual_g0[3] * self[e12345]) - (right_anti_dual_g0[0] * self[e415]) - (right_anti_dual_g0[1] * self[e425]) - (right_anti_dual_g0[2] * self[e435]),
             ),
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz())).with_w(right_anti_dual_g0[3] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Motor {
@@ -9149,7 +9149,7 @@ impl WeightExpansion<MultiVector> for Motor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9188,7 +9188,7 @@ impl WeightExpansion<MultiVector> for Motor {
                 - (other.group4() * self.group1().www() * Simd32x3::from(-1.0)).with_w(self[e5] * other[e45]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Motor {
@@ -9204,13 +9204,13 @@ impl WeightExpansion<Plane> for Motor {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             (right_anti_dual_g0.xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e235]))
                 + (right_anti_dual_g0.zxy() * self.group0().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for Motor {
@@ -9220,7 +9220,7 @@ impl WeightExpansion<RoundPoint> for Motor {
     // f32        0        2        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e5] * other[e4] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e5] * other[e4] * -1.0)
     }
 }
 impl WeightExpansion<Sphere> for Motor {
@@ -9235,7 +9235,7 @@ impl WeightExpansion<Sphere> for Motor {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[e5]) * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
@@ -9245,7 +9245,7 @@ impl WeightExpansion<Sphere> for Motor {
                 -(right_anti_dual_g0[1] * self[e415]) - (right_anti_dual_g0[3] * self[e125]),
                 (right_anti_dual_g0[1] * self[e315]) + (right_anti_dual_g0[2] * self[e125]),
             ]) + (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e235])),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Motor {
@@ -9262,7 +9262,7 @@ impl WeightExpansion<VersorEven> for Motor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from(right_anti_dual_g0[3]) * self.group0())
                 + (Simd32x4::from(self[e5]) * right_anti_dual_g0.xyz().with_w(other[e4] * -1.0))
@@ -9276,7 +9276,7 @@ impl WeightExpansion<VersorEven> for Motor {
                 ),
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()) + (Simd32x3::from(self[e5]) * right_anti_dual_g1.xyz())).with_w(right_anti_dual_g0[3] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Motor {
@@ -9293,7 +9293,7 @@ impl WeightExpansion<VersorOdd> for Motor {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g3 * Simd32x4::from(self[e5]) * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
@@ -9304,7 +9304,7 @@ impl WeightExpansion<VersorOdd> for Motor {
                 (right_anti_dual_g3[1] * self[e315]) + (right_anti_dual_g3[2] * self[e125]),
             ]) + (right_anti_dual_g3.yzxx() * self.group0().zxy().with_w(self[e235]))
                 - (right_anti_dual_g3.zxy() * self.group0().yzx()).with_w(self[e5] * other[e45]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for MultiVector {
@@ -9328,7 +9328,7 @@ impl WeightExpansion<AntiCircleRotor> for MultiVector {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9370,7 +9370,7 @@ impl WeightExpansion<AntiCircleRotor> for MultiVector {
                 - (self.group1().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for MultiVector {
@@ -9388,7 +9388,7 @@ impl WeightExpansion<AntiDipoleInversion> for MultiVector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9446,7 +9446,7 @@ impl WeightExpansion<AntiDipoleInversion> for MultiVector {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for MultiVector {
@@ -9461,7 +9461,7 @@ impl WeightExpansion<AntiDualNum> for MultiVector {
     //  no simd        1       17        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, (other[e3215] * self[e1234]) + (other[scalar] * self[scalar])]),
             // e1, e2, e3, e4
@@ -9484,7 +9484,7 @@ impl WeightExpansion<AntiDualNum> for MultiVector {
             Simd32x4::from(other[e3215]) * self.group7().with_w(self[e321]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for MultiVector {
@@ -9500,7 +9500,7 @@ impl WeightExpansion<AntiFlatPoint> for MultiVector {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9531,7 +9531,7 @@ impl WeightExpansion<AntiFlatPoint> for MultiVector {
             ]) - (right_anti_dual_g0.yzxx() * self.group4().zxy().with_w(self[e23])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for MultiVector {
@@ -9548,7 +9548,7 @@ impl WeightExpansion<AntiFlector> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9584,7 +9584,7 @@ impl WeightExpansion<AntiFlector> for MultiVector {
                 - (right_anti_dual_g0.yzxx() * self.group4().zxy().with_w(self[e23])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for MultiVector {
@@ -9601,7 +9601,7 @@ impl WeightExpansion<AntiLine> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9637,7 +9637,7 @@ impl WeightExpansion<AntiLine> for MultiVector {
             ]) - (self.group1().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for MultiVector {
@@ -9654,7 +9654,7 @@ impl WeightExpansion<AntiMotor> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9692,7 +9692,7 @@ impl WeightExpansion<AntiMotor> for MultiVector {
                 - (self.group1().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for MultiVector {
@@ -9707,7 +9707,7 @@ impl WeightExpansion<AntiPlane> for MultiVector {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9733,7 +9733,7 @@ impl WeightExpansion<AntiPlane> for MultiVector {
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for MultiVector {
@@ -9750,7 +9750,7 @@ impl WeightExpansion<AntiScalar> for MultiVector {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(right_anti_dual_g0) * self.group0(),
             // e1, e2, e3, e4
@@ -9773,7 +9773,7 @@ impl WeightExpansion<AntiScalar> for MultiVector {
             Simd32x4::from(right_anti_dual_g0) * self.group9(),
             // e1234
             right_anti_dual_g0 * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for MultiVector {
@@ -9789,7 +9789,7 @@ impl WeightExpansion<Circle> for MultiVector {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9840,7 +9840,7 @@ impl WeightExpansion<Circle> for MultiVector {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for MultiVector {
@@ -9857,7 +9857,7 @@ impl WeightExpansion<CircleRotor> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g2[3] * self[scalar],
@@ -9914,7 +9914,7 @@ impl WeightExpansion<CircleRotor> for MultiVector {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for MultiVector {
@@ -9932,7 +9932,7 @@ impl WeightExpansion<Dipole> for MultiVector {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -9973,7 +9973,7 @@ impl WeightExpansion<Dipole> for MultiVector {
                 - (right_anti_dual_g0 * Simd32x3::from(self[e5])).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for MultiVector {
@@ -9992,7 +9992,7 @@ impl WeightExpansion<DipoleInversion> for MultiVector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10051,7 +10051,7 @@ impl WeightExpansion<DipoleInversion> for MultiVector {
                 - (right_anti_dual_g3[0] * self[e423])
                 - (right_anti_dual_g3[1] * self[e431])
                 - (right_anti_dual_g3[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for MultiVector {
@@ -10068,7 +10068,7 @@ impl WeightExpansion<DualNum> for MultiVector {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([right_anti_dual_g0[1] * self[scalar], (right_anti_dual_g0[0] * self[e4]) + (right_anti_dual_g0[1] * self[e12345])]),
             // e1, e2, e3, e4
@@ -10094,7 +10094,7 @@ impl WeightExpansion<DualNum> for MultiVector {
                 * self.group9().xyz().with_w(1.0),
             // e1234
             right_anti_dual_g0[1] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for MultiVector {
@@ -10110,7 +10110,7 @@ impl WeightExpansion<FlatPoint> for MultiVector {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10137,7 +10137,7 @@ impl WeightExpansion<FlatPoint> for MultiVector {
                 .with_w(-(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5])),
             // e1234
             right_anti_dual_g0[3] * self[e4],
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for MultiVector {
@@ -10154,7 +10154,7 @@ impl WeightExpansion<Flector> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10192,7 +10192,7 @@ impl WeightExpansion<Flector> for MultiVector {
                 - (right_anti_dual_g1.zxy() * self.group6().yzx()).with_w(right_anti_dual_g0[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[3] * self[e4]) - (right_anti_dual_g1[0] * self[e423]) - (right_anti_dual_g1[1] * self[e431]) - (right_anti_dual_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for MultiVector {
@@ -10207,7 +10207,7 @@ impl WeightExpansion<Line> for MultiVector {
     //  no simd       26       48        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10243,7 +10243,7 @@ impl WeightExpansion<Line> for MultiVector {
             ]) - (other.group1().yzx() * self.group4().zxy()).with_w(other[e415] * self[e15]),
             // e1234
             -(other[e415] * self[e41]) - (other[e425] * self[e42]) - (other[e435] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for MultiVector {
@@ -10260,7 +10260,7 @@ impl WeightExpansion<Motor> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[3] * self[scalar],
@@ -10306,7 +10306,7 @@ impl WeightExpansion<Motor> for MultiVector {
                 - (right_anti_dual_g1.yzxx() * self.group4().zxy().with_w(self[e23])),
             // e1234
             (right_anti_dual_g0[3] * self[e1234]) - (right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for MultiVector {
@@ -10330,7 +10330,7 @@ impl WeightExpansion<MultiVector> for MultiVector {
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g10 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[0] * self[scalar],
@@ -10443,7 +10443,7 @@ impl WeightExpansion<MultiVector> for MultiVector {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for MultiVector {
@@ -10459,7 +10459,7 @@ impl WeightExpansion<Plane> for MultiVector {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10488,7 +10488,7 @@ impl WeightExpansion<Plane> for MultiVector {
                 + (right_anti_dual_g0.yzx() * self.group6().zxy()).with_w(right_anti_dual_g0[1] * self[e315]),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for MultiVector {
@@ -10504,7 +10504,7 @@ impl WeightExpansion<RoundPoint> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other[e4] * -1.0;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10534,7 +10534,7 @@ impl WeightExpansion<RoundPoint> for MultiVector {
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e1234
             right_anti_dual_g1 * self[scalar],
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for MultiVector {
@@ -10544,7 +10544,7 @@ impl WeightExpansion<Scalar> for MultiVector {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar]);
+        AntiScalar::from_groups(/* e12345 */ self[scalar] * other[scalar])
     }
 }
 impl WeightExpansion<Sphere> for MultiVector {
@@ -10560,7 +10560,7 @@ impl WeightExpansion<Sphere> for MultiVector {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10601,7 +10601,7 @@ impl WeightExpansion<Sphere> for MultiVector {
                 + (Simd32x3::from(other[e3215]) * self.group7()).with_w(right_anti_dual_g0[0] * self[e235]),
             // e1234
             -(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]) - (right_anti_dual_g0[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for MultiVector {
@@ -10620,7 +10620,7 @@ impl WeightExpansion<VersorEven> for MultiVector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[3] * self[scalar],
@@ -10683,7 +10683,7 @@ impl WeightExpansion<VersorEven> for MultiVector {
                 - (right_anti_dual_g1[0] * self[e41])
                 - (right_anti_dual_g1[1] * self[e42])
                 - (right_anti_dual_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for MultiVector {
@@ -10702,7 +10702,7 @@ impl WeightExpansion<VersorOdd> for MultiVector {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10762,7 +10762,7 @@ impl WeightExpansion<VersorOdd> for MultiVector {
                 - (right_anti_dual_g3[1] * self[e431])
                 - (right_anti_dual_g3[2] * self[e412])
                 - (right_anti_dual_g3[3] * self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Plane {
@@ -10782,7 +10782,7 @@ impl WeightExpansion<AntiScalar> for Plane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<CircleRotor> for Plane {
@@ -10796,7 +10796,7 @@ impl WeightExpansion<CircleRotor> for Plane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<DipoleInversion> for Plane {
@@ -10811,10 +10811,10 @@ impl WeightExpansion<DipoleInversion> for Plane {
     fn weight_expansion(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g3[0] * self[e4235]) + (right_anti_dual_g3[1] * self[e4315]) + (right_anti_dual_g3[2] * self[e4125]) + (other[e1234] * self[e3215]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Plane {
@@ -10828,7 +10828,7 @@ impl WeightExpansion<DualNum> for Plane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<Flector> for Plane {
@@ -10843,10 +10843,10 @@ impl WeightExpansion<Flector> for Plane {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g1[0] * self[e4235]) + (right_anti_dual_g1[1] * self[e4315]) + (right_anti_dual_g1[2] * self[e4125]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Plane {
@@ -10860,7 +10860,7 @@ impl WeightExpansion<Motor> for Plane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<MultiVector> for Plane {
@@ -10875,7 +10875,7 @@ impl WeightExpansion<MultiVector> for Plane {
     fn weight_expansion(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -10901,7 +10901,7 @@ impl WeightExpansion<MultiVector> for Plane {
             Simd32x4::from(other.group0().yx()[0] * -1.0) * self.group0(),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Plane {
@@ -10916,10 +10916,10 @@ impl WeightExpansion<Plane> for Plane {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e4235]) + (right_anti_dual_g0[1] * self[e4315]) + (right_anti_dual_g0[2] * self[e4125]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Plane {
@@ -10934,10 +10934,10 @@ impl WeightExpansion<Sphere> for Plane {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e4235]) + (right_anti_dual_g0[1] * self[e4315]) + (right_anti_dual_g0[2] * self[e4125]) + (right_anti_dual_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Plane {
@@ -10951,7 +10951,7 @@ impl WeightExpansion<VersorEven> for Plane {
     //  no simd        0        5        0
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0());
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(other[e12345] * -1.0) * self.group0())
     }
 }
 impl WeightExpansion<VersorOdd> for Plane {
@@ -10966,10 +10966,10 @@ impl WeightExpansion<VersorOdd> for Plane {
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g3[0] * self[e4235]) + (right_anti_dual_g3[1] * self[e4315]) + (right_anti_dual_g3[2] * self[e4125]) + (right_anti_dual_g3[3] * self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for RoundPoint {
@@ -10993,7 +10993,7 @@ impl WeightExpansion<AntiCircleRotor> for RoundPoint {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[1] * self[e3]) + (right_anti_dual_g2[0] * self[e4]),
@@ -11004,7 +11004,7 @@ impl WeightExpansion<AntiCircleRotor> for RoundPoint {
                 - (self.group0().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for RoundPoint {
@@ -11022,7 +11022,7 @@ impl WeightExpansion<AntiDipoleInversion> for RoundPoint {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -11037,7 +11037,7 @@ impl WeightExpansion<AntiDipoleInversion> for RoundPoint {
                 + (self.group0().yzxx() * right_anti_dual_g2.zxy().with_w(right_anti_dual_g3[0]))
                 + (right_anti_dual_g2.yzx() * self.group0().zxy() * Simd32x3::from(-1.0))
                     .with_w((right_anti_dual_g3[1] * self[e2]) + (right_anti_dual_g3[2] * self[e3]) + (right_anti_dual_g3[3] * self[e4])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for RoundPoint {
@@ -11048,7 +11048,7 @@ impl WeightExpansion<AntiDualNum> for RoundPoint {
     // no simd        0        4        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e3215]) * self.group0());
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(other[e3215]) * self.group0())
     }
 }
 impl WeightExpansion<AntiFlatPoint> for RoundPoint {
@@ -11063,12 +11063,12 @@ impl WeightExpansion<AntiFlatPoint> for RoundPoint {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz()) - (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()),
             // e235, e315, e125
             (right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for RoundPoint {
@@ -11085,14 +11085,14 @@ impl WeightExpansion<AntiFlector> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group0().wwwx() * right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[0]))
                 + (self.group0().xyz() * right_anti_dual_g0.www() * Simd32x3::from(-1.0))
                     .with_w((right_anti_dual_g1[1] * self[e2]) + (right_anti_dual_g1[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for RoundPoint {
@@ -11109,7 +11109,7 @@ impl WeightExpansion<AntiLine> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[1] * self[e3]) + (right_anti_dual_g1[0] * self[e4]),
@@ -11117,7 +11117,7 @@ impl WeightExpansion<AntiLine> for RoundPoint {
                 (right_anti_dual_g0[0] * self[e2]) + (right_anti_dual_g1[2] * self[e4]),
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for RoundPoint {
@@ -11133,7 +11133,7 @@ impl WeightExpansion<AntiMotor> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g1[3]) * self.group0(),
             // e4235, e4315, e4125, e3215
@@ -11143,7 +11143,7 @@ impl WeightExpansion<AntiMotor> for RoundPoint {
                 (right_anti_dual_g0[0] * self[e2]) + (right_anti_dual_g1[2] * self[e4]),
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) - (self.group0().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for RoundPoint {
@@ -11158,10 +11158,10 @@ impl WeightExpansion<AntiPlane> for RoundPoint {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for RoundPoint {
@@ -11176,12 +11176,12 @@ impl WeightExpansion<AntiScalar> for RoundPoint {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e5
             right_anti_dual_g0 * self[e5],
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for RoundPoint {
@@ -11197,7 +11197,7 @@ impl WeightExpansion<Circle> for RoundPoint {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -11209,7 +11209,7 @@ impl WeightExpansion<Circle> for RoundPoint {
             ]) - (right_anti_dual_g1.wwwx() * self.group0().xyzx()),
             // e235, e315, e125
             (Simd32x3::from(self[e5]) * right_anti_dual_g1.xyz()) + (other.group2().zxy() * self.group0().yzx()) - (other.group2().yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for RoundPoint {
@@ -11226,7 +11226,7 @@ impl WeightExpansion<CircleRotor> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
             // e415, e425, e435, e321
@@ -11241,7 +11241,7 @@ impl WeightExpansion<CircleRotor> for RoundPoint {
                 .with_w(right_anti_dual_g2[3] * self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from(right_anti_dual_g2[3]) * self.group0().xyz().with_w(self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for RoundPoint {
@@ -11259,7 +11259,7 @@ impl WeightExpansion<Dipole> for RoundPoint {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g2[0] * self[e4]) + (right_anti_dual_g1[1] * self[e3]),
@@ -11270,7 +11270,7 @@ impl WeightExpansion<Dipole> for RoundPoint {
                 - (right_anti_dual_g0 * Simd32x3::from(self[e5])).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for RoundPoint {
@@ -11289,7 +11289,7 @@ impl WeightExpansion<DipoleInversion> for RoundPoint {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g2[3]) * self.group0().xyz()),
             // e23, e31, e12, e45
@@ -11309,7 +11309,7 @@ impl WeightExpansion<DipoleInversion> for RoundPoint {
                 -(right_anti_dual_g2[1] * self[e2]) - (right_anti_dual_g2[2] * self[e3]),
             ]) - (Simd32x4::from(self[e5]) * right_anti_dual_g0.with_w(right_anti_dual_g1[3]))
                 - (self.group0().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for RoundPoint {
@@ -11325,7 +11325,7 @@ impl WeightExpansion<DualNum> for RoundPoint {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(right_anti_dual_g0[0] * self[e4]),
             // e415, e425, e435, e321
@@ -11334,7 +11334,7 @@ impl WeightExpansion<DualNum> for RoundPoint {
             Simd32x3::from(0.0).with_w(right_anti_dual_g0[1] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for RoundPoint {
@@ -11350,13 +11350,13 @@ impl WeightExpansion<FlatPoint> for RoundPoint {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5])),
             // e1234
             right_anti_dual_g0[3] * self[e4],
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for RoundPoint {
@@ -11373,7 +11373,7 @@ impl WeightExpansion<Flector> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz(),
             // e23, e31, e12, e45
@@ -11383,7 +11383,7 @@ impl WeightExpansion<Flector> for RoundPoint {
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5])),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for RoundPoint {
@@ -11397,14 +11397,14 @@ impl WeightExpansion<Line> for RoundPoint {
     //  no simd        8       18        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e4]) * other.group0(),
             // e415, e425, e435, e321
             (Simd32x3::from(self[e4]) * other.group1()).with_w(-(other[e415] * self[e1]) - (other[e425] * self[e2]) - (other[e435] * self[e3])),
             // e235, e315, e125
             (Simd32x3::from(self[e5]) * other.group0()) + (other.group1().zxy() * self.group0().yzx()) - (other.group1().yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for RoundPoint {
@@ -11421,7 +11421,7 @@ impl WeightExpansion<Motor> for RoundPoint {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(self[e4]) * right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[3]),
             // e415, e425, e435, e321
@@ -11432,7 +11432,7 @@ impl WeightExpansion<Motor> for RoundPoint {
                 .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for RoundPoint {
@@ -11454,7 +11454,7 @@ impl WeightExpansion<MultiVector> for RoundPoint {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -11492,7 +11492,7 @@ impl WeightExpansion<MultiVector> for RoundPoint {
                 - (right_anti_dual_g7 * Simd32x3::from(self[e5])).with_w(right_anti_dual_g8[0] * self[e1]),
             // e1234
             (right_anti_dual_g7[0] * self[e1]) + (right_anti_dual_g7[1] * self[e2]) + (right_anti_dual_g7[2] * self[e3]) + (right_anti_dual_g6[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for RoundPoint {
@@ -11508,14 +11508,14 @@ impl WeightExpansion<Plane> for RoundPoint {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz(),
             // e23, e31, e12, e45
             ((right_anti_dual_g0.zxy() * self.group0().yzx()) - (right_anti_dual_g0.yzx() * self.group0().zxy())).with_w(right_anti_dual_g0[3] * self[e4]),
             // e15, e25, e35
             (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()) - (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for RoundPoint {
@@ -11530,11 +11530,11 @@ impl WeightExpansion<RoundPoint> for RoundPoint {
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4])
                 - (other[e4] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for RoundPoint {
@@ -11550,14 +11550,14 @@ impl WeightExpansion<Sphere> for RoundPoint {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz()) - (Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()),
             // e23, e31, e12, e45
             (right_anti_dual_g0.zxy() * self.group0().yzx()).with_w(self[e4] * other[e3215]) - (right_anti_dual_g0.yzxw() * self.group0().zxy().with_w(self[e5])),
             // e15, e25, e35
             (Simd32x3::from(other[e3215]) * self.group0().xyz()) - (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz()),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for RoundPoint {
@@ -11576,7 +11576,7 @@ impl WeightExpansion<VersorEven> for RoundPoint {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group0().zxyx() * right_anti_dual_g0.yzx().with_w(right_anti_dual_g3[0]))
                 + (self.group0().wwwy() * right_anti_dual_g1.xyz().with_w(right_anti_dual_g3[1]))
@@ -11594,7 +11594,7 @@ impl WeightExpansion<VersorEven> for RoundPoint {
                 .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for RoundPoint {
@@ -11613,7 +11613,7 @@ impl WeightExpansion<VersorOdd> for RoundPoint {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g3[3]) * self.group0().xyz()),
             // e23, e31, e12, e45
@@ -11634,7 +11634,7 @@ impl WeightExpansion<VersorOdd> for RoundPoint {
                 -(right_anti_dual_g1[3] * self[e5]) - (right_anti_dual_g2[2] * self[e3]),
             ]) - (self.group0().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0]))
                 - (Simd32x3::from(self[e5]) * right_anti_dual_g0.xyz()).with_w(right_anti_dual_g2[1] * self[e2]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Scalar {
@@ -11654,14 +11654,14 @@ impl WeightExpansion<AntiCircleRotor> for Scalar {
     //  no simd        0       22        0
     fn weight_expansion(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e12345
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for Scalar {
@@ -11675,7 +11675,7 @@ impl WeightExpansion<AntiDipoleInversion> for Scalar {
     //  no simd        0       27        0
     fn weight_expansion(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -11684,7 +11684,7 @@ impl WeightExpansion<AntiDipoleInversion> for Scalar {
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for Scalar {
@@ -11695,7 +11695,7 @@ impl WeightExpansion<AntiDualNum> for Scalar {
     // no simd        0        2        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[scalar]) * other.group0());
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(self[scalar]) * other.group0())
     }
 }
 impl WeightExpansion<AntiFlatPoint> for Scalar {
@@ -11709,7 +11709,7 @@ impl WeightExpansion<AntiFlatPoint> for Scalar {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e321] * -1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e321] * -1.0))
     }
 }
 impl WeightExpansion<AntiFlector> for Scalar {
@@ -11720,12 +11720,12 @@ impl WeightExpansion<AntiFlector> for Scalar {
     // no simd        0       16        0
     fn weight_expansion(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for Scalar {
@@ -11736,12 +11736,12 @@ impl WeightExpansion<AntiLine> for Scalar {
     // no simd        0       12        0
     fn weight_expansion(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             Simd32x3::from(self[scalar]) * other.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for Scalar {
@@ -11752,12 +11752,12 @@ impl WeightExpansion<AntiMotor> for Scalar {
     // no simd        0       16        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for Scalar {
@@ -11771,7 +11771,7 @@ impl WeightExpansion<AntiPlane> for Scalar {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl WeightExpansion<AntiScalar> for Scalar {
@@ -11781,7 +11781,7 @@ impl WeightExpansion<AntiScalar> for Scalar {
     // f32        0        2        0
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[e12345] * self[scalar] * -1.0);
+        Scalar::from_groups(/* scalar */ other[e12345] * self[scalar] * -1.0)
     }
 }
 impl WeightExpansion<Circle> for Scalar {
@@ -11795,14 +11795,14 @@ impl WeightExpansion<Circle> for Scalar {
     //  no simd        0       14        0
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35
             Simd32x3::from(self[scalar]) * other.group2(),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Scalar {
@@ -11816,14 +11816,14 @@ impl WeightExpansion<CircleRotor> for Scalar {
     //  no simd        0       19        0
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, scalar
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for Scalar {
@@ -11837,14 +11837,14 @@ impl WeightExpansion<Dipole> for Scalar {
     //  no simd        0       20        0
     fn weight_expansion(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125
             Simd32x3::from(self[scalar]) * other.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Scalar {
@@ -11858,7 +11858,7 @@ impl WeightExpansion<DipoleInversion> for Scalar {
     //  no simd        0       30        0
     fn weight_expansion(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[scalar]) * other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -11867,7 +11867,7 @@ impl WeightExpansion<DipoleInversion> for Scalar {
             Simd32x4::from(self[scalar]) * other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Scalar {
@@ -11881,7 +11881,7 @@ impl WeightExpansion<DualNum> for Scalar {
     //  no simd        0        4        0
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[scalar]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(self[scalar]) * Simd32x2::from([other[e5] * -1.0, other[e12345] * -1.0]))
     }
 }
 impl WeightExpansion<FlatPoint> for Scalar {
@@ -11895,10 +11895,10 @@ impl WeightExpansion<FlatPoint> for Scalar {
     //  no simd        0        7        0
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
+        AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * Simd32x4::from([other[e15] * -1.0, other[e25] * -1.0, other[e35] * -1.0, other[e45]]),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for Scalar {
@@ -11909,12 +11909,12 @@ impl WeightExpansion<Flector> for Scalar {
     // no simd        0       16        0
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for Scalar {
@@ -11925,12 +11925,12 @@ impl WeightExpansion<Line> for Scalar {
     // no simd        0        6        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             Simd32x3::from(self[scalar]) * other.group0(),
             // e15, e25, e35
             Simd32x3::from(self[scalar]) * other.group1(),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Scalar {
@@ -11941,12 +11941,12 @@ impl WeightExpansion<Motor> for Scalar {
     // no simd        0       16        0
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, e3215
             Simd32x4::from(self[scalar]) * other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Scalar {
@@ -11962,7 +11962,7 @@ impl WeightExpansion<MultiVector> for Scalar {
     //  no simd        0       54        0
     fn weight_expansion(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(self[scalar]) * other.group0().yx() * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -11985,7 +11985,7 @@ impl WeightExpansion<MultiVector> for Scalar {
             Simd32x4::from(self[scalar]) * other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             other[e4] * self[scalar] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Scalar {
@@ -11999,10 +11999,10 @@ impl WeightExpansion<Plane> for Scalar {
     //  no simd        0        7        0
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return AntiPlane::from_groups(
+        AntiPlane::from_groups(
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * Simd32x4::from([other[e4235] * -1.0, other[e4315] * -1.0, other[e4125] * -1.0, other[e3215]]),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for Scalar {
@@ -12016,12 +12016,12 @@ impl WeightExpansion<RoundPoint> for Scalar {
     //  no simd        0       10        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             other[e4] * self[scalar] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for Scalar {
@@ -12031,7 +12031,7 @@ impl WeightExpansion<Scalar> for Scalar {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[scalar] * self[scalar]);
+        AntiScalar::from_groups(/* e12345 */ other[scalar] * self[scalar])
     }
 }
 impl WeightExpansion<Sphere> for Scalar {
@@ -12045,12 +12045,12 @@ impl WeightExpansion<Sphere> for Scalar {
     //  no simd        0        9        0
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e5
             self[scalar] * other[e3215],
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Scalar {
@@ -12061,7 +12061,7 @@ impl WeightExpansion<VersorEven> for Scalar {
     // no simd        0       32        0
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e23, e31, e12, e45
@@ -12070,7 +12070,7 @@ impl WeightExpansion<VersorEven> for Scalar {
             Simd32x4::from(self[scalar]) * other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Scalar {
@@ -12081,7 +12081,7 @@ impl WeightExpansion<VersorOdd> for Scalar {
     // no simd        0       32        0
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e321
@@ -12090,7 +12090,7 @@ impl WeightExpansion<VersorOdd> for Scalar {
             Simd32x4::from(self[scalar]) * other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for Sphere {
@@ -12106,7 +12106,7 @@ impl WeightExpansion<AntiDualNum> for Sphere {
     // f32        0        1        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e3215] * self[e1234]);
+        AntiScalar::from_groups(/* e12345 */ other[e3215] * self[e1234])
     }
 }
 impl WeightExpansion<AntiMotor> for Sphere {
@@ -12116,7 +12116,7 @@ impl WeightExpansion<AntiMotor> for Sphere {
     // f32        0        1        0
     fn weight_expansion(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[e3215] * self[e1234]);
+        AntiScalar::from_groups(/* e12345 */ other[e3215] * self[e1234])
     }
 }
 impl WeightExpansion<AntiScalar> for Sphere {
@@ -12131,12 +12131,12 @@ impl WeightExpansion<AntiScalar> for Sphere {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e1234
             right_anti_dual_g0 * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for Sphere {
@@ -12151,12 +12151,12 @@ impl WeightExpansion<CircleRotor> for Sphere {
     fn weight_expansion(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g2[3]) * self.group0(),
             // e1234
             right_anti_dual_g2[3] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for Sphere {
@@ -12171,14 +12171,14 @@ impl WeightExpansion<DipoleInversion> for Sphere {
     fn weight_expansion(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g3[0] * self[e4235])
                 + (right_anti_dual_g3[1] * self[e4315])
                 + (right_anti_dual_g3[2] * self[e4125])
                 + (right_anti_dual_g3[3] * self[e1234])
                 + (other[e1234] * self[e3215]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for Sphere {
@@ -12194,12 +12194,12 @@ impl WeightExpansion<DualNum> for Sphere {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e1234
             right_anti_dual_g0[1] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for Sphere {
@@ -12214,10 +12214,10 @@ impl WeightExpansion<Flector> for Sphere {
     fn weight_expansion(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g1[0] * self[e4235]) + (right_anti_dual_g1[1] * self[e4315]) + (right_anti_dual_g1[2] * self[e4125]) + (right_anti_dual_g1[3] * self[e1234]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for Sphere {
@@ -12232,12 +12232,12 @@ impl WeightExpansion<Motor> for Sphere {
     fn weight_expansion(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e1234
             right_anti_dual_g0[3] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for Sphere {
@@ -12254,7 +12254,7 @@ impl WeightExpansion<MultiVector> for Sphere {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().yx() * Simd32x2::from([-1.0, 1.0]);
         let right_anti_dual_g1 = other.group9().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -12284,7 +12284,7 @@ impl WeightExpansion<MultiVector> for Sphere {
             Simd32x4::from(right_anti_dual_g0[0]) * self.group0(),
             // e1234
             right_anti_dual_g0[0] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for Sphere {
@@ -12299,10 +12299,10 @@ impl WeightExpansion<Plane> for Sphere {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e4235]) + (right_anti_dual_g0[1] * self[e4315]) + (right_anti_dual_g0[2] * self[e4125]) + (right_anti_dual_g0[3] * self[e1234]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for Sphere {
@@ -12317,14 +12317,14 @@ impl WeightExpansion<Sphere> for Sphere {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e4235])
                 + (right_anti_dual_g0[1] * self[e4315])
                 + (right_anti_dual_g0[2] * self[e4125])
                 + (right_anti_dual_g0[3] * self[e3215])
                 + (other[e3215] * self[e1234]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for Sphere {
@@ -12339,12 +12339,12 @@ impl WeightExpansion<VersorEven> for Sphere {
     fn weight_expansion(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e1234
             right_anti_dual_g0[3] * self[e1234],
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for Sphere {
@@ -12359,14 +12359,14 @@ impl WeightExpansion<VersorOdd> for Sphere {
     fn weight_expansion(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g3[0] * self[e4235])
                 + (right_anti_dual_g3[1] * self[e4315])
                 + (right_anti_dual_g3[2] * self[e4125])
                 + (right_anti_dual_g3[3] * self[e3215])
                 + (self[e1234] * other[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for VersorEven {
@@ -12390,7 +12390,7 @@ impl WeightExpansion<AntiCircleRotor> for VersorEven {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g1[1] * self[e3]) + (right_anti_dual_g2[0] * self[e4]),
@@ -12401,7 +12401,7 @@ impl WeightExpansion<AntiCircleRotor> for VersorEven {
                 - (self.group3().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0])),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for VersorEven {
@@ -12419,7 +12419,7 @@ impl WeightExpansion<AntiDipoleInversion> for VersorEven {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx()),
             // e415, e425, e435, e321
@@ -12445,7 +12445,7 @@ impl WeightExpansion<AntiDipoleInversion> for VersorEven {
                         - (other[e412] * self[e125]),
                 )
                 - (right_anti_dual_g2.yzx() * self.group3().zxy()).with_w(other[e423] * self[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for VersorEven {
@@ -12456,12 +12456,12 @@ impl WeightExpansion<AntiDualNum> for VersorEven {
     // no simd        0        8        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[e3215]) * self.group3(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[e3215]) * self.group0().xyz().with_w(self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for VersorEven {
@@ -12477,7 +12477,7 @@ impl WeightExpansion<AntiFlatPoint> for VersorEven {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (Simd32x4::from([self[e4], self[e4], self[e4], 1.0])
                 * right_anti_dual_g0
@@ -12486,7 +12486,7 @@ impl WeightExpansion<AntiFlatPoint> for VersorEven {
                 - (right_anti_dual_g0.wwwx() * self.group3().xyz().with_w(self[e423])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group3().yzx()) - (right_anti_dual_g0.yzx() * self.group3().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for VersorEven {
@@ -12503,7 +12503,7 @@ impl WeightExpansion<AntiFlector> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (self.group3().wwwx() * right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[0]))
                 + Simd32x3::from(0.0).with_w(
@@ -12515,7 +12515,7 @@ impl WeightExpansion<AntiFlector> for VersorEven {
                 - (right_anti_dual_g0.wwwx() * self.group3().xyz().with_w(self[e423])),
             // e235, e315, e125, e5
             ((right_anti_dual_g0.zxy() * self.group3().yzx()) - (right_anti_dual_g0.yzx() * self.group3().zxy())).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for VersorEven {
@@ -12532,7 +12532,7 @@ impl WeightExpansion<AntiLine> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g0[1] * self[e3]) + (right_anti_dual_g1[0] * self[e4]),
@@ -12540,7 +12540,7 @@ impl WeightExpansion<AntiLine> for VersorEven {
                 (right_anti_dual_g0[0] * self[e2]) + (right_anti_dual_g1[2] * self[e4]),
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) - (self.group3().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for VersorEven {
@@ -12557,7 +12557,7 @@ impl WeightExpansion<AntiMotor> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(right_anti_dual_g1[3]) * self.group3(),
             // e4235, e4315, e4125, e3215
@@ -12568,7 +12568,7 @@ impl WeightExpansion<AntiMotor> for VersorEven {
                 -(right_anti_dual_g1[1] * self[e2]) - (right_anti_dual_g1[2] * self[e3]),
             ]) + (right_anti_dual_g0.yzx() * self.group3().zxy()).with_w(right_anti_dual_g1[3] * self[e321])
                 - (self.group3().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for VersorEven {
@@ -12583,10 +12583,10 @@ impl WeightExpansion<AntiPlane> for VersorEven {
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiScalar> for VersorEven {
@@ -12601,7 +12601,7 @@ impl WeightExpansion<AntiScalar> for VersorEven {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e415, e425, e435, e321
@@ -12610,7 +12610,7 @@ impl WeightExpansion<AntiScalar> for VersorEven {
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for VersorEven {
@@ -12626,7 +12626,7 @@ impl WeightExpansion<Circle> for VersorEven {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             (Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz()) + (other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx()),
             // e415, e425, e435, e321
@@ -12651,7 +12651,7 @@ impl WeightExpansion<Circle> for VersorEven {
                     - (other[e315] * self[e431])
                     - (other[e125] * self[e412]),
             ]) - (other.group2().yzx() * self.group3().zxy()).with_w(other[e423] * self[e235]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for VersorEven {
@@ -12668,7 +12668,7 @@ impl WeightExpansion<CircleRotor> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([
                 (right_anti_dual_g1[0] * self[e4]) + (right_anti_dual_g2[3] * self[e423]),
@@ -12701,7 +12701,7 @@ impl WeightExpansion<CircleRotor> for VersorEven {
             .with_w(right_anti_dual_g2[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g2[3]) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for VersorEven {
@@ -12719,7 +12719,7 @@ impl WeightExpansion<Dipole> for VersorEven {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (right_anti_dual_g2[0] * self[e4]) + (right_anti_dual_g1[1] * self[e3]),
@@ -12730,7 +12730,7 @@ impl WeightExpansion<Dipole> for VersorEven {
                 - (right_anti_dual_g0 * self.group2().www()).with_w(right_anti_dual_g2[0] * self[e1]),
             // e1234
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g1[3] * self[e4]),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for VersorEven {
@@ -12749,7 +12749,7 @@ impl WeightExpansion<DipoleInversion> for VersorEven {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g2[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -12772,7 +12772,7 @@ impl WeightExpansion<DipoleInversion> for VersorEven {
                 - (right_anti_dual_g2.wwwy() * self.group2().xyz().with_w(self[e2]))
                 - (self.group3().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0]))
                 - (right_anti_dual_g3.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[2] * self[e3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for VersorEven {
@@ -12788,7 +12788,7 @@ impl WeightExpansion<DualNum> for VersorEven {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             right_anti_dual_g0
                 .yy()
@@ -12800,7 +12800,7 @@ impl WeightExpansion<DualNum> for VersorEven {
             Simd32x4::from(right_anti_dual_g0[1]) * self.group2(),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[1]) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for VersorEven {
@@ -12816,13 +12816,13 @@ impl WeightExpansion<FlatPoint> for VersorEven {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e1]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5])),
             // e1234
             right_anti_dual_g0[3] * self[e4],
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for VersorEven {
@@ -12839,7 +12839,7 @@ impl WeightExpansion<Flector> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g1.xyz(),
             // e23, e31, e12, e45
@@ -12855,7 +12855,7 @@ impl WeightExpansion<Flector> for VersorEven {
                     .with_w((right_anti_dual_g1[3] * self[e321]) - (right_anti_dual_g0[1] * self[e2]) - (right_anti_dual_g0[2] * self[e3]) - (right_anti_dual_g0[3] * self[e5]))
                 + (right_anti_dual_g0.xyz() * self.group3().www()).with_w(right_anti_dual_g1[0] * self[e235])
                 - (right_anti_dual_g1.zxy() * self.group1().yzx()).with_w(right_anti_dual_g0[0] * self[e1]),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for VersorEven {
@@ -12870,7 +12870,7 @@ impl WeightExpansion<Line> for VersorEven {
     //  no simd       13       24        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(self[e4]) * other.group0(),
             // e415, e425, e435, e321
@@ -12882,7 +12882,7 @@ impl WeightExpansion<Line> for VersorEven {
                 (other[e435] * self[e5]) + (other[e315] * self[e1]),
                 -(other[e425] * self[e425]) - (other[e435] * self[e435]) - (other[e235] * self[e423]) - (other[e315] * self[e431]) - (other[e125] * self[e412]),
             ]) - (other.group1().yzx() * self.group3().zxy()).with_w(other[e415] * self[e415]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for VersorEven {
@@ -12899,7 +12899,7 @@ impl WeightExpansion<Motor> for VersorEven {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g0 * self.group3().www().with_w(self[e12345]))
                 + Simd32x3::from(0.0).with_w(
@@ -12925,7 +12925,7 @@ impl WeightExpansion<Motor> for VersorEven {
             .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for VersorEven {
@@ -12948,7 +12948,7 @@ impl WeightExpansion<MultiVector> for VersorEven {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -13008,7 +13008,7 @@ impl WeightExpansion<MultiVector> for VersorEven {
                 - (right_anti_dual_g1[1] * self[e431])
                 - (right_anti_dual_g1[2] * self[e412])
                 - (right_anti_dual_g1[3] * self[e321]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for VersorEven {
@@ -13024,7 +13024,7 @@ impl WeightExpansion<Plane> for VersorEven {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz(),
             // e23, e31, e12, e45
@@ -13036,7 +13036,7 @@ impl WeightExpansion<Plane> for VersorEven {
             (right_anti_dual_g0.yzxx() * self.group1().zxy().with_w(self[e235]))
                 + (right_anti_dual_g0.wwwy() * self.group0().xyz().with_w(self[e315]))
                 + (right_anti_dual_g0.zxy() * self.group1().yzx() * Simd32x3::from(-1.0)).with_w((right_anti_dual_g0[2] * self[e125]) + (right_anti_dual_g0[3] * self[e321])),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for VersorEven {
@@ -13051,11 +13051,11 @@ impl WeightExpansion<RoundPoint> for VersorEven {
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return AntiScalar::from_groups(
+        AntiScalar::from_groups(
             // e12345
             (right_anti_dual_g0[0] * self[e1]) + (right_anti_dual_g0[1] * self[e2]) + (right_anti_dual_g0[2] * self[e3]) + (right_anti_dual_g0[3] * self[e4])
                 - (other[e4] * self[e5]),
-        );
+        )
     }
 }
 impl WeightExpansion<Sphere> for VersorEven {
@@ -13071,7 +13071,7 @@ impl WeightExpansion<Sphere> for VersorEven {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g0.xyz()) - (Simd32x3::from(right_anti_dual_g0[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -13088,7 +13088,7 @@ impl WeightExpansion<Sphere> for VersorEven {
                 (right_anti_dual_g0[2] * self[e125]) + (other[e3215] * self[e321]),
             ]) + (right_anti_dual_g0.yzxx() * self.group1().zxy().with_w(self[e235]))
                 + (Simd32x3::from(other[e3215]) * self.group0().xyz()).with_w(right_anti_dual_g0[1] * self[e315]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for VersorEven {
@@ -13107,7 +13107,7 @@ impl WeightExpansion<VersorEven> for VersorEven {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (Simd32x4::from(right_anti_dual_g0[3]) * self.group0())
                 + (self.group3().wwwx() * right_anti_dual_g1.xyz().with_w(right_anti_dual_g3[0]))
@@ -13141,7 +13141,7 @@ impl WeightExpansion<VersorEven> for VersorEven {
             .with_w(right_anti_dual_g0[3] * self[e5]),
             // e1, e2, e3, e4
             Simd32x4::from(right_anti_dual_g0[3]) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for VersorEven {
@@ -13160,7 +13160,7 @@ impl WeightExpansion<VersorOdd> for VersorEven {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             (Simd32x3::from(self[e4]) * right_anti_dual_g3.xyz()) - (Simd32x3::from(right_anti_dual_g3[3]) * self.group3().xyz()),
             // e23, e31, e12, e45
@@ -13183,7 +13183,7 @@ impl WeightExpansion<VersorOdd> for VersorEven {
                 - (self.group3().yzxx() * right_anti_dual_g1.zxy().with_w(right_anti_dual_g2[0]))
                 - (right_anti_dual_g3.zxy() * self.group1().yzx()).with_w(right_anti_dual_g2[1] * self[e2])
                 - (self.group2().xyz() * right_anti_dual_g3.www()).with_w(right_anti_dual_g2[2] * self[e3]),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightExpansionInfix> for VersorOdd {
@@ -13207,7 +13207,7 @@ impl WeightExpansion<AntiCircleRotor> for VersorOdd {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -13226,7 +13226,7 @@ impl WeightExpansion<AntiCircleRotor> for VersorOdd {
                     - (right_anti_dual_g2[1] * self[e42])
                     - (right_anti_dual_g2[2] * self[e43]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDipoleInversion> for VersorOdd {
@@ -13244,7 +13244,7 @@ impl WeightExpansion<AntiDipoleInversion> for VersorOdd {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -13268,7 +13268,7 @@ impl WeightExpansion<AntiDipoleInversion> for VersorOdd {
             ]) + (other.group0().yzx() * self.group2().zxy()).with_w(right_anti_dual_g3[3] * self[scalar])
                 - (self.group2().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0]))
                 - (right_anti_dual_g2.yzx() * self.group0().zxy()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiDualNum> for VersorOdd {
@@ -13282,12 +13282,12 @@ impl WeightExpansion<AntiDualNum> for VersorOdd {
     //  no simd        1       10        0
     fn weight_expansion(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             other.group0().xx().with_zw(other[e3215], (other[e3215] * self[e1234]) + (other[scalar] * self[scalar])) * self.group0().xyz().with_w(1.0),
             // e235, e315, e125, e5
             Simd32x4::from(other[e3215]) * self.group1().xyz().with_w(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlatPoint> for VersorOdd {
@@ -13302,7 +13302,7 @@ impl WeightExpansion<AntiFlatPoint> for VersorOdd {
     fn weight_expansion(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
@@ -13312,7 +13312,7 @@ impl WeightExpansion<AntiFlatPoint> for VersorOdd {
                 (right_anti_dual_g0[1] * self[e41]) + (right_anti_dual_g0[3] * self[e12]),
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiFlector> for VersorOdd {
@@ -13328,7 +13328,7 @@ impl WeightExpansion<AntiFlector> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
             // e4235, e4315, e4125, e3215
@@ -13339,7 +13339,7 @@ impl WeightExpansion<AntiFlector> for VersorOdd {
                 -(right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]),
             ]) + (self.group0().yzxw() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[3]))
                 - (right_anti_dual_g0.yzxx() * self.group0().zxy().with_w(self[e23])),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiLine> for VersorOdd {
@@ -13355,7 +13355,7 @@ impl WeightExpansion<AntiLine> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x3::from(-1.0);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g0 * Simd32x3::from(self[scalar])).with_w(
                 -(right_anti_dual_g0[0] * self[e23])
@@ -13367,7 +13367,7 @@ impl WeightExpansion<AntiLine> for VersorOdd {
             ),
             // e235, e315, e125, e5
             (right_anti_dual_g1 * self.group0().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiMotor> for VersorOdd {
@@ -13384,7 +13384,7 @@ impl WeightExpansion<AntiMotor> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             (right_anti_dual_g0 * Simd32x4::from(self[scalar]))
                 + (Simd32x4::from(right_anti_dual_g1[3]) * self.group0().xyz().with_w(self[e1234]))
@@ -13399,7 +13399,7 @@ impl WeightExpansion<AntiMotor> for VersorOdd {
             // e235, e315, e125, e5
             ((Simd32x3::from(right_anti_dual_g1[3]) * self.group1().xyz()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g1.xyz()))
                 .with_w(right_anti_dual_g1[3] * self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<AntiPlane> for VersorOdd {
@@ -13413,7 +13413,7 @@ impl WeightExpansion<AntiPlane> for VersorOdd {
     //  no simd        0        5        0
     fn weight_expansion(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5] * -1.0))
     }
 }
 impl WeightExpansion<AntiScalar> for VersorOdd {
@@ -13428,7 +13428,7 @@ impl WeightExpansion<AntiScalar> for VersorOdd {
     fn weight_expansion(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other[e12345] * -1.0;
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_anti_dual_g0) * self.group0(),
             // e23, e31, e12, e45
@@ -13437,7 +13437,7 @@ impl WeightExpansion<AntiScalar> for VersorOdd {
             Simd32x4::from(right_anti_dual_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(right_anti_dual_g0) * self.group3(),
-        );
+        )
     }
 }
 impl WeightExpansion<Circle> for VersorOdd {
@@ -13453,7 +13453,7 @@ impl WeightExpansion<Circle> for VersorOdd {
     fn weight_expansion(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[scalar]) * other.group0(),
             // e23, e31, e12, e45
@@ -13475,7 +13475,7 @@ impl WeightExpansion<Circle> for VersorOdd {
                 -(right_anti_dual_g1[0] * self[e15]) - (right_anti_dual_g1[1] * self[e25]) - (right_anti_dual_g1[2] * self[e35]) - (other[e125] * self[e12]),
             ]) - (other.group0().zxy() * self.group2().yzx()).with_w(other[e235] * self[e23])
                 - (other.group2().yzx() * self.group0().zxy()).with_w(other[e315] * self[e31]),
-        );
+        )
     }
 }
 impl WeightExpansion<CircleRotor> for VersorOdd {
@@ -13492,7 +13492,7 @@ impl WeightExpansion<CircleRotor> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((Simd32x3::from(right_anti_dual_g2[3]) * self.group0().xyz()) + (Simd32x3::from(self[scalar]) * other.group0())).with_w(right_anti_dual_g2[3] * self[scalar]),
             // e23, e31, e12, e45
@@ -13516,7 +13516,7 @@ impl WeightExpansion<CircleRotor> for VersorOdd {
             ]) + (other.group0().yzx() * self.group2().zxy()).with_w(right_anti_dual_g2[3] * self[e3215])
                 - (self.group2().yzxx() * other.group0().zxy().with_w(right_anti_dual_g1[0]))
                 - (right_anti_dual_g2.yzx() * self.group0().zxy()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<Dipole> for VersorOdd {
@@ -13534,7 +13534,7 @@ impl WeightExpansion<Dipole> for VersorOdd {
         let right_anti_dual_g0 = other.group0() * Simd32x3::from(-1.0);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x3::from(-1.0);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             right_anti_dual_g0 * Simd32x3::from(self[scalar]),
             // e415, e425, e435, e321
@@ -13552,7 +13552,7 @@ impl WeightExpansion<Dipole> for VersorOdd {
                     - (right_anti_dual_g1[2] * self[e12])
                     - (right_anti_dual_g1[3] * self[e45]),
             ),
-        );
+        )
     }
 }
 impl WeightExpansion<DipoleInversion> for VersorOdd {
@@ -13571,7 +13571,7 @@ impl WeightExpansion<DipoleInversion> for VersorOdd {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g3.zxyy() * self.group0().yzx().with_w(self[e4315]))
                 + Simd32x3::from(0.0).with_w(
@@ -13605,7 +13605,7 @@ impl WeightExpansion<DipoleInversion> for VersorOdd {
             .with_w(right_anti_dual_g3[3] * self[scalar]),
             // e1, e2, e3, e4
             Simd32x4::from(self[scalar]) * right_anti_dual_g3.xyz().with_w(right_anti_dual_g2[3]),
-        );
+        )
     }
 }
 impl WeightExpansion<DualNum> for VersorOdd {
@@ -13621,7 +13621,7 @@ impl WeightExpansion<DualNum> for VersorOdd {
     fn weight_expansion(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x2::from(-1.0);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_anti_dual_g0[1]) * self.group0(),
             // e23, e31, e12, e45
@@ -13633,7 +13633,7 @@ impl WeightExpansion<DualNum> for VersorOdd {
                 .yy()
                 .with_zw(right_anti_dual_g0[1], (right_anti_dual_g0[0] * self[scalar]) + (right_anti_dual_g0[1] * self[e3215]))
                 * self.group3().xyz().with_w(1.0),
-        );
+        )
     }
 }
 impl WeightExpansion<FlatPoint> for VersorOdd {
@@ -13649,7 +13649,7 @@ impl WeightExpansion<FlatPoint> for VersorOdd {
     fn weight_expansion(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -13657,7 +13657,7 @@ impl WeightExpansion<FlatPoint> for VersorOdd {
             // e235, e315, e125, e12345
             (Simd32x3::from(self[scalar]) * right_anti_dual_g0.xyz())
                 .with_w(-(right_anti_dual_g0[0] * self[e41]) - (right_anti_dual_g0[1] * self[e42]) - (right_anti_dual_g0[2] * self[e43]) - (right_anti_dual_g0[3] * self[e45])),
-        );
+        )
     }
 }
 impl WeightExpansion<Flector> for VersorOdd {
@@ -13674,7 +13674,7 @@ impl WeightExpansion<Flector> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g1.zxyx() * self.group0().yzx().with_w(self[e4235]))
                 + Simd32x3::from(0.0).with_w(
@@ -13696,7 +13696,7 @@ impl WeightExpansion<Flector> for VersorOdd {
             .with_w(right_anti_dual_g1[3] * self[scalar]),
             // e1, e2, e3, e4
             (right_anti_dual_g1.xyz() * self.group0().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<Line> for VersorOdd {
@@ -13711,7 +13711,7 @@ impl WeightExpansion<Line> for VersorOdd {
     //  no simd       13       24        0
     fn weight_expansion(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12, e45
@@ -13725,7 +13725,7 @@ impl WeightExpansion<Line> for VersorOdd {
                 (other[e435] * self[e45]) + (other[e315] * self[e41]),
                 -(other[e425] * self[e25]) - (other[e435] * self[e35]) - (other[e235] * self[e23]) - (other[e315] * self[e31]) - (other[e125] * self[e12]),
             ]) - (other.group1().yzx() * self.group0().zxy()).with_w(other[e415] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<Motor> for VersorOdd {
@@ -13742,7 +13742,7 @@ impl WeightExpansion<Motor> for VersorOdd {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(right_anti_dual_g0[3]) * self.group0(),
             // e23, e31, e12, e45
@@ -13764,7 +13764,7 @@ impl WeightExpansion<Motor> for VersorOdd {
                 )
                 + (self.group3().xyz() * right_anti_dual_g0.www()).with_w(right_anti_dual_g1[3] * self[scalar])
                 - (right_anti_dual_g1.yzx() * self.group0().zxy()).with_w(right_anti_dual_g0[0] * self[e15]),
-        );
+        )
     }
 }
 impl WeightExpansion<MultiVector> for VersorOdd {
@@ -13787,7 +13787,7 @@ impl WeightExpansion<MultiVector> for VersorOdd {
         let right_anti_dual_g7 = other.group4() * Simd32x3::from(-1.0);
         let right_anti_dual_g8 = other.group3().xyz() * Simd32x3::from(-1.0);
         let right_anti_dual_g9 = other.group1().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 right_anti_dual_g0[0] * self[scalar],
@@ -13851,7 +13851,7 @@ impl WeightExpansion<MultiVector> for VersorOdd {
                 - (other[e423] * self[e23])
                 - (other[e431] * self[e31])
                 - (other[e412] * self[e12]),
-        );
+        )
     }
 }
 impl WeightExpansion<Plane> for VersorOdd {
@@ -13867,7 +13867,7 @@ impl WeightExpansion<Plane> for VersorOdd {
     fn weight_expansion(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g0.zxyx() * self.group0().yzx().with_w(self[e4235]))
                 + (right_anti_dual_g0.yzx() * self.group0().zxy() * Simd32x3::from(-1.0))
@@ -13880,7 +13880,7 @@ impl WeightExpansion<Plane> for VersorOdd {
                 .with_w(right_anti_dual_g0[3] * self[scalar]),
             // e1, e2, e3, e4
             (right_anti_dual_g0.xyz() * self.group0().www()).with_w(0.0),
-        );
+        )
     }
 }
 impl WeightExpansion<RoundPoint> for VersorOdd {
@@ -13894,12 +13894,12 @@ impl WeightExpansion<RoundPoint> for VersorOdd {
     //  no simd        0       10        0
     fn weight_expansion(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1234
             other[e4] * self[scalar] * -1.0,
-        );
+        )
     }
 }
 impl WeightExpansion<Scalar> for VersorOdd {
@@ -13909,7 +13909,7 @@ impl WeightExpansion<Scalar> for VersorOdd {
     // f32        0        1        0
     fn weight_expansion(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ other[scalar] * self[scalar]);
+        AntiScalar::from_groups(/* e12345 */ other[scalar] * self[scalar])
     }
 }
 impl WeightExpansion<Sphere> for VersorOdd {
@@ -13925,7 +13925,7 @@ impl WeightExpansion<Sphere> for VersorOdd {
     fn weight_expansion(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group0().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g0.zxyx() * self.group0().yzx().with_w(self[e4235]))
                 + (right_anti_dual_g0.wwwy() * self.group1().xyz().with_w(self[e4315]))
@@ -13943,7 +13943,7 @@ impl WeightExpansion<Sphere> for VersorOdd {
                 .with_w(other[e3215] * self[scalar]),
             // e1, e2, e3, e4
             right_anti_dual_g0 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorEven> for VersorOdd {
@@ -13962,7 +13962,7 @@ impl WeightExpansion<VersorEven> for VersorOdd {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             ((Simd32x3::from(right_anti_dual_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[scalar]) * right_anti_dual_g0.xyz()))
                 .with_w(right_anti_dual_g0[3] * self[scalar]),
@@ -13989,7 +13989,7 @@ impl WeightExpansion<VersorEven> for VersorOdd {
                 + (self.group3().xyz() * right_anti_dual_g0.www()).with_w(right_anti_dual_g3[3] * self[scalar])
                 - (self.group2().yzxx() * right_anti_dual_g0.zxy().with_w(right_anti_dual_g1[0]))
                 - (right_anti_dual_g2.yzx() * self.group0().zxy()).with_w(right_anti_dual_g1[1] * self[e25]),
-        );
+        )
     }
 }
 impl WeightExpansion<VersorOdd> for VersorOdd {
@@ -14008,7 +14008,7 @@ impl WeightExpansion<VersorOdd> for VersorOdd {
         let right_anti_dual_g1 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g2 = other.group2().xyz().with_w(other[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let right_anti_dual_g3 = other.group3().xyz().with_w(other[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (right_anti_dual_g0 * Simd32x4::from(self[scalar]))
                 + (right_anti_dual_g3.wwwx() * self.group1().xyz().with_w(self[e4235]))
@@ -14042,6 +14042,6 @@ impl WeightExpansion<VersorOdd> for VersorOdd {
             .with_w(right_anti_dual_g2[3] * self[scalar]),
             // e1, e2, e3, e4
             right_anti_dual_g3 * Simd32x4::from(self[scalar]),
-        );
+        )
     }
 }

@@ -88,7 +88,7 @@ impl nearly::NearlyEqEps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
@@ -102,7 +102,7 @@ impl nearly::NearlyEqUlps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiFlatPoint, f32, f32> for AntiFlatPoint {}
@@ -127,7 +127,7 @@ impl nearly::NearlyOrdUlps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiFlatPoint, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -149,7 +149,7 @@ impl nearly::NearlyOrdUlps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
@@ -172,7 +172,7 @@ impl nearly::NearlyOrdEps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiFlatPoint, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -194,7 +194,7 @@ impl nearly::NearlyOrdEps<AntiFlatPoint, f32, f32> for AntiFlatPoint {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiFlatPoint, f32, f32> for AntiFlatPoint {}
@@ -265,14 +265,14 @@ impl encase::ShaderType for AntiFlatPoint {
     type ExtraMetadata = <AntiFlatPointGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiFlatPointGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiFlatPointGroups as encase::ShaderType>::min_size();
+        <AntiFlatPointGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiFlatPointGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiFlatPointGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiFlatPointGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

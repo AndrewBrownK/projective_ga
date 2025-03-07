@@ -24,7 +24,7 @@ impl std::ops::Add<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -47,14 +47,14 @@ impl std::ops::Add<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotor> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -77,14 +77,14 @@ impl std::ops::Add<AntiCircleRotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -107,14 +107,14 @@ impl std::ops::Add<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin 
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -137,14 +137,14 @@ impl std::ops::Add<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAlign
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -167,14 +167,14 @@ impl std::ops::Add<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -197,7 +197,7 @@ impl std::ops::Add<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversion> for CircleRotorAligningOrigin {
@@ -208,7 +208,7 @@ impl std::ops::Add<AntiDipoleInversion> for CircleRotorAligningOrigin {
     // no simd        9        0        0
     fn add(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (other.group0() + self.group0()).with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -217,7 +217,7 @@ impl std::ops::Add<AntiDipoleInversion> for CircleRotorAligningOrigin {
             (other.group2().xyz() + self.group2().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin {
@@ -228,7 +228,7 @@ impl std::ops::Add<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin 
     // no simd        6        0        0
     fn add(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -237,7 +237,7 @@ impl std::ops::Add<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin 
             (other.group1() + self.group2().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             other.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
@@ -248,7 +248,7 @@ impl std::ops::Add<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group0() + other.group0().xyz()).with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -257,7 +257,7 @@ impl std::ops::Add<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group1().yzwx(),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -268,14 +268,14 @@ impl std::ops::Add<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningO
     // no simd        9        0        0
     fn add(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group0() + other.group0().xyz()).with_w(self[e12345]),
             // e415, e425, e435, e4
             (other.group1() + self.group1()).with_w(other[e4]),
             // e235, e315, e125, e5
             (other.group2().xyz() + self.group2().xyz()).with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
@@ -286,21 +286,21 @@ impl std::ops::Add<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: AntiDipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() + other.group0().xyz(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321]),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDualNum> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -323,21 +323,21 @@ impl std::ops::Add<AntiDualNum> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlatOrigin> for CircleRotorAligningOrigin {
     type Output = CircleRotor;
     fn add(self, other: AntiFlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321]),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlatPoint> for CircleRotorAligningOrigin {
@@ -348,14 +348,14 @@ impl std::ops::Add<AntiFlatPoint> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321]),
             // e235, e315, e125, e12345
             (other.group0().xyz() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlector> for CircleRotorAligningOrigin {
@@ -366,7 +366,7 @@ impl std::ops::Add<AntiFlector> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -375,14 +375,14 @@ impl std::ops::Add<AntiFlector> for CircleRotorAligningOrigin {
             (other.group0().xyz() + self.group2().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             other.group1().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
     type Output = VersorEven;
     fn add(self, other: AntiFlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -391,14 +391,14 @@ impl std::ops::Add<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             Simd32x4::from([other[e1], other[e2], other[e3], 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiLine> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -421,14 +421,14 @@ impl std::ops::Add<AntiLine> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiLineOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiLineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -451,14 +451,14 @@ impl std::ops::Add<AntiLineOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMotor> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -481,14 +481,14 @@ impl std::ops::Add<AntiMotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiMotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -511,14 +511,14 @@ impl std::ops::Add<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiMysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -541,7 +541,7 @@ impl std::ops::Add<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
@@ -552,7 +552,7 @@ impl std::ops::Add<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: AntiMysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -561,14 +561,14 @@ impl std::ops::Add<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group1().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiPlane> for CircleRotorAligningOrigin {
     type Output = VersorEven;
     fn add(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -577,14 +577,14 @@ impl std::ops::Add<AntiPlane> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(other[e5]),
             // e1, e2, e3, e4
             other.group0().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
     type Output = VersorEven;
     fn add(self, other: AntiPlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -593,7 +593,7 @@ impl std::ops::Add<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group0().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiScalar> for CircleRotorAligningOrigin {
@@ -604,14 +604,14 @@ impl std::ops::Add<AntiScalar> for CircleRotorAligningOrigin {
     // no simd        4        0        0
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<AntiScalar> for CircleRotorAligningOrigin {
@@ -631,7 +631,7 @@ impl std::ops::Add<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
     type Output = VersorEven;
     fn add(self, other: AntiSphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -640,14 +640,14 @@ impl std::ops::Add<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -670,7 +670,7 @@ impl std::ops::Add<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Circle> for CircleRotorAligningOrigin {
@@ -681,14 +681,14 @@ impl std::ops::Add<Circle> for CircleRotorAligningOrigin {
     // no simd        9        0        0
     fn add(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group1().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             (other.group2() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleAligningOrigin> for CircleRotorAligningOrigin {
@@ -699,14 +699,14 @@ impl std::ops::Add<CircleAligningOrigin> for CircleRotorAligningOrigin {
     // no simd        9        0        0
     fn add(self, other: CircleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435
             other.group1() + self.group1(),
             // e235, e315, e125, e12345
             (other.group2() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleAligningOrigin> for CircleRotorAligningOrigin {
@@ -730,14 +730,14 @@ impl std::ops::Add<CircleAtInfinity> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: CircleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group0().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             (other.group1() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleAtOrigin> for CircleRotorAligningOrigin {
@@ -748,14 +748,14 @@ impl std::ops::Add<CircleAtOrigin> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: CircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             (other.group1() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleAtOrigin> for CircleRotorAligningOrigin {
@@ -778,14 +778,14 @@ impl std::ops::Add<CircleOnOrigin> for CircleRotorAligningOrigin {
     //   simd3        2        0        0
     // no simd        6        0        0
     fn add(self, other: CircleOnOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435
             other.group1() + self.group1(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleOnOrigin> for CircleRotorAligningOrigin {
@@ -808,14 +808,14 @@ impl std::ops::Add<CircleOrthogonalOrigin> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: CircleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() + other.group0().xyz(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321]),
             // e235, e315, e125, e12345
             (other.group1() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotor> for CircleRotorAligningOrigin {
@@ -829,14 +829,14 @@ impl std::ops::Add<CircleRotor> for CircleRotorAligningOrigin {
     //  no simd       10        0        0
     fn add(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group1().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             other.group2() + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -849,14 +849,14 @@ impl std::ops::Add<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd        3        0        0
     //  no simd       10        0        0
     fn add(self, other: CircleRotorAligningOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             other.group0() + self.group0(),
             // e415, e425, e435
             other.group1() + self.group1(),
             // e235, e315, e125, e12345
             other.group2() + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -881,14 +881,14 @@ impl std::ops::Add<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningO
     // yes simd        2        0        0
     //  no simd        7        0        0
     fn add(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() + other.group0(),
             // e235, e315, e125, e12345
             self.group2() + other.group1(),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
@@ -914,14 +914,14 @@ impl std::ops::Add<CircleRotorAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: CircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group0().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             self.group2() + other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -935,14 +935,14 @@ impl std::ops::Add<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd       10        0        0
     fn add(self, other: CircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() + other.group0().xyz(),
             // e415, e425, e435
             self.group1() + other.group1(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -962,7 +962,7 @@ impl std::ops::Add<Dipole> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -985,14 +985,14 @@ impl std::ops::Add<Dipole> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAligningOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1015,14 +1015,14 @@ impl std::ops::Add<DipoleAligningOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1045,14 +1045,14 @@ impl std::ops::Add<DipoleAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1075,14 +1075,14 @@ impl std::ops::Add<DipoleAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversion> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1105,14 +1105,14 @@ impl std::ops::Add<DipoleInversion> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversionAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1135,14 +1135,14 @@ impl std::ops::Add<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin 
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1165,14 +1165,14 @@ impl std::ops::Add<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1195,14 +1195,14 @@ impl std::ops::Add<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1225,14 +1225,14 @@ impl std::ops::Add<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
             other.group1(),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1255,14 +1255,14 @@ impl std::ops::Add<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigi
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1285,14 +1285,14 @@ impl std::ops::Add<DipoleOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: DipoleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1315,7 +1315,7 @@ impl std::ops::Add<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DualNum> for CircleRotorAligningOrigin {
@@ -1325,21 +1325,21 @@ impl std::ops::Add<DualNum> for CircleRotorAligningOrigin {
     // f32        1        0        0
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] + other[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<FlatOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: FlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1362,14 +1362,14 @@ impl std::ops::Add<FlatOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<FlatPoint> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1392,14 +1392,14 @@ impl std::ops::Add<FlatPoint> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<FlatPointAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: FlatPointAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1422,14 +1422,14 @@ impl std::ops::Add<FlatPointAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Flector> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1452,14 +1452,14 @@ impl std::ops::Add<Flector> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<FlectorAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: FlectorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1482,14 +1482,14 @@ impl std::ops::Add<FlectorAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<FlectorOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: FlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1512,14 +1512,14 @@ impl std::ops::Add<FlectorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Horizon> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1542,21 +1542,21 @@ impl std::ops::Add<Horizon> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<Infinity> for CircleRotorAligningOrigin {
     type Output = VersorEvenAligningOrigin;
     fn add(self, other: Infinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(0.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<Line> for CircleRotorAligningOrigin {
@@ -1567,14 +1567,14 @@ impl std::ops::Add<Line> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() + other.group0(),
             // e235, e315, e125, e12345
             (other.group1() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<Line> for CircleRotorAligningOrigin {
@@ -1598,14 +1598,14 @@ impl std::ops::Add<LineAtInfinity> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: LineAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             (other.group0() + self.group2().xyz()).with_w(self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<LineAtInfinity> for CircleRotorAligningOrigin {
@@ -1628,14 +1628,14 @@ impl std::ops::Add<LineOnOrigin> for CircleRotorAligningOrigin {
     //   simd3        1        0        0
     // no simd        3        0        0
     fn add(self, other: LineOnOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() + other.group0(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<LineOnOrigin> for CircleRotorAligningOrigin {
@@ -1661,14 +1661,14 @@ impl std::ops::Add<Motor> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] + other[e12345]),
             // e415, e425, e435, e4
             (self.group1() + other.group0().xyz()).with_w(0.0),
             // e235, e315, e125, e5
             (self.group2().xyz() + other.group1().xyz()).with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<MotorAtInfinity> for CircleRotorAligningOrigin {
@@ -1679,14 +1679,14 @@ impl std::ops::Add<MotorAtInfinity> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: MotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(0.0),
             // e235, e315, e125, e5
             (self.group2().xyz() + other.group0().xyz()).with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<MotorOnOrigin> for CircleRotorAligningOrigin {
@@ -1700,14 +1700,14 @@ impl std::ops::Add<MotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: MotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() + other.group0().xyz(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345]),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<MotorOnOrigin> for CircleRotorAligningOrigin {
@@ -1734,7 +1734,7 @@ impl std::ops::Add<MultiVector> for CircleRotorAligningOrigin {
     //  no simd       11        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]) + other.group0(),
             // e1, e2, e3, e4
@@ -1757,7 +1757,7 @@ impl std::ops::Add<MultiVector> for CircleRotorAligningOrigin {
             other.group9(),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryCircle> for CircleRotorAligningOrigin {
@@ -1768,14 +1768,14 @@ impl std::ops::Add<MysteryCircle> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: MysteryCircle) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group0().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryCircleRotor> for CircleRotorAligningOrigin {
@@ -1789,21 +1789,21 @@ impl std::ops::Add<MysteryCircleRotor> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: MysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() + other.group0().xyz()).with_w(other[e321]),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryDipole> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryDipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1826,14 +1826,14 @@ impl std::ops::Add<MysteryDipole> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryDipoleInversion> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1856,7 +1856,7 @@ impl std::ops::Add<MysteryDipoleInversion> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryVersorEven> for CircleRotorAligningOrigin {
@@ -1870,7 +1870,7 @@ impl std::ops::Add<MysteryVersorEven> for CircleRotorAligningOrigin {
     //  no simd        4        0        0
     fn add(self, other: MysteryVersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] + other[e12345]),
             // e415, e425, e435, e321
@@ -1879,14 +1879,14 @@ impl std::ops::Add<MysteryVersorEven> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             Simd32x4::from([other[e1], other[e2], other[e3], 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<MysteryVersorOdd> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: MysteryVersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -1909,7 +1909,7 @@ impl std::ops::Add<MysteryVersorOdd> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<NullCircleAtOrigin> for CircleRotorAligningOrigin {
@@ -1919,14 +1919,14 @@ impl std::ops::Add<NullCircleAtOrigin> for CircleRotorAligningOrigin {
     //   simd3        1        0        0
     // no simd        3        0        0
     fn add(self, other: NullCircleAtOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() + other.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::AddAssign<NullCircleAtOrigin> for CircleRotorAligningOrigin {
@@ -1945,7 +1945,7 @@ impl std::ops::Add<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: NullDipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1968,14 +1968,14 @@ impl std::ops::Add<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: NullDipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -1998,14 +1998,14 @@ impl std::ops::Add<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<NullSphereAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: NullSphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2028,7 +2028,7 @@ impl std::ops::Add<NullSphereAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -2039,35 +2039,35 @@ impl std::ops::Add<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
     // no simd        3        0        0
     fn add(self, other: NullVersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group0() + other.group0().xyz()).with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<Origin> for CircleRotorAligningOrigin {
     type Output = VersorEvenAligningOrigin;
     fn add(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<Plane> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2090,14 +2090,14 @@ impl std::ops::Add<Plane> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<PlaneOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: PlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2120,14 +2120,14 @@ impl std::ops::Add<PlaneOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<RoundPoint> for CircleRotorAligningOrigin {
     type Output = VersorEven;
     fn add(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -2136,28 +2136,28 @@ impl std::ops::Add<RoundPoint> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(other[e5]),
             // e1, e2, e3, e4
             other.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<RoundPointAtOrigin> for CircleRotorAligningOrigin {
     type Output = VersorEvenAligningOrigin;
     fn add(self, other: RoundPointAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<Scalar> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -2180,14 +2180,14 @@ impl std::ops::Add<Scalar> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Sphere> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2210,14 +2210,14 @@ impl std::ops::Add<Sphere> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<SphereAtOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: SphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2240,14 +2240,14 @@ impl std::ops::Add<SphereAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<SphereOnOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: SphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -2270,7 +2270,7 @@ impl std::ops::Add<SphereOnOrigin> for CircleRotorAligningOrigin {
             other.group0().wxyz(),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEven> for CircleRotorAligningOrigin {
@@ -2284,7 +2284,7 @@ impl std::ops::Add<VersorEven> for CircleRotorAligningOrigin {
     //  no simd       10        0        0
     fn add(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             other.group0() + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -2293,7 +2293,7 @@ impl std::ops::Add<VersorEven> for CircleRotorAligningOrigin {
             (self.group2().xyz() + other.group2().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
@@ -2307,14 +2307,14 @@ impl std::ops::Add<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
     //  no simd       10        0        0
     fn add(self, other: VersorEvenAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             other.group0() + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             (self.group1() + other.group1().xyz()).with_w(other[e4]),
             // e235, e315, e125, e5
             (self.group2().xyz() + other.group2().xyz()).with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
@@ -2328,7 +2328,7 @@ impl std::ops::Add<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: VersorEvenAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] + other[e12345]),
             // e415, e425, e435, e321
@@ -2337,7 +2337,7 @@ impl std::ops::Add<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
             (self.group2().xyz() + other.group2().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             Simd32x4::from([other[e1], other[e2], other[e3], 0.0]),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -2348,14 +2348,14 @@ impl std::ops::Add<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: VersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             (self.group0() + other.group0().xyz()).with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4]),
             // e235, e315, e125, e5
             (self.group2().xyz() + other.group1().xyz()).with_w(other[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
@@ -2369,14 +2369,14 @@ impl std::ops::Add<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        0        0
     fn add(self, other: VersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             other.group0() + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             (self.group1() + other.group1().xyz()).with_w(other[e4]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -2387,7 +2387,7 @@ impl std::ops::Add<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
     // no simd        6        0        0
     fn add(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             (self.group0() + other.group0().xyz()).with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -2396,14 +2396,14 @@ impl std::ops::Add<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
             (self.group2().xyz() + other.group1().xyz()).with_w(other[e5]),
             // e1, e2, e3, e4
             other.group2(),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOdd> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -2426,14 +2426,14 @@ impl std::ops::Add<VersorOdd> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOddAtInfinity> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorOddAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -2456,14 +2456,14 @@ impl std::ops::Add<VersorOddAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
     type Output = MultiVector;
     fn add(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]),
             // e1, e2, e3, e4
@@ -2486,153 +2486,153 @@ impl std::ops::Add<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], 0.0, 0.0, 0.0]),
             // e3215
             other[e3215],
-        );
+        )
     }
 }
 
 impl From<AntiScalar> for CircleRotorAligningOrigin {
     fn from(from_anti_scalar: AntiScalar) -> Self {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(from_anti_scalar[e12345]),
-        );
+        )
     }
 }
 
 impl From<CircleAligningOrigin> for CircleRotorAligningOrigin {
     fn from(from_circle_aligning_origin: CircleAligningOrigin) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             from_circle_aligning_origin.group0(),
             // e415, e425, e435
             from_circle_aligning_origin.group1(),
             // e235, e315, e125, e12345
             from_circle_aligning_origin.group2().with_w(0.0),
-        );
+        )
     }
 }
 
 impl From<CircleAtOrigin> for CircleRotorAligningOrigin {
     fn from(from_circle_at_origin: CircleAtOrigin) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             from_circle_at_origin.group0(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             from_circle_at_origin.group1().with_w(0.0),
-        );
+        )
     }
 }
 
 impl From<CircleOnOrigin> for CircleRotorAligningOrigin {
     fn from(from_circle_on_origin: CircleOnOrigin) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             from_circle_on_origin.group0(),
             // e415, e425, e435
             from_circle_on_origin.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 
 impl From<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
     fn from(from_circle_rotor_aligning_origin_at_infinity: CircleRotorAligningOriginAtInfinity) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             from_circle_rotor_aligning_origin_at_infinity.group0(),
             // e235, e315, e125, e12345
             from_circle_rotor_aligning_origin_at_infinity.group1(),
-        );
+        )
     }
 }
 
 impl From<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
     fn from(from_circle_rotor_on_origin: CircleRotorOnOrigin) -> Self {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             from_circle_rotor_on_origin.group0().xyz(),
             // e415, e425, e435
             from_circle_rotor_on_origin.group1(),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(from_circle_rotor_on_origin[e12345]),
-        );
+        )
     }
 }
 
 impl From<Line> for CircleRotorAligningOrigin {
     fn from(from_line: Line) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             from_line.group0(),
             // e235, e315, e125, e12345
             from_line.group1().with_w(0.0),
-        );
+        )
     }
 }
 
 impl From<LineAtInfinity> for CircleRotorAligningOrigin {
     fn from(from_line_at_infinity: LineAtInfinity) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             from_line_at_infinity.group0().with_w(0.0),
-        );
+        )
     }
 }
 
 impl From<LineOnOrigin> for CircleRotorAligningOrigin {
     fn from(from_line_on_origin: LineOnOrigin) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             from_line_on_origin.group0(),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 
 impl From<MotorOnOrigin> for CircleRotorAligningOrigin {
     fn from(from_motor_on_origin: MotorOnOrigin) -> Self {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             from_motor_on_origin.group0().xyz(),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(from_motor_on_origin[e12345]),
-        );
+        )
     }
 }
 
 impl From<NullCircleAtOrigin> for CircleRotorAligningOrigin {
     fn from(from_null_circle_at_origin: NullCircleAtOrigin) -> Self {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             from_null_circle_at_origin.group0(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Mul<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
@@ -2646,7 +2646,7 @@ impl std::ops::Mul<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       24       42        0
     //  no simd       45       60        0
     fn mul(self, other: AntiCircleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotor> for CircleRotorAligningOrigin {
@@ -2660,7 +2660,7 @@ impl std::ops::Mul<AntiCircleRotor> for CircleRotorAligningOrigin {
     // yes simd       49       76        0
     //  no simd       94      111        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -2674,7 +2674,7 @@ impl std::ops::Mul<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin 
     // yes simd       46       68        0
     //  no simd       85      100        0
     fn mul(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
@@ -2688,7 +2688,7 @@ impl std::ops::Mul<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAlign
     // yes simd       33       55        0
     //  no simd       54       71        0
     fn mul(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
@@ -2702,7 +2702,7 @@ impl std::ops::Mul<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       37       60        0
     //  no simd       64       81        0
     fn mul(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -2716,7 +2716,7 @@ impl std::ops::Mul<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       31       51        0
     //  no simd       55       70        0
     fn mul(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversion> for CircleRotorAligningOrigin {
@@ -2730,7 +2730,7 @@ impl std::ops::Mul<AntiDipoleInversion> for CircleRotorAligningOrigin {
     // yes simd       56       81        0
     //  no simd      137      150        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin {
@@ -2744,7 +2744,7 @@ impl std::ops::Mul<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin 
     // yes simd       35       64        0
     //  no simd       95      113        0
     fn mul(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
@@ -2758,7 +2758,7 @@ impl std::ops::Mul<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       36       50        0
     //  no simd       72       80        0
     fn mul(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -2772,7 +2772,7 @@ impl std::ops::Mul<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningO
     // yes simd       50       72        0
     //  no simd       95      110        0
     fn mul(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
@@ -2786,7 +2786,7 @@ impl std::ops::Mul<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       12       29        0
     //  no simd       27       46        0
     fn mul(self, other: AntiDipoleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDualNum> for CircleRotorAligningOrigin {
@@ -2800,7 +2800,7 @@ impl std::ops::Mul<AntiDualNum> for CircleRotorAligningOrigin {
     // yes simd        2        8        0
     //  no simd        6       24        0
     fn mul(self, other: AntiDualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlatOrigin> for CircleRotorAligningOrigin {
@@ -2813,7 +2813,7 @@ impl std::ops::Mul<AntiFlatOrigin> for CircleRotorAligningOrigin {
     // yes simd        0        4        0
     //  no simd        0       13        0
     fn mul(self, other: AntiFlatOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlatPoint> for CircleRotorAligningOrigin {
@@ -2827,7 +2827,7 @@ impl std::ops::Mul<AntiFlatPoint> for CircleRotorAligningOrigin {
     // yes simd       10       22        0
     //  no simd       31       43        0
     fn mul(self, other: AntiFlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlector> for CircleRotorAligningOrigin {
@@ -2841,7 +2841,7 @@ impl std::ops::Mul<AntiFlector> for CircleRotorAligningOrigin {
     // yes simd       26       47        0
     //  no simd       68       86        0
     fn mul(self, other: AntiFlector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
@@ -2855,7 +2855,7 @@ impl std::ops::Mul<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd        8       28        0
     //  no simd       29       44        0
     fn mul(self, other: AntiFlectorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiLine> for CircleRotorAligningOrigin {
@@ -2869,7 +2869,7 @@ impl std::ops::Mul<AntiLine> for CircleRotorAligningOrigin {
     // yes simd       26       48        0
     //  no simd       44       61        0
     fn mul(self, other: AntiLine) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiLineOnOrigin> for CircleRotorAligningOrigin {
@@ -2883,7 +2883,7 @@ impl std::ops::Mul<AntiLineOnOrigin> for CircleRotorAligningOrigin {
     // yes simd        9       23        0
     //  no simd       18       30        0
     fn mul(self, other: AntiLineOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMotor> for CircleRotorAligningOrigin {
@@ -2897,7 +2897,7 @@ impl std::ops::Mul<AntiMotor> for CircleRotorAligningOrigin {
     // yes simd       40       63        0
     //  no simd       64       81        0
     fn mul(self, other: AntiMotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
@@ -2911,7 +2911,7 @@ impl std::ops::Mul<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       16       29        0
     //  no simd       28       40        0
     fn mul(self, other: AntiMotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
@@ -2925,7 +2925,7 @@ impl std::ops::Mul<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
     // yes simd       16       32        0
     //  no simd       34       55        0
     fn mul(self, other: AntiMysteryCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
@@ -2939,7 +2939,7 @@ impl std::ops::Mul<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
     // yes simd       19       42        0
     //  no simd       61       74        0
     fn mul(self, other: AntiMysteryDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiPlane> for CircleRotorAligningOrigin {
@@ -2953,7 +2953,7 @@ impl std::ops::Mul<AntiPlane> for CircleRotorAligningOrigin {
     // yes simd        8       22        0
     //  no simd       25       44        0
     fn mul(self, other: AntiPlane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
@@ -2967,7 +2967,7 @@ impl std::ops::Mul<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
     // yes simd        6       23        0
     //  no simd       18       33        0
     fn mul(self, other: AntiPlaneOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiScalar> for CircleRotorAligningOrigin {
@@ -2980,7 +2980,7 @@ impl std::ops::Mul<AntiScalar> for CircleRotorAligningOrigin {
     // yes simd        0        6        0
     //  no simd        0       20        0
     fn mul(self, other: AntiScalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
@@ -2994,7 +2994,7 @@ impl std::ops::Mul<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       12       26        0
     //  no simd       25       43        0
     fn mul(self, other: AntiSphereOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
@@ -3008,7 +3008,7 @@ impl std::ops::Mul<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       38       53        0
     //  no simd       68       80        0
     fn mul(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Circle> for CircleRotorAligningOrigin {
@@ -3022,7 +3022,7 @@ impl std::ops::Mul<Circle> for CircleRotorAligningOrigin {
     // yes simd       42       74        0
     //  no simd       84      103        0
     fn mul(self, other: Circle) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAligningOrigin> for CircleRotorAligningOrigin {
@@ -3036,7 +3036,7 @@ impl std::ops::Mul<CircleAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd       39       65        0
     //  no simd       75       93        0
     fn mul(self, other: CircleAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAtInfinity> for CircleRotorAligningOrigin {
@@ -3050,7 +3050,7 @@ impl std::ops::Mul<CircleAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       25       56        0
     //  no simd       55       76        0
     fn mul(self, other: CircleAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleAtOrigin> for CircleRotorAligningOrigin {
@@ -3064,7 +3064,7 @@ impl std::ops::Mul<CircleAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       23       43        0
     //  no simd       47       60        0
     fn mul(self, other: CircleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleOnOrigin> for CircleRotorAligningOrigin {
@@ -3078,7 +3078,7 @@ impl std::ops::Mul<CircleOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       26       52        0
     //  no simd       44       66        0
     fn mul(self, other: CircleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -3092,7 +3092,7 @@ impl std::ops::Mul<CircleOrthogonalOrigin> for CircleRotorAligningOrigin {
     // yes simd       28       49        0
     //  no simd       58       70        0
     fn mul(self, other: CircleOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotor> for CircleRotorAligningOrigin {
@@ -3106,7 +3106,7 @@ impl std::ops::Mul<CircleRotor> for CircleRotorAligningOrigin {
     // yes simd       49       75        0
     //  no simd       94      110        0
     fn mul(self, other: CircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -3120,7 +3120,7 @@ impl std::ops::Mul<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd       46       69        0
     //  no simd       85      100        0
     fn mul(self, other: CircleRotorAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
@@ -3134,7 +3134,7 @@ impl std::ops::Mul<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningO
     // yes simd       31       55        0
     //  no simd       55       76        0
     fn mul(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorAtInfinity> for CircleRotorAligningOrigin {
@@ -3148,7 +3148,7 @@ impl std::ops::Mul<CircleRotorAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       32       58        0
     //  no simd       65       86        0
     fn mul(self, other: CircleRotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -3162,7 +3162,7 @@ impl std::ops::Mul<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       33       57        0
     //  no simd       54       73        0
     fn mul(self, other: CircleRotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Dipole> for CircleRotorAligningOrigin {
@@ -3176,7 +3176,7 @@ impl std::ops::Mul<Dipole> for CircleRotorAligningOrigin {
     // yes simd       42       71        0
     //  no simd       84      101        0
     fn mul(self, other: Dipole) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAligningOrigin> for CircleRotorAligningOrigin {
@@ -3190,7 +3190,7 @@ impl std::ops::Mul<DipoleAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd       28       48        0
     //  no simd       58       71        0
     fn mul(self, other: DipoleAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAtInfinity> for CircleRotorAligningOrigin {
@@ -3204,7 +3204,7 @@ impl std::ops::Mul<DipoleAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       30       54        0
     //  no simd       54       71        0
     fn mul(self, other: DipoleAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleAtOrigin> for CircleRotorAligningOrigin {
@@ -3218,7 +3218,7 @@ impl std::ops::Mul<DipoleAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       23       44        0
     //  no simd       47       61        0
     fn mul(self, other: DipoleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversion> for CircleRotorAligningOrigin {
@@ -3232,7 +3232,7 @@ impl std::ops::Mul<DipoleInversion> for CircleRotorAligningOrigin {
     // yes simd       56       81        0
     //  no simd      137      151        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin {
@@ -3246,7 +3246,7 @@ impl std::ops::Mul<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin 
     // yes simd       45       59        0
     //  no simd      108      120        0
     fn mul(self, other: DipoleInversionAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
@@ -3260,7 +3260,7 @@ impl std::ops::Mul<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       37       61        0
     //  no simd       94      110        0
     fn mul(self, other: DipoleInversionAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
@@ -3274,7 +3274,7 @@ impl std::ops::Mul<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       29       48        0
     //  no simd       65       81        0
     fn mul(self, other: DipoleInversionAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
@@ -3288,7 +3288,7 @@ impl std::ops::Mul<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       31       48        0
     //  no simd       67       82        0
     fn mul(self, other: DipoleInversionOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -3302,7 +3302,7 @@ impl std::ops::Mul<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigi
     // yes simd       50       72        0
     //  no simd       95      110        0
     fn mul(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleOnOrigin> for CircleRotorAligningOrigin {
@@ -3316,7 +3316,7 @@ impl std::ops::Mul<DipoleOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       13       25        0
     //  no simd       28       44        0
     fn mul(self, other: DipoleOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -3330,7 +3330,7 @@ impl std::ops::Mul<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
     // yes simd       39       65        0
     //  no simd       75       90        0
     fn mul(self, other: DipoleOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DualNum> for CircleRotorAligningOrigin {
@@ -3344,7 +3344,7 @@ impl std::ops::Mul<DualNum> for CircleRotorAligningOrigin {
     // yes simd        2       10        0
     //  no simd        6       28        0
     fn mul(self, other: DualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatOrigin> for CircleRotorAligningOrigin {
@@ -3357,7 +3357,7 @@ impl std::ops::Mul<FlatOrigin> for CircleRotorAligningOrigin {
     // yes simd        0        6        0
     //  no simd        0       20        0
     fn mul(self, other: FlatOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatPoint> for CircleRotorAligningOrigin {
@@ -3371,7 +3371,7 @@ impl std::ops::Mul<FlatPoint> for CircleRotorAligningOrigin {
     // yes simd       12       24        0
     //  no simd       27       41        0
     fn mul(self, other: FlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatPointAtInfinity> for CircleRotorAligningOrigin {
@@ -3385,7 +3385,7 @@ impl std::ops::Mul<FlatPointAtInfinity> for CircleRotorAligningOrigin {
     // yes simd        9       24        0
     //  no simd       18       30        0
     fn mul(self, other: FlatPointAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Flector> for CircleRotorAligningOrigin {
@@ -3399,7 +3399,7 @@ impl std::ops::Mul<Flector> for CircleRotorAligningOrigin {
     // yes simd       29       40        0
     //  no simd       68       80        0
     fn mul(self, other: Flector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlectorAtInfinity> for CircleRotorAligningOrigin {
@@ -3412,7 +3412,7 @@ impl std::ops::Mul<FlectorAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       16       28        0
     //  no simd       28       40        0
     fn mul(self, other: FlectorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlectorOnOrigin> for CircleRotorAligningOrigin {
@@ -3425,7 +3425,7 @@ impl std::ops::Mul<FlectorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       11       19        0
     //  no simd       32       40        0
     fn mul(self, other: FlectorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Horizon> for CircleRotorAligningOrigin {
@@ -3438,7 +3438,7 @@ impl std::ops::Mul<Horizon> for CircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn mul(self, other: Horizon) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Infinity> for CircleRotorAligningOrigin {
@@ -3451,7 +3451,7 @@ impl std::ops::Mul<Infinity> for CircleRotorAligningOrigin {
     // yes simd        0        6        0
     //  no simd        0       20        0
     fn mul(self, other: Infinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Line> for CircleRotorAligningOrigin {
@@ -3465,7 +3465,7 @@ impl std::ops::Mul<Line> for CircleRotorAligningOrigin {
     // yes simd       24       52        0
     //  no simd       45       66        0
     fn mul(self, other: Line) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<LineAtInfinity> for CircleRotorAligningOrigin {
@@ -3479,7 +3479,7 @@ impl std::ops::Mul<LineAtInfinity> for CircleRotorAligningOrigin {
     // yes simd        9       26        0
     //  no simd       18       33        0
     fn mul(self, other: LineAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<LineOnOrigin> for CircleRotorAligningOrigin {
@@ -3493,7 +3493,7 @@ impl std::ops::Mul<LineOnOrigin> for CircleRotorAligningOrigin {
     // yes simd        9       30        0
     //  no simd       18       36        0
     fn mul(self, other: LineOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Motor> for CircleRotorAligningOrigin {
@@ -3507,7 +3507,7 @@ impl std::ops::Mul<Motor> for CircleRotorAligningOrigin {
     // yes simd       38       56        0
     //  no simd       68       83        0
     fn mul(self, other: Motor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MotorAtInfinity> for CircleRotorAligningOrigin {
@@ -3520,7 +3520,7 @@ impl std::ops::Mul<MotorAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       13       23        0
     //  no simd       31       41        0
     fn mul(self, other: MotorAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MotorOnOrigin> for CircleRotorAligningOrigin {
@@ -3533,7 +3533,7 @@ impl std::ops::Mul<MotorOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       16       31        0
     //  no simd       28       43        0
     fn mul(self, other: MotorOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MultiVector> for CircleRotorAligningOrigin {
@@ -3548,7 +3548,7 @@ impl std::ops::Mul<MultiVector> for CircleRotorAligningOrigin {
     // yes simd      112      142        0
     //  no simd      288      321        0
     fn mul(self, other: MultiVector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryCircle> for CircleRotorAligningOrigin {
@@ -3562,7 +3562,7 @@ impl std::ops::Mul<MysteryCircle> for CircleRotorAligningOrigin {
     // yes simd       11       26        0
     //  no simd       24       43        0
     fn mul(self, other: MysteryCircle) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryCircleRotor> for CircleRotorAligningOrigin {
@@ -3576,7 +3576,7 @@ impl std::ops::Mul<MysteryCircleRotor> for CircleRotorAligningOrigin {
     // yes simd       16       31        0
     //  no simd       34       53        0
     fn mul(self, other: MysteryCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryDipole> for CircleRotorAligningOrigin {
@@ -3590,7 +3590,7 @@ impl std::ops::Mul<MysteryDipole> for CircleRotorAligningOrigin {
     // yes simd       11       26        0
     //  no simd       24       45        0
     fn mul(self, other: MysteryDipole) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryDipoleInversion> for CircleRotorAligningOrigin {
@@ -3604,7 +3604,7 @@ impl std::ops::Mul<MysteryDipoleInversion> for CircleRotorAligningOrigin {
     // yes simd       21       38        0
     //  no simd       60       71        0
     fn mul(self, other: MysteryDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryVersorEven> for CircleRotorAligningOrigin {
@@ -3618,7 +3618,7 @@ impl std::ops::Mul<MysteryVersorEven> for CircleRotorAligningOrigin {
     // yes simd       20       41        0
     //  no simd       65       86        0
     fn mul(self, other: MysteryVersorEven) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MysteryVersorOdd> for CircleRotorAligningOrigin {
@@ -3632,7 +3632,7 @@ impl std::ops::Mul<MysteryVersorOdd> for CircleRotorAligningOrigin {
     // yes simd       22       35        0
     //  no simd       64       81        0
     fn mul(self, other: MysteryVersorOdd) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<NullCircleAtOrigin> for CircleRotorAligningOrigin {
@@ -3646,7 +3646,7 @@ impl std::ops::Mul<NullCircleAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       10       24        0
     //  no simd       18       33        0
     fn mul(self, other: NullCircleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
@@ -3660,7 +3660,7 @@ impl std::ops::Mul<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
     // yes simd        9       26        0
     //  no simd       18       33        0
     fn mul(self, other: NullDipoleAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
@@ -3673,7 +3673,7 @@ impl std::ops::Mul<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       13       26        0
     //  no simd       31       44        0
     fn mul(self, other: NullDipoleInversionAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<NullSphereAtOrigin> for CircleRotorAligningOrigin {
@@ -3686,7 +3686,7 @@ impl std::ops::Mul<NullSphereAtOrigin> for CircleRotorAligningOrigin {
     // yes simd        0        5        0
     //  no simd        0       13        0
     fn mul(self, other: NullSphereAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -3700,7 +3700,7 @@ impl std::ops::Mul<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       18       28        0
     //  no simd       30       40        0
     fn mul(self, other: NullVersorEvenAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Origin> for CircleRotorAligningOrigin {
@@ -3714,7 +3714,7 @@ impl std::ops::Mul<Origin> for CircleRotorAligningOrigin {
     // yes simd        0        8        0
     //  no simd        0       23        0
     fn mul(self, other: Origin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Plane> for CircleRotorAligningOrigin {
@@ -3728,7 +3728,7 @@ impl std::ops::Mul<Plane> for CircleRotorAligningOrigin {
     // yes simd       14       25        0
     //  no simd       25       40        0
     fn mul(self, other: Plane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<PlaneOnOrigin> for CircleRotorAligningOrigin {
@@ -3742,7 +3742,7 @@ impl std::ops::Mul<PlaneOnOrigin> for CircleRotorAligningOrigin {
     // yes simd        6       28        0
     //  no simd       18       37        0
     fn mul(self, other: PlaneOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<RoundPoint> for CircleRotorAligningOrigin {
@@ -3756,7 +3756,7 @@ impl std::ops::Mul<RoundPoint> for CircleRotorAligningOrigin {
     // yes simd       11       28        0
     //  no simd       39       54        0
     fn mul(self, other: RoundPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<RoundPointAtOrigin> for CircleRotorAligningOrigin {
@@ -3770,7 +3770,7 @@ impl std::ops::Mul<RoundPointAtOrigin> for CircleRotorAligningOrigin {
     // yes simd        2       10        0
     //  no simd        6       28        0
     fn mul(self, other: RoundPointAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Scalar> for CircleRotorAligningOrigin {
@@ -3783,7 +3783,7 @@ impl std::ops::Mul<Scalar> for CircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn mul(self, other: Scalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<Scalar> for CircleRotorAligningOrigin {
@@ -3802,7 +3802,7 @@ impl std::ops::Mul<Sphere> for CircleRotorAligningOrigin {
     // yes simd       16       28        0
     //  no simd       38       50        0
     fn mul(self, other: Sphere) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<SphereAtOrigin> for CircleRotorAligningOrigin {
@@ -3816,7 +3816,7 @@ impl std::ops::Mul<SphereAtOrigin> for CircleRotorAligningOrigin {
     // yes simd        2        7        0
     //  no simd        6       20        0
     fn mul(self, other: SphereAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<SphereOnOrigin> for CircleRotorAligningOrigin {
@@ -3830,7 +3830,7 @@ impl std::ops::Mul<SphereOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       15       23        0
     //  no simd       28       40        0
     fn mul(self, other: SphereOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEven> for CircleRotorAligningOrigin {
@@ -3844,7 +3844,7 @@ impl std::ops::Mul<VersorEven> for CircleRotorAligningOrigin {
     // yes simd       60       86        0
     //  no simd      144      163        0
     fn mul(self, other: VersorEven) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
@@ -3858,7 +3858,7 @@ impl std::ops::Mul<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd       57       79        0
     //  no simd      105      120        0
     fn mul(self, other: VersorEvenAligningOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
@@ -3872,7 +3872,7 @@ impl std::ops::Mul<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       39       64        0
     //  no simd      105      124        0
     fn mul(self, other: VersorEvenAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -3886,7 +3886,7 @@ impl std::ops::Mul<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
     // yes simd       29       53        0
     //  no simd       65       83        0
     fn mul(self, other: VersorEvenAtOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
@@ -3900,7 +3900,7 @@ impl std::ops::Mul<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
     // yes simd       40       61        0
     //  no simd       64       83        0
     fn mul(self, other: VersorEvenOnOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -3914,7 +3914,7 @@ impl std::ops::Mul<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
     // yes simd       42       63        0
     //  no simd      108      123        0
     fn mul(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOdd> for CircleRotorAligningOrigin {
@@ -3928,7 +3928,7 @@ impl std::ops::Mul<VersorOdd> for CircleRotorAligningOrigin {
     // yes simd       60       83        0
     //  no simd      144      161        0
     fn mul(self, other: VersorOdd) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOddAtInfinity> for CircleRotorAligningOrigin {
@@ -3942,7 +3942,7 @@ impl std::ops::Mul<VersorOddAtInfinity> for CircleRotorAligningOrigin {
     // yes simd       44       64        0
     //  no simd      104      120        0
     fn mul(self, other: VersorOddAtInfinity) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -3956,7 +3956,7 @@ impl std::ops::Mul<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
     // yes simd       57       78        0
     //  no simd      105      120        0
     fn mul(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Neg for CircleRotorAligningOrigin {
@@ -3969,14 +3969,14 @@ impl std::ops::Neg for CircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn neg(self) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
             // e235, e315, e125, e12345
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Not for CircleRotorAligningOrigin {
@@ -3986,7 +3986,7 @@ impl std::ops::Not for CircleRotorAligningOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn not(self) -> Self::Output {
-        return self.right_dual();
+        self.right_dual()
     }
 }
 impl std::ops::Sub<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
@@ -3997,7 +3997,7 @@ impl std::ops::Sub<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        6        0
     fn sub(self, other: AntiCircleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -4020,7 +4020,7 @@ impl std::ops::Sub<AntiCircleOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotor> for CircleRotorAligningOrigin {
@@ -4035,7 +4035,7 @@ impl std::ops::Sub<AntiCircleRotor> for CircleRotorAligningOrigin {
     //  no simd        0       12        0
     fn sub(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4058,7 +4058,7 @@ impl std::ops::Sub<AntiCircleRotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -4072,7 +4072,7 @@ impl std::ops::Sub<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin 
     //  no simd        0       11        0
     fn sub(self, other: AntiCircleRotorAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4095,7 +4095,7 @@ impl std::ops::Sub<AntiCircleRotorAligningOrigin> for CircleRotorAligningOrigin 
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
@@ -4109,7 +4109,7 @@ impl std::ops::Sub<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAlign
     //  no simd        0        8        0
     fn sub(self, other: AntiCircleRotorAligningOriginAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4132,7 +4132,7 @@ impl std::ops::Sub<AntiCircleRotorAligningOriginAtInfinity> for CircleRotorAlign
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
@@ -4147,7 +4147,7 @@ impl std::ops::Sub<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        0       12        0
     fn sub(self, other: AntiCircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4170,7 +4170,7 @@ impl std::ops::Sub<AntiCircleRotorAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -4184,7 +4184,7 @@ impl std::ops::Sub<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        8        0
     fn sub(self, other: AntiCircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4207,7 +4207,7 @@ impl std::ops::Sub<AntiCircleRotorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversion> for CircleRotorAligningOrigin {
@@ -4222,7 +4222,7 @@ impl std::ops::Sub<AntiDipoleInversion> for CircleRotorAligningOrigin {
     //  no simd       10       15        0
     fn sub(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4231,7 +4231,7 @@ impl std::ops::Sub<AntiDipoleInversion> for CircleRotorAligningOrigin {
             (self.group2().xyz() - other.group2().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             other.group3().xyz().with_w(other[e4]) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin {
@@ -4245,7 +4245,7 @@ impl std::ops::Sub<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin 
     //  no simd        6       11        0
     fn sub(self, other: AntiDipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4254,7 +4254,7 @@ impl std::ops::Sub<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin 
             (self.group2().xyz() - other.group1()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
@@ -4268,7 +4268,7 @@ impl std::ops::Sub<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        4        8        0
     fn sub(self, other: AntiDipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4277,7 +4277,7 @@ impl std::ops::Sub<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group1().yzwx() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -4292,14 +4292,14 @@ impl std::ops::Sub<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningO
     //  no simd       10       11        0
     fn sub(self, other: AntiDipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             (self.group1() - other.group1()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e5
             (self.group2().xyz() - other.group2().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
@@ -4313,14 +4313,14 @@ impl std::ops::Sub<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        3        1        0
     fn sub(self, other: AntiDipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() - other.group0().xyz(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321] * -1.0),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDualNum> for CircleRotorAligningOrigin {
@@ -4331,7 +4331,7 @@ impl std::ops::Sub<AntiDualNum> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4354,7 +4354,7 @@ impl std::ops::Sub<AntiDualNum> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlatOrigin> for CircleRotorAligningOrigin {
@@ -4364,14 +4364,14 @@ impl std::ops::Sub<AntiFlatOrigin> for CircleRotorAligningOrigin {
     // f32        0        1        0
     fn sub(self, other: AntiFlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321] * -1.0),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlatPoint> for CircleRotorAligningOrigin {
@@ -4385,14 +4385,14 @@ impl std::ops::Sub<AntiFlatPoint> for CircleRotorAligningOrigin {
     //  no simd        4        4        0
     fn sub(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321] * -1.0),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlector> for CircleRotorAligningOrigin {
@@ -4407,7 +4407,7 @@ impl std::ops::Sub<AntiFlector> for CircleRotorAligningOrigin {
     //  no simd        3        8        0
     fn sub(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4416,7 +4416,7 @@ impl std::ops::Sub<AntiFlector> for CircleRotorAligningOrigin {
             (self.group2().xyz() - other.group0().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             (other.group1().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
@@ -4430,7 +4430,7 @@ impl std::ops::Sub<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        4        0
     fn sub(self, other: AntiFlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4439,7 +4439,7 @@ impl std::ops::Sub<AntiFlectorOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             (other.group0().yzw() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiLine> for CircleRotorAligningOrigin {
@@ -4450,7 +4450,7 @@ impl std::ops::Sub<AntiLine> for CircleRotorAligningOrigin {
     // no simd        0        6        0
     fn sub(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -4473,7 +4473,7 @@ impl std::ops::Sub<AntiLine> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiLineOnOrigin> for CircleRotorAligningOrigin {
@@ -4484,7 +4484,7 @@ impl std::ops::Sub<AntiLineOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        3        0
     fn sub(self, other: AntiLineOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -4507,7 +4507,7 @@ impl std::ops::Sub<AntiLineOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMotor> for CircleRotorAligningOrigin {
@@ -4522,7 +4522,7 @@ impl std::ops::Sub<AntiMotor> for CircleRotorAligningOrigin {
     //  no simd        0        9        0
     fn sub(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4545,7 +4545,7 @@ impl std::ops::Sub<AntiMotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
@@ -4559,7 +4559,7 @@ impl std::ops::Sub<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        5        0
     fn sub(self, other: AntiMotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4582,7 +4582,7 @@ impl std::ops::Sub<AntiMotorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
@@ -4597,7 +4597,7 @@ impl std::ops::Sub<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
     //  no simd        0        9        0
     fn sub(self, other: AntiMysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4620,7 +4620,7 @@ impl std::ops::Sub<AntiMysteryCircleRotor> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
@@ -4634,7 +4634,7 @@ impl std::ops::Sub<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
     //  no simd        3        7        0
     fn sub(self, other: AntiMysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4643,7 +4643,7 @@ impl std::ops::Sub<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             (other.group1() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiPlane> for CircleRotorAligningOrigin {
@@ -4657,7 +4657,7 @@ impl std::ops::Sub<AntiPlane> for CircleRotorAligningOrigin {
     //  no simd        0        7        0
     fn sub(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4666,7 +4666,7 @@ impl std::ops::Sub<AntiPlane> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             (other.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
@@ -4677,7 +4677,7 @@ impl std::ops::Sub<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        3        0
     fn sub(self, other: AntiPlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4686,7 +4686,7 @@ impl std::ops::Sub<AntiPlaneOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiScalar> for CircleRotorAligningOrigin {
@@ -4700,14 +4700,14 @@ impl std::ops::Sub<AntiScalar> for CircleRotorAligningOrigin {
     //  no simd        4        1        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<AntiScalar> for CircleRotorAligningOrigin {
@@ -4731,7 +4731,7 @@ impl std::ops::Sub<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: AntiSphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -4740,7 +4740,7 @@ impl std::ops::Sub<AntiSphereOnOrigin> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             other.group0() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
@@ -4754,7 +4754,7 @@ impl std::ops::Sub<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        0       10        0
     fn sub(self, other: AntiVersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -4777,7 +4777,7 @@ impl std::ops::Sub<AntiVersorEvenOnOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Circle> for CircleRotorAligningOrigin {
@@ -4792,14 +4792,14 @@ impl std::ops::Sub<Circle> for CircleRotorAligningOrigin {
     //  no simd       10        7        0
     fn sub(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group1().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleAligningOrigin> for CircleRotorAligningOrigin {
@@ -4814,14 +4814,14 @@ impl std::ops::Sub<CircleAligningOrigin> for CircleRotorAligningOrigin {
     //  no simd       10        3        0
     fn sub(self, other: CircleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435
             self.group1() - other.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleAligningOrigin> for CircleRotorAligningOrigin {
@@ -4849,14 +4849,14 @@ impl std::ops::Sub<CircleAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        7        7        0
     fn sub(self, other: CircleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group0().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleAtOrigin> for CircleRotorAligningOrigin {
@@ -4871,14 +4871,14 @@ impl std::ops::Sub<CircleAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        3        0
     fn sub(self, other: CircleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleAtOrigin> for CircleRotorAligningOrigin {
@@ -4901,14 +4901,14 @@ impl std::ops::Sub<CircleOnOrigin> for CircleRotorAligningOrigin {
     //   simd3        2        0        0
     // no simd        6        0        0
     fn sub(self, other: CircleOnOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435
             self.group1() - other.group1(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleOnOrigin> for CircleRotorAligningOrigin {
@@ -4935,14 +4935,14 @@ impl std::ops::Sub<CircleOrthogonalOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        4        0
     fn sub(self, other: CircleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() - other.group0().xyz(),
             // e415, e425, e435, e321
             self.group1().with_w(other[e321] * -1.0),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotor> for CircleRotorAligningOrigin {
@@ -4956,14 +4956,14 @@ impl std::ops::Sub<CircleRotor> for CircleRotorAligningOrigin {
     //  no simd       10        4        0
     fn sub(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group1().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             self.group2() - other.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -4976,14 +4976,14 @@ impl std::ops::Sub<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
     // yes simd        3        0        0
     //  no simd       10        0        0
     fn sub(self, other: CircleRotorAligningOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435
             self.group1() - other.group1(),
             // e235, e315, e125, e12345
             self.group2() - other.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleRotorAligningOrigin> for CircleRotorAligningOrigin {
@@ -5008,14 +5008,14 @@ impl std::ops::Sub<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningO
     // yes simd        2        0        0
     //  no simd        7        0        0
     fn sub(self, other: CircleRotorAligningOriginAtInfinity) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() - other.group0(),
             // e235, e315, e125, e12345
             self.group2() - other.group1(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleRotorAligningOriginAtInfinity> for CircleRotorAligningOrigin {
@@ -5041,14 +5041,14 @@ impl std::ops::Sub<CircleRotorAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        7        4        0
     fn sub(self, other: CircleRotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group0().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             self.group2() - other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -5063,14 +5063,14 @@ impl std::ops::Sub<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd       10        1        0
     fn sub(self, other: CircleRotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0().xyz(),
             // e415, e425, e435
             self.group1() - other.group1(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<CircleRotorOnOrigin> for CircleRotorAligningOrigin {
@@ -5097,7 +5097,7 @@ impl std::ops::Sub<Dipole> for CircleRotorAligningOrigin {
     //  no simd        0       10        0
     fn sub(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5120,7 +5120,7 @@ impl std::ops::Sub<Dipole> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAligningOrigin> for CircleRotorAligningOrigin {
@@ -5134,7 +5134,7 @@ impl std::ops::Sub<DipoleAligningOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        7        0
     fn sub(self, other: DipoleAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5157,7 +5157,7 @@ impl std::ops::Sub<DipoleAligningOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAtInfinity> for CircleRotorAligningOrigin {
@@ -5171,7 +5171,7 @@ impl std::ops::Sub<DipoleAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        0       10        0
     fn sub(self, other: DipoleAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5194,7 +5194,7 @@ impl std::ops::Sub<DipoleAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleAtOrigin> for CircleRotorAligningOrigin {
@@ -5205,7 +5205,7 @@ impl std::ops::Sub<DipoleAtOrigin> for CircleRotorAligningOrigin {
     // no simd        0        6        0
     fn sub(self, other: DipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5228,7 +5228,7 @@ impl std::ops::Sub<DipoleAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversion> for CircleRotorAligningOrigin {
@@ -5243,7 +5243,7 @@ impl std::ops::Sub<DipoleInversion> for CircleRotorAligningOrigin {
     //  no simd        0       15        0
     fn sub(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5266,7 +5266,7 @@ impl std::ops::Sub<DipoleInversion> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from(-1.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin {
@@ -5281,7 +5281,7 @@ impl std::ops::Sub<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin 
     //  no simd        0       12        0
     fn sub(self, other: DipoleInversionAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5304,7 +5304,7 @@ impl std::ops::Sub<DipoleInversionAligningOrigin> for CircleRotorAligningOrigin 
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from(-1.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
@@ -5319,7 +5319,7 @@ impl std::ops::Sub<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        0       15        0
     fn sub(self, other: DipoleInversionAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5342,7 +5342,7 @@ impl std::ops::Sub<DipoleInversionAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
@@ -5357,7 +5357,7 @@ impl std::ops::Sub<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        9        0
     fn sub(self, other: DipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5380,7 +5380,7 @@ impl std::ops::Sub<DipoleInversionAtOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
@@ -5391,7 +5391,7 @@ impl std::ops::Sub<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        8        0
     fn sub(self, other: DipoleInversionOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5414,7 +5414,7 @@ impl std::ops::Sub<DipoleInversionOnOrigin> for CircleRotorAligningOrigin {
             other.group1() * Simd32x4::from(-1.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -5429,7 +5429,7 @@ impl std::ops::Sub<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigi
     //  no simd        0       12        0
     fn sub(self, other: DipoleInversionOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5452,7 +5452,7 @@ impl std::ops::Sub<DipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigi
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleOnOrigin> for CircleRotorAligningOrigin {
@@ -5463,7 +5463,7 @@ impl std::ops::Sub<DipoleOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: DipoleOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5486,7 +5486,7 @@ impl std::ops::Sub<DipoleOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -5497,7 +5497,7 @@ impl std::ops::Sub<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
     // no simd        0        9        0
     fn sub(self, other: DipoleOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5520,7 +5520,7 @@ impl std::ops::Sub<DipoleOrthogonalOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DualNum> for CircleRotorAligningOrigin {
@@ -5530,14 +5530,14 @@ impl std::ops::Sub<DualNum> for CircleRotorAligningOrigin {
     // f32        1        1        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] - other[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatOrigin> for CircleRotorAligningOrigin {
@@ -5548,7 +5548,7 @@ impl std::ops::Sub<FlatOrigin> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: FlatOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5571,7 +5571,7 @@ impl std::ops::Sub<FlatOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatPoint> for CircleRotorAligningOrigin {
@@ -5585,7 +5585,7 @@ impl std::ops::Sub<FlatPoint> for CircleRotorAligningOrigin {
     //  no simd        0        7        0
     fn sub(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5608,7 +5608,7 @@ impl std::ops::Sub<FlatPoint> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatPointAtInfinity> for CircleRotorAligningOrigin {
@@ -5619,7 +5619,7 @@ impl std::ops::Sub<FlatPointAtInfinity> for CircleRotorAligningOrigin {
     // no simd        0        3        0
     fn sub(self, other: FlatPointAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5642,7 +5642,7 @@ impl std::ops::Sub<FlatPointAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Flector> for CircleRotorAligningOrigin {
@@ -5657,7 +5657,7 @@ impl std::ops::Sub<Flector> for CircleRotorAligningOrigin {
     //  no simd        0       12        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5680,7 +5680,7 @@ impl std::ops::Sub<Flector> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<FlectorAtInfinity> for CircleRotorAligningOrigin {
@@ -5694,7 +5694,7 @@ impl std::ops::Sub<FlectorAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        0        4        0
     fn sub(self, other: FlectorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5717,7 +5717,7 @@ impl std::ops::Sub<FlectorAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<FlectorOnOrigin> for CircleRotorAligningOrigin {
@@ -5728,7 +5728,7 @@ impl std::ops::Sub<FlectorOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        8        0
     fn sub(self, other: FlectorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5751,7 +5751,7 @@ impl std::ops::Sub<FlectorOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Horizon> for CircleRotorAligningOrigin {
@@ -5761,7 +5761,7 @@ impl std::ops::Sub<Horizon> for CircleRotorAligningOrigin {
     // f32        0        1        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -5784,7 +5784,7 @@ impl std::ops::Sub<Horizon> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Infinity> for CircleRotorAligningOrigin {
@@ -5795,14 +5795,14 @@ impl std::ops::Sub<Infinity> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: Infinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(0.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Line> for CircleRotorAligningOrigin {
@@ -5817,14 +5817,14 @@ impl std::ops::Sub<Line> for CircleRotorAligningOrigin {
     //  no simd        7        3        0
     fn sub(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() - other.group0(),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<Line> for CircleRotorAligningOrigin {
@@ -5851,14 +5851,14 @@ impl std::ops::Sub<LineAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        4        3        0
     fn sub(self, other: LineAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             Simd32x4::from([other[e235] * -1.0, other[e315] * -1.0, other[e125] * -1.0, 0.0]) + self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<LineAtInfinity> for CircleRotorAligningOrigin {
@@ -5881,14 +5881,14 @@ impl std::ops::Sub<LineOnOrigin> for CircleRotorAligningOrigin {
     //   simd3        1        0        0
     // no simd        3        0        0
     fn sub(self, other: LineOnOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() - other.group0(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<LineOnOrigin> for CircleRotorAligningOrigin {
@@ -5915,14 +5915,14 @@ impl std::ops::Sub<Motor> for CircleRotorAligningOrigin {
     //  no simd        7        4        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] - other[e12345]),
             // e415, e425, e435, e4
             (self.group1() - other.group0().xyz()).with_w(0.0),
             // e235, e315, e125, e5
             (self.group2().xyz() - other.group1().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<MotorAtInfinity> for CircleRotorAligningOrigin {
@@ -5936,14 +5936,14 @@ impl std::ops::Sub<MotorAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        3        4        0
     fn sub(self, other: MotorAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(0.0),
             // e235, e315, e125, e5
             (self.group2().xyz() - other.group0().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<MotorOnOrigin> for CircleRotorAligningOrigin {
@@ -5958,14 +5958,14 @@ impl std::ops::Sub<MotorOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        1        0
     fn sub(self, other: MotorOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435
             self.group1() - other.group0().xyz(),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<MotorOnOrigin> for CircleRotorAligningOrigin {
@@ -5994,7 +5994,7 @@ impl std::ops::Sub<MultiVector> for CircleRotorAligningOrigin {
     //  no simd       10       26        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345] - other[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6017,7 +6017,7 @@ impl std::ops::Sub<MultiVector> for CircleRotorAligningOrigin {
             other.group9() * Simd32x4::from(-1.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryCircle> for CircleRotorAligningOrigin {
@@ -6031,14 +6031,14 @@ impl std::ops::Sub<MysteryCircle> for CircleRotorAligningOrigin {
     //  no simd        3        4        0
     fn sub(self, other: MysteryCircle) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group0().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryCircleRotor> for CircleRotorAligningOrigin {
@@ -6053,14 +6053,14 @@ impl std::ops::Sub<MysteryCircleRotor> for CircleRotorAligningOrigin {
     //  no simd        7        5        0
     fn sub(self, other: MysteryCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             (self.group1() - other.group0().xyz()).with_w(other[e321]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e12345
             self.group2() + Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryDipole> for CircleRotorAligningOrigin {
@@ -6074,7 +6074,7 @@ impl std::ops::Sub<MysteryDipole> for CircleRotorAligningOrigin {
     //  no simd        0        7        0
     fn sub(self, other: MysteryDipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6097,7 +6097,7 @@ impl std::ops::Sub<MysteryDipole> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryDipoleInversion> for CircleRotorAligningOrigin {
@@ -6111,7 +6111,7 @@ impl std::ops::Sub<MysteryDipoleInversion> for CircleRotorAligningOrigin {
     //  no simd        0       11        0
     fn sub(self, other: MysteryDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6134,7 +6134,7 @@ impl std::ops::Sub<MysteryDipoleInversion> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryVersorEven> for CircleRotorAligningOrigin {
@@ -6149,7 +6149,7 @@ impl std::ops::Sub<MysteryVersorEven> for CircleRotorAligningOrigin {
     //  no simd        4        7        0
     fn sub(self, other: MysteryVersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] - other[e12345]),
             // e415, e425, e435, e321
@@ -6158,7 +6158,7 @@ impl std::ops::Sub<MysteryVersorEven> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(0.0),
             // e1, e2, e3, e4
             (other.group0().yzw() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<MysteryVersorOdd> for CircleRotorAligningOrigin {
@@ -6173,7 +6173,7 @@ impl std::ops::Sub<MysteryVersorOdd> for CircleRotorAligningOrigin {
     //  no simd        0       13        0
     fn sub(self, other: MysteryVersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6196,7 +6196,7 @@ impl std::ops::Sub<MysteryVersorOdd> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<NullCircleAtOrigin> for CircleRotorAligningOrigin {
@@ -6206,14 +6206,14 @@ impl std::ops::Sub<NullCircleAtOrigin> for CircleRotorAligningOrigin {
     //   simd3        1        0        0
     // no simd        3        0        0
     fn sub(self, other: NullCircleAtOrigin) -> Self::Output {
-        return CircleRotorAligningOrigin::from_groups(
+        CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             self.group0() - other.group0(),
             // e415, e425, e435
             self.group1(),
             // e235, e315, e125, e12345
             self.group2(),
-        );
+        )
     }
 }
 impl std::ops::SubAssign<NullCircleAtOrigin> for CircleRotorAligningOrigin {
@@ -6236,7 +6236,7 @@ impl std::ops::Sub<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
     // no simd        0        3        0
     fn sub(self, other: NullDipoleAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6259,7 +6259,7 @@ impl std::ops::Sub<NullDipoleAtOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
@@ -6273,7 +6273,7 @@ impl std::ops::Sub<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        5        0
     fn sub(self, other: NullDipoleInversionAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6296,7 +6296,7 @@ impl std::ops::Sub<NullDipoleInversionAtOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<NullSphereAtOrigin> for CircleRotorAligningOrigin {
@@ -6307,7 +6307,7 @@ impl std::ops::Sub<NullSphereAtOrigin> for CircleRotorAligningOrigin {
     // no simd        0        2        0
     fn sub(self, other: NullSphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6330,7 +6330,7 @@ impl std::ops::Sub<NullSphereAtOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -6344,14 +6344,14 @@ impl std::ops::Sub<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        4        4        0
     fn sub(self, other: NullVersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Origin> for CircleRotorAligningOrigin {
@@ -6361,14 +6361,14 @@ impl std::ops::Sub<Origin> for CircleRotorAligningOrigin {
     // f32        0        1        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Plane> for CircleRotorAligningOrigin {
@@ -6382,7 +6382,7 @@ impl std::ops::Sub<Plane> for CircleRotorAligningOrigin {
     //  no simd        0        5        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6405,7 +6405,7 @@ impl std::ops::Sub<Plane> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<PlaneOnOrigin> for CircleRotorAligningOrigin {
@@ -6416,7 +6416,7 @@ impl std::ops::Sub<PlaneOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: PlaneOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6439,7 +6439,7 @@ impl std::ops::Sub<PlaneOnOrigin> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<RoundPoint> for CircleRotorAligningOrigin {
@@ -6450,7 +6450,7 @@ impl std::ops::Sub<RoundPoint> for CircleRotorAligningOrigin {
     // no simd        0        8        0
     fn sub(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -6459,7 +6459,7 @@ impl std::ops::Sub<RoundPoint> for CircleRotorAligningOrigin {
             self.group2().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             other.group0() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<RoundPointAtOrigin> for CircleRotorAligningOrigin {
@@ -6473,14 +6473,14 @@ impl std::ops::Sub<RoundPointAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        5        0
     fn sub(self, other: RoundPointAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Scalar> for CircleRotorAligningOrigin {
@@ -6491,7 +6491,7 @@ impl std::ops::Sub<Scalar> for CircleRotorAligningOrigin {
     // no simd        0        2        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6514,7 +6514,7 @@ impl std::ops::Sub<Scalar> for CircleRotorAligningOrigin {
             Simd32x4::from(0.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Sphere> for CircleRotorAligningOrigin {
@@ -6528,7 +6528,7 @@ impl std::ops::Sub<Sphere> for CircleRotorAligningOrigin {
     //  no simd        0        5        0
     fn sub(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6551,7 +6551,7 @@ impl std::ops::Sub<Sphere> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from(-1.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<SphereAtOrigin> for CircleRotorAligningOrigin {
@@ -6565,7 +6565,7 @@ impl std::ops::Sub<SphereAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        0        3        0
     fn sub(self, other: SphereAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6588,7 +6588,7 @@ impl std::ops::Sub<SphereAtOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<SphereOnOrigin> for CircleRotorAligningOrigin {
@@ -6599,7 +6599,7 @@ impl std::ops::Sub<SphereOnOrigin> for CircleRotorAligningOrigin {
     // no simd        0        4        0
     fn sub(self, other: SphereOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([0.0, self[e12345]]),
             // e1, e2, e3, e4
@@ -6622,7 +6622,7 @@ impl std::ops::Sub<SphereOnOrigin> for CircleRotorAligningOrigin {
             other.group0().wxyz() * Simd32x4::from(-1.0),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEven> for CircleRotorAligningOrigin {
@@ -6636,7 +6636,7 @@ impl std::ops::Sub<VersorEven> for CircleRotorAligningOrigin {
     //  no simd       10       12        0
     fn sub(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]) - other.group0(),
             // e415, e425, e435, e321
@@ -6645,7 +6645,7 @@ impl std::ops::Sub<VersorEven> for CircleRotorAligningOrigin {
             (self.group2().xyz() - other.group2().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             other.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
@@ -6659,14 +6659,14 @@ impl std::ops::Sub<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
     //  no simd       10        8        0
     fn sub(self, other: VersorEvenAligningOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]) - other.group0(),
             // e415, e425, e435, e4
             (self.group1() - other.group1().xyz()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e5
             (self.group2().xyz() - other.group2().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
@@ -6681,7 +6681,7 @@ impl std::ops::Sub<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        7       11        0
     fn sub(self, other: VersorEvenAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345] - other[e12345]),
             // e415, e425, e435, e321
@@ -6690,7 +6690,7 @@ impl std::ops::Sub<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
             (self.group2().xyz() - other.group2().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             (other.group0().yzw() * Simd32x3::from(-1.0)).with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
@@ -6705,14 +6705,14 @@ impl std::ops::Sub<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        8        0
     fn sub(self, other: VersorEvenAtOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e4
             self.group1().with_w(other[e4] * -1.0),
             // e235, e315, e125, e5
             (self.group2().xyz() - other.group1().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
@@ -6726,14 +6726,14 @@ impl std::ops::Sub<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
     //  no simd        7        4        0
     fn sub(self, other: VersorEvenOnOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEvenAligningOrigin::from_groups(
+        VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0().with_w(self[e12345]) - other.group0(),
             // e415, e425, e435, e4
             (self.group1() - other.group1().xyz()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e235, e315, e125, e5
             self.group2().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -6748,7 +6748,7 @@ impl std::ops::Sub<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
     //  no simd        7       12        0
     fn sub(self, other: VersorEvenOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from([other[e423] * -1.0, other[e431] * -1.0, other[e412] * -1.0, 0.0]) + self.group0().with_w(self[e12345]),
             // e415, e425, e435, e321
@@ -6757,7 +6757,7 @@ impl std::ops::Sub<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
             (self.group2().xyz() - other.group1().xyz()).with_w(other[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e1, e2, e3, e4
             other.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOdd> for CircleRotorAligningOrigin {
@@ -6773,7 +6773,7 @@ impl std::ops::Sub<VersorOdd> for CircleRotorAligningOrigin {
     //  no simd        0       17        0
     fn sub(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6796,7 +6796,7 @@ impl std::ops::Sub<VersorOdd> for CircleRotorAligningOrigin {
             Simd32x4::from([other[e1234], other[e4235], other[e4315], other[e4125]]) * Simd32x4::from(-1.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOddAtInfinity> for CircleRotorAligningOrigin {
@@ -6812,7 +6812,7 @@ impl std::ops::Sub<VersorOddAtInfinity> for CircleRotorAligningOrigin {
     //  no simd        0       17        0
     fn sub(self, other: VersorOddAtInfinity) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6835,7 +6835,7 @@ impl std::ops::Sub<VersorOddAtInfinity> for CircleRotorAligningOrigin {
             Simd32x4::from([0.0, other[e4235], other[e4315], other[e4125]]) * Simd32x4::from([0.0, -1.0, -1.0, -1.0]),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
@@ -6850,7 +6850,7 @@ impl std::ops::Sub<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
     //  no simd        0       14        0
     fn sub(self, other: VersorOddOrthogonalOrigin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], self[e12345]]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -6873,7 +6873,7 @@ impl std::ops::Sub<VersorOddOrthogonalOrigin> for CircleRotorAligningOrigin {
             (Simd32x2::from([other[e1234], 0.0]) * Simd32x2::from([-1.0, 0.0])).with_zw(0.0, 0.0),
             // e3215
             other[e3215] * -1.0,
-        );
+        )
     }
 }
 
@@ -6930,14 +6930,14 @@ impl TryFrom<AntiDipoleInversion> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             anti_dipole_inversion.group0(),
             // e415, e425, e435
             anti_dipole_inversion.group1().xyz(),
             // e235, e315, e125, e12345
             anti_dipole_inversion.group2().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -6987,14 +6987,14 @@ impl TryFrom<AntiDipoleInversionAtInfinity> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             anti_dipole_inversion_at_infinity.group0().xyz(),
             // e235, e315, e125, e12345
             anti_dipole_inversion_at_infinity.group1().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7044,14 +7044,14 @@ impl TryFrom<AntiDipoleInversionOnOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             anti_dipole_inversion_on_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        ));
+        ))
     }
 }
 
@@ -7080,14 +7080,14 @@ impl TryFrom<AntiDipoleInversionOrthogonalOrigin> for CircleRotorAligningOrigin 
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             anti_dipole_inversion_orthogonal_origin.group0().xyz(),
             // e415, e425, e435
             anti_dipole_inversion_orthogonal_origin.group1(),
             // e235, e315, e125, e12345
             anti_dipole_inversion_orthogonal_origin.group2().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7109,14 +7109,14 @@ impl TryFrom<AntiDipoleOnOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             anti_dipole_on_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        ));
+        ))
     }
 }
 
@@ -7138,14 +7138,14 @@ impl TryFrom<AntiFlatPoint> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             anti_flat_point.group0().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7195,14 +7195,14 @@ impl TryFrom<AntiFlector> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             anti_flector.group0().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7245,14 +7245,14 @@ impl TryFrom<AntiMysteryDipoleInversion> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             anti_mystery_dipole_inversion.group0().xyz(),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        ));
+        ))
     }
 }
 
@@ -7274,14 +7274,14 @@ impl TryFrom<Circle> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             circle.group0(),
             // e415, e425, e435
             circle.group1().xyz(),
             // e235, e315, e125, e12345
             circle.group2().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7303,14 +7303,14 @@ impl TryFrom<CircleAtInfinity> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             circle_at_infinity.group0().xyz(),
             // e235, e315, e125, e12345
             circle_at_infinity.group1().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7332,14 +7332,14 @@ impl TryFrom<CircleOrthogonalOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             circle_orthogonal_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             circle_orthogonal_origin.group1().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7361,14 +7361,14 @@ impl TryFrom<CircleRotor> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             circle_rotor.group0(),
             // e415, e425, e435
             circle_rotor.group1().xyz(),
             // e235, e315, e125, e12345
             circle_rotor.group2(),
-        ));
+        ))
     }
 }
 
@@ -7390,14 +7390,14 @@ impl TryFrom<CircleRotorAtInfinity> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             circle_rotor_at_infinity.group0().xyz(),
             // e235, e315, e125, e12345
             circle_rotor_at_infinity.group1(),
-        ));
+        ))
     }
 }
 
@@ -7420,14 +7420,14 @@ impl TryFrom<DualNum> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(dual_num[e12345]),
-        ));
+        ))
     }
 }
 
@@ -7450,14 +7450,14 @@ impl TryFrom<Motor> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             motor.group0().xyz(),
             // e235, e315, e125, e12345
             Simd32x4::from([motor[e235], motor[e315], motor[e125], motor[e12345]]),
-        ));
+        ))
     }
 }
 
@@ -7479,14 +7479,14 @@ impl TryFrom<MotorAtInfinity> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             motor_at_infinity.group0().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -7656,14 +7656,14 @@ impl TryFrom<MultiVector> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             multi_vector.group7(),
             // e415, e425, e435
             multi_vector.group6().xyz(),
             // e235, e315, e125, e12345
             multi_vector.group8().with_w(multi_vector[e12345]),
-        ));
+        ))
     }
 }
 
@@ -7685,14 +7685,14 @@ impl TryFrom<MysteryCircle> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             mystery_circle.group0().xyz(),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        ));
+        ))
     }
 }
 
@@ -7715,14 +7715,14 @@ impl TryFrom<MysteryCircleRotor> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             mystery_circle_rotor.group0().xyz(),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(mystery_circle_rotor[e12345]),
-        ));
+        ))
     }
 }
 
@@ -7766,14 +7766,14 @@ impl TryFrom<MysteryVersorEven> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
             mystery_versor_even.group1().xyz(),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(mystery_versor_even[e12345]),
-        ));
+        ))
     }
 }
 
@@ -7795,14 +7795,14 @@ impl TryFrom<NullVersorEvenAtOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             null_versor_even_at_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             Simd32x4::from(0.0),
-        ));
+        ))
     }
 }
 
@@ -7860,14 +7860,14 @@ impl TryFrom<VersorEven> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             versor_even.group0().xyz(),
             // e415, e425, e435
             versor_even.group1().xyz(),
             // e235, e315, e125, e12345
             Simd32x4::from([versor_even[e235], versor_even[e315], versor_even[e125], versor_even[e12345]]),
-        ));
+        ))
     }
 }
 
@@ -7897,7 +7897,7 @@ impl TryFrom<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             versor_even_aligning_origin.group0().xyz(),
             // e415, e425, e435
@@ -7909,7 +7909,7 @@ impl TryFrom<VersorEvenAligningOrigin> for CircleRotorAligningOrigin {
                 versor_even_aligning_origin[e125],
                 versor_even_aligning_origin[e12345],
             ]),
-        ));
+        ))
     }
 }
 
@@ -7960,7 +7960,7 @@ impl TryFrom<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435
@@ -7972,7 +7972,7 @@ impl TryFrom<VersorEvenAtInfinity> for CircleRotorAligningOrigin {
                 versor_even_at_infinity[e125],
                 versor_even_at_infinity[e12345],
             ]),
-        ));
+        ))
     }
 }
 
@@ -8001,14 +8001,14 @@ impl TryFrom<VersorEvenAtOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             versor_even_at_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             versor_even_at_origin.group1().xyz().with_w(0.0),
-        ));
+        ))
     }
 }
 
@@ -8031,14 +8031,14 @@ impl TryFrom<VersorEvenOnOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             versor_even_on_origin.group0().xyz(),
             // e415, e425, e435
             versor_even_on_origin.group1().xyz(),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(versor_even_on_origin[e12345]),
-        ));
+        ))
     }
 }
 
@@ -8095,13 +8095,13 @@ impl TryFrom<VersorEvenOrthogonalOrigin> for CircleRotorAligningOrigin {
             error.push('}');
             return Err(error);
         }
-        return Ok(CircleRotorAligningOrigin::from_groups(
+        Ok(CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
             versor_even_orthogonal_origin.group0().xyz(),
             // e415, e425, e435
             Simd32x3::from(0.0),
             // e235, e315, e125, e12345
             versor_even_orthogonal_origin.group1().xyz().with_w(0.0),
-        ));
+        ))
     }
 }

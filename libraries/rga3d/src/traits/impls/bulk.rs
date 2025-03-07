@@ -28,7 +28,7 @@ impl Bulk for DualNum {
     type Output = Scalar;
     fn bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar])
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Flector {
@@ -46,12 +46,12 @@ impl Bulk for Flector {
     type Output = Flector;
     fn bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Horizon {
@@ -68,7 +68,7 @@ impl std::ops::DivAssign<BulkPrefixOrPostfix> for Horizon {
 impl Bulk for Horizon {
     type Output = Horizon;
     fn bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Line {
@@ -85,7 +85,7 @@ impl std::ops::DivAssign<BulkPrefixOrPostfix> for Line {
 impl Bulk for Line {
     type Output = Line;
     fn bulk(self) -> Self::Output {
-        return Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ self.group1());
+        Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ self.group1())
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Motor {
@@ -102,7 +102,7 @@ impl std::ops::DivAssign<BulkPrefixOrPostfix> for Motor {
 impl Bulk for Motor {
     type Output = Motor;
     fn bulk(self) -> Self::Output {
-        return Motor::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from(0.0), /* e23, e31, e12, scalar */ self.group1());
+        Motor::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from(0.0), /* e23, e31, e12, scalar */ self.group1())
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for MultiVector {
@@ -120,7 +120,7 @@ impl Bulk for MultiVector {
     type Output = MultiVector;
     fn bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -131,7 +131,7 @@ impl Bulk for MultiVector {
             self.group3(),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(self[e321]),
-        );
+        )
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Plane {
@@ -144,7 +144,7 @@ impl Bulk for Plane {
     type Output = Horizon;
     fn bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e321]);
+        Horizon::from_groups(/* e321 */ self[e321])
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Point {
@@ -161,7 +161,7 @@ impl std::ops::DivAssign<BulkPrefixOrPostfix> for Point {
 impl Bulk for Point {
     type Output = Point;
     fn bulk(self) -> Self::Output {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(0.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<BulkPrefixOrPostfix> for Scalar {
@@ -178,6 +178,6 @@ impl std::ops::DivAssign<BulkPrefixOrPostfix> for Scalar {
 impl Bulk for Scalar {
     type Output = Scalar;
     fn bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }

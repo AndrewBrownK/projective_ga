@@ -18,6 +18,6 @@ impl std::ops::DivAssign<AntiSquareRootPrefixOrPostfix> for AntiScalar {
 impl AntiSquareRoot for AntiScalar {
     fn anti_square_root(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ f32::powf(self[e1234], 0.5));
+        AntiScalar::from_groups(/* e1234 */ f32::powf(self[e1234], 0.5))
     }
 }

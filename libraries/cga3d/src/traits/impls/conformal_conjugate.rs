@@ -35,14 +35,14 @@ impl ConformalConjugate for AntiCircleRotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conformal_conjugate(self) -> Self {
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiDipoleInversion {
@@ -62,7 +62,7 @@ impl ConformalConjugate for AntiDipoleInversion {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn conformal_conjugate(self) -> Self {
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
@@ -71,7 +71,7 @@ impl ConformalConjugate for AntiDipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiDualNum {
@@ -91,7 +91,7 @@ impl ConformalConjugate for AntiDualNum {
     //   simd2        0        1        0
     // no simd        0        2        0
     fn conformal_conjugate(self) -> Self {
-        return AntiDualNum::from_groups(/* e3215, scalar */ self.group0() * Simd32x2::from([-1.0, 1.0]));
+        AntiDualNum::from_groups(/* e3215, scalar */ self.group0() * Simd32x2::from([-1.0, 1.0]))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiFlatPoint {
@@ -111,7 +111,7 @@ impl ConformalConjugate for AntiFlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiFlector {
@@ -131,12 +131,12 @@ impl ConformalConjugate for AntiFlector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conformal_conjugate(self) -> Self {
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiLine {
@@ -156,7 +156,7 @@ impl ConformalConjugate for AntiLine {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn conformal_conjugate(self) -> Self {
-        return AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ self.group1() * Simd32x3::from(-1.0));
+        AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ self.group1() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiMotor {
@@ -176,7 +176,7 @@ impl ConformalConjugate for AntiMotor {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
-        return AntiMotor::from_groups(/* e23, e31, e12, scalar */ self.group0(), /* e15, e25, e35, e3215 */ self.group1() * Simd32x4::from(-1.0));
+        AntiMotor::from_groups(/* e23, e31, e12, scalar */ self.group0(), /* e15, e25, e35, e3215 */ self.group1() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiPlane {
@@ -196,7 +196,7 @@ impl ConformalConjugate for AntiPlane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiScalar {
@@ -216,7 +216,7 @@ impl ConformalConjugate for AntiScalar {
     // f32        0        1        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ self[e12345] * -1.0);
+        AntiScalar::from_groups(/* e12345 */ self[e12345] * -1.0)
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Circle {
@@ -239,14 +239,14 @@ impl ConformalConjugate for Circle {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn conformal_conjugate(self) -> Self {
-        return Circle::from_groups(
+        Circle::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for CircleRotor {
@@ -266,14 +266,14 @@ impl ConformalConjugate for CircleRotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conformal_conjugate(self) -> Self {
-        return CircleRotor::from_groups(
+        CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e12345
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Dipole {
@@ -296,14 +296,14 @@ impl ConformalConjugate for Dipole {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn conformal_conjugate(self) -> Self {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for DipoleInversion {
@@ -323,7 +323,7 @@ impl ConformalConjugate for DipoleInversion {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn conformal_conjugate(self) -> Self {
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
@@ -332,7 +332,7 @@ impl ConformalConjugate for DipoleInversion {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for DualNum {
@@ -352,7 +352,7 @@ impl ConformalConjugate for DualNum {
     //   simd2        0        1        0
     // no simd        0        2        0
     fn conformal_conjugate(self) -> Self {
-        return DualNum::from_groups(/* e5, e12345 */ self.group0() * Simd32x2::from(-1.0));
+        DualNum::from_groups(/* e5, e12345 */ self.group0() * Simd32x2::from(-1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for FlatPoint {
@@ -372,7 +372,7 @@ impl ConformalConjugate for FlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Flector {
@@ -392,12 +392,12 @@ impl ConformalConjugate for Flector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conformal_conjugate(self) -> Self {
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             self.group0() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Line {
@@ -417,12 +417,12 @@ impl ConformalConjugate for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn conformal_conjugate(self) -> Self {
-        return Line::from_groups(
+        Line::from_groups(
             // e415, e425, e435
             self.group0() * Simd32x3::from(-1.0),
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Motor {
@@ -442,12 +442,12 @@ impl ConformalConjugate for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conformal_conjugate(self) -> Self {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for MultiVector {
@@ -473,7 +473,7 @@ impl ConformalConjugate for MultiVector {
     //  no simd        0       18        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             self.group0() * Simd32x2::from([1.0, -1.0]),
             // e1, e2, e3, e4
@@ -496,7 +496,7 @@ impl ConformalConjugate for MultiVector {
             self.group9() * Simd32x4::from(-1.0),
             // e1234
             self[e1234],
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Plane {
@@ -516,7 +516,7 @@ impl ConformalConjugate for Plane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for RoundPoint {
@@ -536,7 +536,7 @@ impl ConformalConjugate for RoundPoint {
     // f32        0        1        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e5 */ self[e5] * -1.0);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e5 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Scalar {
@@ -552,7 +552,7 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Scalar {
 }
 impl ConformalConjugate for Scalar {
     fn conformal_conjugate(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for Sphere {
@@ -573,7 +573,7 @@ impl ConformalConjugate for Sphere {
     // no simd        0        4        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234]);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for VersorEven {
@@ -593,7 +593,7 @@ impl ConformalConjugate for VersorEven {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn conformal_conjugate(self) -> Self {
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e415, e425, e435, e321
@@ -602,7 +602,7 @@ impl ConformalConjugate for VersorEven {
             self.group2() * Simd32x4::from(-1.0),
             // e1, e2, e3, e4
             self.group3(),
-        );
+        )
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for VersorOdd {
@@ -622,7 +622,7 @@ impl ConformalConjugate for VersorOdd {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn conformal_conjugate(self) -> Self {
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0(),
             // e23, e31, e12, e45
@@ -631,6 +631,6 @@ impl ConformalConjugate for VersorOdd {
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
             self.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }

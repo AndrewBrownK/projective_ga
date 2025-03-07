@@ -20,36 +20,36 @@
 //  Maximum:         0       0       0
 impl Grade for AntiScalar {
     fn grade() -> usize {
-        return 4;
+        4
     }
 }
 impl Grade for Horizon {
     fn grade() -> usize {
-        return 3;
+        3
     }
 }
 impl Grade for Line {
     fn grade() -> usize {
-        return 2;
+        2
     }
 }
 impl Grade for Origin {
     fn grade() -> usize {
-        return 1;
+        1
     }
 }
 impl Grade for Plane {
     fn grade() -> usize {
-        return 3;
+        3
     }
 }
 impl Grade for Point {
     fn grade() -> usize {
-        return 1;
+        1
     }
 }
 impl Grade for Scalar {
     fn grade() -> usize {
-        return 0;
+        0
     }
 }

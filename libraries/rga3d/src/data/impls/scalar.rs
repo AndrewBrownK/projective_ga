@@ -24,7 +24,7 @@ impl std::ops::Add<AntiScalar> for Scalar {
     type Output = DualNum;
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], other[e1234]]));
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], other[e1234]]))
     }
 }
 impl std::ops::Add<DualNum> for Scalar {
@@ -35,14 +35,14 @@ impl std::ops::Add<DualNum> for Scalar {
     // no simd        2        0        0
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], 0.0]) + other.group0());
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], 0.0]) + other.group0())
     }
 }
 impl std::ops::Add<Flector> for Scalar {
     type Output = MultiVector;
     fn add(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -53,14 +53,14 @@ impl std::ops::Add<Flector> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Add<Horizon> for Scalar {
     type Output = MultiVector;
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -71,19 +71,19 @@ impl std::ops::Add<Horizon> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(other[e321]),
-        );
+        )
     }
 }
 impl std::ops::Add<Line> for Scalar {
     type Output = Motor;
     fn add(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             other.group0().with_w(0.0),
             // e23, e31, e12, scalar
             other.group1().with_w(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Add<Motor> for Scalar {
@@ -94,12 +94,12 @@ impl std::ops::Add<Motor> for Scalar {
     // no simd        4        0        0
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             other.group0(),
             // e23, e31, e12, scalar
             other.group1() + Simd32x3::from(0.0).with_w(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Add<MultiVector> for Scalar {
@@ -110,7 +110,7 @@ impl std::ops::Add<MultiVector> for Scalar {
     // no simd        2        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]) + other.group0(),
             // e1, e2, e3, e4
@@ -121,14 +121,14 @@ impl std::ops::Add<MultiVector> for Scalar {
             other.group3(),
             // e423, e431, e412, e321
             other.group4(),
-        );
+        )
     }
 }
 impl std::ops::Add<Origin> for Scalar {
     type Output = MultiVector;
     fn add(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -139,14 +139,14 @@ impl std::ops::Add<Origin> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<Plane> for Scalar {
     type Output = MultiVector;
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -157,14 +157,14 @@ impl std::ops::Add<Plane> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             other.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<Point> for Scalar {
     type Output = MultiVector;
     fn add(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -175,7 +175,7 @@ impl std::ops::Add<Point> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Add<Scalar> for Scalar {
@@ -185,7 +185,7 @@ impl std::ops::Add<Scalar> for Scalar {
     // f32        1        0        0
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ other[scalar] + self[scalar]);
+        Scalar::from_groups(/* scalar */ other[scalar] + self[scalar])
     }
 }
 impl std::ops::AddAssign<Scalar> for Scalar {
@@ -200,7 +200,7 @@ impl std::ops::Mul<AntiScalar> for Scalar {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: AntiScalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DualNum> for Scalar {
@@ -210,7 +210,7 @@ impl std::ops::Mul<DualNum> for Scalar {
     //   simd2        0        1        0
     // no simd        0        2        0
     fn mul(self, other: DualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Flector> for Scalar {
@@ -220,7 +220,7 @@ impl std::ops::Mul<Flector> for Scalar {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: Flector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Horizon> for Scalar {
@@ -229,7 +229,7 @@ impl std::ops::Mul<Horizon> for Scalar {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: Horizon) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Line> for Scalar {
@@ -239,7 +239,7 @@ impl std::ops::Mul<Line> for Scalar {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn mul(self, other: Line) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Motor> for Scalar {
@@ -249,7 +249,7 @@ impl std::ops::Mul<Motor> for Scalar {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn mul(self, other: Motor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MultiVector> for Scalar {
@@ -263,7 +263,7 @@ impl std::ops::Mul<MultiVector> for Scalar {
     // yes simd        0        5        0
     //  no simd        0       16        0
     fn mul(self, other: MultiVector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Origin> for Scalar {
@@ -272,7 +272,7 @@ impl std::ops::Mul<Origin> for Scalar {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: Origin) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Plane> for Scalar {
@@ -282,7 +282,7 @@ impl std::ops::Mul<Plane> for Scalar {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: Plane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Point> for Scalar {
@@ -292,7 +292,7 @@ impl std::ops::Mul<Point> for Scalar {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn mul(self, other: Point) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Scalar> for Scalar {
@@ -301,7 +301,7 @@ impl std::ops::Mul<Scalar> for Scalar {
     //      add/sub      mul      div
     // f32        0        1        0
     fn mul(self, other: Scalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<Scalar> for Scalar {
@@ -316,13 +316,13 @@ impl std::ops::Neg for Scalar {
     // f32        0        1        0
     fn neg(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * -1.0);
+        Scalar::from_groups(/* scalar */ self[scalar] * -1.0)
     }
 }
 impl std::ops::Not for Scalar {
     type Output = AntiScalar;
     fn not(self) -> Self::Output {
-        return self.right_dual();
+        self.right_dual()
     }
 }
 impl std::ops::Sub<AntiScalar> for Scalar {
@@ -333,7 +333,7 @@ impl std::ops::Sub<AntiScalar> for Scalar {
     // no simd        0        2        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], other[e1234]]) * Simd32x2::from([1.0, -1.0]));
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar], other[e1234]]) * Simd32x2::from([1.0, -1.0]))
     }
 }
 impl std::ops::Sub<DualNum> for Scalar {
@@ -347,7 +347,7 @@ impl std::ops::Sub<DualNum> for Scalar {
     //  no simd        1        2        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar] - other[scalar], other[e1234]]) * Simd32x2::from([1.0, -1.0]));
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar] - other[scalar], other[e1234]]) * Simd32x2::from([1.0, -1.0]))
     }
 }
 impl std::ops::Sub<Flector> for Scalar {
@@ -358,7 +358,7 @@ impl std::ops::Sub<Flector> for Scalar {
     // no simd        0        8        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -369,7 +369,7 @@ impl std::ops::Sub<Flector> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             other.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Horizon> for Scalar {
@@ -380,7 +380,7 @@ impl std::ops::Sub<Horizon> for Scalar {
     // no simd        0        4        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -391,7 +391,7 @@ impl std::ops::Sub<Horizon> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Line> for Scalar {
@@ -405,12 +405,12 @@ impl std::ops::Sub<Line> for Scalar {
     //  no simd        0        7        0
     fn sub(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             (other.group0() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12, scalar
             other.group1().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Motor> for Scalar {
@@ -424,12 +424,12 @@ impl std::ops::Sub<Motor> for Scalar {
     //  no simd        1        8        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             other.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, scalar
             other.group1().xyz().with_w(self[scalar] - other[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Sub<MultiVector> for Scalar {
@@ -445,7 +445,7 @@ impl std::ops::Sub<MultiVector> for Scalar {
     //  no simd        1       16        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar] - other[scalar], other[e1234]]) * Simd32x2::from([1.0, -1.0]),
             // e1, e2, e3, e4
@@ -456,7 +456,7 @@ impl std::ops::Sub<MultiVector> for Scalar {
             other.group3() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             other.group4() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Origin> for Scalar {
@@ -467,7 +467,7 @@ impl std::ops::Sub<Origin> for Scalar {
     // no simd        0        4        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -478,7 +478,7 @@ impl std::ops::Sub<Origin> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Plane> for Scalar {
@@ -489,7 +489,7 @@ impl std::ops::Sub<Plane> for Scalar {
     // no simd        0        4        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -500,7 +500,7 @@ impl std::ops::Sub<Plane> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             other.group0() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Point> for Scalar {
@@ -511,7 +511,7 @@ impl std::ops::Sub<Point> for Scalar {
     // no simd        0        4        0
     fn sub(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -522,7 +522,7 @@ impl std::ops::Sub<Point> for Scalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Sub<Scalar> for Scalar {
@@ -532,7 +532,7 @@ impl std::ops::Sub<Scalar> for Scalar {
     // f32        1        0        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] - other[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar] - other[scalar])
     }
 }
 impl std::ops::SubAssign<Scalar> for Scalar {
@@ -561,7 +561,7 @@ impl TryFrom<DualNum> for Scalar {
             error.push('}');
             return Err(error);
         }
-        return Ok(Scalar::from_groups(/* scalar */ dual_num[scalar]));
+        Ok(Scalar::from_groups(/* scalar */ dual_num[scalar]))
     }
 }
 
@@ -626,7 +626,7 @@ impl TryFrom<Motor> for Scalar {
             error.push('}');
             return Err(error);
         }
-        return Ok(Scalar::from_groups(/* scalar */ motor[scalar]));
+        Ok(Scalar::from_groups(/* scalar */ motor[scalar]))
     }
 }
 
@@ -747,6 +747,6 @@ impl TryFrom<MultiVector> for Scalar {
             error.push('}');
             return Err(error);
         }
-        return Ok(Scalar::from_groups(/* scalar */ multi_vector[scalar]));
+        Ok(Scalar::from_groups(/* scalar */ multi_vector[scalar]))
     }
 }

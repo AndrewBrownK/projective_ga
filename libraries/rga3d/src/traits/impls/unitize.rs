@@ -31,7 +31,7 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiScalar {
 }
 impl Unitize for AntiScalar {
     fn unitize(self) -> Self {
-        return AntiScalar::from_groups(/* e1234 */ 1.0);
+        AntiScalar::from_groups(/* e1234 */ 1.0)
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for DualNum {
@@ -55,7 +55,7 @@ impl Unitize for DualNum {
     //  no simd        0        2        1
     fn unitize(self) -> Self {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(1.0 / self[e1234]) * self.group0());
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(1.0 / self[e1234]) * self.group0())
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Flector {
@@ -80,12 +80,12 @@ impl Unitize for Flector {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Line {
@@ -110,12 +110,12 @@ impl Unitize for Line {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
             Simd32x3::from(geometric_anti_product_g0) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Motor {
@@ -140,12 +140,12 @@ impl Unitize for Motor {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group1(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for MultiVector {
@@ -179,7 +179,7 @@ impl Unitize for MultiVector {
             + self[e423] * self[e423]
             + self[e431] * self[e431]
             + self[e412] * self[e412];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),
             // e1, e2, e3, e4
@@ -190,7 +190,7 @@ impl Unitize for MultiVector {
             Simd32x3::from(geometric_anti_product_g0) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::from(geometric_anti_product_g0) * self.group4(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Origin {
@@ -206,7 +206,7 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Origin {
 }
 impl Unitize for Origin {
     fn unitize(self) -> Self {
-        return Origin::from_groups(/* e4 */ 1.0);
+        Origin::from_groups(/* e4 */ 1.0)
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Plane {
@@ -230,10 +230,10 @@ impl Unitize for Plane {
     //  no simd        2        4        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Point {
@@ -257,6 +257,6 @@ impl Unitize for Point {
     //  no simd        0        4        1
     fn unitize(self) -> Self {
         use crate::elements::*;
-        return Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0());
+        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0())
     }
 }

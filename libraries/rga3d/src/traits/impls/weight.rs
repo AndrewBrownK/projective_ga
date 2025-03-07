@@ -32,7 +32,7 @@ impl std::ops::DivAssign<WeightPrefixOrPostfix> for AntiScalar {
 impl Weight for AntiScalar {
     type Output = AntiScalar;
     fn weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for DualNum {
@@ -45,7 +45,7 @@ impl Weight for DualNum {
     type Output = AntiScalar;
     fn weight(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[e1234]);
+        AntiScalar::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Flector {
@@ -63,12 +63,12 @@ impl Weight for Flector {
     type Output = Flector;
     fn weight(self) -> Self::Output {
         use crate::elements::*;
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(self[e4]),
             // e423, e431, e412, e321
             self.group1().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Line {
@@ -85,7 +85,7 @@ impl std::ops::DivAssign<WeightPrefixOrPostfix> for Line {
 impl Weight for Line {
     type Output = Line;
     fn weight(self) -> Self::Output {
-        return Line::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ Simd32x3::from(0.0));
+        Line::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Motor {
@@ -102,7 +102,7 @@ impl std::ops::DivAssign<WeightPrefixOrPostfix> for Motor {
 impl Weight for Motor {
     type Output = Motor;
     fn weight(self) -> Self::Output {
-        return Motor::from_groups(/* e41, e42, e43, e1234 */ self.group0(), /* e23, e31, e12, scalar */ Simd32x4::from(0.0));
+        Motor::from_groups(/* e41, e42, e43, e1234 */ self.group0(), /* e23, e31, e12, scalar */ Simd32x4::from(0.0))
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for MultiVector {
@@ -120,7 +120,7 @@ impl Weight for MultiVector {
     type Output = MultiVector;
     fn weight(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([0.0, self[e1234]]),
             // e1, e2, e3, e4
@@ -131,7 +131,7 @@ impl Weight for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             self.group4().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Origin {
@@ -148,7 +148,7 @@ impl std::ops::DivAssign<WeightPrefixOrPostfix> for Origin {
 impl Weight for Origin {
     type Output = Origin;
     fn weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Plane {
@@ -165,7 +165,7 @@ impl std::ops::DivAssign<WeightPrefixOrPostfix> for Plane {
 impl Weight for Plane {
     type Output = Plane;
     fn weight(self) -> Self::Output {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(0.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<WeightPrefixOrPostfix> for Point {
@@ -178,6 +178,6 @@ impl Weight for Point {
     type Output = Origin;
     fn weight(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4]);
+        Origin::from_groups(/* e4 */ self[e4])
     }
 }

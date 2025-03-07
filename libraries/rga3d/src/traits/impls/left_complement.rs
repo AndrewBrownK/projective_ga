@@ -28,7 +28,7 @@ impl LeftComplement for AntiScalar {
     type Output = Scalar;
     fn left_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e1234]);
+        Scalar::from_groups(/* scalar */ self[e1234])
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for DualNum {
@@ -45,7 +45,7 @@ impl std::ops::DivAssign<LeftComplementPrefixOrPostfix> for DualNum {
 impl LeftComplement for DualNum {
     type Output = DualNum;
     fn left_complement(self) -> Self::Output {
-        return DualNum::from_groups(/* scalar, e1234 */ self.group0().yx());
+        DualNum::from_groups(/* scalar, e1234 */ self.group0().yx())
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Flector {
@@ -66,7 +66,7 @@ impl LeftComplement for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn left_complement(self) -> Self::Output {
-        return Flector::from_groups(/* e1, e2, e3, e4 */ self.group1(), /* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        Flector::from_groups(/* e1, e2, e3, e4 */ self.group1(), /* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Horizon {
@@ -79,7 +79,7 @@ impl LeftComplement for Horizon {
     type Output = Origin;
     fn left_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e321]);
+        Origin::from_groups(/* e4 */ self[e321])
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Line {
@@ -100,12 +100,12 @@ impl LeftComplement for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn left_complement(self) -> Self::Output {
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             self.group1() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Motor {
@@ -126,12 +126,12 @@ impl LeftComplement for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn left_complement(self) -> Self::Output {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for MultiVector {
@@ -155,7 +155,7 @@ impl LeftComplement for MultiVector {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn left_complement(self) -> Self::Output {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0().yx(),
             // e1, e2, e3, e4
@@ -166,7 +166,7 @@ impl LeftComplement for MultiVector {
             self.group2() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Origin {
@@ -182,7 +182,7 @@ impl LeftComplement for Origin {
     // f32        0        1        0
     fn left_complement(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[e4] * -1.0);
+        Horizon::from_groups(/* e321 */ self[e4] * -1.0)
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Plane {
@@ -194,7 +194,7 @@ impl std::ops::Div<LeftComplementPrefixOrPostfix> for Plane {
 impl LeftComplement for Plane {
     type Output = Point;
     fn left_complement(self) -> Self::Output {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0());
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0())
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Point {
@@ -210,7 +210,7 @@ impl LeftComplement for Point {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn left_complement(self) -> Self::Output {
-        return Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0));
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for Scalar {
@@ -223,6 +223,6 @@ impl LeftComplement for Scalar {
     type Output = AntiScalar;
     fn left_complement(self) -> Self::Output {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e1234 */ self[scalar]);
+        AntiScalar::from_groups(/* e1234 */ self[scalar])
     }
 }

@@ -27,7 +27,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleOnOrigin {
 impl RoundWeight for AntiCircleOnOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotor {
@@ -39,7 +39,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotor {
 impl RoundWeight for AntiCircleRotor {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -51,7 +51,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotorAligningOrigin
 impl RoundWeight for AntiCircleRotorAligningOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -63,7 +63,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiCircleRotorOnOrigin {
 impl RoundWeight for AntiCircleRotorOnOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleInversion {
@@ -76,7 +76,7 @@ impl RoundWeight for AntiDipoleInversion {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0().with_w(self[e4]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0().with_w(self[e4]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -89,7 +89,7 @@ impl RoundWeight for AntiDipoleInversionOnOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -102,7 +102,7 @@ impl RoundWeight for AntiDipoleInversionOrthogonalOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -114,7 +114,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDipoleOnOrigin {
 impl RoundWeight for AntiDipoleOnOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiDualNum {
@@ -127,7 +127,7 @@ impl RoundWeight for AntiDualNum {
     type Output = NullSphereAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -140,7 +140,7 @@ impl RoundWeight for AntiSphereOnOrigin {
     type Output = Origin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4]);
+        Origin::from_groups(/* e4 */ self[e4])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -153,7 +153,7 @@ impl RoundWeight for AntiVersorEvenOnOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Circle {
@@ -165,7 +165,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for Circle {
 impl RoundWeight for Circle {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleAligningOrigin {
@@ -177,7 +177,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleAligningOrigin {
 impl RoundWeight for CircleAligningOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleAtOrigin {
@@ -189,7 +189,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleAtOrigin {
 impl RoundWeight for CircleAtOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleOnOrigin {
@@ -201,7 +201,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleOnOrigin {
 impl RoundWeight for CircleOnOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -213,7 +213,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleOrthogonalOrigin {
 impl RoundWeight for CircleOrthogonalOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotor {
@@ -225,7 +225,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotor {
 impl RoundWeight for CircleRotor {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -237,7 +237,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotorAligningOrigin {
 impl RoundWeight for CircleRotorAligningOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -249,7 +249,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for CircleRotorOnOrigin {
 impl RoundWeight for CircleRotorOnOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz());
+        NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Dipole {
@@ -261,7 +261,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for Dipole {
 impl RoundWeight for Dipole {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleAligningOrigin {
@@ -273,7 +273,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleAligningOrigin {
 impl RoundWeight for DipoleAligningOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleAtOrigin {
@@ -285,7 +285,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleAtOrigin {
 impl RoundWeight for DipoleAtOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversion {
@@ -298,7 +298,7 @@ impl RoundWeight for DipoleInversion {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0().with_w(self[e1234]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0().with_w(self[e1234]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -311,7 +311,7 @@ impl RoundWeight for DipoleInversionAligningOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -324,7 +324,7 @@ impl RoundWeight for DipoleInversionAtOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -337,7 +337,7 @@ impl RoundWeight for DipoleInversionOnOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -350,7 +350,7 @@ impl RoundWeight for DipoleInversionOrthogonalOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleOnOrigin {
@@ -362,7 +362,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleOnOrigin {
 impl RoundWeight for DipoleOnOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0().xyz())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -374,7 +374,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for DipoleOrthogonalOrigin {
 impl RoundWeight for DipoleOrthogonalOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0());
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for DualNum {
@@ -387,7 +387,7 @@ impl RoundWeight for DualNum {
     type Output = Origin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4]);
+        Origin::from_groups(/* e4 */ self[e4])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for MultiVector {
@@ -405,7 +405,7 @@ impl RoundWeight for MultiVector {
     type Output = MultiVector;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -428,7 +428,7 @@ impl RoundWeight for MultiVector {
             Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
             // e3215
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for NullCircleAtOrigin {
@@ -445,7 +445,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for NullCircleAtOrigin {
 impl RoundWeight for NullCircleAtOrigin {
     type Output = NullCircleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -462,7 +462,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for NullDipoleAtOrigin {
 impl RoundWeight for NullDipoleAtOrigin {
     type Output = NullDipoleAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -479,7 +479,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for NullDipoleInversionAtOr
 impl RoundWeight for NullDipoleInversionAtOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for NullSphereAtOrigin {
@@ -496,7 +496,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for NullSphereAtOrigin {
 impl RoundWeight for NullSphereAtOrigin {
     type Output = NullSphereAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -513,7 +513,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for NullVersorEvenAtOrigin 
 impl RoundWeight for NullVersorEvenAtOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Origin {
@@ -530,7 +530,7 @@ impl std::ops::DivAssign<RoundWeightPrefixOrPostfix> for Origin {
 impl RoundWeight for Origin {
     type Output = Origin;
     fn round_weight(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for RoundPoint {
@@ -543,7 +543,7 @@ impl RoundWeight for RoundPoint {
     type Output = Origin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4]);
+        Origin::from_groups(/* e4 */ self[e4])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for RoundPointAtOrigin {
@@ -556,7 +556,7 @@ impl RoundWeight for RoundPointAtOrigin {
     type Output = Origin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4]);
+        Origin::from_groups(/* e4 */ self[e4])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for Sphere {
@@ -569,7 +569,7 @@ impl RoundWeight for Sphere {
     type Output = NullSphereAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for SphereAtOrigin {
@@ -582,7 +582,7 @@ impl RoundWeight for SphereAtOrigin {
     type Output = NullSphereAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for SphereOnOrigin {
@@ -595,7 +595,7 @@ impl RoundWeight for SphereOnOrigin {
     type Output = NullSphereAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234]);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234])
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEven {
@@ -608,7 +608,7 @@ impl RoundWeight for VersorEven {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -621,7 +621,7 @@ impl RoundWeight for VersorEvenAligningOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -633,7 +633,7 @@ impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEvenAtOrigin {
 impl RoundWeight for VersorEvenAtOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0());
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0())
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -646,7 +646,7 @@ impl RoundWeight for VersorEvenOnOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -659,7 +659,7 @@ impl RoundWeight for VersorEvenOrthogonalOrigin {
     type Output = NullVersorEvenAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]));
+        NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ Simd32x4::from([self[e423], self[e431], self[e412], self[e4]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorOdd {
@@ -672,7 +672,7 @@ impl RoundWeight for VersorOdd {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }
 impl std::ops::Div<RoundWeightPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -685,6 +685,6 @@ impl RoundWeight for VersorOddOrthogonalOrigin {
     type Output = NullDipoleInversionAtOrigin;
     fn round_weight(self) -> Self::Output {
         use crate::elements::*;
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]))
     }
 }

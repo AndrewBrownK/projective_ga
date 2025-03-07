@@ -36,7 +36,7 @@ impl Inverse for DualNum {
     // no simd        0        2        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        return DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(f32::powi(self[scalar], -2)) * self.group0());
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(f32::powi(self[scalar], -2)) * self.group0())
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Flector {
@@ -61,12 +61,12 @@ impl Inverse for Flector {
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321];
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other_g0) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::from(other_g0) * self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Horizon {
@@ -86,7 +86,7 @@ impl Inverse for Horizon {
     // f32        0        1        1
     fn inverse(self) -> Self {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ 1.0 / self[e321] * -1.0);
+        Horizon::from_groups(/* e321 */ 1.0 / self[e321] * -1.0)
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Line {
@@ -111,12 +111,12 @@ impl Inverse for Line {
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12];
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             Simd32x3::from(other_g0) * self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             Simd32x3::from(other_g0) * self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Motor {
@@ -141,12 +141,12 @@ impl Inverse for Motor {
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar];
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(other_g0) * self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             Simd32x4::from(other_g0) * self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for MultiVector {
@@ -180,7 +180,7 @@ impl Inverse for MultiVector {
             + self[e31] * self[e31]
             + self[e12] * self[e12]
             + self[e321] * self[e321];
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(other_g0) * self.group0(),
             // e1, e2, e3, e4
@@ -191,7 +191,7 @@ impl Inverse for MultiVector {
             Simd32x3::from(other_g0) * self.group3() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             Simd32x4::from(other_g0) * self.group4() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Plane {
@@ -215,10 +215,10 @@ impl Inverse for Plane {
     //  no simd        0        8        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(f32::powi(self[e321], -2)) * Simd32x4::from([self[e423] * -1.0, self[e431] * -1.0, self[e412] * -1.0, self[e321] * -1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Point {
@@ -242,10 +242,10 @@ impl Inverse for Point {
     //  no simd        2        4        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Scalar {
@@ -265,6 +265,6 @@ impl Inverse for Scalar {
     // f32        0        0        1
     fn inverse(self) -> Self {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ 1.0 / self[scalar]);
+        Scalar::from_groups(/* scalar */ 1.0 / self[scalar])
     }
 }

@@ -78,7 +78,7 @@ impl nearly::NearlyEqEps<FlatOrigin, f32, f32> for FlatOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<FlatOrigin, f32, f32> for FlatOrigin {
@@ -92,7 +92,7 @@ impl nearly::NearlyEqUlps<FlatOrigin, f32, f32> for FlatOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<FlatOrigin, f32, f32> for FlatOrigin {}
@@ -117,7 +117,7 @@ impl nearly::NearlyOrdUlps<FlatOrigin, f32, f32> for FlatOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &FlatOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -139,7 +139,7 @@ impl nearly::NearlyOrdUlps<FlatOrigin, f32, f32> for FlatOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<FlatOrigin, f32, f32> for FlatOrigin {
@@ -162,7 +162,7 @@ impl nearly::NearlyOrdEps<FlatOrigin, f32, f32> for FlatOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &FlatOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -184,7 +184,7 @@ impl nearly::NearlyOrdEps<FlatOrigin, f32, f32> for FlatOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<FlatOrigin, f32, f32> for FlatOrigin {}
@@ -255,14 +255,14 @@ impl encase::ShaderType for FlatOrigin {
     type ExtraMetadata = <FlatOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <FlatOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <FlatOriginGroups as encase::ShaderType>::min_size();
+        <FlatOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <FlatOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <FlatOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <FlatOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

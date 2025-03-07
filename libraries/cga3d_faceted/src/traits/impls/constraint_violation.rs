@@ -37,7 +37,7 @@ impl ConstraintViolation for AntiCircleOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             -(reverse_g0[0] * self[e23])
                 - (reverse_g0[1] * self[e31])
@@ -45,7 +45,7 @@ impl ConstraintViolation for AntiCircleOnOrigin {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiCircleRotor {
@@ -69,7 +69,7 @@ impl ConstraintViolation for AntiCircleRotor {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g0[1] * self[e35]) + (reverse_g1[0] * self[e45]) + (reverse_g1[3] * self[e23]) + (reverse_g2[2] * self[e42]),
@@ -85,7 +85,7 @@ impl ConstraintViolation for AntiCircleRotor {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -109,7 +109,7 @@ impl ConstraintViolation for AntiCircleRotorAligningOrigin {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g0[1] * self[e35]) + (reverse_g2[2] * self[e42]),
@@ -125,7 +125,7 @@ impl ConstraintViolation for AntiCircleRotorAligningOrigin {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -148,7 +148,7 @@ impl ConstraintViolation for AntiCircleRotorAligningOriginAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             -(reverse_g0[0] * self[e15])
                 - (reverse_g0[1] * self[e25])
@@ -156,7 +156,7 @@ impl ConstraintViolation for AntiCircleRotorAligningOriginAtInfinity {
                 - (reverse_g1[0] * self[e23])
                 - (reverse_g1[1] * self[e31])
                 - (reverse_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -178,7 +178,7 @@ impl ConstraintViolation for AntiCircleRotorAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from([
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from([
             (reverse_g0[0] * self[e45]) + (reverse_g0[3] * self[e23]),
             (reverse_g0[1] * self[e45]) + (reverse_g0[3] * self[e31]),
             (reverse_g0[2] * self[e45]) + (reverse_g0[3] * self[e12]),
@@ -188,7 +188,7 @@ impl ConstraintViolation for AntiCircleRotorAtInfinity {
                 - (reverse_g1[0] * self[e23])
                 - (reverse_g1[1] * self[e31])
                 - (reverse_g1[2] * self[e12]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -211,7 +211,7 @@ impl ConstraintViolation for AntiCircleRotorOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             -(reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
@@ -219,7 +219,7 @@ impl ConstraintViolation for AntiCircleRotorOnOrigin {
                 - (reverse_g0[0] * self[e23])
                 - (reverse_g0[1] * self[e31])
                 - (reverse_g0[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiDipoleInversion {
@@ -243,7 +243,7 @@ impl ConstraintViolation for AntiDipoleInversion {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g2[3] * self[e235]) - (self[e425] * self[e3]),
@@ -277,7 +277,7 @@ impl ConstraintViolation for AntiDipoleInversion {
                 - (self[e423] * self[e1])
                 - (self[e431] * self[e2])
                 - (self[e412] * self[e3]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -300,7 +300,7 @@ impl ConstraintViolation for AntiDipoleInversionAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e435] * self[e2]) - (self[e425] * self[e3]),
@@ -320,7 +320,7 @@ impl ConstraintViolation for AntiDipoleInversionAtInfinity {
                 + (Simd32x4::from([self[e3], self[e1], self[e321], self[e425]]) * reverse_g0.yzz().with_w(reverse_g1[1]))
                 + (self.group0().xyzz() * reverse_g0.www().with_w(reverse_g1[2]))
                 - (self.group2().yzxx() * reverse_g0.zxy().with_w(reverse_g1[0])),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -341,14 +341,14 @@ impl ConstraintViolation for AntiDipoleInversionOnOrigin {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g0[0] * self[e1]) + (reverse_g0[1] * self[e2]) + (reverse_g0[2] * self[e3]) + (reverse_g0[3] * self[e4])
                 - (self[e423] * self[e1])
                 - (self[e431] * self[e2])
                 - (self[e412] * self[e3])
                 - (self[e321] * self[e4]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -372,7 +372,7 @@ impl ConstraintViolation for AntiDipoleInversionOrthogonalOrigin {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g0[0] * self[e5]) - (reverse_g0[1] * self[e125]) - (reverse_g2[2] * self[e431]) - (reverse_g2[3] * self[e235]),
@@ -390,7 +390,7 @@ impl ConstraintViolation for AntiDipoleInversionOrthogonalOrigin {
                 + (reverse_g0[0] * self[e415])
                 + (reverse_g0[1] * self[e425])
                 + (reverse_g0[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiDualNum {
@@ -406,7 +406,7 @@ impl ConstraintViolation for AntiDualNum {
     // f32        0        2        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * self[scalar] * 2.0);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * self[scalar] * 2.0)
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiFlector {
@@ -427,14 +427,14 @@ impl ConstraintViolation for AntiFlector {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (self[e235] * self[e1]) + (self[e315] * self[e2]) + (self[e125] * self[e3]) + (self[e321] * self[e5])
                 - (reverse_g0[0] * self[e1])
                 - (reverse_g0[1] * self[e2])
                 - (reverse_g0[2] * self[e3])
                 - (reverse_g0[3] * self[e5]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiLine {
@@ -456,7 +456,7 @@ impl ConstraintViolation for AntiLine {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             -(reverse_g0[0] * self[e15])
                 - (reverse_g0[1] * self[e25])
@@ -464,7 +464,7 @@ impl ConstraintViolation for AntiLine {
                 - (reverse_g1[0] * self[e23])
                 - (reverse_g1[1] * self[e31])
                 - (reverse_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiMotor {
@@ -486,7 +486,7 @@ impl ConstraintViolation for AntiMotor {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (reverse_g0[3] * self[e3215]) + (reverse_g1[3] * self[scalar])
                 - (reverse_g0[0] * self[e15])
@@ -495,7 +495,7 @@ impl ConstraintViolation for AntiMotor {
                 - (reverse_g1[0] * self[e23])
                 - (reverse_g1[1] * self[e31])
                 - (reverse_g1[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -516,10 +516,10 @@ impl ConstraintViolation for AntiMysteryCircleRotor {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e45]) * reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -541,7 +541,7 @@ impl ConstraintViolation for AntiMysteryDipoleInversion {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             Simd32x3::from([
                 (self[e435] * self[e2]) - (self[e425] * self[e3]),
@@ -551,7 +551,7 @@ impl ConstraintViolation for AntiMysteryDipoleInversion {
                 + (Simd32x3::from([self[e321], self[e321], self[e2]]) * reverse_g0.xyx())
                 + (Simd32x3::from([self[e3], self[e1], self[e321]]) * reverse_g0.yzz())
                 - (self.group1().yzx() * reverse_g0.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -573,7 +573,7 @@ impl ConstraintViolation for AntiVersorEvenOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g0[3] * self[e1234]) + (reverse_g1[3] * self[scalar])
                 - (reverse_g0[0] * self[e23])
@@ -582,7 +582,7 @@ impl ConstraintViolation for AntiVersorEvenOnOrigin {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Circle {
@@ -606,7 +606,7 @@ impl ConstraintViolation for Circle {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g0[1] * self[e125]) - (reverse_g2[2] * self[e431]),
@@ -624,7 +624,7 @@ impl ConstraintViolation for Circle {
                 + (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
                 + (reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleAligningOrigin {
@@ -648,7 +648,7 @@ impl ConstraintViolation for CircleAligningOrigin {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g0[1] * self[e125]) - (reverse_g2[2] * self[e431]),
@@ -664,7 +664,7 @@ impl ConstraintViolation for CircleAligningOrigin {
                 + (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
                 + (reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleAtInfinity {
@@ -687,12 +687,12 @@ impl ConstraintViolation for CircleAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (self.group0().xyzy() * reverse_g0.www().with_w(reverse_g1[1]))
                 + (self.group0().wwwx() * reverse_g0.xyz().with_w(reverse_g1[0]))
                 + Simd32x3::from(0.0).with_w((reverse_g1[2] * self[e435]) + (reverse_g0[0] * self[e235]) + (reverse_g0[1] * self[e315]) + (reverse_g0[2] * self[e125])),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleAtOrigin {
@@ -710,12 +710,12 @@ impl ConstraintViolation for CircleAtOrigin {
     fn constraint_violation(self) -> Self::Output {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (reverse_g0.zxy() * self.group1().yzx()) + (reverse_g1.yzx() * self.group0().zxy())
                 - (reverse_g0.yzx() * self.group1().zxy())
                 - (reverse_g1.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleOnOrigin {
@@ -737,7 +737,7 @@ impl ConstraintViolation for CircleOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g0[0] * self[e415])
                 + (reverse_g0[1] * self[e425])
@@ -745,7 +745,7 @@ impl ConstraintViolation for CircleOnOrigin {
                 + (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
                 + (reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -766,12 +766,12 @@ impl ConstraintViolation for CircleOrthogonalOrigin {
     fn constraint_violation(self) -> Self::Output {
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (reverse_g1.yzx() * self.group0().zxy()) + (self.group1().yzx() * reverse_g0.zxy())
                 - (reverse_g1.zxy() * self.group0().yzx())
                 - (self.group1().zxy() * reverse_g0.yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleRotor {
@@ -795,7 +795,7 @@ impl ConstraintViolation for CircleRotor {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g0[1] * self[e125]) - (reverse_g2[2] * self[e431]),
@@ -813,7 +813,7 @@ impl ConstraintViolation for CircleRotor {
                 + (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
                 + (reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -837,7 +837,7 @@ impl ConstraintViolation for CircleRotorAligningOrigin {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g0[1] * self[e125]) - (reverse_g2[2] * self[e431]),
@@ -853,7 +853,7 @@ impl ConstraintViolation for CircleRotorAligningOrigin {
                 + (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
                 + (reverse_g1[2] * self[e412]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -876,7 +876,7 @@ impl ConstraintViolation for CircleRotorAligningOriginAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (reverse_g0[0] * self[e235])
                 + (reverse_g0[1] * self[e315])
@@ -884,7 +884,7 @@ impl ConstraintViolation for CircleRotorAligningOriginAtInfinity {
                 + (reverse_g1[0] * self[e415])
                 + (reverse_g1[1] * self[e425])
                 + (reverse_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -906,12 +906,12 @@ impl ConstraintViolation for CircleRotorAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             (Simd32x4::from([self[e415], self[e425], self[e435], self[e315]]) * reverse_g0.wwwy())
                 + (Simd32x4::from([self[e321], self[e321], self[e321], self[e235]]) * reverse_g0.xyzx())
                 + Simd32x3::from(0.0).with_w((reverse_g0[2] * self[e125]) + (reverse_g1[0] * self[e415]) + (reverse_g1[1] * self[e425]) + (reverse_g1[2] * self[e435])),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -934,7 +934,7 @@ impl ConstraintViolation for CircleRotorOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g1[0] * self[e423])
                 + (reverse_g1[1] * self[e431])
@@ -942,7 +942,7 @@ impl ConstraintViolation for CircleRotorOnOrigin {
                 + (reverse_g0[0] * self[e415])
                 + (reverse_g0[1] * self[e425])
                 + (reverse_g0[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Dipole {
@@ -966,7 +966,7 @@ impl ConstraintViolation for Dipole {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g0[1] * self[e35]) + (reverse_g2[2] * self[e42]) + (reverse_g1[0] * self[e45]) + (reverse_g1[3] * self[e23]),
@@ -982,7 +982,7 @@ impl ConstraintViolation for Dipole {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleAligningOrigin {
@@ -1003,12 +1003,12 @@ impl ConstraintViolation for DipoleAligningOrigin {
     fn constraint_violation(self) -> Self::Output {
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (reverse_g1.zxy() * self.group0().yzx()) + (self.group1().zxy() * reverse_g0.yzx())
                 - (reverse_g1.yzx() * self.group0().zxy())
                 - (self.group1().yzx() * reverse_g0.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleAtInfinity {
@@ -1031,7 +1031,7 @@ impl ConstraintViolation for DipoleAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from([
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ Simd32x4::from([
             (reverse_g0[0] * self[e45]) + (reverse_g0[3] * self[e23]),
             (reverse_g0[1] * self[e45]) + (reverse_g0[3] * self[e31]),
             (reverse_g0[2] * self[e45]) + (reverse_g0[3] * self[e12]),
@@ -1041,7 +1041,7 @@ impl ConstraintViolation for DipoleAtInfinity {
                 - (reverse_g0[0] * self[e15])
                 - (reverse_g0[1] * self[e25])
                 - (reverse_g0[2] * self[e35]),
-        ]));
+        ]))
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleAtOrigin {
@@ -1059,12 +1059,12 @@ impl ConstraintViolation for DipoleAtOrigin {
     fn constraint_violation(self) -> Self::Output {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (reverse_g0.yzx() * self.group1().zxy()) + (reverse_g1.zxy() * self.group0().yzx())
                 - (reverse_g0.zxy() * self.group1().yzx())
                 - (reverse_g1.yzx() * self.group0().zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversion {
@@ -1088,7 +1088,7 @@ impl ConstraintViolation for DipoleInversion {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g1[1] * self[e4125]) + (reverse_g1[3] * self[e23]) + (reverse_g2[3] * self[e15]) + (self[e12] * self[e4315]),
@@ -1117,7 +1117,7 @@ impl ConstraintViolation for DipoleInversion {
                 - (self[e41] * self[e4235])
                 - (self[e42] * self[e4315])
                 - (self[e43] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -1140,7 +1140,7 @@ impl ConstraintViolation for DipoleInversionAligningOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (self.group1().zx().with_zw(self[e3215], self[e25]) * reverse_g0.yzz().with_w(self[e4315]))
                 + (self.group2().ww().with_zw(self[e25], self[e15]) * reverse_g0.xyx().with_w(self[e4235]))
@@ -1156,7 +1156,7 @@ impl ConstraintViolation for DipoleInversionAligningOrigin {
                 - (self[e41] * self[e4235])
                 - (self[e42] * self[e4315])
                 - (self[e43] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -1179,7 +1179,7 @@ impl ConstraintViolation for DipoleInversionAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e12] * self[e4315]) - (self[e31] * self[e4125]),
@@ -1199,7 +1199,7 @@ impl ConstraintViolation for DipoleInversionAtInfinity {
                 + (Simd32x4::from([self[e45], self[e45], self[e4315], self[e3215]]) * reverse_g0.xyx().with_w(self[e45]))
                 + (Simd32x4::from([self[e4125], self[e4235], self[e45], self[e4235]]) * reverse_g0.yzz().with_w(self[e15]))
                 - (Simd32x4::from([self[e4315], self[e4125], self[e4235], self[e23]]) * reverse_g0.zxy().with_w(reverse_g1[0])),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -1221,7 +1221,7 @@ impl ConstraintViolation for DipoleInversionAtOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g1[3]) * self.group1().xyz())
                 + (Simd32x3::from([self[e3215], self[e3215], self[e25]]) * reverse_g0.xyx())
@@ -1231,7 +1231,7 @@ impl ConstraintViolation for DipoleInversionAtOrigin {
                 - (Simd32x3::from([self[e43], self[e41], self[e1234]]) * reverse_g1.yzz())
                 - (Simd32x3::from([self[e1234], self[e1234], self[e42]]) * reverse_g1.xyx())
                 - (reverse_g0.zxy() * self.group1().yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -1252,14 +1252,14 @@ impl ConstraintViolation for DipoleInversionOnOrigin {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g0[0] * self[e4235]) + (reverse_g0[1] * self[e4315]) + (reverse_g0[2] * self[e4125]) + (reverse_g0[3] * self[e1234])
                 - (self[e41] * self[e4235])
                 - (self[e42] * self[e4315])
                 - (self[e43] * self[e4125])
                 - (self[e45] * self[e1234]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -1283,7 +1283,7 @@ impl ConstraintViolation for DipoleInversionOrthogonalOrigin {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g0[0] * self[e3215]) + (reverse_g0[1] * self[e35]) + (reverse_g2[2] * self[e42]) + (reverse_g2[3] * self[e15]),
@@ -1301,7 +1301,7 @@ impl ConstraintViolation for DipoleInversionOrthogonalOrigin {
                 - (reverse_g0[0] * self[e23])
                 - (reverse_g0[1] * self[e31])
                 - (reverse_g0[2] * self[e12]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -1325,7 +1325,7 @@ impl ConstraintViolation for DipoleOrthogonalOrigin {
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g0[1] * self[e35]) + (reverse_g2[2] * self[e42]),
@@ -1341,7 +1341,7 @@ impl ConstraintViolation for DipoleOrthogonalOrigin {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DualNum {
@@ -1357,7 +1357,7 @@ impl ConstraintViolation for DualNum {
     // f32        0        2        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e4] * self[e12345] * -2.0);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e4] * self[e12345] * -2.0)
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Flector {
@@ -1378,14 +1378,14 @@ impl ConstraintViolation for Flector {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (self[e15] * self[e4235]) + (self[e25] * self[e4315]) + (self[e35] * self[e4125]) + (self[e45] * self[e3215])
                 - (reverse_g0[0] * self[e4235])
                 - (reverse_g0[1] * self[e4315])
                 - (reverse_g0[2] * self[e4125])
                 - (reverse_g0[3] * self[e3215]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Line {
@@ -1407,7 +1407,7 @@ impl ConstraintViolation for Line {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x3::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x3::from(-1.0);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (reverse_g0[0] * self[e235])
                 + (reverse_g0[1] * self[e315])
@@ -1415,7 +1415,7 @@ impl ConstraintViolation for Line {
                 + (reverse_g1[0] * self[e415])
                 + (reverse_g1[1] * self[e425])
                 + (reverse_g1[2] * self[e435]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Motor {
@@ -1437,7 +1437,7 @@ impl ConstraintViolation for Motor {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Horizon::from_groups(
+        Horizon::from_groups(
             // e3215
             (reverse_g0[0] * self[e235])
                 + (reverse_g0[1] * self[e315])
@@ -1447,7 +1447,7 @@ impl ConstraintViolation for Motor {
                 + (reverse_g1[2] * self[e435])
                 - (reverse_g0[3] * self[e5])
                 - (reverse_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MultiVector {
@@ -1480,7 +1480,7 @@ impl ConstraintViolation for MultiVector {
         let reverse_g6 = self.group6() * Simd32x4::from(-1.0);
         let reverse_g7 = self.group7() * Simd32x3::from(-1.0);
         let reverse_g8 = self.group8() * Simd32x3::from(-1.0);
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 0.0,
@@ -1665,7 +1665,7 @@ impl ConstraintViolation for MultiVector {
                 - (reverse_g3[3] * self[e3215])
                 - (reverse_g6[3] * self[e5])
                 - 2.0 * (self[e12345] * self[e5]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryCircle {
@@ -1686,10 +1686,10 @@ impl ConstraintViolation for MysteryCircle {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e321]) * reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryCircleRotor {
@@ -1710,10 +1710,10 @@ impl ConstraintViolation for MysteryCircleRotor {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e321]) * reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryDipole {
@@ -1734,10 +1734,10 @@ impl ConstraintViolation for MysteryDipole {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g0[3]) * self.group0().xyz()) + (Simd32x3::from(self[e45]) * reverse_g0.xyz()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1759,7 +1759,7 @@ impl ConstraintViolation for MysteryDipoleInversion {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             Simd32x3::from([
                 (self[e12] * self[e4315]) - (self[e31] * self[e4125]),
@@ -1769,7 +1769,7 @@ impl ConstraintViolation for MysteryDipoleInversion {
                 + (Simd32x3::from([self[e45], self[e45], self[e4315]]) * reverse_g0.xyx())
                 + (Simd32x3::from([self[e4125], self[e4235], self[e45]]) * reverse_g0.yzz())
                 - (self.group1().yzx() * reverse_g0.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryVersorEven {
@@ -1791,7 +1791,7 @@ impl ConstraintViolation for MysteryVersorEven {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             Simd32x3::from(2.0) * (Simd32x3::from(self[e12345]) * Simd32x3::from([self[e1], self[e2], self[e3]]))
                 + Simd32x3::from([
@@ -1803,7 +1803,7 @@ impl ConstraintViolation for MysteryVersorEven {
                 + (Simd32x3::from([self[e3], self[e1], self[e321]]) * reverse_g1.yzz())
                 + (Simd32x3::from([self[e321], self[e321], self[e2]]) * reverse_g1.xyx())
                 - (Simd32x3::from([self[e2], self[e3], self[e1]]) * reverse_g1.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for MysteryVersorOdd {
@@ -1825,7 +1825,7 @@ impl ConstraintViolation for MysteryVersorOdd {
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             Simd32x3::from(2.0) * (Simd32x3::from(self[scalar]) * Simd32x3::from([self[e4235], self[e4315], self[e4125]]))
                 + Simd32x3::from([
@@ -1837,7 +1837,7 @@ impl ConstraintViolation for MysteryVersorOdd {
                 + (Simd32x3::from([self[e4125], self[e4235], self[e45]]) * reverse_g1.yzz())
                 + (Simd32x3::from([self[e45], self[e45], self[e4315]]) * reverse_g1.xyx())
                 - (Simd32x3::from([self[e4315], self[e4125], self[e4235]]) * reverse_g1.zxy()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEven {
@@ -1861,7 +1861,7 @@ impl ConstraintViolation for VersorEven {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (reverse_g1.xyxz() * self.group1().ww().with_zw(self[e2], self[e125]))
                 + (reverse_g2.xyxz() * self.group3().ww().with_zw(self[e431], self[e435]))
@@ -1896,7 +1896,7 @@ impl ConstraintViolation for VersorEven {
                 - (self[e412] * self[e3])
                 - (self[e12345] * self[e4])
                 - (self[e321] * self[e4]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1920,7 +1920,7 @@ impl ConstraintViolation for VersorEvenAligningOrigin {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 -(reverse_g1[3] * self[e235]) - (reverse_g2[2] * self[e431]),
@@ -1942,7 +1942,7 @@ impl ConstraintViolation for VersorEvenAligningOrigin {
                 + (reverse_g1[2] * self[e412])
                 - (reverse_g0[3] * self[e4])
                 - (reverse_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1964,7 +1964,7 @@ impl ConstraintViolation for VersorEvenAtInfinity {
         use crate::elements::*;
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 2.0 * (self[e12345] * self[e1]) + (self[e2] * self[e435]) - (self[e3] * self[e425]),
@@ -1986,7 +1986,7 @@ impl ConstraintViolation for VersorEvenAtInfinity {
                 + (Simd32x4::from([self[e415], self[e425], self[e435], self[e125]]) * reverse_g1.wwwz())
                 + (Simd32x4::from([self[e321], self[e321], self[e2], self[e235]]) * reverse_g1.xyxx())
                 - (Simd32x4::from([self[e2], self[e3], self[e1], self[e5]]) * reverse_g1.zxyw()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -2008,7 +2008,7 @@ impl ConstraintViolation for VersorEvenAtOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return PlaneOnOrigin::from_groups(
+        PlaneOnOrigin::from_groups(
             // e4235, e4315, e4125
             (Simd32x3::from(reverse_g1[3]) * self.group0().xyz())
                 + (Simd32x3::from([self[e412], self[e423], self[e4]]) * reverse_g1.yzz())
@@ -2018,7 +2018,7 @@ impl ConstraintViolation for VersorEvenAtOrigin {
                 - (Simd32x3::from([self[e125], self[e235], self[e5]]) * reverse_g0.yzz())
                 - (Simd32x3::from([self[e5], self[e5], self[e315]]) * reverse_g0.xyx())
                 - (reverse_g1.zxy() * self.group0().yzx()),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -2040,7 +2040,7 @@ impl ConstraintViolation for VersorEvenOnOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return NullSphereAtOrigin::from_groups(
+        NullSphereAtOrigin::from_groups(
             // e1234
             (reverse_g0[0] * self[e415])
                 + (reverse_g0[1] * self[e425])
@@ -2050,7 +2050,7 @@ impl ConstraintViolation for VersorEvenOnOrigin {
                 + (reverse_g1[2] * self[e412])
                 - (reverse_g0[3] * self[e4])
                 - (reverse_g1[3] * self[e12345]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -2073,7 +2073,7 @@ impl ConstraintViolation for VersorEvenOrthogonalOrigin {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from(-1.0);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             (self.group0().zx().with_zw(self[e4], self[e315]) * reverse_g1.yzz().with_w(self[e2]))
                 + (self.group2().ww().with_zw(self[e431], self[e235]) * reverse_g1.xyx().with_w(self[e1]))
@@ -2089,7 +2089,7 @@ impl ConstraintViolation for VersorEvenOrthogonalOrigin {
                 - (self[e431] * self[e2])
                 - (self[e412] * self[e3])
                 - (self[e321] * self[e4]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorOdd {
@@ -2113,7 +2113,7 @@ impl ConstraintViolation for VersorOdd {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g2[2] * self[e42]) + (reverse_g2[3] * self[e15]) + (self[scalar] * self[e4235]) + (self[e12] * self[e4315]),
@@ -2149,7 +2149,7 @@ impl ConstraintViolation for VersorOdd {
                 - (self[e41] * self[e4235])
                 - (self[e42] * self[e4315])
                 - (self[e43] * self[e4125]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorOddAtInfinity {
@@ -2171,7 +2171,7 @@ impl ConstraintViolation for VersorOddAtInfinity {
         use crate::elements::*;
         let reverse_g0 = self.group0() * Simd32x4::from([1.0, -1.0, -1.0, -1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from(-1.0);
-        return Plane::from_groups(
+        Plane::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[scalar] * self[e4235]) + (self[e12] * self[e4315]) - (self[e31] * self[e4125]),
@@ -2192,7 +2192,7 @@ impl ConstraintViolation for VersorOddAtInfinity {
                 + (Simd32x4::from([self[e45], self[e45], self[e4315], self[e3215]]) * reverse_g1.xyx().with_w(self[scalar]))
                 + (Simd32x4::from([self[e4125], self[e4235], self[e45], self[e4235]]) * reverse_g1.yzz().with_w(self[e15]))
                 - (Simd32x4::from([self[e4315], self[e4125], self[e4235], self[e23]]) * reverse_g1.zxy().with_w(reverse_g0[1])),
-        );
+        )
     }
 }
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -2215,7 +2215,7 @@ impl ConstraintViolation for VersorOddOrthogonalOrigin {
         let reverse_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let reverse_g2 = self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Sphere::from_groups(
+        Sphere::from_groups(
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (reverse_g2[2] * self[e42]) + (reverse_g2[3] * self[e15]),
@@ -2236,6 +2236,6 @@ impl ConstraintViolation for VersorOddOrthogonalOrigin {
                 - (reverse_g1[0] * self[e41])
                 - (reverse_g1[1] * self[e42])
                 - (reverse_g1[2] * self[e43]),
-        );
+        )
     }
 }

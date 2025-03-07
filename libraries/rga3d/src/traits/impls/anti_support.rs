@@ -28,7 +28,7 @@ impl AntiSupport for DualNum {
     type Output = Horizon;
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[scalar]);
+        Horizon::from_groups(/* e321 */ self[scalar])
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Flector {
@@ -48,12 +48,12 @@ impl AntiSupport for Flector {
     //  no simd        0        5        0
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from(0.0),
             // e23, e31, e12, scalar
             self.group0().xyz().with_w(self[e321] * -1.0) * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Horizon {
@@ -66,7 +66,7 @@ impl AntiSupport for Horizon {
     type Output = Scalar;
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Line {
@@ -82,7 +82,7 @@ impl AntiSupport for Line {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_support(self) -> Self::Output {
-        return Point::from_groups(/* e1, e2, e3, e4 */ (self.group1() * Simd32x3::from(-1.0)).with_w(0.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ (self.group1() * Simd32x3::from(-1.0)).with_w(0.0))
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Motor {
@@ -99,12 +99,12 @@ impl AntiSupport for Motor {
     // no simd        0        4        0
     fn anti_support(self) -> Self::Output {
         let right_dual_g0 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        return Flector::from_groups(
+        Flector::from_groups(
             // e1, e2, e3, e4
             right_dual_g0.xyz().with_w(0.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(right_dual_g0[3]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for MultiVector {
@@ -130,7 +130,7 @@ impl AntiSupport for MultiVector {
     //  no simd        0        9        0
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([self[e321] * -1.0, 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -141,7 +141,7 @@ impl AntiSupport for MultiVector {
             self.group1().xyz() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(self[scalar]),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Plane {
@@ -154,7 +154,7 @@ impl AntiSupport for Plane {
     type Output = Scalar;
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[e321]);
+        Scalar::from_groups(/* scalar */ self[e321])
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Point {
@@ -170,7 +170,7 @@ impl AntiSupport for Point {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_support(self) -> Self::Output {
-        return Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ self.group0().xyz() * Simd32x3::from(-1.0));
+        Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ self.group0().xyz() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Scalar {
@@ -183,6 +183,6 @@ impl AntiSupport for Scalar {
     type Output = Horizon;
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
-        return Horizon::from_groups(/* e321 */ self[scalar]);
+        Horizon::from_groups(/* e321 */ self[scalar])
     }
 }

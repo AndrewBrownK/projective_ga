@@ -31,7 +31,7 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Horizon {
 }
 impl Fix for Horizon {
     fn fix(self) -> Self {
-        return Horizon::from_groups(/* e321 */ 1.0);
+        Horizon::from_groups(/* e321 */ 1.0)
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Plane {
@@ -55,7 +55,7 @@ impl Fix for Plane {
     //  no simd        0        4        1
     fn fix(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0());
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0())
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Point {
@@ -79,10 +79,10 @@ impl Fix for Point {
     //  no simd        2        4        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        return Point::from_groups(
+        Point::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Scalar {
@@ -98,6 +98,6 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Scalar {
 }
 impl Fix for Scalar {
     fn fix(self) -> Self {
-        return Scalar::from_groups(/* scalar */ 1.0);
+        Scalar::from_groups(/* scalar */ 1.0)
     }
 }

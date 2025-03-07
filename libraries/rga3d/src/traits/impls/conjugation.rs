@@ -31,7 +31,7 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for AntiScalar {
 }
 impl Conjugation for AntiScalar {
     fn conjugation(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for DualNum {
@@ -47,7 +47,7 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for DualNum {
 }
 impl Conjugation for DualNum {
     fn conjugation(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Flector {
@@ -67,7 +67,7 @@ impl Conjugation for Flector {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conjugation(self) -> Self {
-        return Flector::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group1());
+        Flector::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e423, e431, e412, e321 */ self.group1())
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Horizon {
@@ -83,7 +83,7 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for Horizon {
 }
 impl Conjugation for Horizon {
     fn conjugation(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Line {
@@ -103,12 +103,12 @@ impl Conjugation for Line {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn conjugation(self) -> Self {
-        return Line::from_groups(
+        Line::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Motor {
@@ -128,12 +128,12 @@ impl Conjugation for Motor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn conjugation(self) -> Self {
-        return Motor::from_groups(
+        Motor::from_groups(
             // e41, e42, e43, e1234
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
+        )
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for MultiVector {
@@ -156,7 +156,7 @@ impl Conjugation for MultiVector {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn conjugation(self) -> Self {
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e1234
             self.group0(),
             // e1, e2, e3, e4
@@ -167,7 +167,7 @@ impl Conjugation for MultiVector {
             self.group3() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
             self.group4(),
-        );
+        )
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Origin {
@@ -187,7 +187,7 @@ impl Conjugation for Origin {
     // f32        0        1        0
     fn conjugation(self) -> Self {
         use crate::elements::*;
-        return Origin::from_groups(/* e4 */ self[e4] * -1.0);
+        Origin::from_groups(/* e4 */ self[e4] * -1.0)
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Plane {
@@ -203,7 +203,7 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for Plane {
 }
 impl Conjugation for Plane {
     fn conjugation(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Point {
@@ -223,7 +223,7 @@ impl Conjugation for Point {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn conjugation(self) -> Self {
-        return Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0));
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<ConjugationPrefixOrPostfix> for Scalar {
@@ -239,6 +239,6 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for Scalar {
 }
 impl Conjugation for Scalar {
     fn conjugation(self) -> Self {
-        return self;
+        self
     }
 }

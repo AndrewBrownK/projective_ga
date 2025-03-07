@@ -120,7 +120,7 @@ impl nearly::NearlyEqEps<CircleRotor, f32, f32> for CircleRotor {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<CircleRotor, f32, f32> for CircleRotor {
@@ -134,7 +134,7 @@ impl nearly::NearlyEqUlps<CircleRotor, f32, f32> for CircleRotor {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<CircleRotor, f32, f32> for CircleRotor {}
@@ -159,7 +159,7 @@ impl nearly::NearlyOrdUlps<CircleRotor, f32, f32> for CircleRotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &CircleRotor, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -181,7 +181,7 @@ impl nearly::NearlyOrdUlps<CircleRotor, f32, f32> for CircleRotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<CircleRotor, f32, f32> for CircleRotor {
@@ -204,7 +204,7 @@ impl nearly::NearlyOrdEps<CircleRotor, f32, f32> for CircleRotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &CircleRotor, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -226,7 +226,7 @@ impl nearly::NearlyOrdEps<CircleRotor, f32, f32> for CircleRotor {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<CircleRotor, f32, f32> for CircleRotor {}
@@ -297,14 +297,14 @@ impl encase::ShaderType for CircleRotor {
     type ExtraMetadata = <CircleRotorGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <CircleRotorGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <CircleRotorGroups as encase::ShaderType>::min_size();
+        <CircleRotorGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <CircleRotorGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <CircleRotorGroups as encase::ShaderType>::assert_uniform_compat();
+        <CircleRotorGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

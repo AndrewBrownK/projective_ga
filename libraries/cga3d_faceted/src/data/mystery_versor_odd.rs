@@ -107,7 +107,7 @@ impl nearly::NearlyEqEps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
@@ -121,7 +121,7 @@ impl nearly::NearlyEqUlps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {}
@@ -146,7 +146,7 @@ impl nearly::NearlyOrdUlps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &MysteryVersorOdd, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -168,7 +168,7 @@ impl nearly::NearlyOrdUlps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
@@ -191,7 +191,7 @@ impl nearly::NearlyOrdEps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &MysteryVersorOdd, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -213,7 +213,7 @@ impl nearly::NearlyOrdEps<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<MysteryVersorOdd, f32, f32> for MysteryVersorOdd {}
@@ -284,14 +284,14 @@ impl encase::ShaderType for MysteryVersorOdd {
     type ExtraMetadata = <MysteryVersorOddGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <MysteryVersorOddGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <MysteryVersorOddGroups as encase::ShaderType>::min_size();
+        <MysteryVersorOddGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <MysteryVersorOddGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <MysteryVersorOddGroups as encase::ShaderType>::assert_uniform_compat();
+        <MysteryVersorOddGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

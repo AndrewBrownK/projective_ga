@@ -18,6 +18,6 @@ impl std::ops::DivAssign<SquareRootPrefixOrPostfix> for Scalar {
 impl SquareRoot for Scalar {
     fn square_root(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powf(self[scalar], 0.5));
+        Scalar::from_groups(/* scalar */ f32::powf(self[scalar], 0.5))
     }
 }

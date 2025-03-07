@@ -35,12 +35,12 @@ impl AntiAutoMorphism for AntiCircleOnOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleOnOrigin::from_groups(
+        AntiCircleOnOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiCircleRotor {
@@ -63,14 +63,14 @@ impl AntiAutoMorphism for AntiCircleRotor {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleRotor::from_groups(
+        AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -93,14 +93,14 @@ impl AntiAutoMorphism for AntiCircleRotorAligningOrigin {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleRotorAligningOrigin::from_groups(
+        AntiCircleRotorAligningOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
@@ -123,12 +123,12 @@ impl AntiAutoMorphism for AntiCircleRotorAligningOriginAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleRotorAligningOriginAtInfinity::from_groups(
+        AntiCircleRotorAligningOriginAtInfinity::from_groups(
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35, scalar
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -148,12 +148,12 @@ impl AntiAutoMorphism for AntiCircleRotorAtInfinity {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleRotorAtInfinity::from_groups(
+        AntiCircleRotorAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -176,12 +176,12 @@ impl AntiAutoMorphism for AntiCircleRotorOnOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiCircleRotorOnOrigin::from_groups(
+        AntiCircleRotorOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversion {
@@ -197,7 +197,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversio
 }
 impl AntiAutoMorphism for AntiDipoleInversion {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -213,7 +213,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversio
 }
 impl AntiAutoMorphism for AntiDipoleInversionAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
@@ -229,7 +229,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversio
 }
 impl AntiAutoMorphism for AntiDipoleInversionOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -245,7 +245,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleInversio
 }
 impl AntiAutoMorphism for AntiDipoleInversionOrthogonalOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -261,7 +261,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiDipoleOnOrigin
 }
 impl AntiAutoMorphism for AntiDipoleOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiDualNum {
@@ -281,7 +281,7 @@ impl AntiAutoMorphism for AntiDualNum {
     //   simd2        0        1        0
     // no simd        0        2        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiDualNum::from_groups(/* e1234, scalar */ self.group0() * Simd32x2::from(-1.0));
+        AntiDualNum::from_groups(/* e1234, scalar */ self.group0() * Simd32x2::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiFlatOrigin {
@@ -297,7 +297,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiFlatOrigin {
 }
 impl AntiAutoMorphism for AntiFlatOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiFlatPoint {
@@ -313,7 +313,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiFlatPoint {
 }
 impl AntiAutoMorphism for AntiFlatPoint {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiFlector {
@@ -329,7 +329,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiFlector {
 }
 impl AntiAutoMorphism for AntiFlector {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -345,7 +345,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiFlectorOnOrigi
 }
 impl AntiAutoMorphism for AntiFlectorOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiLine {
@@ -365,12 +365,12 @@ impl AntiAutoMorphism for AntiLine {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiLine::from_groups(
+        AntiLine::from_groups(
             // e23, e31, e12
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiLineOnOrigin {
@@ -390,7 +390,7 @@ impl AntiAutoMorphism for AntiLineOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0));
+        AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiMotor {
@@ -410,12 +410,12 @@ impl AntiAutoMorphism for AntiMotor {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e3215
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -435,7 +435,7 @@ impl AntiAutoMorphism for AntiMotorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from(-1.0));
+        AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -459,7 +459,7 @@ impl AntiAutoMorphism for AntiMysteryCircleRotor {
     //  no simd        0        5        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[scalar] * -1.0);
+        AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0), /* scalar */ self[scalar] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiMysteryDipoleInversion {
@@ -475,7 +475,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiMysteryDipoleI
 }
 impl AntiAutoMorphism for AntiMysteryDipoleInversion {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiPlane {
@@ -491,7 +491,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiPlane {
 }
 impl AntiAutoMorphism for AntiPlane {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -507,7 +507,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiPlaneOnOrigin 
 }
 impl AntiAutoMorphism for AntiPlaneOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiScalar {
@@ -523,7 +523,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiScalar {
 }
 impl AntiAutoMorphism for AntiScalar {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -539,7 +539,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for AntiSphereOnOrigin
 }
 impl AntiAutoMorphism for AntiSphereOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -559,12 +559,12 @@ impl AntiAutoMorphism for AntiVersorEvenOnOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return AntiVersorEvenOnOrigin::from_groups(
+        AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e1234
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Circle {
@@ -580,7 +580,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Circle {
 }
 impl AntiAutoMorphism for Circle {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleAligningOrigin {
@@ -596,7 +596,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleAligningOrig
 }
 impl AntiAutoMorphism for CircleAligningOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleAtInfinity {
@@ -612,7 +612,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleAtInfinity {
 }
 impl AntiAutoMorphism for CircleAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleAtOrigin {
@@ -628,7 +628,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleAtOrigin {
 }
 impl AntiAutoMorphism for CircleAtOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleOnOrigin {
@@ -644,7 +644,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleOnOrigin {
 }
 impl AntiAutoMorphism for CircleOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -660,7 +660,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleOrthogonalOr
 }
 impl AntiAutoMorphism for CircleOrthogonalOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleRotor {
@@ -676,7 +676,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleRotor {
 }
 impl AntiAutoMorphism for CircleRotor {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -692,7 +692,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAlignin
 }
 impl AntiAutoMorphism for CircleRotorAligningOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
@@ -708,7 +708,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAlignin
 }
 impl AntiAutoMorphism for CircleRotorAligningOriginAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAtInfinity {
@@ -724,7 +724,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleRotorAtInfin
 }
 impl AntiAutoMorphism for CircleRotorAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -740,7 +740,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for CircleRotorOnOrigi
 }
 impl AntiAutoMorphism for CircleRotorOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Dipole {
@@ -763,14 +763,14 @@ impl AntiAutoMorphism for Dipole {
     // yes simd        0        3        0
     //  no simd        0       10        0
     fn anti_auto_morphism(self) -> Self {
-        return Dipole::from_groups(
+        Dipole::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleAligningOrigin {
@@ -793,12 +793,12 @@ impl AntiAutoMorphism for DipoleAligningOrigin {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleAligningOrigin::from_groups(
+        DipoleAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleAtInfinity {
@@ -821,12 +821,12 @@ impl AntiAutoMorphism for DipoleAtInfinity {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleAtInfinity::from_groups(
+        DipoleAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleAtOrigin {
@@ -846,12 +846,12 @@ impl AntiAutoMorphism for DipoleAtOrigin {
     //   simd3        0        2        0
     // no simd        0        6        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleAtOrigin::from_groups(
+        DipoleAtOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversion {
@@ -874,7 +874,7 @@ impl AntiAutoMorphism for DipoleInversion {
     // yes simd        0        4        0
     //  no simd        0       15        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversion::from_groups(
+        DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
@@ -883,7 +883,7 @@ impl AntiAutoMorphism for DipoleInversion {
             self.group2() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -903,14 +903,14 @@ impl AntiAutoMorphism for DipoleInversionAligningOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversionAligningOrigin::from_groups(
+        DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             self.group1() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversionAtInfinity {
@@ -933,14 +933,14 @@ impl AntiAutoMorphism for DipoleInversionAtInfinity {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversionAtInfinity::from_groups(
+        DipoleInversionAtInfinity::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35
             self.group1() * Simd32x3::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -960,12 +960,12 @@ impl AntiAutoMorphism for DipoleInversionAtOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversionAtOrigin::from_groups(
+        DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group0() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -985,12 +985,12 @@ impl AntiAutoMorphism for DipoleInversionOnOrigin {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversionOnOrigin::from_groups(
+        DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             self.group0() * Simd32x4::from(-1.0),
             // e1234, e4235, e4315, e4125
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -1013,14 +1013,14 @@ impl AntiAutoMorphism for DipoleInversionOrthogonalOrigin {
     // yes simd        0        3        0
     //  no simd        0       11        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleInversionOrthogonalOrigin::from_groups(
+        DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleOnOrigin {
@@ -1040,7 +1040,7 @@ impl AntiAutoMorphism for DipoleOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0));
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -1060,14 +1060,14 @@ impl AntiAutoMorphism for DipoleOrthogonalOrigin {
     //   simd3        0        3        0
     // no simd        0        9        0
     fn anti_auto_morphism(self) -> Self {
-        return DipoleOrthogonalOrigin::from_groups(
+        DipoleOrthogonalOrigin::from_groups(
             // e41, e42, e43
             self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group1() * Simd32x3::from(-1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for DualNum {
@@ -1083,7 +1083,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for DualNum {
 }
 impl AntiAutoMorphism for DualNum {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for FlatOrigin {
@@ -1103,7 +1103,7 @@ impl AntiAutoMorphism for FlatOrigin {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return FlatOrigin::from_groups(/* e45 */ self[e45] * -1.0);
+        FlatOrigin::from_groups(/* e45 */ self[e45] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for FlatPoint {
@@ -1123,7 +1123,7 @@ impl AntiAutoMorphism for FlatPoint {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0));
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for FlatPointAtInfinity {
@@ -1143,7 +1143,7 @@ impl AntiAutoMorphism for FlatPointAtInfinity {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_auto_morphism(self) -> Self {
-        return FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0));
+        FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Flector {
@@ -1163,12 +1163,12 @@ impl AntiAutoMorphism for Flector {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return Flector::from_groups(
+        Flector::from_groups(
             // e15, e25, e35, e45
             self.group0() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for FlectorAtInfinity {
@@ -1188,7 +1188,7 @@ impl AntiAutoMorphism for FlectorAtInfinity {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from(-1.0));
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for FlectorOnOrigin {
@@ -1208,7 +1208,7 @@ impl AntiAutoMorphism for FlectorOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from(-1.0));
+        FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Horizon {
@@ -1228,7 +1228,7 @@ impl AntiAutoMorphism for Horizon {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return Horizon::from_groups(/* e3215 */ self[e3215] * -1.0);
+        Horizon::from_groups(/* e3215 */ self[e3215] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Infinity {
@@ -1244,7 +1244,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Infinity {
 }
 impl AntiAutoMorphism for Infinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Line {
@@ -1260,7 +1260,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Line {
 }
 impl AntiAutoMorphism for Line {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for LineAtInfinity {
@@ -1276,7 +1276,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for LineAtInfinity {
 }
 impl AntiAutoMorphism for LineAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for LineOnOrigin {
@@ -1292,7 +1292,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for LineOnOrigin {
 }
 impl AntiAutoMorphism for LineOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Motor {
@@ -1308,7 +1308,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Motor {
 }
 impl AntiAutoMorphism for Motor {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MotorAtInfinity {
@@ -1324,7 +1324,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for MotorAtInfinity {
 }
 impl AntiAutoMorphism for MotorAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MotorOnOrigin {
@@ -1340,7 +1340,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for MotorOnOrigin {
 }
 impl AntiAutoMorphism for MotorOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MultiVector {
@@ -1366,7 +1366,7 @@ impl AntiAutoMorphism for MultiVector {
     //  no simd        0       17        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             self.group0() * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
@@ -1389,7 +1389,7 @@ impl AntiAutoMorphism for MultiVector {
             self.group9() * Simd32x4::from(-1.0),
             // e3215
             self[e3215] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryCircle {
@@ -1405,7 +1405,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for MysteryCircle {
 }
 impl AntiAutoMorphism for MysteryCircle {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryCircleRotor {
@@ -1421,7 +1421,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for MysteryCircleRotor
 }
 impl AntiAutoMorphism for MysteryCircleRotor {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryDipole {
@@ -1441,7 +1441,7 @@ impl AntiAutoMorphism for MysteryDipole {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0));
+        MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1464,12 +1464,12 @@ impl AntiAutoMorphism for MysteryDipoleInversion {
     // yes simd        0        2        0
     //  no simd        0        7        0
     fn anti_auto_morphism(self) -> Self {
-        return MysteryDipoleInversion::from_groups(
+        MysteryDipoleInversion::from_groups(
             // e23, e31, e12, e45
             self.group0() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125
             self.group1() * Simd32x3::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryVersorEven {
@@ -1485,7 +1485,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for MysteryVersorEven 
 }
 impl AntiAutoMorphism for MysteryVersorEven {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for MysteryVersorOdd {
@@ -1505,12 +1505,12 @@ impl AntiAutoMorphism for MysteryVersorOdd {
     //   simd4        0        2        0
     // no simd        0        8        0
     fn anti_auto_morphism(self) -> Self {
-        return MysteryVersorOdd::from_groups(
+        MysteryVersorOdd::from_groups(
             // scalar, e4235, e4315, e4125
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for NullCircleAtOrigin {
@@ -1526,7 +1526,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for NullCircleAtOrigin
 }
 impl AntiAutoMorphism for NullCircleAtOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -1546,7 +1546,7 @@ impl AntiAutoMorphism for NullDipoleAtOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_auto_morphism(self) -> Self {
-        return NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0));
+        NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -1566,7 +1566,7 @@ impl AntiAutoMorphism for NullDipoleInversionAtOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from(-1.0));
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for NullSphereAtOrigin {
@@ -1586,7 +1586,7 @@ impl AntiAutoMorphism for NullSphereAtOrigin {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * -1.0);
+        NullSphereAtOrigin::from_groups(/* e1234 */ self[e1234] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -1602,7 +1602,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for NullVersorEvenAtOr
 }
 impl AntiAutoMorphism for NullVersorEvenAtOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Origin {
@@ -1618,7 +1618,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for Origin {
 }
 impl AntiAutoMorphism for Origin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Plane {
@@ -1638,7 +1638,7 @@ impl AntiAutoMorphism for Plane {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0));
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for PlaneOnOrigin {
@@ -1658,7 +1658,7 @@ impl AntiAutoMorphism for PlaneOnOrigin {
     //   simd3        0        1        0
     // no simd        0        3        0
     fn anti_auto_morphism(self) -> Self {
-        return PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0() * Simd32x3::from(-1.0));
+        PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for RoundPoint {
@@ -1674,7 +1674,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for RoundPoint {
 }
 impl AntiAutoMorphism for RoundPoint {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for RoundPointAtOrigin {
@@ -1690,7 +1690,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for RoundPointAtOrigin
 }
 impl AntiAutoMorphism for RoundPointAtOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Scalar {
@@ -1710,7 +1710,7 @@ impl AntiAutoMorphism for Scalar {
     // f32        0        1        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar] * -1.0);
+        Scalar::from_groups(/* scalar */ self[scalar] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for Sphere {
@@ -1734,7 +1734,7 @@ impl AntiAutoMorphism for Sphere {
     //  no simd        0        5        0
     fn anti_auto_morphism(self) -> Self {
         use crate::elements::*;
-        return Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234] * -1.0);
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234] * -1.0)
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for SphereAtOrigin {
@@ -1754,7 +1754,7 @@ impl AntiAutoMorphism for SphereAtOrigin {
     //   simd2        0        1        0
     // no simd        0        2        0
     fn anti_auto_morphism(self) -> Self {
-        return SphereAtOrigin::from_groups(/* e3215, e1234 */ self.group0() * Simd32x2::from(-1.0));
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ self.group0() * Simd32x2::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for SphereOnOrigin {
@@ -1774,7 +1774,7 @@ impl AntiAutoMorphism for SphereOnOrigin {
     //   simd4        0        1        0
     // no simd        0        4        0
     fn anti_auto_morphism(self) -> Self {
-        return SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0() * Simd32x4::from(-1.0));
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0() * Simd32x4::from(-1.0))
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEven {
@@ -1790,7 +1790,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEven {
 }
 impl AntiAutoMorphism for VersorEven {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -1806,7 +1806,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAligning
 }
 impl AntiAutoMorphism for VersorEvenAligningOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAtInfinity {
@@ -1822,7 +1822,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAtInfini
 }
 impl AntiAutoMorphism for VersorEvenAtInfinity {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -1838,7 +1838,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEvenAtOrigin
 }
 impl AntiAutoMorphism for VersorEvenAtOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEvenOnOrigin {
@@ -1854,7 +1854,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEvenOnOrigin
 }
 impl AntiAutoMorphism for VersorEvenOnOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -1870,7 +1870,7 @@ impl std::ops::DivAssign<AntiAutoMorphismPrefixOrPostfix> for VersorEvenOrthogon
 }
 impl AntiAutoMorphism for VersorEvenOrthogonalOrigin {
     fn anti_auto_morphism(self) -> Self {
-        return self;
+        self
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorOdd {
@@ -1890,7 +1890,7 @@ impl AntiAutoMorphism for VersorOdd {
     //   simd4        0        4        0
     // no simd        0       16        0
     fn anti_auto_morphism(self) -> Self {
-        return VersorOdd::from_groups(
+        VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e45
@@ -1899,7 +1899,7 @@ impl AntiAutoMorphism for VersorOdd {
             self.group2() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group3() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorOddAtInfinity {
@@ -1919,14 +1919,14 @@ impl AntiAutoMorphism for VersorOddAtInfinity {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_auto_morphism(self) -> Self {
-        return VersorOddAtInfinity::from_groups(
+        VersorOddAtInfinity::from_groups(
             // scalar, e15, e25, e35
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e4235, e4315, e4125, e3215
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }
 impl std::ops::Div<AntiAutoMorphismPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -1946,13 +1946,13 @@ impl AntiAutoMorphism for VersorOddOrthogonalOrigin {
     //   simd4        0        3        0
     // no simd        0       12        0
     fn anti_auto_morphism(self) -> Self {
-        return VersorOddOrthogonalOrigin::from_groups(
+        VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             self.group0() * Simd32x4::from(-1.0),
             // e23, e31, e12, e3215
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from(-1.0),
-        );
+        )
     }
 }

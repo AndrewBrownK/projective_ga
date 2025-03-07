@@ -81,7 +81,7 @@ impl nearly::NearlyEqEps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
@@ -95,7 +95,7 @@ impl nearly::NearlyEqUlps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {}
@@ -120,7 +120,7 @@ impl nearly::NearlyOrdUlps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin 
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &NullSphereAtOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -142,7 +142,7 @@ impl nearly::NearlyOrdUlps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin 
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
@@ -165,7 +165,7 @@ impl nearly::NearlyOrdEps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &NullSphereAtOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -187,7 +187,7 @@ impl nearly::NearlyOrdEps<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<NullSphereAtOrigin, f32, f32> for NullSphereAtOrigin {}
@@ -258,14 +258,14 @@ impl encase::ShaderType for NullSphereAtOrigin {
     type ExtraMetadata = <NullSphereAtOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <NullSphereAtOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <NullSphereAtOriginGroups as encase::ShaderType>::min_size();
+        <NullSphereAtOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <NullSphereAtOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <NullSphereAtOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <NullSphereAtOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

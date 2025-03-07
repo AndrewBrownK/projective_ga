@@ -28,12 +28,12 @@ impl RoundBulk for AntiCircleRotor {
     type Output = AntiMotor;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from([self[e23], self[e31], self[e12], self[scalar]]),
             // e15, e25, e35, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiDipoleInversion {
@@ -46,12 +46,12 @@ impl RoundBulk for AntiDipoleInversion {
     type Output = AntiFlector;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x3::from(0.0).with_w(self[e321]),
             // e1, e2, e3, e5
             self.group3().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiDualNum {
@@ -64,7 +64,7 @@ impl RoundBulk for AntiDualNum {
     type Output = Scalar;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ self[scalar]);
+        Scalar::from_groups(/* scalar */ self[scalar])
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiFlatPoint {
@@ -82,7 +82,7 @@ impl RoundBulk for AntiFlatPoint {
     type Output = AntiFlatPoint;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiFlector {
@@ -100,12 +100,12 @@ impl RoundBulk for AntiFlector {
     type Output = AntiFlector;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x3::from(0.0).with_w(self[e321]),
             // e1, e2, e3, e5
             self.group1().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiLine {
@@ -122,7 +122,7 @@ impl std::ops::DivAssign<RoundBulkPrefixOrPostfix> for AntiLine {
 impl RoundBulk for AntiLine {
     type Output = AntiLine;
     fn round_bulk(self) -> Self::Output {
-        return AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ Simd32x3::from(0.0));
+        AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiMotor {
@@ -139,7 +139,7 @@ impl std::ops::DivAssign<RoundBulkPrefixOrPostfix> for AntiMotor {
 impl RoundBulk for AntiMotor {
     type Output = AntiMotor;
     fn round_bulk(self) -> Self::Output {
-        return AntiMotor::from_groups(/* e23, e31, e12, scalar */ self.group0(), /* e15, e25, e35, e3215 */ Simd32x4::from(0.0));
+        AntiMotor::from_groups(/* e23, e31, e12, scalar */ self.group0(), /* e15, e25, e35, e3215 */ Simd32x4::from(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiPlane {
@@ -156,7 +156,7 @@ impl std::ops::DivAssign<RoundBulkPrefixOrPostfix> for AntiPlane {
 impl RoundBulk for AntiPlane {
     type Output = AntiPlane;
     fn round_bulk(self) -> Self::Output {
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0().xyz().with_w(0.0));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for Circle {
@@ -169,7 +169,7 @@ impl RoundBulk for Circle {
     type Output = AntiFlatPoint;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for CircleRotor {
@@ -182,7 +182,7 @@ impl RoundBulk for CircleRotor {
     type Output = AntiFlatPoint;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]));
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x3::from(0.0).with_w(self[e321]))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for Dipole {
@@ -194,7 +194,7 @@ impl std::ops::Div<RoundBulkPrefixOrPostfix> for Dipole {
 impl RoundBulk for Dipole {
     type Output = AntiLine;
     fn round_bulk(self) -> Self::Output {
-        return AntiLine::from_groups(/* e23, e31, e12 */ self.group1().xyz(), /* e15, e25, e35 */ Simd32x3::from(0.0));
+        AntiLine::from_groups(/* e23, e31, e12 */ self.group1().xyz(), /* e15, e25, e35 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for DipoleInversion {
@@ -206,7 +206,7 @@ impl std::ops::Div<RoundBulkPrefixOrPostfix> for DipoleInversion {
 impl RoundBulk for DipoleInversion {
     type Output = AntiLine;
     fn round_bulk(self) -> Self::Output {
-        return AntiLine::from_groups(/* e23, e31, e12 */ self.group1().xyz(), /* e15, e25, e35 */ Simd32x3::from(0.0));
+        AntiLine::from_groups(/* e23, e31, e12 */ self.group1().xyz(), /* e15, e25, e35 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for MultiVector {
@@ -224,7 +224,7 @@ impl RoundBulk for MultiVector {
     type Output = MultiVector;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -247,7 +247,7 @@ impl RoundBulk for MultiVector {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for RoundPoint {
@@ -259,7 +259,7 @@ impl std::ops::Div<RoundBulkPrefixOrPostfix> for RoundPoint {
 impl RoundBulk for RoundPoint {
     type Output = AntiPlane;
     fn round_bulk(self) -> Self::Output {
-        return AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0().xyz().with_w(0.0));
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0().xyz().with_w(0.0))
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for Scalar {
@@ -276,7 +276,7 @@ impl std::ops::DivAssign<RoundBulkPrefixOrPostfix> for Scalar {
 impl RoundBulk for Scalar {
     type Output = Scalar;
     fn round_bulk(self) -> Self::Output {
-        return self;
+        self
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for VersorEven {
@@ -289,12 +289,12 @@ impl RoundBulk for VersorEven {
     type Output = AntiFlector;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiFlector::from_groups(
+        AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x3::from(0.0).with_w(self[e321]),
             // e1, e2, e3, e5
             self.group3().xyz().with_w(0.0),
-        );
+        )
     }
 }
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for VersorOdd {
@@ -307,11 +307,11 @@ impl RoundBulk for VersorOdd {
     type Output = AntiMotor;
     fn round_bulk(self) -> Self::Output {
         use crate::elements::*;
-        return AntiMotor::from_groups(
+        AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from([self[e23], self[e31], self[e12], self[scalar]]),
             // e15, e25, e35, e3215
             Simd32x4::from(0.0),
-        );
+        )
     }
 }

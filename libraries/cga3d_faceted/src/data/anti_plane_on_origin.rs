@@ -86,7 +86,7 @@ impl nearly::NearlyEqEps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqUlps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
@@ -100,7 +100,7 @@ impl nearly::NearlyEqUlps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
             i += 1;
         }
-        return true;
+        true
     }
 }
 impl nearly::NearlyEqTol<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {}
@@ -125,7 +125,7 @@ impl nearly::NearlyOrdUlps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_ulps(&self, other: &AntiPlaneOnOrigin, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {
@@ -147,7 +147,7 @@ impl nearly::NearlyOrdUlps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdEps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
@@ -170,7 +170,7 @@ impl nearly::NearlyOrdEps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 
     fn nearly_gt_eps(&self, other: &AntiPlaneOnOrigin, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {
@@ -192,7 +192,7 @@ impl nearly::NearlyOrdEps<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {
             }
         }
         // Nearly equal the whole way
-        return false;
+        false
     }
 }
 impl nearly::NearlyOrdTol<AntiPlaneOnOrigin, f32, f32> for AntiPlaneOnOrigin {}
@@ -263,14 +263,14 @@ impl encase::ShaderType for AntiPlaneOnOrigin {
     type ExtraMetadata = <AntiPlaneOnOriginGroups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <AntiPlaneOnOriginGroups as encase::ShaderType>::METADATA;
     fn min_size() -> std::num::NonZeroU64 {
-        return <AntiPlaneOnOriginGroups as encase::ShaderType>::min_size();
+        <AntiPlaneOnOriginGroups as encase::ShaderType>::min_size()
     }
     fn size(&self) -> std::num::NonZeroU64 {
-        return encase::ShaderType::size(unsafe { &self.groups });
+        encase::ShaderType::size(unsafe { &self.groups })
     }
     const UNIFORM_COMPAT_ASSERT: fn() = <AntiPlaneOnOriginGroups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
     fn assert_uniform_compat() {
-        return <AntiPlaneOnOriginGroups as encase::ShaderType>::assert_uniform_compat();
+        <AntiPlaneOnOriginGroups as encase::ShaderType>::assert_uniform_compat()
     }
 }
 

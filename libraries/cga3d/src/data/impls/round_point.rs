@@ -24,7 +24,7 @@ impl std::ops::Add<AntiCircleRotor> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -47,7 +47,7 @@ impl std::ops::Add<AntiCircleRotor> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDipoleInversion> for RoundPoint {
@@ -58,7 +58,7 @@ impl std::ops::Add<AntiDipoleInversion> for RoundPoint {
     // no simd        8        0        0
     fn add(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             other.group0(),
             // e415, e425, e435, e321
@@ -67,14 +67,14 @@ impl std::ops::Add<AntiDipoleInversion> for RoundPoint {
             other.group2() + Simd32x3::from(0.0).with_w(self[e4]),
             // e1, e2, e3, e5
             other.group3() + self.group0().xyz().with_w(self[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiDualNum> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -97,14 +97,14 @@ impl std::ops::Add<AntiDualNum> for RoundPoint {
             Simd32x3::from(0.0).with_w(other[e3215]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlatPoint> for RoundPoint {
     type Output = AntiDipoleInversion;
     fn add(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -113,7 +113,7 @@ impl std::ops::Add<AntiFlatPoint> for RoundPoint {
             other.group0().xyz().with_w(self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiFlector> for RoundPoint {
@@ -124,7 +124,7 @@ impl std::ops::Add<AntiFlector> for RoundPoint {
     // no simd        4        0        0
     fn add(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -133,14 +133,14 @@ impl std::ops::Add<AntiFlector> for RoundPoint {
             other.group0().xyz().with_w(self[e4]),
             // e1, e2, e3, e5
             other.group1() + self.group0().xyz().with_w(self[e5]),
-        );
+        )
     }
 }
 impl std::ops::Add<AntiLine> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -163,14 +163,14 @@ impl std::ops::Add<AntiLine> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiMotor> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -193,7 +193,7 @@ impl std::ops::Add<AntiMotor> for RoundPoint {
             Simd32x3::from(0.0).with_w(other[e3215]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<AntiPlane> for RoundPoint {
@@ -207,12 +207,12 @@ impl std::ops::Add<AntiPlane> for RoundPoint {
     //  no simd        4        0        0
     fn add(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             (other.group0().xyz() + self.group0().xyz()).with_w(self[e4]),
             // e5
             other[e5] + self[e5],
-        );
+        )
     }
 }
 impl std::ops::AddAssign<AntiPlane> for RoundPoint {
@@ -230,7 +230,7 @@ impl std::ops::Add<AntiScalar> for RoundPoint {
     type Output = VersorEven;
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]),
             // e415, e425, e435, e321
@@ -239,14 +239,14 @@ impl std::ops::Add<AntiScalar> for RoundPoint {
             Simd32x3::from(0.0).with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<Circle> for RoundPoint {
     type Output = AntiDipoleInversion;
     fn add(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             other.group0(),
             // e415, e425, e435, e321
@@ -255,14 +255,14 @@ impl std::ops::Add<Circle> for RoundPoint {
             other.group2().with_w(self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Add<CircleRotor> for RoundPoint {
     type Output = VersorEven;
     fn add(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             other.group0().with_w(other[e12345]),
             // e415, e425, e435, e321
@@ -271,14 +271,14 @@ impl std::ops::Add<CircleRotor> for RoundPoint {
             other.group2().xyz().with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<Dipole> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -301,14 +301,14 @@ impl std::ops::Add<Dipole> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<DipoleInversion> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -331,7 +331,7 @@ impl std::ops::Add<DipoleInversion> for RoundPoint {
             other.group3(),
             // e1234
             other[e1234],
-        );
+        )
     }
 }
 impl std::ops::Add<DualNum> for RoundPoint {
@@ -341,7 +341,7 @@ impl std::ops::Add<DualNum> for RoundPoint {
     // f32        1        0        0
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]),
             // e415, e425, e435, e321
@@ -350,14 +350,14 @@ impl std::ops::Add<DualNum> for RoundPoint {
             Simd32x3::from(0.0).with_w(other[e5] + self[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<FlatPoint> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -380,14 +380,14 @@ impl std::ops::Add<FlatPoint> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Flector> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -410,14 +410,14 @@ impl std::ops::Add<Flector> for RoundPoint {
             other.group1(),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Line> for RoundPoint {
     type Output = AntiDipoleInversion;
     fn add(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -426,7 +426,7 @@ impl std::ops::Add<Line> for RoundPoint {
             other.group1().with_w(self[e4]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Add<Motor> for RoundPoint {
@@ -437,7 +437,7 @@ impl std::ops::Add<Motor> for RoundPoint {
     // no simd        4        0        0
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]),
             // e415, e425, e435, e321
@@ -446,7 +446,7 @@ impl std::ops::Add<Motor> for RoundPoint {
             other.group1() + Simd32x3::from(0.0).with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Add<MultiVector> for RoundPoint {
@@ -460,7 +460,7 @@ impl std::ops::Add<MultiVector> for RoundPoint {
     //  no simd        5        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             other.group0(),
             // e1, e2, e3, e4
@@ -483,14 +483,14 @@ impl std::ops::Add<MultiVector> for RoundPoint {
             other.group9(),
             // e1234
             other[e1234],
-        );
+        )
     }
 }
 impl std::ops::Add<Plane> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -513,7 +513,7 @@ impl std::ops::Add<Plane> for RoundPoint {
             other.group0(),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<RoundPoint> for RoundPoint {
@@ -527,7 +527,7 @@ impl std::ops::Add<RoundPoint> for RoundPoint {
     //  no simd        5        0        0
     fn add(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ other.group0() + self.group0(), /* e5 */ other[e5] + self[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ other.group0() + self.group0(), /* e5 */ other[e5] + self[e5])
     }
 }
 impl std::ops::AddAssign<RoundPoint> for RoundPoint {
@@ -540,7 +540,7 @@ impl std::ops::Add<Scalar> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -563,14 +563,14 @@ impl std::ops::Add<Scalar> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Add<Sphere> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -593,7 +593,7 @@ impl std::ops::Add<Sphere> for RoundPoint {
             other.group0(),
             // e1234
             other[e1234],
-        );
+        )
     }
 }
 impl std::ops::Add<VersorEven> for RoundPoint {
@@ -604,7 +604,7 @@ impl std::ops::Add<VersorEven> for RoundPoint {
     // no simd        8        0        0
     fn add(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             other.group0(),
             // e415, e425, e435, e321
@@ -613,14 +613,14 @@ impl std::ops::Add<VersorEven> for RoundPoint {
             other.group2() + Simd32x3::from(0.0).with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0() + other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Add<VersorOdd> for RoundPoint {
     type Output = MultiVector;
     fn add(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 0.0]),
             // e1, e2, e3, e4
@@ -643,14 +643,14 @@ impl std::ops::Add<VersorOdd> for RoundPoint {
             other.group3(),
             // e1234
             other[e1234],
-        );
+        )
     }
 }
 
 impl From<AntiPlane> for RoundPoint {
     fn from(from_anti_plane: AntiPlane) -> Self {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ from_anti_plane.group0().xyz().with_w(0.0), /* e5 */ from_anti_plane[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ from_anti_plane.group0().xyz().with_w(0.0), /* e5 */ from_anti_plane[e5])
     }
 }
 impl std::ops::Mul<AntiCircleRotor> for RoundPoint {
@@ -664,7 +664,7 @@ impl std::ops::Mul<AntiCircleRotor> for RoundPoint {
     // yes simd       15       28        0
     //  no simd       43       58        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDipoleInversion> for RoundPoint {
@@ -678,7 +678,7 @@ impl std::ops::Mul<AntiDipoleInversion> for RoundPoint {
     // yes simd       23       42        0
     //  no simd       59       78        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiDualNum> for RoundPoint {
@@ -691,7 +691,7 @@ impl std::ops::Mul<AntiDualNum> for RoundPoint {
     // yes simd        0        5        0
     //  no simd        0       14        0
     fn mul(self, other: AntiDualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlatPoint> for RoundPoint {
@@ -704,7 +704,7 @@ impl std::ops::Mul<AntiFlatPoint> for RoundPoint {
     // yes simd        5       10        0
     //  no simd        9       20        0
     fn mul(self, other: AntiFlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiFlector> for RoundPoint {
@@ -717,7 +717,7 @@ impl std::ops::Mul<AntiFlector> for RoundPoint {
     // yes simd       12       20        0
     //  no simd       24       40        0
     fn mul(self, other: AntiFlector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiLine> for RoundPoint {
@@ -731,7 +731,7 @@ impl std::ops::Mul<AntiLine> for RoundPoint {
     // yes simd        6       17        0
     //  no simd       18       33        0
     fn mul(self, other: AntiLine) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiMotor> for RoundPoint {
@@ -745,7 +745,7 @@ impl std::ops::Mul<AntiMotor> for RoundPoint {
     // yes simd       12       21        0
     //  no simd       24       40        0
     fn mul(self, other: AntiMotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiPlane> for RoundPoint {
@@ -759,7 +759,7 @@ impl std::ops::Mul<AntiPlane> for RoundPoint {
     // yes simd        4        8        0
     //  no simd       12       20        0
     fn mul(self, other: AntiPlane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<AntiScalar> for RoundPoint {
@@ -772,7 +772,7 @@ impl std::ops::Mul<AntiScalar> for RoundPoint {
     // yes simd        0        5        0
     //  no simd        0        7        0
     fn mul(self, other: AntiScalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Circle> for RoundPoint {
@@ -786,7 +786,7 @@ impl std::ops::Mul<Circle> for RoundPoint {
     // yes simd       16       28        0
     //  no simd       35       50        0
     fn mul(self, other: Circle) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<CircleRotor> for RoundPoint {
@@ -800,7 +800,7 @@ impl std::ops::Mul<CircleRotor> for RoundPoint {
     // yes simd       18       33        0
     //  no simd       40       58        0
     fn mul(self, other: CircleRotor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Dipole> for RoundPoint {
@@ -814,7 +814,7 @@ impl std::ops::Mul<Dipole> for RoundPoint {
     // yes simd       13       29        0
     //  no simd       35       53        0
     fn mul(self, other: Dipole) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DipoleInversion> for RoundPoint {
@@ -828,7 +828,7 @@ impl std::ops::Mul<DipoleInversion> for RoundPoint {
     // yes simd       20       45        0
     //  no simd       59       79        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<DualNum> for RoundPoint {
@@ -841,7 +841,7 @@ impl std::ops::Mul<DualNum> for RoundPoint {
     // yes simd        0        7        0
     //  no simd        0       22        0
     fn mul(self, other: DualNum) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<FlatPoint> for RoundPoint {
@@ -854,7 +854,7 @@ impl std::ops::Mul<FlatPoint> for RoundPoint {
     // yes simd        5       10        0
     //  no simd        9       20        0
     fn mul(self, other: FlatPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Flector> for RoundPoint {
@@ -868,7 +868,7 @@ impl std::ops::Mul<Flector> for RoundPoint {
     // yes simd       12       21        0
     //  no simd       24       40        0
     fn mul(self, other: Flector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Line> for RoundPoint {
@@ -882,7 +882,7 @@ impl std::ops::Mul<Line> for RoundPoint {
     // yes simd        9       19        0
     //  no simd       18       36        0
     fn mul(self, other: Line) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Motor> for RoundPoint {
@@ -896,7 +896,7 @@ impl std::ops::Mul<Motor> for RoundPoint {
     // yes simd       15       27        0
     //  no simd       24       48        0
     fn mul(self, other: Motor) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<MultiVector> for RoundPoint {
@@ -911,7 +911,7 @@ impl std::ops::Mul<MultiVector> for RoundPoint {
     // yes simd       54       85        0
     //  no simd      128      162        0
     fn mul(self, other: MultiVector) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Plane> for RoundPoint {
@@ -924,7 +924,7 @@ impl std::ops::Mul<Plane> for RoundPoint {
     // yes simd        7       14        0
     //  no simd        9       20        0
     fn mul(self, other: Plane) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<RoundPoint> for RoundPoint {
@@ -938,7 +938,7 @@ impl std::ops::Mul<RoundPoint> for RoundPoint {
     // yes simd        6       11        0
     //  no simd       17       25        0
     fn mul(self, other: RoundPoint) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<Scalar> for RoundPoint {
@@ -951,7 +951,7 @@ impl std::ops::Mul<Scalar> for RoundPoint {
     // yes simd        0        2        0
     //  no simd        0        5        0
     fn mul(self, other: Scalar) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::MulAssign<Scalar> for RoundPoint {
@@ -970,7 +970,7 @@ impl std::ops::Mul<Sphere> for RoundPoint {
     // yes simd        9       16        0
     //  no simd       14       25        0
     fn mul(self, other: Sphere) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorEven> for RoundPoint {
@@ -984,7 +984,7 @@ impl std::ops::Mul<VersorEven> for RoundPoint {
     // yes simd       25       42        0
     //  no simd       64       83        0
     fn mul(self, other: VersorEven) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Mul<VersorOdd> for RoundPoint {
@@ -998,7 +998,7 @@ impl std::ops::Mul<VersorOdd> for RoundPoint {
     // yes simd       22       44        0
     //  no simd       64       84        0
     fn mul(self, other: VersorOdd) -> Self::Output {
-        return self.geometric_product(other);
+        self.geometric_product(other)
     }
 }
 impl std::ops::Neg for RoundPoint {
@@ -1012,7 +1012,7 @@ impl std::ops::Neg for RoundPoint {
     //  no simd        0        5        0
     fn neg(self) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e5 */ self[e5] * -1.0);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e5 */ self[e5] * -1.0)
     }
 }
 impl std::ops::Not for RoundPoint {
@@ -1025,7 +1025,7 @@ impl std::ops::Not for RoundPoint {
     // yes simd        0        2        0
     //  no simd        0        5        0
     fn not(self) -> Self::Output {
-        return self.right_dual();
+        self.right_dual()
     }
 }
 impl std::ops::Sub<AntiCircleRotor> for RoundPoint {
@@ -1040,7 +1040,7 @@ impl std::ops::Sub<AntiCircleRotor> for RoundPoint {
     //  no simd        0       12        0
     fn sub(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1063,7 +1063,7 @@ impl std::ops::Sub<AntiCircleRotor> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDipoleInversion> for RoundPoint {
@@ -1078,7 +1078,7 @@ impl std::ops::Sub<AntiDipoleInversion> for RoundPoint {
     //  no simd        5       11        0
     fn sub(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -1087,7 +1087,7 @@ impl std::ops::Sub<AntiDipoleInversion> for RoundPoint {
             other.group2().xyz().with_w(self[e4] - other[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group0().xyz().with_w(self[e5]) - other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiDualNum> for RoundPoint {
@@ -1101,7 +1101,7 @@ impl std::ops::Sub<AntiDualNum> for RoundPoint {
     //  no simd        0        6        0
     fn sub(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1124,7 +1124,7 @@ impl std::ops::Sub<AntiDualNum> for RoundPoint {
             Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlatPoint> for RoundPoint {
@@ -1135,7 +1135,7 @@ impl std::ops::Sub<AntiFlatPoint> for RoundPoint {
     // no simd        0        8        0
     fn sub(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -1144,7 +1144,7 @@ impl std::ops::Sub<AntiFlatPoint> for RoundPoint {
             other.group0().xyz().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiFlector> for RoundPoint {
@@ -1155,7 +1155,7 @@ impl std::ops::Sub<AntiFlector> for RoundPoint {
     // no simd        4        8        0
     fn sub(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -1164,7 +1164,7 @@ impl std::ops::Sub<AntiFlector> for RoundPoint {
             other.group0().xyz().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             self.group0().xyz().with_w(self[e5]) - other.group1(),
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiLine> for RoundPoint {
@@ -1175,7 +1175,7 @@ impl std::ops::Sub<AntiLine> for RoundPoint {
     // no simd        0        6        0
     fn sub(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1198,7 +1198,7 @@ impl std::ops::Sub<AntiLine> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiMotor> for RoundPoint {
@@ -1213,7 +1213,7 @@ impl std::ops::Sub<AntiMotor> for RoundPoint {
     //  no simd        0       12        0
     fn sub(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1236,7 +1236,7 @@ impl std::ops::Sub<AntiMotor> for RoundPoint {
             Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<AntiPlane> for RoundPoint {
@@ -1250,12 +1250,12 @@ impl std::ops::Sub<AntiPlane> for RoundPoint {
     //  no simd        5        3        0
     fn sub(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(
+        RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([other[e1] * -1.0, other[e2] * -1.0, other[e3] * -1.0, 0.0]) + self.group0(),
             // e5
             self[e5] - other[e5],
-        );
+        )
     }
 }
 impl std::ops::SubAssign<AntiPlane> for RoundPoint {
@@ -1277,7 +1277,7 @@ impl std::ops::Sub<AntiScalar> for RoundPoint {
     // no simd        0        4        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e415, e425, e435, e321
@@ -1286,7 +1286,7 @@ impl std::ops::Sub<AntiScalar> for RoundPoint {
             Simd32x3::from(0.0).with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Sub<Circle> for RoundPoint {
@@ -1300,7 +1300,7 @@ impl std::ops::Sub<Circle> for RoundPoint {
     //  no simd        0       11        0
     fn sub(self, other: Circle) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             other.group0() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
@@ -1309,7 +1309,7 @@ impl std::ops::Sub<Circle> for RoundPoint {
             other.group2().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Sub<CircleRotor> for RoundPoint {
@@ -1320,7 +1320,7 @@ impl std::ops::Sub<CircleRotor> for RoundPoint {
     // no simd        0       12        0
     fn sub(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             other.group0().with_w(other[e12345]) * Simd32x4::from(-1.0),
             // e415, e425, e435, e321
@@ -1329,7 +1329,7 @@ impl std::ops::Sub<CircleRotor> for RoundPoint {
             other.group2().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Sub<Dipole> for RoundPoint {
@@ -1343,7 +1343,7 @@ impl std::ops::Sub<Dipole> for RoundPoint {
     //  no simd        0       10        0
     fn sub(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1366,7 +1366,7 @@ impl std::ops::Sub<Dipole> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DipoleInversion> for RoundPoint {
@@ -1381,7 +1381,7 @@ impl std::ops::Sub<DipoleInversion> for RoundPoint {
     //  no simd        0       15        0
     fn sub(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1404,7 +1404,7 @@ impl std::ops::Sub<DipoleInversion> for RoundPoint {
             other.group3() * Simd32x4::from(-1.0),
             // e1234
             other[e1234] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<DualNum> for RoundPoint {
@@ -1418,7 +1418,7 @@ impl std::ops::Sub<DualNum> for RoundPoint {
     //  no simd        1        4        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e415, e425, e435, e321
@@ -1427,7 +1427,7 @@ impl std::ops::Sub<DualNum> for RoundPoint {
             Simd32x3::from(0.0).with_w(self[e5] - other[e5]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Sub<FlatPoint> for RoundPoint {
@@ -1438,7 +1438,7 @@ impl std::ops::Sub<FlatPoint> for RoundPoint {
     // no simd        0        4        0
     fn sub(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1461,7 +1461,7 @@ impl std::ops::Sub<FlatPoint> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Flector> for RoundPoint {
@@ -1472,7 +1472,7 @@ impl std::ops::Sub<Flector> for RoundPoint {
     // no simd        0        8        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1495,7 +1495,7 @@ impl std::ops::Sub<Flector> for RoundPoint {
             other.group1() * Simd32x4::from(-1.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Line> for RoundPoint {
@@ -1509,7 +1509,7 @@ impl std::ops::Sub<Line> for RoundPoint {
     //  no simd        0        7        0
     fn sub(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        return AntiDipoleInversion::from_groups(
+        AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -1518,7 +1518,7 @@ impl std::ops::Sub<Line> for RoundPoint {
             other.group1().with_w(self[e4]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e1], self[e2], self[e3], self[e5]]),
-        );
+        )
     }
 }
 impl std::ops::Sub<Motor> for RoundPoint {
@@ -1533,7 +1533,7 @@ impl std::ops::Sub<Motor> for RoundPoint {
     //  no simd        1       11        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e415, e425, e435, e321
@@ -1542,7 +1542,7 @@ impl std::ops::Sub<Motor> for RoundPoint {
             other.group1().xyz().with_w(self[e5] - other[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group0(),
-        );
+        )
     }
 }
 impl std::ops::Sub<MultiVector> for RoundPoint {
@@ -1558,7 +1558,7 @@ impl std::ops::Sub<MultiVector> for RoundPoint {
     //  no simd        5       27        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             other.group0() * Simd32x2::from(-1.0),
             // e1, e2, e3, e4
@@ -1581,7 +1581,7 @@ impl std::ops::Sub<MultiVector> for RoundPoint {
             other.group9() * Simd32x4::from(-1.0),
             // e1234
             other[e1234] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Plane> for RoundPoint {
@@ -1592,7 +1592,7 @@ impl std::ops::Sub<Plane> for RoundPoint {
     // no simd        0        4        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1615,7 +1615,7 @@ impl std::ops::Sub<Plane> for RoundPoint {
             other.group0() * Simd32x4::from(-1.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<RoundPoint> for RoundPoint {
@@ -1629,7 +1629,7 @@ impl std::ops::Sub<RoundPoint> for RoundPoint {
     //  no simd        5        0        0
     fn sub(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        return RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0() - other.group0(), /* e5 */ self[e5] - other[e5]);
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0() - other.group0(), /* e5 */ self[e5] - other[e5])
     }
 }
 impl std::ops::SubAssign<RoundPoint> for RoundPoint {
@@ -1646,7 +1646,7 @@ impl std::ops::Sub<Scalar> for RoundPoint {
     // no simd        0        2        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1669,7 +1669,7 @@ impl std::ops::Sub<Scalar> for RoundPoint {
             Simd32x4::from(0.0),
             // e1234
             0.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<Sphere> for RoundPoint {
@@ -1683,7 +1683,7 @@ impl std::ops::Sub<Sphere> for RoundPoint {
     //  no simd        0        5        0
     fn sub(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
@@ -1706,7 +1706,7 @@ impl std::ops::Sub<Sphere> for RoundPoint {
             other.group0() * Simd32x4::from(-1.0),
             // e1234
             other[e1234] * -1.0,
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorEven> for RoundPoint {
@@ -1720,7 +1720,7 @@ impl std::ops::Sub<VersorEven> for RoundPoint {
     //  no simd        5       12        0
     fn sub(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
-        return VersorEven::from_groups(
+        VersorEven::from_groups(
             // e423, e431, e412, e12345
             other.group0() * Simd32x4::from(-1.0),
             // e415, e425, e435, e321
@@ -1729,7 +1729,7 @@ impl std::ops::Sub<VersorEven> for RoundPoint {
             other.group2().xyz().with_w(self[e5] - other[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e4
             self.group0() - other.group3(),
-        );
+        )
     }
 }
 impl std::ops::Sub<VersorOdd> for RoundPoint {
@@ -1745,7 +1745,7 @@ impl std::ops::Sub<VersorOdd> for RoundPoint {
     //  no simd        0       17        0
     fn sub(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
-        return MultiVector::from_groups(
+        MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
             // e1, e2, e3, e4
@@ -1768,7 +1768,7 @@ impl std::ops::Sub<VersorOdd> for RoundPoint {
             other.group3() * Simd32x4::from(-1.0),
             // e1234
             other[e1234] * -1.0,
-        );
+        )
     }
 }
 
@@ -1854,12 +1854,12 @@ impl TryFrom<AntiDipoleInversion> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(
+        Ok(RoundPoint::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from([anti_dipole_inversion[e1], anti_dipole_inversion[e2], anti_dipole_inversion[e3], anti_dipole_inversion[e4]]),
             // e5
             anti_dipole_inversion[e5],
-        ));
+        ))
     }
 }
 
@@ -1903,12 +1903,12 @@ impl TryFrom<AntiFlector> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(
+        Ok(RoundPoint::from_groups(
             // e1, e2, e3, e4
             anti_flector.group1().xyz().with_w(0.0),
             // e5
             anti_flector[e5],
-        ));
+        ))
     }
 }
 
@@ -1931,7 +1931,7 @@ impl TryFrom<DualNum> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(0.0), /* e5 */ dual_num[e5]));
+        Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(0.0), /* e5 */ dual_num[e5]))
     }
 }
 
@@ -1996,7 +1996,7 @@ impl TryFrom<Motor> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(0.0), /* e5 */ motor[e5]));
+        Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(0.0), /* e5 */ motor[e5]))
     }
 }
 
@@ -2201,7 +2201,7 @@ impl TryFrom<MultiVector> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ multi_vector.group1(), /* e5 */ multi_vector[e5]));
+        Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ multi_vector.group1(), /* e5 */ multi_vector[e5]))
     }
 }
 
@@ -2294,6 +2294,6 @@ impl TryFrom<VersorEven> for RoundPoint {
             error.push('}');
             return Err(error);
         }
-        return Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ versor_even.group3(), /* e5 */ versor_even[e5]));
+        Ok(RoundPoint::from_groups(/* e1, e2, e3, e4 */ versor_even.group3(), /* e5 */ versor_even[e5]))
     }
 }
