@@ -80,10 +80,10 @@ float4 fs_main(
     FlatPoint direction = FlatPoint(0.0, 0.0, 1.0, 0.0);
 
     // Join a round point and point at infinity to create a line
-    Line fragment_as_line = direction.wedge(fragment_point);
+    Line fragment_as_line = direction /wedge/ fragment_point;
 
     // Now perform a meet to get a RoundPoint centered on the line and contained by the circle
-    RoundPoint meet_fragment_and_circle = circle.anti_wedge(fragment_as_line);
+    RoundPoint meet_fragment_and_circle = circle /anti_wedge/ fragment_as_line;
 
     // Now get the squared radius of the meet
     float radius_squared = meet_fragment_and_circle.unitized_radius_norm_squared();
