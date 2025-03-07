@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="EMPTY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/build_scripts/cga3d/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/build_scripts/cga3d_faceted/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/build_scripts/rga3d/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/codegen/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/broken_glsl/debug_glsl/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/broken_glsl/hello_circle_glsl/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/camera_and_instancing/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/hello_circle_rust/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/hello_circle_wgsl/hello_circle_wgsl/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/hello_circle_wgsl/hello_circle_wgsl_build/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libraries/cga3d/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libraries/cga3d_faceted/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/libraries/rga3d/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/hello_circle_slang/hello_circle_slang/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/examples/hello_circle_slang/hello_circle_slang_build/src" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/codegen/target" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
