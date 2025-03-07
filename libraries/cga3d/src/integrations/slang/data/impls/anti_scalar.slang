@@ -708,7 +708,7 @@ public extension AntiScalar {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );
@@ -720,7 +720,7 @@ public extension AntiScalar {
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125, e12345 */
             float4(other.group0.xyz, this.e12345) * float4(-1.0, -1.0, -1.0, 1.0)
         );
@@ -732,7 +732,7 @@ public extension AntiScalar {
             /* e423, e431, e412, e12345 */
             float4(float3(0.0), this.e12345), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125, e5 */
             float4(other.group0.xyz, other.e5) * float4(-1.0), 
             /* e1, e2, e3, e4 */
@@ -790,7 +790,7 @@ public extension AntiScalar {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );
@@ -804,7 +804,7 @@ public extension AntiScalar {
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), other.e5 * -1.0), 
+            float4(float3(0.0), other.e5) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1, e2, e3, e4 */
             float4((other.group0.xyz * float3(-1.0)), 0.0)
         );
@@ -1046,7 +1046,7 @@ public extension AntiScalar {
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), other.e5 * -1.0), 
+            float4(float3(0.0), other.e5) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1, e2, e3, e4 */
             other.group0 * float4(-1.0)
         );

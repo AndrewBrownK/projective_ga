@@ -724,7 +724,7 @@ public extension AntiMotor {
             /* e23, e31, e12 */
             this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -752,7 +752,7 @@ public extension AntiMotor {
             /* e23, e31, e12 */
             this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */

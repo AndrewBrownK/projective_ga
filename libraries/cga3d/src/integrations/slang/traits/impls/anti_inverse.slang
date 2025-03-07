@@ -10,25 +10,14 @@ public AntiCircleRotor operator /(AntiInversePrefixOrPostfix lhs, AntiCircleRoto
 }
 public extension AntiCircleRotor {
     public AntiCircleRotor anti_inverse() {
-        AntiCircleRotor anti_reverse = AntiCircleRotor(
-            /* e41, e42, e43 */
-            this.group0.xyz * float3(-1.0), 
-            /* e23, e31, e12, e45 */
-            this.group1 * float4(-1.0), 
-            /* e15, e25, e35, scalar */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e45, 2) - pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - pow(this.scalar, 2) - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35)
-        );
+        float other_g0 = this.e45 * this.e45 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.scalar * this.scalar - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35);
         return AntiCircleRotor(
             /* e41, e42, e43 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e15, e25, e35, scalar */
-            float4(other.e12345) * anti_reverse.group2
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -42,29 +31,16 @@ public AntiDipoleInversion operator /(AntiInversePrefixOrPostfix lhs, AntiDipole
 }
 public extension AntiDipoleInversion {
     public AntiDipoleInversion anti_inverse() {
-        AntiDipoleInversion anti_reverse = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            this.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            this.group1 * float4(-1.0), 
-            /* e235, e315, e125, e4 */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            this.group3
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e4 * this.e5) + pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) - pow(this.e321, 2) - pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2)
-        );
+        float other_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e4 * this.e5) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e235, e315, e125, e4 */
-            float4(other.e12345) * anti_reverse.group2, 
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            float4(other.e12345) * anti_reverse.group3
+            float4(other_g0) * this.group3
         );
     }
 }
@@ -110,21 +86,12 @@ public AntiFlector operator /(AntiInversePrefixOrPostfix lhs, AntiFlector rhs) {
 }
 public extension AntiFlector {
     public AntiFlector anti_inverse() {
-        AntiFlector anti_reverse = AntiFlector(
-            /* e235, e315, e125, e321 */
-            this.group0 * float4(-1.0), 
-            /* e1, e2, e3, e5 */
-            this.group1
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            -pow(this.e321, 2) - pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2)
-        );
+        float other_g0 = -this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0), 
             /* e1, e2, e3, e5 */
-            float4(other.e12345) * anti_reverse.group1
+            float4(other_g0) * this.group1
         );
     }
 }
@@ -138,21 +105,12 @@ public AntiLine operator /(AntiInversePrefixOrPostfix lhs, AntiLine rhs) {
 }
 public extension AntiLine {
     public AntiLine anti_inverse() {
-        AntiLine anti_reverse = AntiLine(
-            /* e23, e31, e12 */
-            this.group0.xyz * float3(-1.0), 
-            /* e15, e25, e35 */
-            this.group1.xyz * float3(-1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            -pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2)
-        );
+        float other_g0 = -this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12;
         return AntiLine(
             /* e23, e31, e12 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e15, e25, e35 */
-            float3(other.e12345) * anti_reverse.group1.xyz
+            float3(other_g0) * this.group1.xyz * float3(-1.0)
         );
     }
 }
@@ -166,21 +124,12 @@ public AntiMotor operator /(AntiInversePrefixOrPostfix lhs, AntiMotor rhs) {
 }
 public extension AntiMotor {
     public AntiMotor anti_inverse() {
-        AntiMotor anti_reverse = AntiMotor(
-            /* e23, e31, e12, scalar */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e15, e25, e35, e3215 */
-            this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            -pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - pow(this.scalar, 2)
-        );
+        float other_g0 = -this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.scalar * this.scalar;
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e15, e25, e35, e3215 */
-            float4(other.e12345) * anti_reverse.group1
+            float4(other_g0) * this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -196,7 +145,7 @@ public extension AntiPlane {
     public AntiPlane anti_inverse() {
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(-pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2)) * this.group0
+            float4(-this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3) * this.group0
         );
     }
 }
@@ -226,25 +175,14 @@ public Circle operator /(AntiInversePrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public Circle anti_inverse() {
-        Circle anti_reverse = Circle(
-            /* e423, e431, e412 */
-            this.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            this.group1 * float4(-1.0), 
-            /* e235, e315, e125 */
-            this.group2.xyz * float3(-1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) - pow(this.e321, 2)
-        );
+        float other_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321;
         return Circle(
             /* e423, e431, e412 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e235, e315, e125 */
-            float3(other.e12345) * anti_reverse.group2.xyz
+            float3(other_g0) * this.group2.xyz * float3(-1.0)
         );
     }
 }
@@ -258,25 +196,14 @@ public CircleRotor operator /(AntiInversePrefixOrPostfix lhs, CircleRotor rhs) {
 }
 public extension CircleRotor {
     public CircleRotor anti_inverse() {
-        CircleRotor anti_reverse = CircleRotor(
-            /* e423, e431, e412 */
-            this.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            this.group1 * float4(-1.0), 
-            /* e235, e315, e125, e12345 */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) + pow(this.e12345, 2) - pow(this.e321, 2)
-        );
+        float other_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e12345 * this.e12345 - this.e321 * this.e321;
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e235, e315, e125, e12345 */
-            float4(other.e12345) * anti_reverse.group2
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -290,25 +217,14 @@ public Dipole operator /(AntiInversePrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public Dipole anti_inverse() {
-        Dipole anti_reverse = Dipole(
-            /* e41, e42, e43 */
-            this.group0.xyz * float3(-1.0), 
-            /* e23, e31, e12, e45 */
-            this.group1 * float4(-1.0), 
-            /* e15, e25, e35 */
-            this.group2.xyz * float3(-1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e45, 2) - pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35)
-        );
+        float other_g0 = this.e45 * this.e45 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35);
         return Dipole(
             /* e41, e42, e43 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e15, e25, e35 */
-            float3(other.e12345) * anti_reverse.group2.xyz
+            float3(other_g0) * this.group2.xyz * float3(-1.0)
         );
     }
 }
@@ -322,29 +238,16 @@ public DipoleInversion operator /(AntiInversePrefixOrPostfix lhs, DipoleInversio
 }
 public extension DipoleInversion {
     public DipoleInversion anti_inverse() {
-        DipoleInversion anti_reverse = DipoleInversion(
-            /* e41, e42, e43 */
-            this.group0.xyz * float3(-1.0), 
-            /* e23, e31, e12, e45 */
-            this.group1 * float4(-1.0), 
-            /* e15, e25, e35, e1234 */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            this.group3
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e45, 2) + pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2) - pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215)
-        );
+        float other_g0 = this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e15, e25, e35, e1234 */
-            float4(other.e12345) * anti_reverse.group2, 
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(other.e12345) * anti_reverse.group3
+            float4(other_g0) * this.group3
         );
     }
 }
@@ -390,21 +293,12 @@ public Flector operator /(AntiInversePrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Flector anti_inverse() {
-        Flector anti_reverse = Flector(
-            /* e15, e25, e35, e45 */
-            this.group0 * float4(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            this.group1
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e45, 2) + pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2)
-        );
+        float other_g0 = this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125;
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(other.e12345) * anti_reverse.group1
+            float4(other_g0) * this.group1
         );
     }
 }
@@ -418,21 +312,12 @@ public Line operator /(AntiInversePrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public Line anti_inverse() {
-        Line anti_reverse = Line(
-            /* e415, e425, e435 */
-            this.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            this.group1.xyz * float3(-1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2)
-        );
+        float other_g0 = this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435;
         return Line(
             /* e415, e425, e435 */
-            float3(other.e12345) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(other.e12345) * anti_reverse.group1.xyz
+            float3(other_g0) * this.group1.xyz * float3(-1.0)
         );
     }
 }
@@ -446,21 +331,12 @@ public Motor operator /(AntiInversePrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Motor anti_inverse() {
-        Motor anti_reverse = Motor(
-            /* e415, e425, e435, e12345 */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) + pow(this.e12345, 2)
-        );
+        float other_g0 = this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e12345 * this.e12345;
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(other.e12345) * anti_reverse.group1
+            float4(other_g0) * this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -474,57 +350,30 @@ public MultiVector operator /(AntiInversePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector anti_inverse() {
-        MultiVector anti_reverse = MultiVector(
-            /* scalar, e12345 */
-            this.group0.xy, 
-            /* e1, e2, e3, e4 */
-            this.group1, 
-            /* e5 */
-            this.e5, 
-            /* e15, e25, e35, e45 */
-            this.group3 * float4(-1.0), 
-            /* e41, e42, e43 */
-            this.group4.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            this.group5.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            this.group6 * float4(-1.0), 
-            /* e423, e431, e412 */
-            this.group7.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            this.group8.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            this.group9, 
-            /* e1234 */
-            this.e1234
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e4 * this.e5) + 2.0 * (this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + pow(this.e12345, 2) + pow(this.e45, 2) + pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) + pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2) - pow(this.scalar, 2) - pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2) - pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - pow(this.e321, 2) - 2.0 * (this.e15 * this.e41) - 2.0 * (this.e25 * this.e42) - 2.0 * (this.e35 * this.e43) - 2.0 * (this.e3215 * this.e1234)
-        );
+        float other_g0 = 2.0*(this.e4 * this.e5) + 2.0 * (this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e321 * this.e321 - 2.0 * (this.e15 * this.e41) - 2.0 * (this.e25 * this.e42) - 2.0 * (this.e35 * this.e43) - 2.0 * (this.e3215 * this.e1234);
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.e12345) * anti_reverse.group0.xy, 
+            float2(other_g0) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1, 
             /* e5 */
-            other.e12345 * anti_reverse.e5, 
+            other_g0 * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e12345) * anti_reverse.group3, 
+            float4(other_g0) * this.group3 * float4(-1.0), 
             /* e41, e42, e43 */
-            float3(other.e12345) * anti_reverse.group4.xyz, 
+            float3(other_g0) * this.group4.xyz * float3(-1.0), 
             /* e23, e31, e12 */
-            float3(other.e12345) * anti_reverse.group5.xyz, 
+            float3(other_g0) * this.group5.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(other.e12345) * anti_reverse.group6, 
+            float4(other_g0) * this.group6 * float4(-1.0), 
             /* e423, e431, e412 */
-            float3(other.e12345) * anti_reverse.group7.xyz, 
+            float3(other_g0) * this.group7.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(other.e12345) * anti_reverse.group8.xyz, 
+            float3(other_g0) * this.group8.xyz * float3(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(other.e12345) * anti_reverse.group9, 
+            float4(other_g0) * this.group9, 
             /* e1234 */
-            other.e12345 * anti_reverse.e1234
+            other_g0 * this.e1234
         );
     }
 }
@@ -540,7 +389,7 @@ public extension Plane {
     public Plane anti_inverse() {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2)) * this.group0
+            float4(this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125) * this.group0
         );
     }
 }
@@ -554,15 +403,12 @@ public RoundPoint operator /(AntiInversePrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public RoundPoint anti_inverse() {
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e4 * this.e5) - pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2)
-        );
+        float other_g0 = 2.0*(this.e4 * this.e5) - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(other.e12345) * this.group0, 
+            float4(other_g0) * this.group0, 
             /* e5 */
-            other.e12345 * this.e5
+            other_g0 * this.e5
         );
     }
 }
@@ -592,15 +438,12 @@ public Sphere operator /(AntiInversePrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public Sphere anti_inverse() {
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2) - 2.0 * (this.e3215 * this.e1234)
-        );
+        float other_g0 = this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - 2.0 * (this.e3215 * this.e1234);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(other.e12345) * this.group0, 
+            float4(other_g0) * this.group0, 
             /* e1234 */
-            other.e12345 * this.e1234
+            other_g0 * this.e1234
         );
     }
 }
@@ -614,29 +457,16 @@ public VersorEven operator /(AntiInversePrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public VersorEven anti_inverse() {
-        VersorEven anti_reverse = VersorEven(
-            /* e423, e431, e412, e12345 */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            this.group1 * float4(-1.0), 
-            /* e235, e315, e125, e5 */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            this.group3
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e5 * this.e4) + pow(this.e12345, 2) + pow(this.e415, 2) + pow(this.e425, 2) + pow(this.e435, 2) - pow(this.e321, 2) - pow(this.e1, 2) - pow(this.e2, 2) - pow(this.e3, 2)
-        );
+        float other_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e5 * this.e4) + this.e12345 * this.e12345 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e415, e425, e435, e321 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e235, e315, e125, e5 */
-            float4(other.e12345) * anti_reverse.group2, 
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e12345) * anti_reverse.group3
+            float4(other_g0) * this.group3
         );
     }
 }
@@ -650,29 +480,16 @@ public VersorOdd operator /(AntiInversePrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public VersorOdd anti_inverse() {
-        VersorOdd anti_reverse = VersorOdd(
-            /* e41, e42, e43, scalar */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e23, e31, e12, e45 */
-            this.group1 * float4(-1.0), 
-            /* e15, e25, e35, e1234 */
-            this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            this.group3
-        );
-        AntiScalar other = AntiScalar(
-            /* e12345 */
-            pow(this.e45, 2) + pow(this.e4235, 2) + pow(this.e4315, 2) + pow(this.e4125, 2) - pow(this.scalar, 2) - pow(this.e23, 2) - pow(this.e31, 2) - pow(this.e12, 2) - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215)
-        );
+        float other_g0 = this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(other.e12345) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.e12345) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e15, e25, e35, e1234 */
-            float4(other.e12345) * anti_reverse.group2, 
+            float4(other_g0) * this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(other.e12345) * anti_reverse.group3
+            float4(other_g0) * this.group3
         );
     }
 }

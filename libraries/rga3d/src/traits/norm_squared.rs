@@ -5,14 +5,13 @@ use crate::simd::*;
 /// NormSquared
 /// Intermediate result to FlatNorm.
 pub trait NormSquared {
-    type Output;
-    fn norm_squared(self) -> Self::Output;
+    fn norm_squared(self) -> AntiScalar;
 }
 #[allow(non_upper_case_globals, dead_code)]
 pub static norm_squared: NormSquaredPrefixOrPostfix = NormSquaredPrefixOrPostfix;
 pub struct NormSquaredPrefixOrPostfix;
 impl<A: NormSquared> std::ops::Div<A> for NormSquaredPrefixOrPostfix {
-    type Output = <A as NormSquared>::Output;
+    type Output = AntiScalar;
     fn div(self, rhs: A) -> Self::Output {
         rhs.norm_squared()
     }

@@ -698,7 +698,7 @@ public extension Plane {
     public VersorOdd operator -(AntiDualNum other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar * -1.0), 
+            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e23, e31, e12, e45 */
             float4(0.0), 
             /* e15, e25, e35, e1234 */
@@ -724,7 +724,7 @@ public extension Plane {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -752,7 +752,7 @@ public extension Plane {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -782,7 +782,7 @@ public extension Plane {
     public VersorOdd operator -(AntiMotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar * -1.0), 
+            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e23, e31, e12, e45 */
             float4((other.group0.xyz * float3(-1.0)), 0.0), 
             /* e15, e25, e35, e1234 */
@@ -1104,7 +1104,7 @@ public extension Plane {
     public VersorOdd operator -(Scalar other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar * -1.0), 
+            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e23, e31, e12, e45 */
             float4(0.0), 
             /* e15, e25, e35, e1234 */

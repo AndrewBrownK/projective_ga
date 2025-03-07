@@ -10,7 +10,7 @@
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       1       0
 //   Median:        12      24       0
-//  Average:        25      39       0
+//  Average:        25      38       0
 //  Maximum:       392     459       0
 //
 //  No SIMD:   add/sub     mul     div
@@ -78,7 +78,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiCircleRotor {
             ]) + (self.group1().wwwz() * other.group1().xyz().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
                 + (self.group0().yzx() * other.group2().zxy()).with_w(other[e42] * self[e31])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e23] * self[e41]),
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e23] * self[e41]),
         );
     }
 }
@@ -133,12 +133,12 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiCircleRotor {
                 + (self.group2().yzxz() * other.group0().zxy().with_w(other[e412]))
                 + (other.group2().zx().with_zw(other[e5], self[e25]) * self.group0().yzz().with_w(other[e431]))
                 + (other.group3().ww().with_zw(other[e315], self[e15]) * self.group0().xyx().with_w(other[e423]))
-                + (self.group2().www() * other.group1().xyz()).with_w(self[e12] * other[e3])
-                + (other.group2().www() * self.group2().xyz()).with_w(self[e31] * other[e2])
+                + (self.group2().xyz() * other.group2().www()).with_w(self[e31] * other[e2])
+                + (other.group1().xyz() * self.group2().www()).with_w(self[e12] * other[e3])
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e41]))
                 - (other.group0().yzx() * self.group2().zxy()).with_w(self[e42] * other[e315])
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e43] * other[e125])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[scalar] * other[e321]),
+                - (other.group3().xyz() * self.group1().www()).with_w(self[scalar] * other[e321]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e25] * other[e435]) + (self[e35] * other[e2]) + (self[scalar] * other[e235]),
@@ -151,7 +151,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiCircleRotor {
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e2]]) * self.group2().yyy().with_w(self[e42]))
                 - (other.group1().wz().with_zw(other[e2], other[e425]) * self.group2().xxx().with_w(self[e42]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e41] * other[e1]),
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e41] * other[e1]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e45] * other[e415], self[e45] * other[e425], self[e45] * other[e435], self[e35] * other[e435] * -1.0])
                 + (other.group3().yzxw() * self.group1().zxy().with_w(self[scalar]))
@@ -172,11 +172,11 @@ impl GeometricAntiProduct<AntiDualNum> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        8        0
-    //    simd3        1        2        0
-    //    simd4        1        6        0
+    //    simd3        1        3        0
+    //    simd4        1        3        0
     // Totals...
-    // yes simd        2       16        0
-    //  no simd        7       38        0
+    // yes simd        2       14        0
+    //  no simd        7       29        0
     fn geometric_anti_product(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
@@ -192,7 +192,7 @@ impl GeometricAntiProduct<AntiDualNum> for AntiCircleRotor {
                 self[e45] * other[e3215],
             ]) - (Simd32x4::from(other[e3215]) * self.group1().xyz().with_w(self[scalar])),
             // e1, e2, e3, e4
-            other.group0().xx().with_zw(other[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group0() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
         );
     }
 }
@@ -255,7 +255,7 @@ impl GeometricAntiProduct<AntiFlector> for AntiCircleRotor {
                 + (other.group1().ww().with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e23]))
                 + Simd32x3::from(0.0).with_w((self[e12] * other[e3]) - (self[e43] * other[e125]) - (self[scalar] * other[e321]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e41]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e42] * other[e315]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e42] * other[e315]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e23] * other[e5]) + (self[e31] * other[e125]) + (self[e35] * other[e2]) + (self[scalar] * other[e235]) - (self[e25] * other[e3]),
@@ -264,7 +264,7 @@ impl GeometricAntiProduct<AntiFlector> for AntiCircleRotor {
                 0.0,
             ]) - (other.group0().ww().with_zw(other[e2], other[e3]) * self.group2().xyx().with_w(self[e43]))
                 - (self.group1().zxy() * other.group0().yzx()).with_w(self[e41] * other[e1])
-                - (self.group1().www() * other.group0().xyz()).with_w(self[e42] * other[e2]),
+                - (other.group0().xyz() * self.group1().www()).with_w(self[e42] * other[e2]),
             // e4235, e4315, e4125, e3215
             (other.group1().yzxz() * self.group1().zxy().with_w(self[e35]))
                 + (other.group0().zx().with_zw(other[e5], other[e2]) * self.group0().yzz().with_w(self[e25]))
@@ -487,7 +487,7 @@ impl GeometricAntiProduct<Circle> for AntiCircleRotor {
                 -(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]),
             ]) - (self.group0().zxy() * other.group2().yzx()).with_w(self[e23] * other[e235])
                 - (other.group0().zxy() * self.group2().yzx()).with_w(self[e31] * other[e315])
-                - (other.group1().www() * self.group1().xyz()).with_w(self[e12] * other[e125]),
+                - (self.group1().xyz() * other.group1().www()).with_w(self[e12] * other[e125]),
         );
     }
 }
@@ -537,8 +537,8 @@ impl GeometricAntiProduct<CircleRotor> for AntiCircleRotor {
                 -(self[e31] * other[e431]) - (self[e12] * other[e412]),
             ]) - (other.group1().wzxz() * self.group2().xxy().with_w(self[e43]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e42] * other[e425])
-                - (self.group2().zyz() * other.group1().yww()).with_w(self[e23] * other[e423]),
+                - (self.group2().zyz() * other.group1().yww()).with_w(self[e23] * other[e423])
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e42] * other[e425]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e42] * other[e125]) + (self[e45] * other[e415]) + (self[e35] * other[e431]),
@@ -604,7 +604,7 @@ impl GeometricAntiProduct<Dipole> for AntiCircleRotor {
             ]) + (other.group1().wwwz() * self.group1().xyz().with_w(self[e43]))
                 + (self.group0().yzx() * other.group2().zxy()).with_w(self[e41] * other[e23])
                 + (other.group0().yzx() * self.group2().zxy()).with_w(self[e42] * other[e31])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e23] * other[e41]),
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e23] * other[e41]),
         );
     }
 }
@@ -646,7 +646,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiCircleRotor {
                 - (other.group2().zx().with_zw(other[e3215], other[e25]) * self.group0().yzz().with_w(self[e42]))
                 - (other.group3().ww().with_zw(other[e25], other[e15]) * self.group0().xyx().with_w(self[e41]))
                 - (other.group0().zxy() * self.group2().yzx()).with_w(self[e43] * other[e35])
-                - (other.group2().www() * self.group2().xyz()).with_w(self[e12] * other[e4125]),
+                - (self.group2().xyz() * other.group2().www()).with_w(self[e12] * other[e4125]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e31] * other[e35]) - (self[e15] * other[e45]) - (self[e25] * other[e12]) - (self[e25] * other[e4125]) - (self[scalar] * other[e15]),
@@ -674,7 +674,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiCircleRotor {
                 + (other.group3().zx().with_zw(other[e45], self[e31]) * self.group1().yzz().with_w(other[e42]))
                 + (other.group3().ww().with_zw(other[e25], other[e23]) * self.group0().xyx().with_w(self[e41]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(self[e43] * other[e12])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e12] * other[e43])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e12] * other[e43])
                 - (Simd32x4::from(other[e1234]) * self.group2().xyz().with_w(self[e45]))
                 - (other.group3().yzxz() * self.group1().zxy().with_w(self[e43]))
                 - (self.group0().zxy() * other.group2().yzx()).with_w(self[e41] * other[e4235])
@@ -761,7 +761,7 @@ impl GeometricAntiProduct<Flector> for AntiCircleRotor {
                 + Simd32x3::from(0.0).with_w(-(self[e23] * other[e4235]) - (self[e31] * other[e4315]) - (self[e12] * other[e4125]))
                 - (other.group0().zx().with_zw(other[e3215], other[e25]) * self.group0().yzz().with_w(self[e42]))
                 - (other.group1().ww().with_zw(other[e25], other[e15]) * self.group0().xyx().with_w(self[e41]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e43] * other[e35]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e43] * other[e35]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e31] * other[e35]) - (self[e15] * other[e45]) - (self[e25] * other[e4125]) - (self[scalar] * other[e15]),
@@ -868,7 +868,7 @@ impl GeometricAntiProduct<Motor> for AntiCircleRotor {
                 0.0,
             ]) - (other.group0().yzxz() * self.group2().zxy().with_w(self[e43]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e42] * other[e425]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e42] * other[e425]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e42] * other[e125]) + (self[e45] * other[e415]),
@@ -976,7 +976,7 @@ impl GeometricAntiProduct<MultiVector> for AntiCircleRotor {
             (Simd32x3::from(self[scalar]) * other.group6().xyz())
                 + (Simd32x3::from(other[e12345]) * self.group1().xyz())
                 + (Simd32x3::from(other[e4]) * self.group2().xyz())
-                + (self.group0().xyx() * Simd32x2::from(other[e5]).with_z(other[e315]))
+                + (Simd32x3::from([other[e5], other[e5], other[e315]]) * self.group0().xyx())
                 + (self.group0().yzz() * other.group8().zx().with_z(other[e5]))
                 + (other.group7().zxy() * self.group2().yzx())
                 + (self.group1().yzx() * other.group6().zxy())
@@ -1025,7 +1025,7 @@ impl GeometricAntiProduct<MultiVector> for AntiCircleRotor {
                 - (other.group5().zxy() * self.group2().yzx()),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e45] * other[e415], self[e45] * other[e425], self[e45] * other[e435], self[e35] * other[e435] * -1.0])
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e15]))
+                + (Simd32x4::from([other[e5], other[e5], other[e315], other[e1]]) * self.group0().xyx().with_w(self[e15]))
                 + (other.group8().zx().with_zw(other[e5], other[e2]) * self.group0().yzz().with_w(self[e25]))
                 + (other.group7().yzx() * self.group2().zxy()).with_w(self[e35] * other[e3])
                 + (self.group1().zxy() * other.group1().yzx()).with_w(self[scalar] * other[e5])
@@ -1101,7 +1101,7 @@ impl GeometricAntiProduct<RoundPoint> for AntiCircleRotor {
                 + (other.group0().wwwy() * self.group2().xyz().with_w(self[e31]))
                 + (Simd32x3::from(other[e5]) * self.group0()).with_w(self[e23] * other[e1]),
             // e15, e25, e35, e1234
-            (self.group1() * Simd32x3::from(other[e5]).with_w(other[e4]))
+            (Simd32x4::from([other[e5], other[e5], other[e5], other[e4]]) * self.group1())
                 + (self.group2().zxyw() * other.group0().yzxw())
                 + Simd32x3::from(0.0).with_w(-(self[e42] * other[e2]) - (self[e43] * other[e3]))
                 - (other.group0().zxyx() * self.group2().yzx().with_w(self[e41])),
@@ -1236,7 +1236,7 @@ impl GeometricAntiProduct<VersorEven> for AntiCircleRotor {
                 - (self.group2().zxyw() * other.group0().yzx().with_w(other[e321]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e41]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e42] * other[e315])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[e43] * other[e125]),
+                - (other.group3().xyz() * self.group1().www()).with_w(self[e43] * other[e125]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e15] * other[e12345]) + (self[e25] * other[e435]) + (self[e35] * other[e2]) + (self[scalar] * other[e235]),
@@ -1249,13 +1249,13 @@ impl GeometricAntiProduct<VersorEven> for AntiCircleRotor {
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e2]]) * self.group2().yyy().with_w(self[e42]))
                 - (other.group1().wz().with_zw(other[e2], other[e425]) * self.group2().xxx().with_w(self[e42]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e41] * other[e1]),
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e41] * other[e1]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e35] * other[e431], self[e15] * other[e412], self[e25] * other[e423], self[e35] * other[e435] * -1.0])
                 + (other.group3().yzxz() * self.group1().zxy().with_w(self[e35]))
                 + (self.group0().xyx() * other.group2().wwy()).with_w(self[e15] * other[e1])
                 + (self.group0().yzz() * other.group2().zxw()).with_w(self[e25] * other[e2])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[scalar] * other[e5])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[scalar] * other[e5])
                 - (self.group1().xyxy() * other.group1().ww().with_zw(other[e2], other[e315]))
                 - (self.group1().yzzz() * other.group3().zx().with_zw(other[e321], other[e125]))
                 - (self.group2().yzzx() * other.group0().zx().with_zw(other[e4], other[e415]))
@@ -1390,12 +1390,12 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiDipoleInversion {
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e235]]) * other.group0().xxy().with_w(other[e41]))
                 + (other.group1().zxyx() * self.group1().yzx().with_w(self[e1]))
                 + (self.group0().yzx() * other.group2().zxy()).with_w(other[e43] * self[e125])
-                + (other.group2().www() * self.group1().xyz()).with_w(other[e12] * self[e3])
-                + (self.group2().www() * other.group2().xyz()).with_w(other[e31] * self[e2])
+                + (other.group2().xyz() * self.group2().www()).with_w(other[e31] * self[e2])
+                + (self.group1().xyz() * other.group2().www()).with_w(other[e12] * self[e3])
                 - (other.group2().yzxy() * self.group0().zxy().with_w(self[e431]))
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e15] * self[e423])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e35] * self[e412])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[scalar] * self[e321]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[scalar] * self[e321]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (other[e35] * self[e425]) + (other[e35] * self[e2]) + (other[scalar] * self[e235]),
@@ -1405,7 +1405,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiDipoleInversion {
             ]) + (Simd32x4::from([self[e315], self[e5], self[e5], self[e2]]) * other.group1().zyz().with_w(other[e42]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group1().xxy().with_w(other[e41]))
                 + (other.group2().xxyw() * self.group1().wzx().with_w(self[e4]))
-                + (other.group1().www() * self.group2().xyz()).with_w(other[e43] * self[e3])
+                + (self.group2().xyz() * other.group1().www()).with_w(other[e43] * self[e3])
                 - (self.group1().zxyy() * other.group2().yzx().with_w(other[e42]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e41] * self[e415])
                 - (other.group2().yzx() * self.group3().zxy()).with_w(other[e43] * self[e435]),
@@ -1453,7 +1453,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiDipoleInversion {
                 - (Simd32x4::from(other[e412]) * Simd32x4::from([self[e2], self[e415], self[e321], self[e125]]))
                 - (self.group0().zxy() * other.group1().yzx()).with_w(other[e235] * self[e423])
                 - (self.group0().zxy() * other.group3().yzx()).with_w(other[e315] * self[e431])
-                - (other.group2().www() * self.group3().xyz()).with_w(other[e125] * self[e412]),
+                - (self.group3().xyz() * other.group2().www()).with_w(other[e125] * self[e412]),
             // e415, e425, e435, e321
             Simd32x4::from([
                 (other[e435] * self[e425]) + (other[e321] * self[e1]) + (other[e235] * self[e4]) + (other[e4] * self[e235]) + (other[e1] * self[e321]) + (other[e3] * self[e2]),
@@ -1499,7 +1499,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiDipoleInversion {
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e423] * self[e415])
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e415] * self[e423])
                 - (other.group3().yzx() * self.group1().zxy()).with_w(other[e425] * self[e431])
-                - (self.group2().www() * other.group2().xyz()).with_w(other[e1] * self[e423]),
+                - (other.group2().xyz() * self.group2().www()).with_w(other[e1] * self[e423]),
         );
     }
 }
@@ -1601,7 +1601,7 @@ impl GeometricAntiProduct<AntiFlector> for AntiDipoleInversion {
                 -(self[e435] * other[e3]) - (self[e4] * other[e5]),
             ]) + (other.group0().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e412] * other[e125])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e412] * other[e125])
                 - (other.group1().yzxy() * self.group3().zxy().with_w(self[e425]))
                 - (self.group0().zxy() * other.group0().yzx()).with_w(self[e415] * other[e1]),
             // e235, e315, e125, e5
@@ -1613,7 +1613,7 @@ impl GeometricAntiProduct<AntiFlector> for AntiDipoleInversion {
             ]) + (self.group1().xyxw() * other.group1().ww().with_zw(other[e315], other[e5]))
                 + (self.group2().zxyz() * other.group1().yzxz())
                 + (other.group0().zx().with_zw(other[e5], other[e1]) * self.group1().yzz().with_w(self[e235]))
-                + (self.group1().www() * other.group0().xyz()).with_w(self[e315] * other[e2])
+                + (other.group0().xyz() * self.group1().www()).with_w(self[e315] * other[e2])
                 - (self.group1().zxyx() * other.group0().yzxx())
                 - (self.group3().zxyx() * other.group0().yzxx())
                 - (self.group3().wwwy() * other.group1().xyz().with_w(other[e315]))
@@ -1949,11 +1949,11 @@ impl GeometricAntiProduct<CircleRotor> for AntiDipoleInversion {
                 + (Simd32x4::from([self[e315], self[e5], self[e5], self[e3]]) * other.group0().zyz().with_w(other[e412]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e2]]) * other.group0().xxy().with_w(other[e431]))
                 + (self.group0().zxy() * other.group2().yzx()).with_w(self[e1] * other[e423])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e4] * other[e12345])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e4] * other[e12345])
                 - (self.group0().yzx() * other.group2().zxy()).with_w(self[e423] * other[e415])
                 - (other.group0().yzx() * self.group2().zxy()).with_w(self[e431] * other[e425])
-                - (self.group2().www() * other.group2().xyz()).with_w(self[e412] * other[e435])
-                - (self.group3().zxy() * other.group1().yzx()).with_w(self[e415] * other[e423]),
+                - (self.group3().zxy() * other.group1().yzx()).with_w(self[e415] * other[e423])
+                - (other.group2().xyz() * self.group2().www()).with_w(self[e412] * other[e435]),
         );
     }
 }
@@ -2013,8 +2013,8 @@ impl GeometricAntiProduct<Dipole> for AntiDipoleInversion {
                 - (Simd32x4::from([self[e315], self[e5], self[e5], self[e425]]) * other.group0().zyz().with_w(other[e25]))
                 - (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group0().xxy().with_w(other[e15]))
                 - (self.group0().zxy() * other.group2().yzx()).with_w(self[e415] * other[e15])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e2] * other[e25])
-                - (self.group3().yzx() * other.group1().zxy()).with_w(self[e435] * other[e35]),
+                - (self.group3().yzx() * other.group1().zxy()).with_w(self[e435] * other[e35])
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e2] * other[e25]),
         );
     }
 }
@@ -2048,8 +2048,8 @@ impl GeometricAntiProduct<DipoleInversion> for AntiDipoleInversion {
                 - (Simd32x4::from(other[e41]) * Simd32x4::from([self[e321], self[e3], self[e425], self[e235]]))
                 - (Simd32x4::from(other[e42]) * self.group1().zw().with_zw(self[e1], self[e315]))
                 - (Simd32x4::from(other[e43]) * Simd32x4::from([self[e2], self[e415], self[e321], self[e125]]))
-                - (self.group2().www() * other.group3().xyz()).with_w(self[e415] * other[e23])
-                - (other.group2().www() * self.group3().xyz()).with_w(self[e425] * other[e31]),
+                - (self.group3().xyz() * other.group2().www()).with_w(self[e425] * other[e31])
+                - (other.group3().xyz() * self.group2().www()).with_w(self[e415] * other[e23]),
             // e23, e31, e12, e45
             Simd32x4::from([self[e3] * other[e4315], self[e1] * other[e4125], self[e2] * other[e4235], self[e5] * other[e1234] * -1.0])
                 + (Simd32x4::from([self[e315], self[e5], self[e5], other[e3215]]) * other.group0().zyz().with_w(self[e4]))
@@ -2057,8 +2057,8 @@ impl GeometricAntiProduct<DipoleInversion> for AntiDipoleInversion {
                 + (other.group1().zxyx() * self.group1().yzx().with_w(self[e1]))
                 + (other.group2().zx().with_zw(other[e3215], self[e315]) * self.group0().yzz().with_w(other[e42]))
                 + (other.group3().ww().with_zw(other[e25], self[e235]) * self.group0().xyx().with_w(other[e41]))
-                + (self.group2().www() * other.group2().xyz()).with_w(self[e3] * other[e12])
-                + (other.group2().www() * self.group2().xyz()).with_w(self[e2] * other[e31])
+                + (self.group2().xyz() * other.group2().www()).with_w(self[e2] * other[e31])
+                + (other.group2().xyz() * self.group2().www()).with_w(self[e3] * other[e12])
                 - (self.group1().wwwx() * other.group3().xyzx())
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e423]))
                 - (other.group1().ww().with_zw(other[e4315], other[e4315]) * self.group3().xyx().with_w(self[e425]))
@@ -2075,8 +2075,8 @@ impl GeometricAntiProduct<DipoleInversion> for AntiDipoleInversion {
                 + (other.group2().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group3().zx().with_zw(other[e45], self[e3]) * self.group2().yzz().with_w(other[e43]))
                 + (other.group3().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e412] * other[e4125])
                 + (self.group2().xyx() * other.group1().wwy()).with_w(self[e1] * other[e41])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e412] * other[e4125])
                 - (other.group1().yzxy() * self.group2().zxy().with_w(self[e431]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e423] * other[e23])
                 - (self.group2().zxy() * other.group3().yzx()).with_w(self[e412] * other[e12])
@@ -2094,8 +2094,8 @@ impl GeometricAntiProduct<DipoleInversion> for AntiDipoleInversion {
                 - (self.group2().xyzy() * other.group2().www().with_w(other[e31]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e415]))
                 - (self.group1().zxy() * other.group3().yzx()).with_w(self[e235] * other[e23])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e235] * other[e4235])
-                - (self.group3().yzx() * other.group1().zxy()).with_w(self[e315] * other[e4315]),
+                - (self.group3().yzx() * other.group1().zxy()).with_w(self[e315] * other[e4315])
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e235] * other[e4235]),
         );
     }
 }
@@ -2187,7 +2187,7 @@ impl GeometricAntiProduct<Flector> for AntiDipoleInversion {
                 + Simd32x3::from(0.0).with_w((self[e1] * other[e4235]) + (self[e2] * other[e4315]) + (self[e3] * other[e4125]) - (self[e321] * other[e45]))
                 - (other.group0().ww().with_zw(other[e4315], other[e15]) * self.group0().xyx().with_w(self[e423]))
                 - (other.group1().zx().with_zw(other[e45], other[e25]) * self.group0().yzz().with_w(self[e431]))
-                - (self.group2().www() * other.group1().xyz()).with_w(self[e412] * other[e35]),
+                - (other.group1().xyz() * self.group2().www()).with_w(self[e412] * other[e35]),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (self[e431] * other[e35]) + (self[e4] * other[e15]) + (self[e3] * other[e4315]),
@@ -2198,7 +2198,7 @@ impl GeometricAntiProduct<Flector> for AntiDipoleInversion {
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e423]))
                 - (other.group0().ww().with_zw(other[e4315], other[e35]) * self.group3().xyx().with_w(self[e412]))
                 - (other.group1().zx().with_zw(other[e45], other[e4235]) * self.group3().yzz().with_w(self[e415]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e431] * other[e25]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e431] * other[e25]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e235] * other[e45]) + (self[e315] * other[e4125]) + (self[e1] * other[e3215]) + (self[e2] * other[e35]) + (self[e5] * other[e4235])
@@ -2213,7 +2213,7 @@ impl GeometricAntiProduct<Flector> for AntiDipoleInversion {
                 0.0,
             ]) + (other.group0().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group0().xyz()).with_w(self[e412] * other[e4125])
+                + (other.group0().xyz() * self.group1().www()).with_w(self[e412] * other[e4125])
                 - (other.group0().yzxw() * self.group1().zxy().with_w(self[e4])),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
@@ -2360,7 +2360,7 @@ impl GeometricAntiProduct<Motor> for AntiDipoleInversion {
             ]) + (self.group0().zxy() * other.group1().yzx()).with_w(self[e4] * other[e12345])
                 - (self.group0().xyx() * other.group1().wwy()).with_w(self[e423] * other[e415])
                 - (self.group0().yzz() * other.group1().zxw()).with_w(self[e431] * other[e425])
-                - (self.group2().www() * other.group1().xyz()).with_w(self[e412] * other[e435]),
+                - (other.group1().xyz() * self.group2().www()).with_w(self[e412] * other[e435]),
         );
     }
 }
@@ -2404,9 +2404,9 @@ impl GeometricAntiProduct<MultiVector> for AntiDipoleInversion {
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e2]]) * other.group7().xxy().with_w(other[e431]))
                 + (other.group6().ww().with_zw(other[e2], other[e321]) * self.group1().xyx().with_w(self[e4]))
                 + (self.group0().zxy() * other.group8().yzx()).with_w(self[e1] * other[e423])
+                - (Simd32x4::from([other[e5], other[e5], other[e315], other[e1]]) * self.group0().xyx().with_w(self[e423]))
                 - (other.group1().yzxz() * self.group1().zxy().with_w(self[e412]))
                 - (other.group6().yzxz() * self.group3().zxy().with_w(self[e412]))
-                - (Simd32x2::from(other[e5]).with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e423]))
                 - (other.group8().zx().with_zw(other[e5], other[e415]) * self.group0().yzz().with_w(self[e423]))
                 - (other.group8() * self.group2().www()).with_w(self[e431] * other[e425])
                 - (other.group7().yzx() * self.group2().zxy()).with_w(self[e431] * other[e2]),
@@ -2434,7 +2434,7 @@ impl GeometricAntiProduct<MultiVector> for AntiDipoleInversion {
                 + (self.group2().xyzx() * other.group0().xx().with_zw(other[scalar], other[e41]))
                 + (other.group3().zx().with_zw(other[e3215], self[e2]) * self.group1().yzz().with_w(other[e31]))
                 + (other.group9().ww().with_zw(other[e25], self[e1]) * self.group1().xyx().with_w(other[e23]))
-                + (self.group1().www() * other.group3().xyz()).with_w(self[e3] * other[e12])
+                + (other.group3().xyz() * self.group1().www()).with_w(self[e3] * other[e12])
                 - (other.group3().yzxx() * self.group1().zxy().with_w(self[e423]))
                 - (other.group3().yzxz() * self.group3().zxy().with_w(self[e412]))
                 - (other.group5().yzx() * self.group2().zxy()).with_w(self[e321] * other[scalar])
@@ -2480,7 +2480,7 @@ impl GeometricAntiProduct<MultiVector> for AntiDipoleInversion {
             ]) + (Simd32x4::from(other[e12345]) * self.group1())
                 + (Simd32x4::from([self[e315], self[e5], self[e5], other[e4]]) * other.group7().zyz().with_w(self[e5]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], other[e125]]) * other.group7().xxy().with_w(self[e412]))
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
+                + (Simd32x4::from([other[e5], other[e5], other[e315], other[e235]]) * self.group0().xyx().with_w(self[e423]))
                 + (other.group8().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 - (self.group2().zxyy() * other.group7().yzx().with_w(other[e431]))
                 - (other.group1().yzxx() * self.group3().zxy().with_w(self[e415]))
@@ -2531,7 +2531,7 @@ impl GeometricAntiProduct<MultiVector> for AntiDipoleInversion {
                 - (Simd32x4::from([self[e315], self[e5], self[e5], other[e15]]) * other.group4().zyz().with_w(self[e415]))
                 - (Simd32x4::from([self[e2], self[e321], self[e321], other[e35]]) * other.group5().zyz().with_w(self[e435]))
                 - (Simd32x4::from([self[e5], self[e125], self[e235], self[e125]]) * other.group4().xxy().with_w(other[e12]))
-                - (self.group2().xyzy() * Simd32x3::from(other[e1234]).with_w(other[e4315]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], other[e4315]]) * self.group2().xyzy())
                 - (other.group9().yzxx() * self.group1().zxy().with_w(self[e235]))
                 - (other.group0().xx().with_zw(other[scalar], other[e23]) * self.group3().xyz().with_w(self[e235]))
                 - (self.group0().zxy() * other.group3().yzx()).with_w(self[e315] * other[e31]),
@@ -2707,7 +2707,7 @@ impl GeometricAntiProduct<Sphere> for AntiDipoleInversion {
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e425] * other[e4125], self[e435] * other[e4235], self[e415] * other[e4315], self[e125] * other[e4125] * -1.0])
                 + (Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
-                - (self.group2().xyzy() * Simd32x3::from(other[e1234]).with_w(other[e4315]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], other[e4315]]) * self.group2().xyzy())
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e235])),
         );
     }
@@ -2765,13 +2765,13 @@ impl GeometricAntiProduct<VersorEven> for AntiDipoleInversion {
                 + (Simd32x4::from([other[e435], other[e12345], other[e1], other[e12345]]) * self.group2().yyy().with_w(self[e5]))
                 + (self.group1().xyxw() * other.group2().wwyw())
                 + (self.group1().yzz() * other.group2().zxw()).with_w(self[e235] * other[e1])
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e315] * other[e2])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e315] * other[e2])
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e415]]) * self.group2().zzzx())
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e125]]) * self.group2().yyy().with_w(self[e435]))
                 - (self.group1().zxyx() * other.group2().yzxx())
                 - (other.group1().wz().with_zw(other[e2], other[e315]) * self.group2().xxx().with_w(self[e425]))
                 - (self.group3().zxy() * other.group2().yzx()).with_w(self[e315] * other[e425])
-                - (self.group3().www() * other.group3().xyz()).with_w(self[e125] * other[e435]),
+                - (other.group3().xyz() * self.group3().www()).with_w(self[e125] * other[e435]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (self[e315] * other[e412]) + (self[e1] * other[e12345]) + (self[e2] * other[e435]) + (self[e5] * other[e423]),
@@ -2782,13 +2782,13 @@ impl GeometricAntiProduct<VersorEven> for AntiDipoleInversion {
                 + (other.group3().zx().with_zw(other[e321], other[e423]) * self.group1().yzz().with_w(self[e1]))
                 + (other.group3().ww().with_zw(other[e431], other[e412]) * self.group2().xyx().with_w(self[e3]))
                 + (self.group0().zxy() * other.group2().yzx()).with_w(self[e4] * other[e12345])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e2] * other[e431])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e2] * other[e431])
                 - (self.group0().xyx() * other.group2().wwy()).with_w(self[e423] * other[e415])
                 - (self.group0().yzz() * other.group2().zxw()).with_w(self[e423] * other[e1])
                 - (self.group1().zxy() * other.group3().yzx()).with_w(self[e431] * other[e425])
                 - (self.group2().zxy() * other.group0().yzx()).with_w(self[e431] * other[e2])
-                - (self.group2().www() * other.group2().xyz()).with_w(self[e412] * other[e435])
-                - (self.group3().zxy() * other.group1().yzx()).with_w(self[e412] * other[e3]),
+                - (self.group3().zxy() * other.group1().yzx()).with_w(self[e412] * other[e3])
+                - (other.group2().xyz() * self.group2().www()).with_w(self[e412] * other[e435]),
         );
     }
 }
@@ -2823,7 +2823,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiDipoleInversion {
                 - (self.group1().wwwy() * other.group0().xyz().with_w(other[e31]))
                 - (other.group0().zx().with_zw(other[e1234], other[e41]) * self.group3().yzz().with_w(self[e235]))
                 - (other.group2().ww().with_zw(other[e42], other[e45]) * self.group3().xyx().with_w(self[e321]))
-                - (self.group2().www() * other.group3().xyz()).with_w(self[e435] * other[e12]),
+                - (other.group3().xyz() * self.group2().www()).with_w(self[e435] * other[e12]),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (self[e3] * other[e4315]) + (self[e5] * other[e41]),
@@ -2836,13 +2836,13 @@ impl GeometricAntiProduct<VersorOdd> for AntiDipoleInversion {
                 + (other.group2().zx().with_zw(other[e3215], other[e42]) * self.group0().yzz().with_w(self[e315]))
                 + (other.group2().ww().with_zw(other[e42], other[e23]) * self.group2().xyx().with_w(self[e1]))
                 + (other.group3().ww().with_zw(other[e25], other[e41]) * self.group0().xyx().with_w(self[e235]))
-                + (self.group2().www() * other.group2().xyz()).with_w(self[e3] * other[e12])
+                + (other.group2().xyz() * self.group2().www()).with_w(self[e3] * other[e12])
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e423]))
                 - (other.group1().ww().with_zw(other[e4315], other[e4315]) * self.group3().xyx().with_w(self[e425]))
                 - (other.group3().zx().with_zw(other[e45], other[e4125]) * self.group3().yzz().with_w(self[e435]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e25])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[e412] * other[e35])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235]),
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235])
+                - (other.group3().xyz() * self.group1().www()).with_w(self[e412] * other[e35]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e1] * other[e3215]) + (self[e2] * other[e35]) + (self[e5] * other[e23]) + (self[e5] * other[e4235]),
@@ -2855,7 +2855,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiDipoleInversion {
                 + (other.group2().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group3().zx().with_zw(other[e45], other[e43]) * self.group2().yzz().with_w(self[e3]))
                 + (other.group3().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e412] * other[e4125])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e412] * other[e4125])
                 - (other.group1().yzxy() * self.group2().zxy().with_w(self[e431]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e423] * other[e23])
                 - (self.group2().zxy() * other.group3().yzx()).with_w(self[e412] * other[e12])
@@ -2876,7 +2876,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiDipoleInversion {
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e415]))
                 - (other.group0().ww().with_zw(other[e31], other[e31]) * self.group3().xyx().with_w(self[e315]))
                 - (other.group1().zx().with_zw(other[scalar], other[e4315]) * self.group3().yzz().with_w(self[e315]))
-                - (self.group3().www() * other.group0().xyz()).with_w(self[e125] * other[e12]),
+                - (other.group0().xyz() * self.group3().www()).with_w(self[e125] * other[e12]),
         );
     }
 }
@@ -2891,11 +2891,11 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiDualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        1        0
-    //    simd3        1        2        0
-    //    simd4        1        7        0
+    //    simd3        1        4        0
+    //    simd4        1        4        0
     // Totals...
-    // yes simd        2       10        0
-    //  no simd        7       35        0
+    // yes simd        2        9        0
+    //  no simd        7       29        0
     fn geometric_anti_product(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
@@ -2906,7 +2906,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiDualNum {
             // e235, e315, e125, e5
             -(Simd32x4::from(self[e3215]) * other.group1()) - (other.group2() * self.group0().yy().with_zw(self[scalar], self[e3215])),
             // e1, e2, e3, e4
-            self.group0().xx().with_zw(self[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
         );
     }
 }
@@ -2966,18 +2966,18 @@ impl GeometricAntiProduct<AntiFlatPoint> for AntiDualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        2        0
+    //      f32        0        1        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        0        4        0
-    //  no simd        0       10        0
+    //  no simd        0       13        0
     fn geometric_anti_product(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e321] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         );
     }
 }
@@ -3038,14 +3038,17 @@ impl GeometricAntiProduct<AntiMotor> for AntiDualNum {
 impl GeometricAntiProduct<AntiPlane> for AntiDualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        5        0
-    // no simd        0       20        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        4        0
+    //  no simd        0       14        0
     fn geometric_anti_product(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
-            self.group0().xx().with_zw(self[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
         );
@@ -3184,18 +3187,18 @@ impl GeometricAntiProduct<FlatPoint> for AntiDualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        2        0
+    //      f32        0        1        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        0        4        0
-    //  no simd        0       10        0
+    //  no simd        0       13        0
     fn geometric_anti_product(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e45] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         );
     }
 }
@@ -3310,14 +3313,17 @@ impl GeometricAntiProduct<MultiVector> for AntiDualNum {
 impl GeometricAntiProduct<Plane> for AntiDualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        5        0
-    // no simd        0       20        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        4        0
+    //  no simd        0       14        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
-            self.group0().xx().with_zw(self[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from(self[scalar]) * other.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
         );
@@ -3327,18 +3333,18 @@ impl GeometricAntiProduct<RoundPoint> for AntiDualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd4        0        4        0
+    //      f32        0        2        0
+    //    simd4        0        5        0
     // Totals...
     // yes simd        0        7        0
-    //  no simd        0       19        0
+    //  no simd        0       22        0
     fn geometric_anti_product(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(self[e3215] * other[e4]),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e1234
             other.group0() * self.group0().xx().with_zw(self[e3215], self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
@@ -3361,18 +3367,18 @@ impl GeometricAntiProduct<Sphere> for AntiDualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd4        0        4        0
+    //      f32        0        2        0
+    //    simd4        0        6        0
     // Totals...
     // yes simd        0        8        0
-    //  no simd        0       20        0
+    //  no simd        0       26        0
     fn geometric_anti_product(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e235, e315, e125, e5
             other.group0() * self.group0().xx().with_zw(self[e3215], self[scalar]) * Simd32x4::from(-1.0),
             // e1, e2, e3, e4
@@ -3625,7 +3631,7 @@ impl GeometricAntiProduct<AntiMotor> for AntiFlatPoint {
                 - (self.group0().zxy() * other.group0().yzx()))
             .with_w(self[e321] * other[scalar] * -1.0),
             // e4235, e4315, e4125, e3215
-            (self.group0().www() * other.group0().xyz() * Simd32x3::from(-1.0))
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w((self[e321] * other[e3215]) - (self[e235] * other[e23]) - (self[e315] * other[e31]) - (self[e125] * other[e12])),
         );
     }
@@ -3635,15 +3641,16 @@ impl GeometricAntiProduct<AntiPlane> for AntiFlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        9        0
-    //    simd4        1        4        0
+    //    simd3        0        1        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        3       13        0
-    //  no simd        6       25        0
+    // yes simd        3       11        0
+    //  no simd        6       16        0
     fn geometric_anti_product(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x3::from(1.0).with_w(0.0) * self.group0().www().with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (other.group0().xyz() * self.group0().www()).with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from([
                 self[e315] * other[e3] * -1.0,
@@ -3793,7 +3800,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiFlatPoint {
                 -(self[e315] * other[e41]) - (self[e321] * other[e4125]),
                 self[e125] * other[e43],
             ]) + (self.group0().yzxx() * other.group0().zxy().with_w(other[e41]))
-                + (other.group2().www() * self.group0().xyz()).with_w(self[e315] * other[e42]),
+                + (self.group0().xyz() * other.group2().www()).with_w(self[e315] * other[e42]),
             // e15, e25, e35, e1234
             ((Simd32x3::from(self[e321]) * other.group2().xyz())
                 + (Simd32x3::from([other[e12], other[e23], other[e4315]]) * self.group0().yzx())
@@ -3834,16 +3841,17 @@ impl GeometricAntiProduct<FlatPoint> for AntiFlatPoint {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
+    //      f32        0        1        0
     //    simd3        1        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        3        8        0
+    //  no simd        3       11        0
     fn geometric_anti_product(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(0.0).with_w(self[e321] * other[e45] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e321] * other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e3215
             ((Simd32x3::from(self[e321]) * other.group0().xyz()) + (Simd32x3::from(other[e45]) * self.group0().xyz())).with_w(0.0),
         );
@@ -3912,7 +3920,7 @@ impl GeometricAntiProduct<Motor> for AntiFlatPoint {
                 - (self.group0().zxy() * other.group0().yzx()))
             .with_w(self[e321] * other[e12345]),
             // e1, e2, e3, e5
-            (self.group0().www() * other.group0().xyz()).with_w((self[e321] * other[e5]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
+            (other.group0().xyz() * self.group0().www()).with_w((self[e321] * other[e5]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
         );
     }
 }
@@ -3994,15 +4002,16 @@ impl GeometricAntiProduct<Plane> for AntiFlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        2        5        0
+    //    simd3        0        2        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        3        7        0
-    //  no simd        9       22        0
+    // yes simd        3        6        0
+    //  no simd        9       16        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * self.group0().www().with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e3215
             (self.group0().yzxw() * other.group0().zxyw()) + Simd32x3::from(0.0).with_w(-(self[e315] * other[e4315]) - (self[e125] * other[e4125]))
                 - (self.group0().zxyx() * other.group0().yzxx()),
@@ -4081,7 +4090,7 @@ impl GeometricAntiProduct<VersorEven> for AntiFlatPoint {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            (self.group0().www() * other.group0().xyz() * Simd32x3::from(-1.0))
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w((self[e321] * other[e321]) - (self[e235] * other[e423]) - (self[e315] * other[e431]) - (self[e125] * other[e412])),
             // e415, e425, e435, e321
             Simd32x4::from([
@@ -4122,7 +4131,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiFlatPoint {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            (self.group0().www() * other.group0().xyz() * Simd32x3::from(-1.0))
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w(-(self[e235] * other[e41]) - (self[e315] * other[e42]) - (self[e125] * other[e43]) - (self[e321] * other[e45])),
             // e23, e31, e12, e45
             Simd32x4::from([
@@ -4195,7 +4204,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for AntiFlector {
                 0.0,
             ]) + (Simd32x4::from([self[e315], self[e5], self[e5], self[e2]]) * other.group1().zyz().with_w(other[e42]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group1().xxy().with_w(other[e41]))
-                + (other.group1().www() * self.group0().xyz()).with_w(other[e43] * self[e3]),
+                + (self.group0().xyz() * other.group1().www()).with_w(other[e43] * self[e3]),
             // e4235, e4315, e4125, e3215
             (self.group1().zxyw() * other.group1().yzx().with_w(other[scalar]))
                 + Simd32x3::from(0.0).with_w(other[e35] * self[e3] * -1.0)
@@ -4226,7 +4235,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiFlector {
                 + (other.group0().yzx() * self.group1().zxy()).with_w(other[e321] * self[e321])
                 - (Simd32x4::from([self[e321], self[e3], self[e1], self[e235]]) * other.group0().xxy().with_w(other[e423]))
                 - (Simd32x4::from([self[e2], self[e321], self[e321], self[e315]]) * other.group0().zyz().with_w(other[e431]))
-                - (other.group2().www() * self.group1().xyz()).with_w(other[e412] * self[e125]),
+                - (self.group1().xyz() * other.group2().www()).with_w(other[e412] * self[e125]),
             // e415, e425, e435, e321
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e321] * self[e1]) + (other[e4] * self[e235]) + (other[e1] * self[e321]) + (other[e3] * self[e2]),
@@ -4396,7 +4405,7 @@ impl GeometricAntiProduct<AntiMotor> for AntiFlector {
                 0.0,
             ]) + (other.group0().zxwy() * self.group0().yzz().with_w(self[e2]))
                 + (other.group0().wwyx() * self.group0().xyx().with_w(self[e1]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e12])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e12])
                 - (self.group0().zxyw() * other.group0().yzxw()),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w((self[e5] * other[scalar]) - (self[e1] * other[e15]) - (self[e2] * other[e25]) - (self[e3] * other[e35]))
@@ -4494,7 +4503,7 @@ impl GeometricAntiProduct<Circle> for AntiFlector {
                 0.0,
             ]) + (Simd32x4::from([self[e315], self[e5], self[e5], self[e2]]) * other.group0().zyz().with_w(other[e431]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group0().xxy().with_w(other[e423]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e412]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e412]),
         );
     }
 }
@@ -4541,7 +4550,7 @@ impl GeometricAntiProduct<CircleRotor> for AntiFlector {
                 0.0,
             ]) + (Simd32x4::from([self[e315], self[e5], self[e5], self[e2]]) * other.group0().zyz().with_w(other[e431]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group0().xxy().with_w(other[e423]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e412]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e412]),
         );
     }
 }
@@ -4593,7 +4602,7 @@ impl GeometricAntiProduct<Dipole> for AntiFlector {
                 - (Simd32x4::from([self[e315], self[e5], self[e5], self[e2]]) * other.group0().zyz().with_w(other[e25]))
                 - (Simd32x4::from([self[e5], self[e125], self[e235], self[e1]]) * other.group0().xxy().with_w(other[e15]))
                 - (other.group1().zxyx() * self.group1().yzx().with_w(self[e235]))
-                - (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e35]),
+                - (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e35]),
         );
     }
 }
@@ -4615,7 +4624,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiFlector {
                 + (other.group0().yzx() * self.group1().zxy()).with_w(self[e1] * other[e4235])
                 - (Simd32x4::from([self[e321], self[e3], self[e1], self[e235]]) * other.group0().xxy().with_w(other[e41]))
                 - (Simd32x4::from([self[e2], self[e321], self[e321], self[e315]]) * other.group0().zyz().with_w(other[e42]))
-                - (other.group2().www() * self.group1().xyz()).with_w(self[e125] * other[e43]),
+                - (self.group1().xyz() * other.group2().www()).with_w(self[e125] * other[e43]),
             // e23, e31, e12, e45
             Simd32x4::from([
                 -(self[e321] * other[e4235]) - (self[e1] * other[e45]) - (self[e2] * other[e4125]),
@@ -4625,7 +4634,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiFlector {
             ]) + (Simd32x4::from([self[e315], self[e5], self[e5], self[e315]]) * other.group0().zyz().with_w(other[e42]))
                 + (Simd32x4::from([self[e5], self[e125], self[e235], self[e235]]) * other.group0().xxy().with_w(other[e41]))
                 + (self.group1().zxyx() * other.group3().yzx().with_w(other[e23]))
-                + (other.group2().www() * self.group0().xyz()).with_w(self[e125] * other[e43])
+                + (self.group0().xyz() * other.group2().www()).with_w(self[e125] * other[e43])
                 - (other.group0().yzx() * self.group0().zxy()).with_w(self[e5] * other[e1234]),
             // e15, e25, e35, e1234
             Simd32x4::from([
@@ -4850,7 +4859,7 @@ impl GeometricAntiProduct<MultiVector> for AntiFlector {
                 + (self.group0().xyzx() * other.group0().xx().with_zw(other[scalar], other[e41]))
                 + (other.group3().ww().with_zw(other[e4315], self[e1]) * self.group0().xyx().with_w(other[e23]))
                 + (other.group9().zx().with_zw(other[e45], self[e2]) * self.group0().yzz().with_w(other[e31]))
-                + (self.group0().www() * other.group3().xyz()).with_w(self[e3] * other[e12])
+                + (other.group3().xyz() * self.group0().www()).with_w(self[e3] * other[e12])
                 - (self.group0().zxyw() * other.group5().yzx().with_w(other[scalar]))
                 - (self.group0().zxy() * other.group9().yzx()).with_w(self[e5] * other[e1234]),
             // e41, e42, e43
@@ -4903,7 +4912,7 @@ impl GeometricAntiProduct<MultiVector> for AntiFlector {
                 - (Simd32x4::from([self[e321], self[e3], self[e1], other[e4235]]) * other.group5().xxy().with_w(self[e235]))
                 - (Simd32x4::from([self[e2], self[e321], self[e321], other[e4315]]) * other.group5().zyz().with_w(self[e315]))
                 - (Simd32x4::from([self[e5], self[e125], self[e235], self[e315]]) * other.group4().xxy().with_w(other[e31]))
-                - (self.group0().xyzz() * Simd32x3::from(other[e1234]).with_w(other[e4125]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], other[e4125]]) * self.group0().xyzz())
                 - (other.group0().xx().with_zw(other[scalar], other[e23]) * self.group1().xyz().with_w(self[e235])),
             // e1234
             (self[e1] * other[e41]) + (self[e2] * other[e42]) + (self[e3] * other[e43]) - (self[e321] * other[e1234]),
@@ -5072,7 +5081,7 @@ impl GeometricAntiProduct<VersorEven> for AntiFlector {
                 0.0,
             ]) + (other.group0().zx().with_zw(other[e4], other[e431]) * self.group0().yzz().with_w(self[e2]))
                 + (other.group3().ww().with_zw(other[e431], other[e423]) * self.group0().xyx().with_w(self[e1]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e412])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e412])
                 - (self.group0().zxyw() * other.group0().yzx().with_w(other[e4])),
         );
     }
@@ -5107,7 +5116,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiFlector {
                 + (self.group1().wwwx() * other.group0().xyz().with_w(other[e23]))
                 + (self.group1().zxy() * other.group3().yzx()).with_w(self[e125] * other[e43])
                 - (self.group0().zxyw() * other.group0().yzxw())
-                - (self.group0().www() * other.group3().xyz()).with_w(self[e5] * other[e1234]),
+                - (other.group3().xyz() * self.group0().www()).with_w(self[e5] * other[e1234]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e315] * other[e4125]) + (self[e321] * other[e15]) + (self[e1] * other[e3215]) + (self[e2] * other[e35]) + (self[e5] * other[e23]) + (self[e5] * other[e4235])
@@ -5133,7 +5142,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiFlector {
                 - (self.group0().wwwy() * other.group1().xyzy())
                 - (other.group0().ww().with_zw(other[e31], other[e4315]) * self.group1().xyx().with_w(self[e315]))
                 - (other.group1().zx().with_zw(other[scalar], other[e12]) * self.group1().yzz().with_w(self[e125]))
-                - (self.group1().www() * other.group0().xyz()).with_w(self[e125] * other[e4125]),
+                - (other.group0().xyz() * self.group1().www()).with_w(self[e125] * other[e4125]),
         );
     }
 }
@@ -5780,17 +5789,17 @@ impl GeometricAntiProduct<MultiVector> for AntiLine {
                 -(self[e31] * other[e235]) - (self[e15] * other[e2]) - (self[e25] * other[e415]) - (self[e35] * other[e321]),
                 self[e35] * other[e412],
             ]) + (Simd32x4::from([other[e2], other[e415], other[e1], other[e431]]) * self.group1().zzy().with_w(self[e25]))
+                + (Simd32x4::from([other[e5], other[e5], other[e315], other[e2]]) * self.group0().xyx().with_w(self[e31]))
                 + (Simd32x4::from([other[e435], other[e3], other[e425], other[e423]]) * self.group1().yxx().with_w(self[e15]))
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e2]) * self.group0().xyx().with_w(self[e31]))
                 + (other.group0().yy().with_zw(other[e12345], self[e23]) * self.group1().with_w(other[e1]))
                 + (other.group8().zx().with_zw(other[e5], other[e3]) * self.group0().yzz().with_w(self[e12])),
             // e41, e42, e43
-            (self.group0().xyx() * Simd32x2::from(other[e4]).with_z(other[e431])) + (self.group0().yzz() * other.group7().zx().with_z(other[e4]))
+            (Simd32x3::from([other[e4], other[e4], other[e431]]) * self.group0().xyx()) + (self.group0().yzz() * other.group7().zx().with_z(other[e4]))
                 - (self.group0().zxy() * other.group7().yzx()),
             // e23, e31, e12
             (Simd32x3::from(other[e12345]) * self.group0())
+                + (Simd32x3::from([other[e4], other[e4], other[e431]]) * self.group1().xyx())
                 + (self.group0().yzx() * other.group6().zxy())
-                + (self.group1().xyx() * Simd32x2::from(other[e4]).with_z(other[e431]))
                 + (self.group1().yzz() * other.group7().zx().with_z(other[e4]))
                 - (self.group0().zxy() * other.group6().yzx())
                 - (self.group1().zxy() * other.group7().yzx()),
@@ -5798,20 +5807,20 @@ impl GeometricAntiProduct<MultiVector> for AntiLine {
             Simd32x4::from([self[e25] * other[e43] * -1.0, self[e35] * other[e41] * -1.0, self[e35] * other[e1234] * -1.0, self[e35] * other[e43]])
                 + (self.group0().zxy() * other.group5().yzx()).with_w(self[e15] * other[e41])
                 + (self.group1().zxy() * other.group4().yzx()).with_w(self[e25] * other[e42])
-                - (Simd32x2::from(other[e1234]).with_zw(other[e42], other[e4125]) * self.group1().xyx().with_w(self[e12]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e42], other[e4125]]) * self.group1().xyx().with_w(self[e12]))
                 - (other.group0().xx().with_zw(other[scalar], self[e23]) * self.group0().with_w(other[e4235]))
                 - (self.group0().yzx() * other.group5().zxy()).with_w(self[e31] * other[e4315]),
             // e423, e431, e412
             (self.group0().zxy() * other.group4().yzx())
-                - (self.group0().xyx() * Simd32x2::from(other[e1234]).with_z(other[e42]))
+                - (Simd32x3::from([other[e1234], other[e1234], other[e42]]) * self.group0().xyx())
                 - (self.group0().yzz() * other.group4().zx().with_z(other[e1234])),
             // e235, e315, e125
             (self.group0().zxy() * other.group3().yzx()) + (self.group1().zxy() * other.group5().yzx()) + (self.group1().zxy() * other.group9().yzx())
                 - (Simd32x3::from(other[scalar]) * self.group1())
                 - (Simd32x3::from([other[e35], other[e15], other[e3215]]) * self.group0().yzz())
+                - (Simd32x3::from([other[e45], other[e45], other[e31]]) * self.group1().xyx())
                 - (Simd32x3::from([other[e4125], other[e4235], other[e45]]) * self.group1().yzz())
                 - (Simd32x3::from([other[e3215], other[e3215], other[e25]]) * self.group0().xyx())
-                - (self.group1().xyx() * Simd32x2::from(other[e45]).with_z(other[e31]))
                 - (self.group1().yzx() * other.group5().zx().with_z(other[e4315])),
             // e4235, e4315, e4125, e3215
             (other.group1().yzxx() * self.group0().zxy().with_w(self[e15]))
@@ -6130,7 +6139,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiMotor {
                 + (self.group1().wzxx() * other.group0().xxy().with_w(other[e423]))
                 + Simd32x3::from(0.0).with_w(other[e3] * self[e12])
                 + (other.group1().xxy() * self.group0().wzx()).with_w(other[e412] * self[e35])
-                + (other.group2().www() * self.group1().xyz()).with_w(other[e2] * self[e31])
+                + (self.group1().xyz() * other.group2().www()).with_w(other[e2] * self[e31])
                 - (other.group0().yzx() * self.group1().zxy()).with_w(other[e321] * self[scalar])
                 - (other.group1().yzx() * self.group0().zxy()).with_w(other[e4] * self[e3215]),
             // e15, e25, e35, e1234
@@ -6148,7 +6157,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiMotor {
             ]) + (other.group1().xxy() * self.group1().wzx()).with_w(other[e4] * self[scalar])
                 - (self.group0().zxyz() * other.group2().yzx().with_w(other[e412]))
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group1().xyz()).with_w(other[e431] * self[e31]),
+                - (self.group1().xyz() * other.group1().www()).with_w(other[e431] * self[e31]),
             // e4235, e4315, e4125, e3215
             (other.group3().yzxy() * self.group0().zxy().with_w(self[e25]))
                 + (self.group1().zxyx() * other.group0().yzx().with_w(other[e1]))
@@ -6196,7 +6205,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for AntiMotor {
                 - (other.group0().yzx() * self.group0().zxy()))
             .with_w(other[e321] * self[scalar] * -1.0),
             // e4235, e4315, e4125, e3215
-            (other.group0().www() * self.group0().xyz() * Simd32x3::from(-1.0))
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0))
                 .with_w(-(other[e235] * self[e23]) - (other[e315] * self[e31]) - (other[e125] * self[e12]) - (other[e321] * self[e3215])),
         );
     }
@@ -6390,7 +6399,7 @@ impl GeometricAntiProduct<Circle> for AntiMotor {
                 -(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]) - (self[e3215] * other[e321]),
             ]) - (other.group0().xxy() * self.group1().wzx()).with_w(self[e23] * other[e235])
                 - (other.group0().zyz() * self.group1().yww()).with_w(self[e31] * other[e315])
-                - (other.group1().www() * self.group0().xyz()).with_w(self[e12] * other[e125]),
+                - (self.group0().xyz() * other.group1().www()).with_w(self[e12] * other[e125]),
         );
     }
 }
@@ -6487,7 +6496,7 @@ impl GeometricAntiProduct<Dipole> for AntiMotor {
                 -(self[e15] * other[e42]) - (self[e3215] * other[e43]),
                 self[e12] * other[e43],
             ]) + (other.group0().yzx() * self.group1().zxy()).with_w(self[e23] * other[e41])
-                + (other.group1().www() * self.group0().xyz()).with_w(self[e31] * other[e42]),
+                + (self.group0().xyz() * other.group1().www()).with_w(self[e31] * other[e42]),
         );
     }
 }
@@ -6523,7 +6532,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiMotor {
                 - (self.group0().yzxz() * other.group1().zxy().with_w(other[e4125]))
                 - (other.group0().xxy() * self.group1().wzx()).with_w(self[e23] * other[e4235])
                 - (other.group0().zyz() * self.group1().yww()).with_w(self[e31] * other[e4315])
-                - (self.group0().www() * other.group1().xyz()).with_w(self[e3215] * other[e1234]),
+                - (other.group1().xyz() * self.group0().www()).with_w(self[e3215] * other[e1234]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[scalar] * other[e15])
@@ -6755,8 +6764,8 @@ impl GeometricAntiProduct<MultiVector> for AntiMotor {
                 (self[e3215] * other[e435]) - (self[e25] * other[e415]) - (self[e35] * other[e321]) - (self[e3215] * other[e3]),
                 0.0,
             ]) + (Simd32x4::from([other[e2], other[e415], other[e1], other[e3]]) * self.group1().zzy().with_w(self[e12]))
+                + (Simd32x4::from([other[e5], other[e5], other[e5], other[e1]]) * self.group0().xyzx())
                 + (Simd32x4::from([other[e435], other[e3], other[e425], other[e2]]) * self.group1().yxx().with_w(self[e31]))
-                + (self.group0().xyzx() * Simd32x3::from(other[e5]).with_w(other[e1]))
                 + (self.group1().xyzx() * other.group0().yy().with_zw(other[e12345], other[e423]))
                 + (other.group8().xxy() * self.group0().wzx()).with_w(self[e25] * other[e431])
                 + (other.group8().zyz() * self.group0().yww()).with_w(self[e35] * other[e412])
@@ -6811,7 +6820,7 @@ impl GeometricAntiProduct<MultiVector> for AntiMotor {
                 - (other.group6().ww().with_zw(other[e2], self[e12]) * self.group0().xyx().with_w(other[e125]))
                 - (other.group7().xxy() * self.group1().wzx()).with_w(self[e23] * other[e235])
                 - (other.group7().zyz() * self.group1().yww()).with_w(self[e31] * other[e315])
-                - (self.group0().www() * other.group1().xyz()).with_w(self[e25] * other[e425]),
+                - (other.group1().xyz() * self.group0().www()).with_w(self[e25] * other[e425]),
             // e1234
             (self[scalar] * other[e4]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
         );
@@ -7063,7 +7072,7 @@ impl GeometricAntiProduct<VersorOdd> for AntiMotor {
                 + (self.group1().zxy() * other.group3().yzx()).with_w(self[e12] * other[e35])
                 - (self.group0().xyxw() * other.group3().ww().with_zw(other[e25], other[e3215]))
                 - (other.group2().zx().with_zw(other[e3215], other[scalar]) * self.group0().yzz().with_w(self[e3215]))
-                - (self.group0().www() * other.group2().xyz()).with_w(self[e3215] * other[e45]),
+                - (other.group2().xyz() * self.group0().www()).with_w(self[e3215] * other[e45]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (self[e35] * other[e42]) - (self[e15] * other[e1234]) - (self[e25] * other[e43]) - (self[e3215] * other[e41]),
@@ -7159,14 +7168,17 @@ impl GeometricAntiProduct<AntiDipoleInversion> for AntiPlane {
 impl GeometricAntiProduct<AntiDualNum> for AntiPlane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        5        0
-    // no simd        0       20        0
+    //           add/sub      mul      div
+    //    simd3        0        1        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       11        0
     fn geometric_anti_product(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
-            other.group0().xx().with_zw(other[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group0().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[scalar]) * self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
         );
@@ -7177,15 +7189,16 @@ impl GeometricAntiProduct<AntiFlatPoint> for AntiPlane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        6        0
-    //    simd4        1        4        0
+    //    simd3        0        1        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        3       10        0
-    //  no simd        6       22        0
+    // yes simd        3        8        0
+    //  no simd        6       13        0
     fn geometric_anti_product(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x3::from(1.0).with_w(0.0) * other.group0().www().with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group0().xyz() * other.group0().www()).with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from([
                 other[e125] * self[e2],
@@ -7329,7 +7342,7 @@ impl GeometricAntiProduct<Circle> for AntiPlane {
             // e235, e315, e125, e4
             Simd32x4::from([self[e3] * other[e315] * -1.0, self[e1] * other[e125] * -1.0, self[e2] * other[e235] * -1.0, self[e3] * other[e412]])
                 + (self.group0().yzxx() * other.group2().zxy().with_w(other[e423]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e2] * other[e431]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e2] * other[e431]),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e2] * other[e435]) + (self[e5] * other[e423]),
@@ -7365,7 +7378,7 @@ impl GeometricAntiProduct<CircleRotor> for AntiPlane {
             // e235, e315, e125, e4
             Simd32x4::from([self[e3] * other[e315] * -1.0, self[e1] * other[e125] * -1.0, self[e2] * other[e235] * -1.0, self[e3] * other[e412]])
                 + (self.group0().yzx() * other.group2().zxy()).with_w(self[e1] * other[e423])
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e2] * other[e431]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e2] * other[e431]),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e1] * other[e12345]) + (self[e2] * other[e435]),
@@ -7402,7 +7415,7 @@ impl GeometricAntiProduct<Dipole> for AntiPlane {
             // e15, e25, e35, e1234
             Simd32x4::from([self[e3] * other[e25] * -1.0, self[e1] * other[e35] * -1.0, self[e2] * other[e15] * -1.0, self[e3] * other[e43]])
                 + (self.group0().yzxx() * other.group2().zxy().with_w(other[e41]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e2] * other[e42]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e2] * other[e42]),
             // e4235, e4315, e4125, e3215
             (self.group0().zxyw() * other.group1().yzxw()) + Simd32x3::from(0.0).with_w(self[e3] * other[e35] * -1.0)
                 - (self.group0().wwwx() * other.group0().with_w(other[e15]))
@@ -7443,7 +7456,7 @@ impl GeometricAntiProduct<DipoleInversion> for AntiPlane {
                 0.0,
             ]) + (other.group2().zx().with_zw(other[e3215], self[e2]) * self.group0().yzz().with_w(other[e42]))
                 + (other.group3().ww().with_zw(other[e25], self[e1]) * self.group0().xyx().with_w(other[e41]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e3] * other[e43]),
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e3] * other[e43]),
             // e4235, e4315, e4125, e3215
             (self.group0().zxyw() * other.group1().yzxw()) + Simd32x3::from(0.0).with_w(self[e3] * other[e35] * -1.0)
                 - (self.group0().yzxy() * other.group1().zxy().with_w(other[e25]))
@@ -7454,14 +7467,17 @@ impl GeometricAntiProduct<DipoleInversion> for AntiPlane {
 impl GeometricAntiProduct<DualNum> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //    simd3        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        7        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
-            other.group0().xx().with_zw(other[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group0().xyz() * other.group0().xx().with_z(other[e5])).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from(other[e12345]) * self.group0(),
         );
@@ -7472,15 +7488,16 @@ impl GeometricAntiProduct<FlatPoint> for AntiPlane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        2        5        0
+    //    simd3        0        2        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        3        7        0
-    //  no simd        9       22        0
+    // yes simd        3        6        0
+    //  no simd        9       16        0
     fn geometric_anti_product(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * other.group0().www().with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e3215
             (self.group0().yzxw() * other.group0().zxyw()) + Simd32x3::from(0.0).with_w(-(self[e2] * other[e25]) - (self[e3] * other[e35]))
                 - (self.group0().zxyx() * other.group0().yzxx()),
@@ -7681,7 +7698,7 @@ impl GeometricAntiProduct<RoundPoint> for AntiPlane {
             // e415, e425, e435, e321
             ((self.group0().yzx() * other.group0().zxy()) - (self.group0().zxy() * other.group0().yzx())).with_w(self[e5] * other[e4]),
             // e235, e315, e125, e12345
-            (self.group0() * Simd32x3::from(other[e5]).with_w(other[e4])) + Simd32x3::from(0.0).with_w(-(self[e2] * other[e2]) - (self[e3] * other[e3]))
+            (Simd32x4::from([other[e5], other[e5], other[e5], other[e4]]) * self.group0()) + Simd32x3::from(0.0).with_w(-(self[e2] * other[e2]) - (self[e3] * other[e3]))
                 - (self.group0().wwwx() * other.group0().xyzx()),
         );
     }
@@ -8294,7 +8311,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for Circle {
                 -(other[e15] * self[e415]) - (other[e25] * self[e425]) - (other[e35] * self[e435]),
             ]) - (other.group0().zxy() * self.group2().yzx()).with_w(other[e23] * self[e235])
                 - (self.group0().zxy() * other.group2().yzx()).with_w(other[e31] * self[e315])
-                - (self.group1().www() * other.group1().xyz()).with_w(other[e12] * self[e125]),
+                - (other.group1().xyz() * self.group1().www()).with_w(other[e12] * self[e125]),
         );
     }
 }
@@ -8466,7 +8483,7 @@ impl GeometricAntiProduct<AntiFlector> for Circle {
             (other.group0().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
                 + Simd32x3::from(0.0).with_w(-(other[e2] * self[e425]) - (other[e3] * self[e435]))
-                + (self.group1().www() * other.group1().xyz()).with_w(other[e125] * self[e412])
+                + (other.group1().xyz() * self.group1().www()).with_w(other[e125] * self[e412])
                 - (self.group0().zxy() * other.group0().yzx()).with_w(other[e1] * self[e415]),
             // e235, e315, e125, e5
             (Simd32x4::from(other[e5]) * self.group1())
@@ -8579,7 +8596,7 @@ impl GeometricAntiProduct<AntiMotor> for Circle {
                 -(other[e12] * self[e125]) - (other[e15] * self[e415]) - (other[e25] * self[e425]) - (other[e35] * self[e435]),
             ]) + (self.group0().xyx() * other.group1().wwy()).with_w(other[e3215] * self[e321])
                 - (self.group0().zxy() * other.group1().yzx()).with_w(other[e23] * self[e235])
-                - (self.group1().www() * other.group0().xyz()).with_w(other[e31] * self[e315]),
+                - (other.group0().xyz() * self.group1().www()).with_w(other[e31] * self[e315]),
         );
     }
 }
@@ -8963,7 +8980,7 @@ impl GeometricAntiProduct<Flector> for Circle {
                 (self[e423] * other[e25]) + (self[e412] * other[e3215]),
                 -(self[e412] * other[e35]) - (self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125]),
             ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e423]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e431] * other[e25]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e431] * other[e25]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e425] * other[e35]) + (self[e321] * other[e15]) - (self[e435] * other[e25]) - (self[e125] * other[e4315]),
@@ -9132,7 +9149,7 @@ impl GeometricAntiProduct<MultiVector> for Circle {
                     - (self[e425] * other[e431])
                     - (self[e435] * other[e412])
                     - (self[e321] * other[e4]),
-            ]) - (Simd32x2::from(other[e5]).with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e423]))
+            ]) - (Simd32x4::from([other[e5], other[e5], other[e315], other[e1]]) * self.group0().xyx().with_w(self[e423]))
                 - (other.group8().zx().with_zw(other[e5], other[e415]) * self.group0().yzz().with_w(self[e423]))
                 - (self.group2().zxy() * other.group7().yzx()).with_w(self[e431] * other[e2])
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e425]),
@@ -9171,7 +9188,7 @@ impl GeometricAntiProduct<MultiVector> for Circle {
             (Simd32x3::from(other[scalar]) * self.group1().xyz())
                 + (Simd32x3::from([other[e35], other[e15], other[e3215]]) * self.group0().yzz())
                 + (Simd32x3::from([other[e3215], other[e3215], other[e25]]) * self.group0().xyx())
-                + (self.group2().xyx() * Simd32x2::from(other[e1234]).with_z(other[e42]))
+                + (Simd32x3::from([other[e1234], other[e1234], other[e42]]) * self.group2().xyx())
                 + (self.group2().yzz() * other.group4().zx().with_z(other[e1234]))
                 + (other.group5().zxy() * self.group1().yzx())
                 - (Simd32x3::from(self[e321]) * other.group9().xyz())
@@ -9185,7 +9202,7 @@ impl GeometricAntiProduct<MultiVector> for Circle {
                 (self[e415] * other[e425]) + (self[e321] * other[e3]) + (self[e125] * other[e4]),
                 -(self[e415] * other[e1]) - (self[e425] * other[e2]) - (self[e435] * other[e3]),
             ]) + (Simd32x4::from(other[e12345]) * self.group1())
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
+                + (Simd32x4::from([other[e5], other[e5], other[e315], other[e235]]) * self.group0().xyx().with_w(self[e423]))
                 + (other.group8().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e431], other[e125]) * self.group2().xyx().with_w(self[e412]))
                 - (self.group0().zxy() * other.group8().yzx()).with_w(self[e235] * other[e423])
@@ -9220,7 +9237,7 @@ impl GeometricAntiProduct<MultiVector> for Circle {
                 (self[e412] * other[e3215]) + (self[e415] * other[e4315]) + (self[e435] * other[e45]) + (self[e315] * other[e41]),
                 -(self[e415] * other[e15]) - (self[e425] * other[e25]) - (self[e435] * other[e35]) - (self[e125] * other[e4125]),
             ]) + (other.group9().ww().with_zw(other[e25], other[e3215]) * self.group0().xyx().with_w(self[e321]))
-                - (Simd32x2::from(other[e1234]).with_zw(other[e42], other[e4235]) * self.group2().xyx().with_w(self[e235]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e42], other[e4235]]) * self.group2().xyx().with_w(self[e235]))
                 - (other.group4().zx().with_zw(other[e1234], other[e31]) * self.group2().yzz().with_w(self[e315]))
                 - (other.group5() * self.group1().www()).with_w(self[e315] * other[e4315])
                 - (self.group0().zxy() * other.group3().yzx()).with_w(self[e235] * other[e23])
@@ -9772,7 +9789,7 @@ impl GeometricAntiProduct<AntiFlector> for CircleRotor {
             (other.group0().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
                 + Simd32x3::from(0.0).with_w((other[e321] * self[e12345]) - (other[e2] * self[e425]) - (other[e3] * self[e435]))
-                + (self.group1().www() * other.group1().xyz()).with_w(other[e125] * self[e412])
+                + (other.group1().xyz() * self.group1().www()).with_w(other[e125] * self[e412])
                 - (self.group0().zxy() * other.group0().yzx()).with_w(other[e1] * self[e415]),
             // e235, e315, e125, e5
             (Simd32x4::from(other[e5]) * self.group1().xyz().with_w(self[e12345]))
@@ -10008,7 +10025,7 @@ impl GeometricAntiProduct<Circle> for CircleRotor {
                 -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]),
             ]) - (self.group1().zxyx() * other.group2().yzx().with_w(other[e235]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e315] * self[e425])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e125] * self[e435]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e125] * self[e435]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]),
@@ -10130,7 +10147,7 @@ impl GeometricAntiProduct<Dipole> for CircleRotor {
                 -(self[e235] * other[e23]) - (self[e315] * other[e31]) - (self[e125] * other[e12]),
             ]) - (self.group0().zxy() * other.group2().yzx()).with_w(self[e415] * other[e15])
                 - (other.group0().zxy() * self.group2().yzx()).with_w(self[e425] * other[e25])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e435] * other[e35]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e435] * other[e35]),
         );
     }
 }
@@ -10181,7 +10198,7 @@ impl GeometricAntiProduct<DipoleInversion> for CircleRotor {
             ]) + (self.group2().xyxw() * other.group1().wwy().with_w(other[e1234]))
                 + (other.group2().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group3().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e412] * other[e4125])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e412] * other[e4125])
                 - (other.group1().yzxy() * self.group2().zxy().with_w(self[e431]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e423] * other[e23])
                 - (self.group2().zxy() * other.group3().yzx()).with_w(self[e412] * other[e12]),
@@ -10206,11 +10223,11 @@ impl GeometricAntiProduct<DualNum> for CircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        1        0
-    //    simd3        1        2        0
-    //    simd4        1        6        0
+    //    simd3        1        4        0
+    //    simd4        1        3        0
     // Totals...
-    // yes simd        2        9        0
-    //  no simd        7       31        0
+    // yes simd        2        8        0
+    //  no simd        7       25        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
@@ -10221,7 +10238,7 @@ impl GeometricAntiProduct<DualNum> for CircleRotor {
             // e235, e315, e125, e5
             (Simd32x4::from(other[e5]) * self.group1()) + (self.group2() * other.group0().yy().with_zw(other[e12345], other[e5])),
             // e1, e2, e3, e4
-            other.group0().xx().with_zw(other[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0() * other.group0().xx().with_z(other[e5]) * Simd32x3::from(-1.0)).with_w(0.0),
         );
     }
 }
@@ -10289,7 +10306,7 @@ impl GeometricAntiProduct<Flector> for CircleRotor {
                 -(self[e412] * other[e35]) - (self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125]),
             ]) + (other.group1().ww().with_zw(other[e25], other[e45]) * self.group0().xyx().with_w(self[e12345]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e423]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e431] * other[e25]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e431] * other[e25]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e235] * other[e45]) + (self[e315] * other[e4125]) + (self[e12345] * other[e15]) - (self[e435] * other[e25]) - (self[e125] * other[e4315]),
@@ -10298,7 +10315,7 @@ impl GeometricAntiProduct<Flector> for CircleRotor {
                 0.0,
             ]) + (other.group0().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group1().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group0().xyz()).with_w(self[e412] * other[e4125]),
+                + (other.group0().xyz() * self.group1().www()).with_w(self[e412] * other[e4125]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e415] * other[e45]) + (self[e425] * other[e4125]) + (self[e12345] * other[e4235]),
@@ -10463,7 +10480,7 @@ impl GeometricAntiProduct<MultiVector> for CircleRotor {
                     - (self[e435] * other[e412])
                     - (self[e321] * other[e4]),
             ]) + (self.group0().zxy() * other.group8().yzx()).with_w(self[e12345] * other[e4])
-                - (Simd32x2::from(other[e5]).with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e423]))
+                - (Simd32x4::from([other[e5], other[e5], other[e315], other[e1]]) * self.group0().xyx().with_w(self[e423]))
                 - (other.group8().zx().with_zw(other[e5], other[e415]) * self.group0().yzz().with_w(self[e423]))
                 - (other.group7().yzx() * self.group2().zxy()).with_w(self[e431] * other[e2])
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e425]),
@@ -10519,8 +10536,8 @@ impl GeometricAntiProduct<MultiVector> for CircleRotor {
                 (self[e321] * other[e3]) + (self[e125] * other[e4]) + (self[e12345] * other[e435]),
                 -(self[e415] * other[e1]) - (self[e425] * other[e2]) - (self[e435] * other[e3]),
             ]) + (Simd32x4::from(other[e12345]) * self.group1())
+                + (Simd32x4::from([other[e5], other[e5], other[e315], other[e235]]) * self.group0().xyx().with_w(self[e423]))
                 + (other.group6().zxyw() * self.group1().yzx().with_w(self[e12345]))
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e235]) * self.group0().xyx().with_w(self[e423]))
                 + (other.group8().zx().with_zw(other[e5], other[e315]) * self.group0().yzz().with_w(self[e431]))
                 + (other.group7().zxy() * self.group2().yzx()).with_w(self[e412] * other[e125])
                 - (self.group2().zxyy() * other.group7().yzx().with_w(other[e431]))
@@ -10711,7 +10728,7 @@ impl GeometricAntiProduct<Sphere> for CircleRotor {
             Simd32x4::from([self[e12345] * other[e4235], self[e12345] * other[e4315], self[e12345] * other[e4125], self[e125] * other[e4125] * -1.0])
                 + (Simd32x4::from(other[e3215]) * self.group0().with_w(self[e321]))
                 + (other.group0().zxyw() * self.group1().yzx().with_w(self[e12345]))
-                - (self.group2().xyzy() * Simd32x3::from(other[e1234]).with_w(other[e4315]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], other[e4315]]) * self.group2().xyzy())
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e235])),
         );
     }
@@ -10751,7 +10768,7 @@ impl GeometricAntiProduct<VersorEven> for CircleRotor {
                 + (other.group2().zxwy() * self.group0().yzz().with_w(self[e431]))
                 + (other.group2().wwyx() * self.group0().xyx().with_w(self[e423]))
                 + (other.group0().ww().with_zw(other[e425], other[e125]) * self.group1().xyx().with_w(self[e412]))
-                + (self.group1().www() * other.group3().xyz()).with_w(self[e12345] * other[e321])
+                + (other.group3().xyz() * self.group1().www()).with_w(self[e12345] * other[e321])
                 - (self.group1().zxyy() * other.group1().yzx().with_w(other[e2]))
                 - (self.group0().zxy() * other.group2().yzx()).with_w(self[e415] * other[e1])
                 - (self.group2().zxy() * other.group0().yzx()).with_w(self[e435] * other[e3]),
@@ -10765,7 +10782,7 @@ impl GeometricAntiProduct<VersorEven> for CircleRotor {
                 + (Simd32x4::from([other[e435], other[e12345], other[e1], other[e5]]) * self.group2().yyyw())
                 + (self.group1().xyxw() * other.group2().wwyw())
                 + (self.group1().yzz() * other.group2().zxw()).with_w(self[e235] * other[e1])
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e315] * other[e2])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e315] * other[e2])
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e415]]) * self.group2().zzzx())
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e125]]) * self.group2().yyy().with_w(self[e435]))
                 - (self.group1().zxyx() * other.group2().yzxx())
@@ -10841,8 +10858,8 @@ impl GeometricAntiProduct<VersorOdd> for CircleRotor {
                 + (other.group3().ww().with_zw(other[e25], other[e41]) * self.group0().xyx().with_w(self[e235]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e423]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e25])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[e412] * other[e35])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235]),
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235])
+                - (other.group3().xyz() * self.group1().www()).with_w(self[e412] * other[e35]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e235] * other[e45]) + (self[e315] * other[e12]) + (self[e315] * other[e4125]) + (self[e12345] * other[e15]),
@@ -10852,7 +10869,7 @@ impl GeometricAntiProduct<VersorOdd> for CircleRotor {
             ]) + (self.group2().xyxw() * other.group0().ww().with_zw(other[e31], other[e1234]))
                 + (other.group2().zx().with_zw(other[e3215], other[e4315]) * self.group1().yzz().with_w(self[e431]))
                 + (other.group3().ww().with_zw(other[e25], other[e4235]) * self.group1().xyx().with_w(self[e423]))
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e412] * other[e4125])
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e412] * other[e4125])
                 - (other.group1().yzxy() * self.group2().zxy().with_w(self[e431]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e423] * other[e23])
                 - (self.group2().zxy() * other.group3().yzx()).with_w(self[e412] * other[e12]),
@@ -10931,7 +10948,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for Dipole {
             ]) + (self.group1().wwwz() * other.group1().xyz().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
                 + (self.group0().yzx() * other.group2().zxy()).with_w(other[e42] * self[e31])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e23] * self[e41]),
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e23] * self[e41]),
         );
     }
 }
@@ -11085,7 +11102,7 @@ impl GeometricAntiProduct<AntiFlector> for Dipole {
                 + (other.group1().ww().with_zw(other[e315], self[e23]) * self.group0().xyx().with_w(other[e1]))
                 + Simd32x3::from(0.0).with_w((other[e3] * self[e12]) - (other[e125] * self[e43]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e41]))
-                - (self.group1().www() * other.group1().xyz()).with_w(other[e315] * self[e42]),
+                - (other.group1().xyz() * self.group1().www()).with_w(other[e315] * self[e42]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (other[e125] * self[e31]) + (other[e2] * self[e35]) + (other[e5] * self[e23]) - (other[e315] * self[e12]),
@@ -11193,7 +11210,7 @@ impl GeometricAntiProduct<AntiMotor> for Dipole {
             Simd32x4::from([other[e25] * self[e43] * -1.0, other[e35] * self[e41] * -1.0, other[e15] * self[e42] * -1.0, 0.0])
                 + (self.group0().xyx() * other.group1().wwy()).with_w(other[e23] * self[e41])
                 + (self.group0().yzz() * other.group1().zxw()).with_w(other[e31] * self[e42])
-                + (self.group1().www() * other.group0().xyz()).with_w(other[e12] * self[e43]),
+                + (other.group0().xyz() * self.group1().www()).with_w(other[e12] * self[e43]),
         );
     }
 }
@@ -11366,7 +11383,7 @@ impl GeometricAntiProduct<CircleRotor> for Dipole {
                 -(other[e235] * self[e23]) - (other[e315] * self[e31]) - (other[e125] * self[e12]),
             ]) - (other.group0().zxy() * self.group2().yzx()).with_w(other[e415] * self[e15])
                 - (self.group0().zxy() * other.group2().yzx()).with_w(other[e425] * self[e25])
-                - (other.group1().www() * self.group1().xyz()).with_w(other[e435] * self[e35]),
+                - (self.group1().xyz() * other.group1().www()).with_w(other[e435] * self[e35]),
         );
     }
 }
@@ -11418,7 +11435,7 @@ impl GeometricAntiProduct<Dipole> for Dipole {
             ]) + (self.group1().wwwz() * other.group1().xyz().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
                 + (other.group2().zxy() * self.group0().yzx()).with_w(other[e42] * self[e31])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e23] * self[e41]),
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e23] * self[e41]),
         );
     }
 }
@@ -11465,14 +11482,14 @@ impl GeometricAntiProduct<DipoleInversion> for Dipole {
             ]) + (other.group1().yzxx() * self.group2().zxy().with_w(self[e15]))
                 + (other.group3().yzxx() * self.group2().zxy().with_w(self[e15]))
                 + (self.group1().zxy() * other.group2().yzx()).with_w(self[e25] * other[e31])
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e25] * other[e4315]),
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e25] * other[e4315]),
             // e1, e2, e3, e4
             (other.group1().ww().with_zw(other[e4315], self[e23]) * self.group1().xyx().with_w(other[e41]))
                 + (other.group2().zx().with_zw(other[e3215], other[e31]) * self.group0().yzz().with_w(self[e42]))
                 + (other.group3().zx().with_zw(other[e45], self[e31]) * self.group1().yzz().with_w(other[e42]))
                 + (other.group3().ww().with_zw(other[e25], other[e23]) * self.group0().xyx().with_w(self[e41]))
                 + (self.group2().zxy() * other.group0().yzx()).with_w(self[e43] * other[e12])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e12] * other[e43])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e12] * other[e43])
                 - (self.group1().zxyw() * other.group3().yzx().with_w(other[e1234]))
                 - (other.group0().zx().with_zw(other[e1234], other[e4125]) * self.group2().yzz().with_w(self[e43]))
                 - (other.group2().ww().with_zw(other[e42], other[e4315]) * self.group2().xyx().with_w(self[e42]))
@@ -11566,7 +11583,7 @@ impl GeometricAntiProduct<Flector> for Dipole {
                 -(self[e23] * other[e4235]) - (self[e31] * other[e4315]) - (self[e12] * other[e4125]),
             ]) - (other.group0().zx().with_zw(other[e3215], other[e25]) * self.group0().yzz().with_w(self[e42]))
                 - (other.group1().ww().with_zw(other[e25], other[e15]) * self.group0().xyx().with_w(self[e41]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e43] * other[e35]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e43] * other[e35]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e23] * other[e3215]) - (self[e31] * other[e35]) - (self[e15] * other[e45]) - (self[e25] * other[e4125]),
@@ -11575,7 +11592,7 @@ impl GeometricAntiProduct<Flector> for Dipole {
                 (self[e23] * other[e15]) + (self[e31] * other[e25]) + (self[e12] * other[e35]) + (self[e45] * other[e3215]),
             ]) + (other.group1().yzxx() * self.group2().zxy().with_w(self[e15]))
                 + (self.group1().zxy() * other.group0().yzx()).with_w(self[e25] * other[e4315])
-                + (self.group1().www() * other.group0().xyz()).with_w(self[e35] * other[e4125]),
+                + (other.group0().xyz() * self.group1().www()).with_w(self[e35] * other[e4125]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (self[e41] * other[e3215]) + (self[e42] * other[e35]) + (self[e23] * other[e45]) + (self[e31] * other[e4125]),
@@ -11671,7 +11688,7 @@ impl GeometricAntiProduct<Motor> for Dipole {
                 0.0,
             ]) - (other.group0().yzxx() * self.group2().zxy().with_w(self[e41]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e42] * other[e425])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e43] * other[e435]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e43] * other[e435]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e41] * other[e5]) + (self[e42] * other[e125]) + (self[e45] * other[e415]),
@@ -11729,8 +11746,8 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
                 + (other.group9().zx().with_zw(other[e45], self[e12]) * self.group1().yzz().with_w(other[e43]))
                 + (other.group9().ww().with_zw(other[e25], other[e23]) * self.group0().xyx().with_w(self[e41]))
                 + (self.group2().zxy() * other.group4().yzx()).with_w(self[e43] * other[e12])
+                - (Simd32x4::from([other[e1234], other[e1234], other[e42], other[e4315]]) * self.group2().xyx().with_w(self[e42]))
                 - (self.group1().zxyw() * other.group9().yzx().with_w(other[e1234]))
-                - (Simd32x2::from(other[e1234]).with_zw(other[e42], other[e4315]) * self.group2().xyx().with_w(self[e42]))
                 - (other.group4().zx().with_zw(other[e1234], other[e4125]) * self.group2().yzz().with_w(self[e43]))
                 - (self.group0().zxy() * other.group3().yzx()).with_w(self[e41] * other[e4235]),
             // e5
@@ -11752,8 +11769,8 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
                 (self[e31] * other[e2]) + (self[e12] * other[e3]),
             ]) + (Simd32x4::from(other[e12345]) * self.group2().with_w(self[e45]))
                 + (Simd32x4::from([other[e2], other[e415], other[e1], other[e431]]) * self.group2().zzy().with_w(self[e25]))
+                + (Simd32x4::from([other[e5], other[e5], other[e5], other[e1]]) * self.group1().xyzx())
                 + (Simd32x4::from([other[e435], other[e3], other[e425], other[e423]]) * self.group2().yxx().with_w(self[e15]))
-                + (self.group1().xyzx() * Simd32x3::from(other[e5]).with_w(other[e1]))
                 + (other.group8().zxy() * self.group1().yzx()).with_w(self[e35] * other[e412])
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e315]]) * self.group2().yyy().with_w(self[e42]))
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e125]]) * self.group2().zzz().with_w(self[e43]))
@@ -11771,9 +11788,9 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
                 - (other.group7().yzx() * self.group1().zxy()),
             // e23, e31, e12
             (Simd32x3::from(other[e12345]) * self.group1().xyz())
-                + (self.group0().xyx() * Simd32x2::from(other[e5]).with_z(other[e315]))
+                + (Simd32x3::from([other[e4], other[e4], other[e431]]) * self.group2().xyx())
+                + (Simd32x3::from([other[e5], other[e5], other[e315]]) * self.group0().xyx())
                 + (self.group0().yzz() * other.group8().zx().with_z(other[e5]))
-                + (self.group2().xyx() * Simd32x2::from(other[e4]).with_z(other[e431]))
                 + (self.group2().yzz() * other.group7().zx().with_z(other[e4]))
                 + (self.group1().yzx() * other.group6().zxy())
                 - (Simd32x3::from(self[e45]) * other.group1().xyz())
@@ -11789,7 +11806,7 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
             ]) + (self.group0().zxy() * other.group3().yzx()).with_w(self[e45] * other[scalar])
                 + (self.group2().zxy() * other.group4().yzx()).with_w(self[e15] * other[e41])
                 + (other.group5().yzx() * self.group1().zxy()).with_w(self[e25] * other[e42])
-                - (Simd32x2::from(other[e1234]).with_zw(other[e42], other[e4235]) * self.group2().xyx().with_w(self[e23]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e42], other[e4235]]) * self.group2().xyx().with_w(self[e23]))
                 - (other.group0().xx().with_zw(other[scalar], self[e41]) * self.group1().xyz().with_w(other[e15]))
                 - (other.group4().zx().with_zw(other[e1234], other[e4315]) * self.group2().yzz().with_w(self[e31]))
                 - (other.group3().zx().with_zw(other[e3215], other[e35]) * self.group0().yzz().with_w(self[e43]))
@@ -11813,9 +11830,9 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
                 + (self.group1().zxy() * other.group3().yzx())
                 - (Simd32x3::from(other[scalar]) * self.group2())
                 - (Simd32x3::from([other[e35], other[e15], other[e3215]]) * self.group1().yzz())
+                - (Simd32x3::from([other[e45], other[e45], other[e31]]) * self.group2().xyx())
                 - (Simd32x3::from([other[e4125], other[e4235], other[e45]]) * self.group2().yzz())
                 - (Simd32x3::from([other[e3215], other[e3215], other[e25]]) * self.group1().xyx())
-                - (self.group2().xyx() * Simd32x2::from(other[e45]).with_z(other[e31]))
                 - (self.group2().yzx() * other.group5().zx().with_z(other[e4315])),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
@@ -11823,7 +11840,7 @@ impl GeometricAntiProduct<MultiVector> for Dipole {
                 (self[e23] * other[e3]) + (self[e45] * other[e425]),
                 (self[e31] * other[e1]) + (self[e45] * other[e435]),
                 -(self[e12] * other[e125]) - (self[e45] * other[e5]),
-            ]) + (Simd32x2::from(other[e5]).with_zw(other[e315], other[e1]) * self.group0().xyx().with_w(self[e15]))
+            ]) + (Simd32x4::from([other[e5], other[e5], other[e315], other[e1]]) * self.group0().xyx().with_w(self[e15]))
                 + (other.group8().zx().with_zw(other[e5], other[e2]) * self.group0().yzz().with_w(self[e25]))
                 + (self.group2().zxy() * other.group7().yzx()).with_w(self[e35] * other[e3])
                 - (other.group7().zx().with_zw(other[e4], other[e435]) * self.group2().yzz().with_w(self[e35]))
@@ -12037,7 +12054,7 @@ impl GeometricAntiProduct<VersorEven> for Dipole {
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e1]]) * self.group2().yyy().with_w(self[e41]))
                 - (other.group1().wz().with_zw(other[e2], other[e415]) * self.group2().xxx().with_w(self[e41]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e42] * other[e2])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e43] * other[e435]),
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e43] * other[e435]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e12] * other[e2]) + (self[e45] * other[e415]),
@@ -12118,7 +12135,7 @@ impl GeometricAntiProduct<VersorOdd> for Dipole {
             ]) + (other.group1().yzxx() * self.group2().zxy().with_w(self[e15]))
                 + (other.group3().yzxx() * self.group2().zxy().with_w(self[e15]))
                 + (self.group1().zxy() * other.group2().yzx()).with_w(self[e25] * other[e31])
-                + (self.group1().www() * other.group2().xyz()).with_w(self[e25] * other[e4315]),
+                + (other.group2().xyz() * self.group1().www()).with_w(self[e25] * other[e4315]),
             // e1, e2, e3, e4
             (self.group1().xyxx() * other.group1().ww().with_zw(other[e4315], other[e41]))
                 + (self.group1().yzzy() * other.group3().zx().with_zw(other[e45], other[e42]))
@@ -12177,7 +12194,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for DipoleInversion {
                 - (other.group1().zxyx() * self.group1().yzx().with_w(self[e4235]))
                 - (other.group1().wwwy() * self.group3().xyzy())
                 - (other.group2().zxyz() * self.group0().yzx().with_w(self[e43]))
-                - (self.group2().www() * other.group2().xyz()).with_w(other[e12] * self[e4125]),
+                - (other.group2().xyz() * self.group2().www()).with_w(other[e12] * self[e4125]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 other[scalar] * self[e15] * -1.0,
@@ -12192,7 +12209,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for DipoleInversion {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[e12], self[e4315], self[e4125]]) * other.group2().yxxz())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(other[e43] * self[e25]) - (other[e31] * self[e4125]) - (other[e25] * self[e43]),
@@ -12204,8 +12221,8 @@ impl GeometricAntiProduct<AntiCircleRotor> for DipoleInversion {
                 + (self.group1().xyzz() * other.group1().www().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
                 + (self.group0().yzx() * other.group2().zxy()).with_w(other[e41] * self[e4235])
-                + (other.group2().www() * self.group3().xyz()).with_w(other[e23] * self[e41])
-                + (self.group2().www() * other.group2().xyz()).with_w(other[e43] * self[e4125])
+                + (other.group2().xyz() * self.group2().www()).with_w(other[e43] * self[e4125])
+                + (self.group3().xyz() * other.group2().www()).with_w(other[e23] * self[e41])
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e1234]]) * other.group0().xxy().with_w(other[scalar])),
         );
     }
@@ -12251,7 +12268,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for DipoleInversion {
                 + (self.group1().yzxy() * other.group1().zxy().with_w(other[e2]))
                 + (other.group2().zx().with_zw(other[e5], self[e23]) * self.group0().yzz().with_w(other[e1]))
                 + (other.group3().ww().with_zw(other[e315], self[e35]) * self.group0().xyx().with_w(other[e412]))
-                + (self.group2().www() * other.group2().xyz()).with_w(other[e3] * self[e12])
+                + (other.group2().xyz() * self.group2().www()).with_w(other[e3] * self[e12])
                 - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * other.group3().xxy().with_w(other[e425]))
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], self[e4125]]) * other.group3().zyz().with_w(other[e435]))
                 - (other.group1().wwwx() * self.group3().xyzx())
@@ -12272,8 +12289,8 @@ impl GeometricAntiProduct<AntiDipoleInversion> for DipoleInversion {
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4125]]) * other.group3().xxy().with_w(other[e412]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4315]) * other.group2().yyy().with_w(other[e431]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e423] * self[e4235])
-                - (other.group3().www() * self.group3().xyz()).with_w(other[e1] * self[e41]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e423] * self[e4235])
+                - (self.group3().xyz() * other.group3().www()).with_w(other[e1] * self[e41]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([other[e2] * self[e12], other[e3] * self[e23], other[e1] * self[e31], other[e5] * self[e45] * -1.0])
                 + (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e15]]) * other.group1().xxy().with_w(other[e1]))
@@ -12345,7 +12362,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for DipoleInversion {
                 (other[e315] * self[e41]) + (other[e125] * self[e1234]),
                 other[e125] * self[e43] * -1.0,
             ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e41]))
-                - (other.group0().www() * self.group3().xyz()).with_w(other[e315] * self[e42]),
+                - (self.group3().xyz() * other.group0().www()).with_w(other[e315] * self[e42]),
             // e15, e25, e35, e1234
             ((Simd32x3::from([self[e31], self[e4235], self[e23]]) * other.group0().zzy()) + (Simd32x3::from([self[e4125], self[e12], self[e4315]]) * other.group0().yxx())
                 - (Simd32x3::from(other[e235]) * Simd32x3::from([self[e45], self[e4125], self[e31]]))
@@ -12386,10 +12403,10 @@ impl GeometricAntiProduct<AntiFlector> for DipoleInversion {
                 + (other.group1().yzxw() * self.group3().zxy().with_w(self[e1234]))
                 + (other.group0().zx().with_zw(other[e5], self[e31]) * self.group0().yzz().with_w(other[e2]))
                 + (other.group1().ww().with_zw(other[e315], self[e23]) * self.group0().xyx().with_w(other[e1]))
-                + (self.group2().www() * other.group0().xyz()).with_w(other[e3] * self[e12])
+                + (other.group0().xyz() * self.group2().www()).with_w(other[e3] * self[e12])
                 - (Simd32x4::from([self[e45], self[e4125], self[e4235], other[e125]]) * other.group1().xxy().with_w(self[e43]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e41]))
-                - (other.group0().www() * self.group3().xyz()).with_w(other[e315] * self[e42]),
+                - (self.group3().xyz() * other.group0().www()).with_w(other[e315] * self[e42]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (other[e125] * self[e31]) + (other[e2] * self[e35]) + (other[e5] * self[e23])
@@ -12507,7 +12524,7 @@ impl GeometricAntiProduct<AntiMotor> for DipoleInversion {
                 - (other.group1().zxwy() * self.group0().yzz().with_w(self[e42]))
                 - (other.group1().wwyx() * self.group0().xyx().with_w(self[e41]))
                 - (other.group0().zxy() * self.group1().yzx()).with_w(other[e35] * self[e43])
-                - (self.group2().www() * other.group1().xyz()).with_w(other[e31] * self[e4315]),
+                - (other.group1().xyz() * self.group2().www()).with_w(other[e31] * self[e4315]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(other[e35] * self[e31]) - (other[e3215] * self[e23]),
@@ -12522,7 +12539,7 @@ impl GeometricAntiProduct<AntiMotor> for DipoleInversion {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group0().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[e12], self[e4315], self[e4125]]) * other.group1().yxxz())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group0().xxyw())
-                - (other.group0().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group0().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[e12] * self[e4315]) + (other[scalar] * self[e4235]) + (other[e15] * self[e1234]) - (other[e31] * self[e4125]),
@@ -12573,7 +12590,7 @@ impl GeometricAntiProduct<AntiPlane> for DipoleInversion {
                 0.0,
             ]) - (Simd32x4::from([self[e25], self[e3215], self[e3215], other[e2]]) * other.group0().zyz().with_w(self[e42]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], other[e1]]) * other.group0().xxy().with_w(self[e41]))
-                - (other.group0().www() * self.group3().xyz()).with_w(other[e3] * self[e43]),
+                - (self.group3().xyz() * other.group0().www()).with_w(other[e3] * self[e43]),
             // e4235, e4315, e4125, e3215
             (other.group0().yzxy() * self.group1().zxy().with_w(self[e25]))
                 + Simd32x3::from(0.0).with_w(other[e3] * self[e35])
@@ -12672,7 +12689,7 @@ impl GeometricAntiProduct<Circle> for DipoleInversion {
                 - (Simd32x4::from([self[e4315], self[e23], self[e45], self[e31]]) * other.group2().zzz().with_w(other[e431]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4235]) * other.group2().yyy().with_w(other[e423]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e431] * self[e4315])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e412] * self[e12]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e412] * self[e12]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (other[e415] * self[e45]) + (other[e435] * self[e4315]),
@@ -12762,7 +12779,7 @@ impl GeometricAntiProduct<CircleRotor> for DipoleInversion {
                 - (Simd32x4::from([self[e4315], self[e23], self[e45], self[e12]]) * other.group2().zzz().with_w(other[e412]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4315]) * other.group2().yyy().with_w(other[e431]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e423] * self[e4235]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e423] * self[e4235]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (other[e235] * self[e1234]) + (other[e12345] * self[e4235]),
@@ -12840,7 +12857,7 @@ impl GeometricAntiProduct<Dipole> for DipoleInversion {
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e4235]]) * other.group2().xxy().with_w(other[e41]))
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e12]]) * other.group1().zyz().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e43] * self[e4125]),
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e43] * self[e4125]),
         );
     }
 }
@@ -12873,7 +12890,7 @@ impl GeometricAntiProduct<DipoleInversion> for DipoleInversion {
                 + (other.group1().wz().with_zw(other[e4315], self[e35]) * self.group0().xxx().with_w(other[e43]))
                 + (other.group0().yzx() * self.group1().zxy()).with_w(other[e41] * self[e15])
                 + (other.group0().yzx() * self.group3().zxy()).with_w(other[e42] * self[e25])
-                + (self.group2().www() * other.group3().xyz()).with_w(other[e35] * self[e43])
+                + (other.group3().xyz() * self.group2().www()).with_w(other[e35] * self[e43])
                 - (Simd32x4::from([self[e31], self[e4125], self[e4235], self[e3215]]) * other.group0().zxy().with_w(other[e1234]))
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], self[e1234]]) * other.group0().zyz().with_w(other[e3215]))
                 - (self.group1().wzxw() * other.group0().xxy().with_w(other[e45])),
@@ -12891,7 +12908,7 @@ impl GeometricAntiProduct<DipoleInversion> for DipoleInversion {
                 - (other.group1().wwwz() * self.group3().xyzz())
                 - (other.group2().zx().with_zw(other[e3215], self[e4235]) * self.group0().yzz().with_w(other[e23]))
                 - (other.group3().ww().with_zw(other[e25], other[e35]) * self.group0().xyx().with_w(self[e43]))
-                - (other.group2().www() * self.group2().xyz()).with_w(other[e4235] * self[e23]),
+                - (self.group2().xyz() * other.group2().www()).with_w(other[e4235] * self[e23]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(other[e35] * self[e31]) - (other[e4235] * self[e3215]) - (other[e4125] * self[e25]) - (other[e3215] * self[e23]),
@@ -12903,11 +12920,11 @@ impl GeometricAntiProduct<DipoleInversion> for DipoleInversion {
                 + (other.group1().yzxx() * self.group2().zxyx())
                 + (self.group1().zw().with_zw(self[e4235], self[e35]) * other.group2().yyy().with_w(other[e12]))
                 + (other.group3().yzx() * self.group2().zxy()).with_w(other[e25] * self[e31])
-                + (other.group3().www() * self.group3().xyz()).with_w(other[e35] * self[e12])
+                + (self.group3().xyz() * other.group3().www()).with_w(other[e35] * self[e12])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[e12], self[e4315], self[e4125]]) * other.group2().yxxz())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(other[e1234] * self[e15]) - (other[e4315] * self[e12]),
@@ -12919,9 +12936,9 @@ impl GeometricAntiProduct<DipoleInversion> for DipoleInversion {
                 + (other.group2().zx().with_zw(other[e3215], self[e31]) * self.group0().yzz().with_w(other[e42]))
                 + (other.group3().ww().with_zw(other[e25], self[e4235]) * self.group0().xyx().with_w(other[e41]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e43] * self[e4125])
                 + (other.group3().zxy() * self.group1().yzx()).with_w(other[e31] * self[e42])
-                + (self.group2().www() * other.group2().xyz()).with_w(other[e23] * self[e41])
+                + (other.group2().xyz() * self.group2().www()).with_w(other[e23] * self[e41])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e43] * self[e4125])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], other[e4315]]) * other.group0().zyz().with_w(self[e42]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], other[e4235]]) * other.group0().xxy().with_w(self[e41]))
                 - (self.group0().zxy() * other.group2().yzx()).with_w(other[e4125] * self[e43])
@@ -13007,7 +13024,7 @@ impl GeometricAntiProduct<Flector> for DipoleInversion {
             (other.group0().ww().with_zw(other[e4315], other[e15]) * self.group0().xyx().with_w(self[e41]))
                 + (other.group1().zx().with_zw(other[e45], other[e25]) * self.group0().yzz().with_w(self[e42]))
                 + Simd32x3::from(0.0).with_w((self[e4235] * other[e4235]) + (self[e4315] * other[e4315]) + (self[e4125] * other[e4125]) - (self[e1234] * other[e3215]))
-                + (self.group2().www() * other.group1().xyz()).with_w(self[e43] * other[e35])
+                + (other.group1().xyz() * self.group2().www()).with_w(self[e43] * other[e35])
                 - (self.group0().zxy() * other.group1().yzx()).with_w(self[e45] * other[e45]),
             // e415, e425, e435, e321
             Simd32x4::from([self[e4125] * other[e4315], self[e4235] * other[e4125], self[e4315] * other[e4235], 0.0])
@@ -13016,8 +13033,8 @@ impl GeometricAntiProduct<Flector> for DipoleInversion {
                 - (other.group0().ww().with_zw(other[e4315], other[e4315]) * self.group3().xyx().with_w(self[e31]))
                 - (other.group1().zx().with_zw(other[e45], other[e4125]) * self.group3().yzz().with_w(self[e12]))
                 - (other.group1().ww().with_zw(other[e25], other[e15]) * self.group0().xyx().with_w(self[e41]))
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e43] * other[e35])
-                - (self.group2().www() * other.group0().xyz()).with_w(self[e23] * other[e4235]),
+                - (other.group0().xyz() * self.group2().www()).with_w(self[e23] * other[e4235])
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e43] * other[e35]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e4125] * other[e25]) - (self[e3215] * other[e4235]),
@@ -13142,7 +13159,7 @@ impl GeometricAntiProduct<Motor> for DipoleInversion {
             ]) + (self.group1().xyx() * other.group1().wwy()).with_w(self[e1234] * other[e12345])
                 - (other.group0().yzxz() * self.group2().zxy().with_w(self[e43]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group1().xyz()).with_w(self[e42] * other[e425]),
+                - (other.group1().xyz() * self.group1().www()).with_w(self[e42] * other[e425]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (self[e4235] * other[e12345]) + (self[e4315] * other[e435]),
@@ -13151,8 +13168,8 @@ impl GeometricAntiProduct<Motor> for DipoleInversion {
                 -(self[e12] * other[e125]) - (self[e45] * other[e5]) - (self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]),
             ]) + (other.group1().zxwy() * self.group0().yzz().with_w(self[e4315]))
                 + (other.group1().wwyx() * self.group0().xyx().with_w(self[e4235]))
-                + (self.group1().www() * other.group0().xyz()).with_w(self[e4125] * other[e125])
-                + (self.group2().www() * other.group1().xyz()).with_w(self[e3215] * other[e12345])
+                + (other.group0().xyz() * self.group1().www()).with_w(self[e4125] * other[e125])
+                + (other.group1().xyz() * self.group2().www()).with_w(self[e3215] * other[e12345])
                 - (other.group1().yzxx() * self.group0().zxy().with_w(self[e23]))
                 - (self.group3().zxy() * other.group0().yzx()).with_w(self[e31] * other[e315]),
         );
@@ -13212,7 +13229,7 @@ impl GeometricAntiProduct<MultiVector> for DipoleInversion {
                 + (other.group9().zx().with_zw(other[e45], self[e12]) * self.group1().yzz().with_w(other[e43]))
                 + (other.group9().ww().with_zw(other[e25], other[e31]) * self.group0().xyx().with_w(self[e42]))
                 + (other.group4().yzx() * self.group2().zxy()).with_w(self[e23] * other[e41])
-                + (self.group2().www() * other.group3().xyz()).with_w(self[e4125] * other[e43])
+                + (other.group3().xyz() * self.group2().www()).with_w(self[e4125] * other[e43])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], other[e4315]]) * other.group4().zyz().with_w(self[e42]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], other[e4235]]) * other.group4().xxy().with_w(self[e41]))
                 - (self.group1().zxyw() * other.group9().yzx().with_w(other[e1234]))
@@ -13242,12 +13259,12 @@ impl GeometricAntiProduct<MultiVector> for DipoleInversion {
                 + (Simd32x4::from([other[e2], other[e415], other[e1], other[e2]]) * self.group2().zzy().with_w(self[e31]))
                 + (Simd32x4::from([other[e435], other[e3], other[e425], other[e1]]) * self.group2().yxx().with_w(self[e23]))
                 + (Simd32x3::from(other[e5]) * self.group1().xyz()).with_w(self[e35] * other[e412])
-                + (self.group3().www() * other.group6().xyz()).with_w(self[e12] * other[e3])
+                + (other.group6().xyz() * self.group3().www()).with_w(self[e12] * other[e3])
                 - (Simd32x4::from([self[e45], self[e4125], self[e31], other[e235]]) * other.group8().xxx().with_w(self[e41]))
                 - (Simd32x4::from([self[e4315], self[e23], self[e45], other[e125]]) * other.group8().zzz().with_w(self[e43]))
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e425]]) * self.group2().yyy().with_w(self[e4315]))
+                - (Simd32x4::from([other[e5], other[e5], other[e5], other[e4]]) * self.group3())
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e435]]) * self.group2().zzz().with_w(self[e4125]))
-                - (self.group3() * Simd32x3::from(other[e5]).with_w(other[e4]))
                 - (self.group1().zw().with_zw(self[e4235], other[e315]) * other.group8().yyy().with_w(self[e42]))
                 - (other.group6().wz().with_zw(other[e2], other[e415]) * self.group2().xxx().with_w(self[e4235])),
             // e41, e42, e43
@@ -13272,7 +13289,7 @@ impl GeometricAntiProduct<MultiVector> for DipoleInversion {
                 + (Simd32x3::from(other[e4]) * self.group2().xyz())
                 + (Simd32x3::from([self[e25], self[e3215], self[e3215]]) * other.group7().zyz())
                 + (Simd32x3::from([self[e3215], self[e35], self[e15]]) * other.group7().xxy())
-                + (self.group0().xyx() * Simd32x2::from(other[e5]).with_z(other[e315]))
+                + (Simd32x3::from([other[e5], other[e5], other[e315]]) * self.group0().xyx())
                 + (self.group0().yzz() * other.group8().zx().with_z(other[e5]))
                 + (self.group1().yzx() * other.group6().zxy())
                 + (self.group3().zxy() * other.group1().yzx())
@@ -13301,7 +13318,7 @@ impl GeometricAntiProduct<MultiVector> for DipoleInversion {
                 - (other.group9().ww().with_zw(other[e25], other[e25]) * self.group0().xyx().with_w(self[e42]))
                 - (Simd32x3::from(other[e1234]) * self.group2().xyz()).with_w(self[e31] * other[e4315])
                 - (other.group5().zxy() * self.group1().yzx()).with_w(self[e4125] * other[e12])
-                - (self.group2().www() * other.group3().xyz()).with_w(self[e12] * other[e4125]),
+                - (other.group3().xyz() * self.group2().www()).with_w(self[e12] * other[e4125]),
             // e423, e431, e412
             (Simd32x3::from(self[e41]) * Simd32x3::from([other[e45], other[e12], other[e4315]]))
                 + (Simd32x3::from(self[e42]) * Simd32x3::from([other[e4125], other[e45], other[e23]]))
@@ -13337,12 +13354,12 @@ impl GeometricAntiProduct<MultiVector> for DipoleInversion {
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e4315] * other[e435], self[e4125] * other[e415], self[e4235] * other[e425], self[e3215] * other[e321] * -1.0])
                 + (Simd32x4::from(other[e12345]) * self.group3())
+                + (Simd32x4::from([other[e5], other[e5], other[e315], self[e4235]]) * self.group0().xyx().with_w(other[e235]))
                 + (other.group1().yzxy() * self.group1().zxy().with_w(self[e25]))
-                + (Simd32x2::from(other[e5]).with_zw(other[e315], self[e4235]) * self.group0().xyx().with_w(other[e235]))
                 + (other.group8().zx().with_zw(other[e5], self[e4315]) * self.group0().yzz().with_w(other[e315]))
                 + (other.group8() * self.group2().www()).with_w(self[e15] * other[e1])
                 + (other.group7().yzx() * self.group2().zxy()).with_w(self[e4125] * other[e125])
-                + (self.group1().www() * other.group6().xyz()).with_w(self[e35] * other[e3])
+                + (other.group6().xyz() * self.group1().www()).with_w(self[e35] * other[e3])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e12]]) * other.group7().zyz().with_w(other[e125]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e31]]) * other.group7().xxy().with_w(other[e315]))
                 - (self.group1().xyxw() * other.group6().ww().with_zw(other[e2], other[e5]))
@@ -13433,7 +13450,8 @@ impl GeometricAntiProduct<RoundPoint> for DipoleInversion {
                 + (Simd32x3::from(other[e5]) * self.group0()).with_w(self[e23] * other[e1])
                 - (other.group0() * self.group1().www().with_w(self[e3215])),
             // e15, e25, e35, e1234
-            Simd32x4::from([self[e35] * other[e2], self[e15] * other[e3], self[e25] * other[e1], 0.0]) + (self.group1() * Simd32x3::from(other[e5]).with_w(other[e4]))
+            Simd32x4::from([self[e35] * other[e2], self[e15] * other[e3], self[e25] * other[e1], 0.0])
+                + (Simd32x4::from([other[e5], other[e5], other[e5], other[e4]]) * self.group1())
                 - (other.group0().xyzz() * self.group3().www().with_w(self[e43]))
                 - (other.group0().zxyx() * self.group2().yzx().with_w(self[e41]))
                 - (Simd32x3::from(other[e5]) * self.group3().xyz()).with_w(self[e42] * other[e2]),
@@ -13578,8 +13596,8 @@ impl GeometricAntiProduct<VersorEven> for DipoleInversion {
                 - (self.group3().yzzz() * other.group3().zx().with_zw(other[e321], other[e435]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e41]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e42] * other[e315])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[e43] * other[e125])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e4235] * other[e415]),
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e4235] * other[e415])
+                - (other.group3().xyz() * self.group1().www()).with_w(self[e43] * other[e125]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e25] * other[e435]) + (self[e35] * other[e2]) + (self[e4125] * other[e315]) + (self[e3215] * other[e415]),
@@ -13593,10 +13611,10 @@ impl GeometricAntiProduct<VersorEven> for DipoleInversion {
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e2]]) * self.group2().yyy().with_w(self[e42]))
                 - (other.group1().wz().with_zw(other[e2], other[e425]) * self.group2().xxx().with_w(self[e42]))
                 - (self.group1().zxy() * other.group2().yzx()).with_w(self[e41] * other[e415])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e41] * other[e1])
                 - (self.group3().xyx() * other.group2().wwy()).with_w(self[e43] * other[e3])
                 - (self.group3().yzz() * other.group2().zxw()).with_w(self[e23] * other[e423])
-                - (self.group3().www() * other.group3().xyz()).with_w(self[e31] * other[e431]),
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e41] * other[e1])
+                - (other.group3().xyz() * self.group3().www()).with_w(self[e31] * other[e431]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e4315] * other[e435], self[e4125] * other[e415], self[e4125] * other[e12345], self[e3215] * other[e321] * -1.0])
                 + (self.group3().xyxw() * other.group0().ww().with_zw(other[e425], other[e12345]))
@@ -13604,15 +13622,15 @@ impl GeometricAntiProduct<VersorEven> for DipoleInversion {
                 + (other.group3().yzxz() * self.group1().zxy().with_w(self[e35]))
                 + (self.group0().xyx() * other.group2().wwy()).with_w(self[e15] * other[e1])
                 + (self.group0().yzz() * other.group2().zxw()).with_w(self[e25] * other[e2])
-                + (self.group1().www() * other.group1().xyz()).with_w(self[e4235] * other[e235])
                 + (self.group2().zxy() * other.group0().yzx()).with_w(self[e4315] * other[e315])
+                + (other.group1().xyz() * self.group1().www()).with_w(self[e4235] * other[e235])
                 - (self.group1().xyxy() * other.group1().ww().with_zw(other[e2], other[e315]))
                 - (self.group1().yzzz() * other.group3().zx().with_zw(other[e321], other[e125]))
                 - (self.group2().yzzx() * other.group0().zx().with_zw(other[e4], other[e415]))
                 - (other.group1().yzxy() * self.group3().zxy().with_w(self[e25]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e23]))
                 - (other.group3().ww().with_zw(other[e431], other[e5]) * self.group2().xyx().with_w(self[e45]))
-                - (self.group3().www() * other.group0().xyz()).with_w(self[e35] * other[e435]),
+                - (other.group0().xyz() * self.group3().www()).with_w(self[e35] * other[e435]),
         );
     }
 }
@@ -13659,8 +13677,8 @@ impl GeometricAntiProduct<VersorOdd> for DipoleInversion {
                 + (Simd32x4::from(self[e42]) * Simd32x4::from([other[e4125], other[e45], other[e23], other[e25]]))
                 + (Simd32x4::from(self[e43]) * Simd32x4::from([other[e31], other[e4235], other[e45], other[e35]]))
                 + (self.group1().zxyx() * other.group0().yzx().with_w(other[e23]))
-                + (self.group2().www() * other.group3().xyz()).with_w(self[e31] * other[e31])
                 + (self.group3().zxy() * other.group0().yzx()).with_w(self[e12] * other[e12])
+                + (other.group3().xyz() * self.group2().www()).with_w(self[e31] * other[e31])
                 - (Simd32x4::from([other[scalar], other[e4125], other[e31], other[e45]]) * self.group0().xxx().with_w(self[e45]))
                 - (Simd32x4::from([other[e12], other[scalar], other[e4235], other[e3215]]) * self.group0().yyy().with_w(self[e1234]))
                 - (Simd32x4::from([other[e4315], other[e23], other[scalar], other[e1234]]) * self.group0().zzz().with_w(self[e3215])),
@@ -13683,7 +13701,7 @@ impl GeometricAntiProduct<VersorOdd> for DipoleInversion {
                 - (other.group2().zx().with_zw(other[e3215], other[e25]) * self.group0().yzz().with_w(self[e42]))
                 - (other.group2().ww().with_zw(other[e42], other[e4125]) * self.group2().xyx().with_w(self[e12]))
                 - (other.group3().ww().with_zw(other[e25], other[e15]) * self.group0().xyx().with_w(self[e41]))
-                - (self.group2().www() * other.group2().xyz()).with_w(self[e4315] * other[e31]),
+                - (other.group2().xyz() * self.group2().www()).with_w(self[e4315] * other[e31]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e25] * other[e4125]) - (self[e4125] * other[e25]) - (self[e3215] * other[e23]) - (self[e3215] * other[e4235]),
@@ -13797,18 +13815,18 @@ impl GeometricAntiProduct<AntiFlatPoint> for DualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        1        0
+    //      f32        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        0        3        0
-    //  no simd        0        6        0
+    //  no simd        0        9        0
     fn geometric_anti_product(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
             Simd32x4::from(self[e12345]) * other.group0(),
             // e1, e2, e3, e5
-            Simd32x3::from(0.0).with_w(other[e321] * self[e5] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e321] * self[e5]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         );
     }
 }
@@ -13867,14 +13885,17 @@ impl GeometricAntiProduct<AntiMotor> for DualNum {
 impl GeometricAntiProduct<AntiPlane> for DualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       10        0
     fn geometric_anti_product(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
-            self.group0().xx().with_zw(self[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().xx().with_z(self[e5]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from(self[e12345]) * other.group0(),
         );
@@ -13920,11 +13941,11 @@ impl GeometricAntiProduct<CircleRotor> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        6        0
-    //    simd3        1        2        0
-    //    simd4        1        5        0
+    //    simd3        1        3        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        2       13        0
-    //  no simd        7       32        0
+    // yes simd        2       11        0
+    //  no simd        7       23        0
     fn geometric_anti_product(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
@@ -13936,7 +13957,7 @@ impl GeometricAntiProduct<CircleRotor> for DualNum {
             Simd32x4::from([other[e235] * self[e12345], other[e315] * self[e12345], other[e125] * self[e12345], other[e321] * self[e5] * -1.0])
                 + (Simd32x4::from(self[e5]) * other.group1().xyz().with_w(other[e12345])),
             // e1, e2, e3, e4
-            self.group0().xx().with_zw(self[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (other.group0() * self.group0().xx().with_z(self[e5])).with_w(0.0),
         );
     }
 }
@@ -14127,14 +14148,17 @@ impl GeometricAntiProduct<MultiVector> for DualNum {
 impl GeometricAntiProduct<Plane> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //    simd3        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        7        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
-            self.group0().xx().with_zw(self[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (other.group0().xyz() * self.group0().xx().with_z(self[e5])).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(self[e12345]) * other.group0(),
         );
@@ -14178,18 +14202,18 @@ impl GeometricAntiProduct<Sphere> for DualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd4        0        2        0
+    //      f32        0        2        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        0        5        0
-    //  no simd        0       11        0
+    //  no simd        0       14        0
     fn geometric_anti_product(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x3::from(0.0).with_w(self[e5] * other[e1234]),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(self[e5] * other[e1234] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e5] * other[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e1234
             self.group0().xx().with_zw(self[e5], self[e12345]) * other.group0().xyz().with_w(other[e1234]),
             // e4235, e4315, e4125, e3215
@@ -14358,16 +14382,17 @@ impl GeometricAntiProduct<AntiFlatPoint> for FlatPoint {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
+    //      f32        0        1        0
     //    simd3        1        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        3        8        0
+    //  no simd        3       11        0
     fn geometric_anti_product(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(0.0).with_w(other[e321] * self[e45] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e321] * self[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e15, e25, e35, e3215
             (-(Simd32x3::from(other[e321]) * self.group0().xyz()) - (Simd32x3::from(self[e45]) * other.group0().xyz())).with_w(0.0),
         );
@@ -14446,15 +14471,16 @@ impl GeometricAntiProduct<AntiPlane> for FlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        2        5        0
+    //    simd3        0        2        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        3        7        0
-    //  no simd        9       22        0
+    // yes simd        3        6        0
+    //  no simd        9       16        0
     fn geometric_anti_product(self, other: AntiPlane) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * self.group0().www().with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e3215
             (other.group0().yzxx() * self.group0().zxyx()) + Simd32x3::from(0.0).with_w((other[e2] * self[e25]) + (other[e3] * self[e35]))
                 - (other.group0().zxyw() * self.group0().yzxw()),
@@ -14627,18 +14653,18 @@ impl GeometricAntiProduct<DualNum> for FlatPoint {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        1        0
+    //      f32        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        0        3        0
-    //  no simd        0        6        0
+    //  no simd        0        9        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
             Simd32x4::from(other[e12345]) * self.group0(),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(other[e5] * self[e45] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e5] * self[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         );
     }
 }
@@ -14646,16 +14672,17 @@ impl GeometricAntiProduct<FlatPoint> for FlatPoint {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
+    //      f32        0        1        0
     //    simd3        1        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        3        8        0
+    //  no simd        3       11        0
     fn geometric_anti_product(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x3::from(0.0).with_w(other[e45] * self[e45] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e45] * self[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e235, e315, e125, e5
             ((Simd32x3::from(self[e45]) * other.group0().xyz()) - (Simd32x3::from(other[e45]) * self.group0().xyz())).with_w(0.0),
         );
@@ -14726,7 +14753,7 @@ impl GeometricAntiProduct<Motor> for FlatPoint {
                 - (self.group0().zxy() * other.group0().yzx()))
             .with_w(self[e45] * other[e12345]),
             // e4235, e4315, e4125, e3215
-            (self.group0().www() * other.group0().xyz()).with_w(-(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]) - (self[e45] * other[e5])),
+            (other.group0().xyz() * self.group0().www()).with_w(-(self[e15] * other[e415]) - (self[e25] * other[e425]) - (self[e35] * other[e435]) - (self[e45] * other[e5])),
         );
     }
 }
@@ -14808,15 +14835,16 @@ impl GeometricAntiProduct<Plane> for FlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        9        0
-    //    simd4        1        4        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        3       13        0
-    //  no simd        6       25        0
+    // yes simd        3       12        0
+    //  no simd        6       19        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x3::from(1.0).with_w(0.0) * self.group0().www().with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from([
                 self[e25] * other[e4125] * -1.0,
@@ -14903,7 +14931,7 @@ impl GeometricAntiProduct<VersorEven> for FlatPoint {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            (self.group0().www() * other.group0().xyz()).with_w(-(self[e15] * other[e423]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321])),
+            (other.group0().xyz() * self.group0().www()).with_w(-(self[e15] * other[e423]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321])),
             // e23, e31, e12, e45
             Simd32x4::from([
                 -(self[e35] * other[e431]) - (self[e45] * other[e1]),
@@ -14944,7 +14972,7 @@ impl GeometricAntiProduct<VersorOdd> for FlatPoint {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            (self.group0().www() * other.group0().xyz() * Simd32x3::from(-1.0))
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0))
                 .with_w((self[e15] * other[e41]) + (self[e25] * other[e42]) + (self[e35] * other[e43]) - (self[e45] * other[e45])),
             // e415, e425, e435, e321
             Simd32x4::from([
@@ -15011,7 +15039,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for Flector {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
                 - (other.group2().yzxz() * self.group1().zxyz())
-                - (other.group1().www() * self.group0().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group0().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[scalar] * self[e4235]) - (other[e41] * self[e3215]) - (other[e43] * self[e25]) - (other[e31] * self[e4125]),
@@ -15073,7 +15101,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for Flector {
             ]) + (Simd32x4::from([self[e3215], self[e35], self[e15], self[e45]]) * other.group1().xxy().with_w(other[e4]))
                 - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4125]]) * other.group2().xxy().with_w(other[e412]))
                 - (other.group1().yzx() * self.group0().zxy()).with_w(other[e423] * self[e4235])
-                - (other.group1().www() * self.group0().xyz()).with_w(other[e431] * self[e4315]),
+                - (self.group0().xyz() * other.group1().www()).with_w(other[e431] * self[e4315]),
             // e4235, e4315, e4125, e3215
             (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * other.group1().xxy().with_w(other[e315]))
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e4125]]) * other.group1().zyz().with_w(other[e125]))
@@ -15082,7 +15110,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for Flector {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e25]]) * other.group0().zyz().with_w(other[e425]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e15]]) * other.group0().xxy().with_w(other[e415]))
                 - (other.group1().yzxz() * self.group1().zxy().with_w(self[e35]))
-                - (other.group2().www() * self.group0().xyz()).with_w(other[e321] * self[e3215]),
+                - (self.group0().xyz() * other.group2().www()).with_w(other[e321] * self[e3215]),
         );
     }
 }
@@ -15351,7 +15379,7 @@ impl GeometricAntiProduct<CircleRotor> for Flector {
                 0.0,
             ]) - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4125]]) * other.group2().xxy().with_w(other[e412]))
                 - (other.group1().yzx() * self.group0().zxy()).with_w(other[e423] * self[e4235])
-                - (other.group1().www() * self.group0().xyz()).with_w(other[e431] * self[e4315]),
+                - (self.group0().xyz() * other.group1().www()).with_w(other[e431] * self[e4315]),
             // e4235, e4315, e4125, e3215
             (Simd32x4::from(other[e12345]) * self.group1())
                 + (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * other.group1().xxy().with_w(other[e315]))
@@ -15458,7 +15486,7 @@ impl GeometricAntiProduct<DipoleInversion> for Flector {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
                 - (other.group2().yzxz() * self.group1().zxyz())
-                - (other.group1().www() * self.group0().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group0().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(other[e43] * self[e25]) - (other[e31] * self[e4125]) - (other[e1234] * self[e15]),
@@ -15601,12 +15629,12 @@ impl GeometricAntiProduct<Motor> for Flector {
             ]) + (self.group0().xyxw() * other.group0().wwyw())
                 - (self.group1().xyxz() * other.group1().wwy().with_w(other[e435]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e4235]))
-                - (self.group0().www() * other.group1().xyz()).with_w(self[e4315] * other[e425]),
+                - (other.group1().xyz() * self.group0().www()).with_w(self[e4315] * other[e425]),
             // e4235, e4315, e4125, e3215
             (self.group1().xyxy() * other.group0().wwy().with_w(other[e315]))
                 + (self.group1().yzzz() * other.group0().zxw().with_w(other[e125]))
                 + Simd32x3::from(0.0).with_w((self[e3215] * other[e12345]) - (self[e25] * other[e425]) - (self[e35] * other[e435]) - (self[e45] * other[e5]))
-                + (self.group0().www() * other.group0().xyz()).with_w(self[e4235] * other[e235])
+                + (other.group0().xyz() * self.group0().www()).with_w(self[e4235] * other[e235])
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e15])),
         );
     }
@@ -15695,7 +15723,7 @@ impl GeometricAntiProduct<MultiVector> for Flector {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4315]]) * other.group4().zyz().with_w(other[e31]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4235]]) * other.group4().xxy().with_w(other[e23]))
                 - (Simd32x3::from(other[e1234]) * self.group0().xyz()).with_w(self[e4125] * other[e12])
-                - (self.group0().www() * other.group9().xyz()).with_w(self[e3215] * other[e1234]),
+                - (other.group9().xyz() * self.group0().www()).with_w(self[e3215] * other[e1234]),
             // e423, e431, e412
             (other.group4().yzx() * self.group1().zxy())
                 - (Simd32x3::from(other[e1234]) * self.group1().xyz())
@@ -15718,8 +15746,8 @@ impl GeometricAntiProduct<MultiVector> for Flector {
             (Simd32x4::from(other[e12345]) * self.group1())
                 + Simd32x3::from(0.0).with_w((self[e15] * other[e1]) + (self[e25] * other[e2]) + (self[e35] * other[e3]) - (self[e3215] * other[e321]))
                 + (other.group7().yzx() * self.group0().zxy()).with_w(self[e4235] * other[e235])
-                + (self.group0().www() * other.group6().xyz()).with_w(self[e4315] * other[e315])
                 + (self.group1().yzx() * other.group6().zxy()).with_w(self[e4125] * other[e125])
+                + (other.group6().xyz() * self.group0().www()).with_w(self[e4315] * other[e315])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], other[e425]]) * other.group7().zyz().with_w(self[e25]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], other[e415]]) * other.group7().xxy().with_w(self[e15]))
                 - (self.group0().xyzz() * other.group1().www().with_w(other[e435]))
@@ -15858,7 +15886,7 @@ impl GeometricAntiProduct<VersorEven> for Flector {
             (self.group1().xyxy() * other.group3().ww().with_zw(other[e431], other[e2]))
                 + (self.group1().yzzz() * other.group0().zx().with_zw(other[e4], other[e3]))
                 + Simd32x3::from(0.0).with_w((self[e3215] * other[e4]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321]))
-                + (self.group0().www() * other.group0().xyz()).with_w(self[e4235] * other[e1])
+                + (other.group0().xyz() * self.group0().www()).with_w(self[e4235] * other[e1])
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e15])),
             // e23, e31, e12, e45
             (other.group0() * self.group1().www().with_w(self[e45]))
@@ -15868,7 +15896,7 @@ impl GeometricAntiProduct<VersorEven> for Flector {
                 - (self.group1().xyxz() * other.group1().ww().with_zw(other[e2], other[e435]))
                 - (self.group1().yzzw() * other.group3().zx().with_zw(other[e321], other[e4]))
                 - (self.group0().zxy() * other.group0().yzx()).with_w(self[e4235] * other[e415])
-                - (self.group0().www() * other.group3().xyz()).with_w(self[e4315] * other[e425]),
+                - (other.group3().xyz() * self.group0().www()).with_w(self[e4315] * other[e425]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e25] * other[e435]) + (self[e35] * other[e2]) + (self[e4125] * other[e315]) + (self[e3215] * other[e415])
@@ -15900,7 +15928,7 @@ impl GeometricAntiProduct<VersorEven> for Flector {
                 - (self.group0().xyxx() * other.group3().ww().with_zw(other[e431], other[e415]))
                 - (self.group0().yzzy() * other.group0().zx().with_zw(other[e4], other[e425]))
                 - (other.group1().yzxz() * self.group1().zxy().with_w(self[e35]))
-                - (self.group1().www() * other.group0().xyz()).with_w(self[e45] * other[e5]),
+                - (other.group0().xyz() * self.group1().www()).with_w(self[e45] * other[e5]),
         );
     }
 }
@@ -15937,7 +15965,7 @@ impl GeometricAntiProduct<VersorOdd> for Flector {
                 - (self.group1().xyxw() * other.group1().ww().with_zw(other[e4315], other[e1234]))
                 - (other.group0().zx().with_zw(other[e1234], other[e31]) * self.group0().yzz().with_w(self[e4315]))
                 - (other.group2().ww().with_zw(other[e42], other[e23]) * self.group0().xyx().with_w(self[e4235]))
-                - (self.group0().www() * other.group3().xyz()).with_w(self[e4125] * other[e12]),
+                - (other.group3().xyz() * self.group0().www()).with_w(self[e4125] * other[e12]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(self[e3215] * other[e23]) - (self[e3215] * other[e4235]),
@@ -15962,7 +15990,7 @@ impl GeometricAntiProduct<VersorOdd> for Flector {
                 0.0,
             ]) + (self.group1().xyxz() * other.group0().ww().with_zw(other[e31], other[e43]))
                 + (other.group0().yzxx() * self.group0().zxy().with_w(self[e4235]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e4315] * other[e42])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e4315] * other[e42])
                 - (self.group0().xyxw() * other.group2().ww().with_zw(other[e42], other[e1234])),
         );
     }
@@ -16620,12 +16648,12 @@ impl GeometricAntiProduct<MultiVector> for Line {
                 - (self.group0().zxy() * other.group3().yzx()).with_w(self[e415] * other[e4235])
                 - (self.group1().zxy() * other.group5().yzx()).with_w(self[e425] * other[e4315]),
             // e41, e42, e43
-            (self.group0().xyx() * Simd32x2::from(other[e1234]).with_z(other[e42])) + (self.group0().yzz() * other.group4().zx().with_z(other[e1234]))
+            (Simd32x3::from([other[e1234], other[e1234], other[e42]]) * self.group0().xyx()) + (self.group0().yzz() * other.group4().zx().with_z(other[e1234]))
                 - (self.group0().zxy() * other.group4().yzx()),
             // e23, e31, e12
             (Simd32x3::from(other[scalar]) * self.group0())
+                + (Simd32x3::from([other[e1234], other[e1234], other[e42]]) * self.group1().xyx())
                 + (self.group0().yzx() * other.group5().zxy())
-                + (self.group1().xyx() * Simd32x2::from(other[e1234]).with_z(other[e42]))
                 + (self.group1().yzz() * other.group4().zx().with_z(other[e1234]))
                 - (self.group0().zxy() * other.group5().yzx())
                 - (self.group1().zxy() * other.group4().yzx()),
@@ -16638,13 +16666,13 @@ impl GeometricAntiProduct<MultiVector> for Line {
             ]) - (self.group0().zxy() * other.group6().yzx()).with_w(self[e415] * other[e1])
                 - (self.group1().zxy() * other.group7().yzx()).with_w(self[e425] * other[e2]),
             // e423, e431, e412
-            (self.group0().xyx() * Simd32x2::from(other[e4]).with_z(other[e431])) + (self.group0().yzz() * other.group7().zx().with_z(other[e4]))
+            (Simd32x3::from([other[e4], other[e4], other[e431]]) * self.group0().xyx()) + (self.group0().yzz() * other.group7().zx().with_z(other[e4]))
                 - (self.group0().zxy() * other.group7().yzx()),
             // e235, e315, e125
             (Simd32x3::from(other[e12345]) * self.group1())
                 + (Simd32x3::from([other[e2], other[e415], other[e1]]) * self.group1().zzy())
+                + (Simd32x3::from([other[e5], other[e5], other[e315]]) * self.group0().xyx())
                 + (Simd32x3::from([other[e435], other[e3], other[e425]]) * self.group1().yxx())
-                + (self.group0().xyx() * Simd32x2::from(other[e5]).with_z(other[e315]))
                 + (self.group0().yzz() * other.group8().zx().with_z(other[e5]))
                 - (Simd32x3::from(self[e235]) * Simd32x3::from([other[e321], other[e435], other[e2]]))
                 - (Simd32x3::from(self[e315]) * Simd32x3::from([other[e3], other[e321], other[e415]]))
@@ -16661,7 +16689,7 @@ impl GeometricAntiProduct<MultiVector> for Line {
                     - (self[e315] * other[e4315])
                     - (self[e125] * other[e12])
                     - (self[e125] * other[e4125]),
-            ]) - (Simd32x2::from(other[e1234]).with_zw(other[e42], other[e25]) * self.group1().xyx().with_w(self[e425]))
+            ]) - (Simd32x4::from([other[e1234], other[e1234], other[e42], other[e25]]) * self.group1().xyx().with_w(self[e425]))
                 - (other.group4().zx().with_zw(other[e1234], other[e35]) * self.group1().yzz().with_w(self[e435]))
                 - (self.group0().zxy() * other.group9().yzx()).with_w(self[e415] * other[e15]),
             // e1234
@@ -16951,7 +16979,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for Motor {
             // e4235, e4315, e4125, e3215
             (self.group1().zxyw() * other.group0().yzx().with_w(other[e45]))
                 + Simd32x3::from(0.0).with_w(-(other[e12] * self[e125]) - (other[e15] * self[e415]) - (other[e25] * self[e425]) - (other[e35] * self[e435]))
-                + (other.group1().www() * self.group0().xyz()).with_w(other[scalar] * self[e5])
+                + (self.group0().xyz() * other.group1().www()).with_w(other[scalar] * self[e5])
                 - (self.group1().ywwy() * other.group0().zyz().with_w(other[e31]))
                 - (self.group1().wzxx() * other.group0().xxy().with_w(other[e23])),
         );
@@ -17049,7 +17077,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for Motor {
                 - (other.group0().yzx() * self.group0().zxy()))
             .with_w(other[e321] * self[e12345]),
             // e1, e2, e3, e5
-            (other.group0().www() * self.group0().xyz()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]) - (other[e321] * self[e5])),
+            (self.group0().xyz() * other.group0().www()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]) - (other[e321] * self[e5])),
         );
     }
 }
@@ -17075,12 +17103,12 @@ impl GeometricAntiProduct<AntiFlector> for Motor {
             ]) + (other.group0().xxyw() * self.group0().wzxw())
                 - (other.group1().xxyz() * self.group1().wzx().with_w(self[e435]))
                 - (self.group0().zxyx() * other.group0().yzx().with_w(other[e1]))
-                - (other.group0().www() * self.group1().xyz()).with_w(other[e2] * self[e425]),
+                - (self.group1().xyz() * other.group0().www()).with_w(other[e2] * self[e425]),
             // e1, e2, e3, e5
             (other.group1().xxyy() * self.group0().wzx().with_w(self[e315]))
                 + (other.group1().zyzz() * self.group0().yww().with_w(self[e125]))
                 + Simd32x3::from(0.0).with_w((other[e5] * self[e12345]) - (other[e315] * self[e425]) - (other[e125] * self[e435]) - (other[e321] * self[e5]))
-                + (other.group0().www() * self.group0().xyz()).with_w(other[e1] * self[e235])
+                + (self.group0().xyz() * other.group0().www()).with_w(other[e1] * self[e235])
                 - (self.group0().zxyx() * other.group1().yzx().with_w(other[e235])),
         );
     }
@@ -17234,7 +17262,7 @@ impl GeometricAntiProduct<Circle> for Motor {
                 -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e321] * self[e5]),
             ]) - (self.group0().zxyx() * other.group2().yzx().with_w(other[e235]))
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e315] * self[e425])
-                - (other.group1().www() * self.group1().xyz()).with_w(other[e125] * self[e435]),
+                - (self.group1().xyz() * other.group1().www()).with_w(other[e125] * self[e435]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[e423] * self[e5]) + (other[e412] * self[e315]) + (other[e321] * self[e415]),
@@ -17454,7 +17482,7 @@ impl GeometricAntiProduct<FlatPoint> for Motor {
                 - (other.group0().yzx() * self.group0().zxy()))
             .with_w(other[e45] * self[e12345]),
             // e4235, e4315, e4125, e3215
-            (other.group0().www() * self.group0().xyz()).with_w((other[e45] * self[e5]) - (other[e15] * self[e415]) - (other[e25] * self[e425]) - (other[e35] * self[e435])),
+            (self.group0().xyz() * other.group0().www()).with_w((other[e45] * self[e5]) - (other[e15] * self[e415]) - (other[e25] * self[e425]) - (other[e35] * self[e435])),
         );
     }
 }
@@ -17768,7 +17796,7 @@ impl GeometricAntiProduct<Sphere> for Motor {
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e12345] * other[e4235], self[e12345] * other[e4315], self[e12345] * other[e4125], self[e125] * other[e4125] * -1.0])
                 + (self.group0().yzxw() * other.group0().zxyw())
-                - (self.group1().xyzy() * Simd32x3::from(other[e1234]).with_w(other[e4315]))
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], other[e4315]]) * self.group1().xyzy())
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e235])),
         );
     }
@@ -17815,7 +17843,7 @@ impl GeometricAntiProduct<VersorEven> for Motor {
                 + (Simd32x4::from([other[e435], other[e12345], other[e1], other[e12345]]) * self.group1().yyyw())
                 + (self.group0().xyxw() * other.group2().wwyw())
                 + (self.group0().yzz() * other.group2().zxw()).with_w(self[e235] * other[e1])
-                + (self.group0().www() * other.group2().xyz()).with_w(self[e315] * other[e2])
+                + (other.group2().xyz() * self.group0().www()).with_w(self[e315] * other[e2])
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e415]]) * self.group1().zzzx())
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e125]]) * self.group1().yyy().with_w(self[e435]))
                 - (self.group0().zxyx() * other.group2().yzxx())
@@ -17864,7 +17892,7 @@ impl GeometricAntiProduct<VersorOdd> for Motor {
             ]) + (self.group0().xyxw() * other.group0().ww().with_zw(other[e31], other[e45]))
                 + (self.group1().xyxz() * other.group2().ww().with_zw(other[e42], other[e43]))
                 + (other.group1().zx().with_zw(other[scalar], other[e41]) * self.group0().yzz().with_w(self[e235]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e315] * other[e42])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e315] * other[e42])
                 - (self.group0().zxyx() * other.group1().yzx().with_w(other[e4235]))
                 - (self.group1().zxy() * other.group0().yzx()).with_w(self[e425] * other[e4315]),
             // e15, e25, e35, e1234
@@ -17906,7 +17934,7 @@ impl GeometricAntiProduct<VersorOdd> for Motor {
                 -(self[e235] * other[e4235]) - (self[e315] * other[e31]) - (self[e315] * other[e4315]) - (self[e125] * other[e12]) - (self[e125] * other[e4125]),
             ]) + (self.group0().xyxw() * other.group1().ww().with_zw(other[e4315], other[e3215]))
                 + (other.group3().zx().with_zw(other[e45], other[scalar]) * self.group0().yzz().with_w(self[e5]))
-                + (self.group0().www() * other.group3().xyz()).with_w(self[e5] * other[e45])
+                + (other.group3().xyz() * self.group0().www()).with_w(self[e5] * other[e45])
                 - (self.group0().zxyx() * other.group3().yzx().with_w(other[e15]))
                 - (self.group1().wwwx() * other.group0().xyz().with_w(other[e23]))
                 - (other.group0().zx().with_zw(other[e1234], other[e35]) * self.group1().yzz().with_w(self[e435]))
@@ -17967,7 +17995,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for MultiVector {
                 + (self.group5() * other.group1().www()).with_w(other[e42] * self[e31])
                 + (other.group0().yzx() * self.group3().zxy()).with_w(other[e41] * self[e23])
                 + (self.group4().yzx() * other.group2().zxy()).with_w(other[e41] * self[e4235])
-                + (other.group2().www() * self.group9().xyz()).with_w(other[e23] * self[e41])
+                + (self.group9().xyz() * other.group2().www()).with_w(other[e23] * self[e41])
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e1234]]) * other.group0().xxy().with_w(other[scalar])),
             // e5
             (other[e23] * self[e15]) + (other[e31] * self[e25]) + (other[e12] * self[e35]) + (other[e15] * self[e23]) + (other[e25] * self[e31]) + (other[e35] * self[e12])
@@ -17980,8 +18008,8 @@ impl GeometricAntiProduct<AntiCircleRotor> for MultiVector {
             Simd32x4::from([other[e35] * self[e425], other[e25] * self[e321], other[e35] * self[e321], other[scalar] * self[e321] * -1.0])
                 + (Simd32x4::from(self[e12345]) * other.group2().xyz().with_w(other[e45]))
                 + (Simd32x4::from([self[e2], self[e435], self[e415], self[e3]]) * other.group2().zxy().with_w(other[e12]))
+                + (Simd32x4::from([self[e5], self[e5], self[e5], self[e1]]) * other.group1().xyzx())
                 + (Simd32x4::from([self[e321], self[e3], self[e1], self[e2]]) * other.group2().xxy().with_w(other[e31]))
-                + (other.group1().xyzx() * Simd32x3::from(self[e5]).with_w(self[e1]))
                 + (other.group1().zx().with_zw(other[scalar], self[e125]) * self.group8().yzz().with_w(other[e43]))
                 + (other.group2().ww().with_zw(other[e45], self[e315]) * self.group8().with_w(other[e42]))
                 + (self.group8().xyx() * other.group1().wwy()).with_w(other[e41] * self[e235])
@@ -18122,7 +18150,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for MultiVector {
                 - (other.group0().yzx() * self.group8().zxy()).with_w(other[e423] * self[e415])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e415] * self[e423])
                 - (other.group3().yzx() * self.group6().zxy()).with_w(other[e425] * self[e431])
-                - (self.group1().www() * other.group2().xyz()).with_w(other[e1] * self[e423]),
+                - (other.group2().xyz() * self.group1().www()).with_w(other[e1] * self[e423]),
             // e5
             (other[e1] * self[e235]) + (other[e2] * self[e315]) + (other[e3] * self[e125]) + (other[e5] * self[e12345]) + (other[e5] * self[e321])
                 - (other[e415] * self[e235])
@@ -18150,7 +18178,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for MultiVector {
                 - (self.group9() * other.group3().www().with_w(other[e4]))
                 - (self.group5().zxy() * other.group2().yzx()).with_w(other[e321] * self[scalar])
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e235] * self[e41])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e315] * self[e42]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e315] * self[e42]),
             // e41, e42, e43
             (Simd32x3::from(other[e4]) * self.group5())
                 + (Simd32x3::from(other[e4]) * self.group9().xyz())
@@ -18360,7 +18388,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for MultiVector {
             ]) - (Simd32x4::from([self[e45], self[e4125], self[e4235], other[e235]]) * other.group0().xxy().with_w(self[e41]))
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], other[e315]]) * other.group0().zyz().with_w(self[e42]))
                 - (other.group0().yzxw() * self.group5().zxy().with_w(self[scalar]))
-                - (other.group0().www() * self.group3().xyz()).with_w(other[e125] * self[e43]),
+                - (self.group3().xyz() * other.group0().www()).with_w(other[e125] * self[e43]),
             // e41, e42, e43
             Simd32x3::from(other[e321]) * self.group4(),
             // e23, e31, e12
@@ -18374,8 +18402,8 @@ impl GeometricAntiProduct<AntiFlatPoint> for MultiVector {
                 other[e235] * self[e431] * -1.0,
                 other[e125] * self[e412],
             ]) + (other.group0().zxyw() * self.group7().yzx().with_w(self[e12345]))
-                + (other.group0().www() * self.group1().xyz()).with_w(other[e315] * self[e431])
-                + (self.group1().www() * other.group0().xyz()).with_w(other[e235] * self[e423]),
+                + (other.group0().xyz() * self.group1().www()).with_w(other[e235] * self[e423])
+                + (self.group1().xyz() * other.group0().www()).with_w(other[e315] * self[e431]),
             // e423, e431, e412
             Simd32x3::from(other[e321]) * self.group7(),
             // e235, e315, e125
@@ -18387,7 +18415,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for MultiVector {
                 - (other.group0().yzx() * self.group1().zxy())
                 - (other.group0().yzx() * self.group6().zxy()),
             // e4235, e4315, e4125, e3215
-            (other.group0().xyzy() * Simd32x3::from(self[e1234]).with_w(self[e4315]))
+            (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4315]]) * other.group0().xyzy())
                 + Simd32x3::from(0.0).with_w((other[e125] * self[e4125]) - (other[e125] * self[e12]) - (other[e321] * self[e3215]))
                 + (self.group4().yzx() * other.group0().zxy()).with_w(other[e235] * self[e4235])
                 - (other.group0().yzxx() * self.group4().zxy().with_w(self[e23]))
@@ -18428,7 +18456,7 @@ impl GeometricAntiProduct<AntiFlector> for MultiVector {
             ]) + (self.group0().yy().with_zw(self[e12345], other[e321]) * other.group1().xyz().with_w(self[e4]))
                 - (other.group0().zx().with_zw(other[e5], other[e2]) * self.group7().yzz().with_w(self[e431]))
                 - (other.group1().ww().with_zw(other[e315], other[e1]) * self.group7().xyx().with_w(self[e423]))
-                - (self.group1().www() * other.group0().xyz()).with_w(other[e3] * self[e412]),
+                - (other.group0().xyz() * self.group1().www()).with_w(other[e3] * self[e412]),
             // e5
             (other[e1] * self[e235]) + (other[e2] * self[e315]) + (other[e3] * self[e125]) + (other[e5] * self[e12345]) + (other[e5] * self[e321])
                 - (other[e235] * self[e1])
@@ -18451,7 +18479,7 @@ impl GeometricAntiProduct<AntiFlector> for MultiVector {
                 - (Simd32x4::from([self[e45], self[e4125], self[e4235], other[e235]]) * other.group0().xxy().with_w(self[e41]))
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], other[e315]]) * other.group0().zyz().with_w(self[e42]))
                 - (other.group0().yzxw() * self.group5().zxy().with_w(self[scalar]))
-                - (other.group0().www() * self.group3().xyz()).with_w(other[e125] * self[e43]),
+                - (self.group3().xyz() * other.group0().www()).with_w(other[e125] * self[e43]),
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * other.group1().xyz())
                 + (Simd32x3::from([other[e321], other[e321], other[e2]]) * self.group4().xyx())
@@ -18474,8 +18502,8 @@ impl GeometricAntiProduct<AntiFlector> for MultiVector {
                 -(other[e3] * self[e435]) - (other[e5] * self[e4]),
             ]) + (other.group0().zx().with_zw(other[e5], other[e235]) * self.group7().yzz().with_w(self[e423]))
                 + (other.group1().ww().with_zw(other[e315], other[e321]) * self.group7().xyx().with_w(self[e12345]))
-                + (other.group0().www() * self.group1().xyz()).with_w(other[e125] * self[e412])
-                + (self.group1().www() * other.group0().xyz()).with_w(other[e315] * self[e431])
+                + (other.group0().xyz() * self.group1().www()).with_w(other[e315] * self[e431])
+                + (self.group1().xyz() * other.group0().www()).with_w(other[e125] * self[e412])
                 - (other.group1().yzxy() * self.group1().zxy().with_w(self[e425]))
                 - (self.group7().zxy() * other.group0().yzx()).with_w(other[e1] * self[e415]),
             // e423, e431, e412
@@ -18497,7 +18525,7 @@ impl GeometricAntiProduct<AntiFlector> for MultiVector {
                 - (other.group0().yzx() * self.group1().zxy())
                 - (other.group0().yzx() * self.group6().zxy()),
             // e4235, e4315, e4125, e3215
-            (other.group0().xyzz() * Simd32x3::from(self[e1234]).with_w(self[e4125]))
+            (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4125]]) * other.group0().xyzz())
                 + (other.group0().zx().with_zw(other[e5], self[e4235]) * self.group4().yzz().with_w(other[e235]))
                 + (other.group1().ww().with_zw(other[e315], other[e5]) * self.group4().xyx().with_w(self[scalar]))
                 + Simd32x3::from(0.0).with_w((other[e1] * self[e15]) + (other[e2] * self[e25]) + (other[e3] * self[e35]) - (other[e5] * self[e45]))
@@ -19019,7 +19047,7 @@ impl GeometricAntiProduct<CircleRotor> for MultiVector {
                 - (other.group0().yzx() * self.group8().zxy()).with_w(other[e423] * self[e415])
                 - (self.group7().yzx() * other.group2().zxy()).with_w(other[e431] * self[e425])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e412] * self[e435])
-                - (self.group1().www() * other.group2().xyz()).with_w(other[e415] * self[e423]),
+                - (other.group2().xyz() * self.group1().www()).with_w(other[e415] * self[e423]),
             // e5
             (other[e12345] * self[e5])
                 - (other[e415] * self[e235])
@@ -19046,7 +19074,7 @@ impl GeometricAntiProduct<CircleRotor> for MultiVector {
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], self[e4235]]) * other.group2().zyz().with_w(other[e415]))
                 - (self.group5().zxy() * other.group2().yzx()).with_w(other[e321] * self[scalar])
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e235] * self[e41])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e315] * self[e42]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e315] * self[e42]),
             // e41, e42, e43
             (Simd32x3::from(self[scalar]) * other.group0())
                 + (Simd32x3::from(self[e1234]) * other.group1().xyz())
@@ -19194,8 +19222,8 @@ impl GeometricAntiProduct<Dipole> for MultiVector {
             // e15, e25, e35, e45
             (Simd32x4::from(self[e12345]) * other.group2().with_w(other[e45]))
                 + (Simd32x4::from([self[e2], self[e435], self[e415], self[e315]]) * other.group2().zxy().with_w(other[e42]))
+                + (Simd32x4::from([self[e5], self[e5], self[e5], self[e3]]) * other.group1().xyzz())
                 + (Simd32x4::from([self[e321], self[e3], self[e1], self[e235]]) * other.group2().xxy().with_w(other[e41]))
-                + (other.group1().xyzz() * Simd32x3::from(self[e5]).with_w(self[e3]))
                 + (other.group2().zyz() * self.group6().yww()).with_w(other[e43] * self[e125])
                 + (self.group8().xyx() * other.group1().wwy()).with_w(other[e23] * self[e1])
                 + (self.group8().yzz() * other.group1().zxw()).with_w(other[e31] * self[e2])
@@ -19369,8 +19397,8 @@ impl GeometricAntiProduct<DipoleInversion> for MultiVector {
                 -(other[e4235] * self[e415]) - (other[e4315] * self[e425]) - (other[e4125] * self[e435]),
             ]) + (Simd32x4::from(self[e12345]) * other.group2().xyz().with_w(other[e45]))
                 + (Simd32x4::from([self[e2], self[e435], self[e415], self[e3]]) * other.group2().zxy().with_w(other[e12]))
+                + (Simd32x4::from([self[e5], self[e5], self[e5], self[e1]]) * other.group1().xyzx())
                 + (Simd32x4::from([self[e321], self[e3], self[e1], self[e2]]) * other.group2().xxy().with_w(other[e31]))
-                + (other.group1().xyzx() * Simd32x3::from(self[e5]).with_w(self[e1]))
                 + (other.group1().zx().with_zw(other[e4315], self[e315]) * self.group8().yzx().with_w(other[e42]))
                 + (other.group3().zx().with_zw(other[e45], self[e125]) * self.group8().yzz().with_w(other[e43]))
                 + (self.group8().xyx() * other.group1().wwy()).with_w(other[e41] * self[e235])
@@ -19430,7 +19458,7 @@ impl GeometricAntiProduct<DipoleInversion> for MultiVector {
                 - (other.group3().ww().with_zw(other[e25], other[e4235]) * self.group4().xyx().with_w(self[e23]))
                 - (Simd32x3::from(self[e1234]) * other.group2().xyz()).with_w(other[e31] * self[e4315])
                 - (self.group5().yzx() * other.group1().zxy()).with_w(other[e4125] * self[e12])
-                - (other.group2().www() * self.group3().xyz()).with_w(other[e12] * self[e4125]),
+                - (self.group3().xyz() * other.group2().www()).with_w(other[e12] * self[e4125]),
             // e423, e431, e412
             (Simd32x3::from(self[e41]) * Simd32x3::from([other[e45], other[e12], other[e4315]]))
                 + (Simd32x3::from(self[e42]) * Simd32x3::from([other[e4125], other[e45], other[e23]]))
@@ -19590,7 +19618,7 @@ impl GeometricAntiProduct<FlatPoint> for MultiVector {
             (other.group0().yzxw() * self.group4().zxy().with_w(self[scalar]))
                 - (other.group0().zxyx() * self.group4().yzx().with_w(self[e41]))
                 - (Simd32x3::from(self[e1234]) * other.group0().xyz()).with_w(other[e25] * self[e42])
-                - (other.group0().www() * self.group9().xyz()).with_w(other[e35] * self[e43]),
+                - (self.group9().xyz() * other.group0().www()).with_w(other[e35] * self[e43]),
             // e423, e431, e412
             Simd32x3::from(other[e45]) * self.group4(),
             // e235, e315, e125
@@ -19708,7 +19736,7 @@ impl GeometricAntiProduct<Flector> for MultiVector {
                 - (other.group0().zx().with_zw(other[e3215], other[e25]) * self.group4().yzz().with_w(self[e42]))
                 - (other.group1().ww().with_zw(other[e25], other[e15]) * self.group4().xyx().with_w(self[e41]))
                 - (Simd32x3::from(self[e1234]) * other.group0().xyz()).with_w(other[e35] * self[e43])
-                - (other.group0().www() * self.group9().xyz()).with_w(other[e4235] * self[e23]),
+                - (self.group9().xyz() * other.group0().www()).with_w(other[e4235] * self[e23]),
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group1().xyz())
                 + (Simd32x3::from([other[e45], other[e45], other[e4315]]) * self.group4().xyx())
@@ -20223,7 +20251,7 @@ impl GeometricAntiProduct<MultiVector> for MultiVector {
                 - (other.group7().yzx() * self.group8().zxy()).with_w(other[e412] * self[e125])
                 - (other.group8().yzx() * self.group7().zxy()).with_w(other[e15] * self[e41])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e4235] * self[e23])
-                - (other.group3().www() * self.group9().xyz()).with_w(other[e4125] * self[e12]),
+                - (self.group9().xyz() * other.group3().www()).with_w(other[e4125] * self[e12]),
             // e423, e431, e412
             (Simd32x3::from(other[e12345]) * self.group7())
                 + (Simd32x3::from(other[e4]) * self.group6().xyz())
@@ -20307,7 +20335,7 @@ impl GeometricAntiProduct<MultiVector> for MultiVector {
                 + (other.group5().yzx() * self.group1().zxy()).with_w(other[e3215] * self[e12345])
                 + (other.group7().yzx() * self.group3().zxy()).with_w(other[e235] * self[e4235])
                 + (self.group5().zxy() * other.group1().yzx()).with_w(other[e2] * self[e25])
-                + (self.group1().www() * other.group3().xyz()).with_w(other[e3215] * self[e321])
+                + (other.group3().xyz() * self.group1().www()).with_w(other[e3215] * self[e321])
                 - (Simd32x4::from([self[e2], self[e321], self[e321], self[e12]]) * other.group5().zyz().with_w(other[e125]))
                 - (Simd32x4::from([self[e5], self[e125], self[e235], self[e125]]) * other.group4().xxy().with_w(other[e12]))
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], other[e4315]]) * other.group7().zyz().with_w(self[e315]))
@@ -20321,9 +20349,9 @@ impl GeometricAntiProduct<MultiVector> for MultiVector {
                 - (Simd32x3::from(other[e1234]) * self.group8()).with_w(other[e25] * self[e425])
                 - (other.group8().yzx() * self.group4().zxy()).with_w(other[e4125] * self[e125])
                 - (self.group7().zxy() * other.group3().yzx()).with_w(other[e25] * self[e2])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e35] * self[e3])
                 - (other.group6().yzx() * self.group9().zxy()).with_w(other[e35] * self[e435])
-                - (other.group9().yzx() * self.group6().zxy()).with_w(other[e415] * self[e15]),
+                - (other.group9().yzx() * self.group6().zxy()).with_w(other[e415] * self[e15])
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e35] * self[e3]),
             // e1234
             (other[scalar] * self[e4])
                 + (other[e12345] * self[e1234])
@@ -20667,7 +20695,7 @@ impl GeometricAntiProduct<VersorEven> for MultiVector {
                 - (self.group7().yzz() * other.group2().zxw()).with_w(self[e423] * other[e1])
                 - (self.group8().zxy() * other.group0().yzx()).with_w(self[e431] * other[e425])
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e2])
-                - (self.group1().www() * other.group2().xyz()).with_w(self[e412] * other[e435]),
+                - (other.group2().xyz() * self.group1().www()).with_w(self[e412] * other[e435]),
             // e5
             (self[e12345] * other[e5]) + (self[e5] * other[e12345]) + (self[e321] * other[e5]) + (self[e235] * other[e1]) + (self[e315] * other[e2]) + (self[e125] * other[e3])
                 - (self[e1] * other[e235])
@@ -20688,7 +20716,7 @@ impl GeometricAntiProduct<VersorEven> for MultiVector {
                 + (self.group5().xyx() * other.group2().wwy()).with_w(self[e31] * other[e2])
                 + (self.group5().yzz() * other.group2().zxw()).with_w(self[e12] * other[e3])
                 + (self.group9().zxy() * other.group2().yzx()).with_w(self[e45] * other[e12345])
-                + (self.group9().www() * other.group1().xyz()).with_w(self[e1234] * other[e5])
+                + (other.group1().xyz() * self.group9().www()).with_w(self[e1234] * other[e5])
                 - (Simd32x4::from(self[e3215]) * other.group3())
                 - (Simd32x4::from([other[e425], other[e1], other[e321], other[e125]]) * self.group3().zzz().with_w(self[e43]))
                 - (Simd32x4::from([other[e3], other[e321], other[e415], other[e315]]) * self.group3().yyy().with_w(self[e42]))
@@ -20696,7 +20724,7 @@ impl GeometricAntiProduct<VersorEven> for MultiVector {
                 - (self.group9().yzzz() * other.group2().zxw().with_w(other[e435]))
                 - (other.group1().wz().with_zw(other[e2], other[e235]) * self.group3().xxx().with_w(self[e41]))
                 - (self.group5().zxy() * other.group2().yzx()).with_w(self[scalar] * other[e321])
-                - (self.group3().www() * other.group2().xyz()).with_w(self[e4235] * other[e415]),
+                - (other.group2().xyz() * self.group3().www()).with_w(self[e4235] * other[e415]),
             // e41, e42, e43
             (Simd32x3::from(self[scalar]) * other.group0().xyz())
                 + (Simd32x3::from(self[e45]) * other.group0().xyz())
@@ -20794,7 +20822,7 @@ impl GeometricAntiProduct<VersorEven> for MultiVector {
                 + (other.group3().yzxy() * self.group5().zxy().with_w(self[e25]))
                 + (Simd32x3::from(self[e1234]) * other.group2().xyz()).with_w(self[e3215] * other[e12345])
                 + (self.group4().yzz() * other.group2().zxw()).with_w(self[e15] * other[e1])
-                + (self.group3().www() * other.group1().xyz()).with_w(self[e4235] * other[e235])
+                + (other.group1().xyz() * self.group3().www()).with_w(self[e4235] * other[e235])
                 - (Simd32x4::from(self[e3215]) * other.group0().xyz().with_w(other[e321]))
                 - (self.group3().xyxy() * other.group3().ww().with_zw(other[e431], other[e425]))
                 - (self.group3().yzzz() * other.group0().zx().with_zw(other[e4], other[e435]))
@@ -20870,13 +20898,13 @@ impl GeometricAntiProduct<VersorOdd> for MultiVector {
                 + (other.group2().zx().with_zw(other[e3215], other[e12]) * self.group4().yzz().with_w(self[e43]))
                 + (other.group3().zx().with_zw(other[e45], other[e42]) * self.group5().yzz().with_w(self[e31]))
                 + (other.group3().ww().with_zw(other[e25], other[e31]) * self.group4().xyx().with_w(self[e42]))
-                + (self.group3().www() * other.group1().xyz()).with_w(self[e4235] * other[e41])
+                + (other.group1().xyz() * self.group3().www()).with_w(self[e4235] * other[e41])
                 - (other.group2().yzxw() * self.group4().zxy().with_w(self[scalar]))
                 - (other.group3().yzxx() * self.group5().zxy().with_w(self[e41]))
                 - (other.group0().zx().with_zw(other[e1234], other[e4125]) * self.group3().yzz().with_w(self[e43]))
                 - (other.group2().ww().with_zw(other[e42], other[e4315]) * self.group3().xyx().with_w(self[e42]))
                 - (self.group9().zxy() * other.group1().yzx()).with_w(self[e45] * other[e1234])
-                - (self.group9().www() * other.group0().xyz()).with_w(self[e1234] * other[scalar]),
+                - (other.group0().xyz() * self.group9().www()).with_w(self[e1234] * other[scalar]),
             // e5
             (self[e15] * other[e23])
                 + (self[e15] * other[e4235])
@@ -20965,7 +20993,7 @@ impl GeometricAntiProduct<VersorOdd> for MultiVector {
                 - (other.group2().zx().with_zw(other[e3215], other[e35]) * self.group4().yzz().with_w(self[e43]))
                 - (other.group2().ww().with_zw(other[e42], other[e4125]) * self.group3().xyx().with_w(self[e12]))
                 - (other.group3().ww().with_zw(other[e25], other[e25]) * self.group4().xyx().with_w(self[e42]))
-                - (self.group3().www() * other.group3().xyz()).with_w(self[e4315] * other[e31]),
+                - (other.group3().xyz() * self.group3().www()).with_w(self[e4315] * other[e31]),
             // e423, e431, e412
             (Simd32x3::from(self[e41]) * Simd32x3::from([other[e45], other[e12], other[e4315]]))
                 + (Simd32x3::from(self[e42]) * Simd32x3::from([other[e4125], other[e45], other[e23]]))
@@ -21017,7 +21045,7 @@ impl GeometricAntiProduct<VersorOdd> for MultiVector {
                 - (other.group2().ww().with_zw(other[e42], other[e4235]) * self.group8().xyx().with_w(self[e235]))
                 - (Simd32x3::from(self[e5]) * other.group0().xyz()).with_w(self[e2] * other[e25])
                 - (self.group7().zxy() * other.group2().yzx()).with_w(self[e235] * other[e23])
-                - (self.group6().www() * other.group1().xyz()).with_w(self[e1] * other[e15]),
+                - (other.group1().xyz() * self.group6().www()).with_w(self[e1] * other[e15]),
             // e1234
             (self[e12345] * other[e1234])
                 + (self[e1] * other[e41])
@@ -21132,14 +21160,17 @@ impl GeometricAntiProduct<AntiDipoleInversion> for Plane {
 impl GeometricAntiProduct<AntiDualNum> for Plane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        5        0
-    // no simd        0       20        0
+    //           add/sub      mul      div
+    //    simd3        0        1        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       11        0
     fn geometric_anti_product(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         return AntiFlector::from_groups(
             // e235, e315, e125, e321
-            other.group0().xx().with_zw(other[e3215], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group0().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from(other[scalar]) * self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
         );
@@ -21150,15 +21181,16 @@ impl GeometricAntiProduct<AntiFlatPoint> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        2        5        0
+    //    simd3        0        2        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        3        7        0
-    //  no simd        9       22        0
+    // yes simd        3        6        0
+    //  no simd        9       16        0
     fn geometric_anti_product(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         return AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * other.group0().www().with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e3215
             (other.group0().yzxx() * self.group0().zxyx()) + Simd32x3::from(0.0).with_w((other[e315] * self[e4315]) + (other[e125] * self[e4125]))
                 - (other.group0().zxyw() * self.group0().yzxw()),
@@ -21452,14 +21484,17 @@ impl GeometricAntiProduct<DipoleInversion> for Plane {
 impl GeometricAntiProduct<DualNum> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       10        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e15, e25, e35, e45
-            other.group0().xx().with_zw(other[e5], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().xx().with_z(other[e5]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(other[e12345]) * self.group0(),
         );
@@ -21470,15 +21505,16 @@ impl GeometricAntiProduct<FlatPoint> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        6        0
-    //    simd4        1        4        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        3       10        0
-    //  no simd        6       22        0
+    // yes simd        3        9        0
+    //  no simd        6       16        0
     fn geometric_anti_product(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x3::from(1.0).with_w(0.0) * other.group0().www().with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from([
                 other[e35] * self[e4315],
@@ -22069,7 +22105,7 @@ impl GeometricAntiProduct<AntiPlane> for RoundPoint {
             ((other.group0().zxy() * self.group0().yzx()) - (other.group0().yzx() * self.group0().zxy())).with_w(other[e5] * self[e4] * -1.0),
             // e235, e315, e125, e12345
             (Simd32x4::from(other[e5]) * self.group0()) + Simd32x3::from(0.0).with_w(-(other[e2] * self[e2]) - (other[e3] * self[e3]))
-                - (other.group0().xyzx() * Simd32x3::from(self[e5]).with_w(self[e1])),
+                - (Simd32x4::from([self[e5], self[e5], self[e5], self[e1]]) * other.group0().xyzx()),
         );
     }
 }
@@ -22228,7 +22264,7 @@ impl GeometricAntiProduct<DipoleInversion> for RoundPoint {
                 + (self.group0().zxyz() * other.group3().yzx().with_w(other[e12]))
                 + (self.group0().wwwy() * other.group2().xyz().with_w(other[e31]))
                 + (Simd32x3::from(self[e5]) * other.group0()).with_w(other[e23] * self[e1])
-                - (other.group1().www() * self.group0().xyz()).with_w(other[e1234] * self[e5]),
+                - (self.group0().xyz() * other.group1().www()).with_w(other[e1234] * self[e5]),
             // e15, e25, e35, e1234
             Simd32x4::from([other[e3215] * self[e1], other[e3215] * self[e2], other[e3215] * self[e3], 0.0])
                 + (self.group0().yzxy() * other.group2().zxy().with_w(other[e42]))
@@ -22247,18 +22283,18 @@ impl GeometricAntiProduct<DualNum> for RoundPoint {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd4        0        2        0
+    //      f32        0        2        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        0        5        0
-    //  no simd        0       11        0
+    //  no simd        0       14        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x3::from(0.0).with_w(other[e5] * self[e4]),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(other[e5] * self[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e5] * self[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e235, e315, e125, e5
             other.group0().xx().with_zw(other[e5], other[e12345]) * self.group0().xyz().with_w(self[e5]),
             // e1, e2, e3, e4
@@ -22468,7 +22504,7 @@ impl GeometricAntiProduct<Plane> for RoundPoint {
             // e23, e31, e12, e45
             ((other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx())).with_w(other[e3215] * self[e4]),
             // e15, e25, e35, scalar
-            (other.group0().xyzx() * Simd32x3::from(self[e5]).with_w(self[e1]))
+            (Simd32x4::from([self[e5], self[e5], self[e5], self[e1]]) * other.group0().xyzx())
                 + (other.group0().wwwy() * self.group0().xyzy())
                 + Simd32x3::from(0.0).with_w((other[e4125] * self[e3]) + (other[e3215] * self[e4])),
         );
@@ -22494,7 +22530,7 @@ impl GeometricAntiProduct<RoundPoint> for RoundPoint {
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w((other[e5] * self[e4]) - (other[e2] * self[e2]) - (other[e3] * self[e3]))
                 + (Simd32x3::from(other[e5]) * self.group0().xyz()).with_w(other[e4] * self[e5])
-                - (other.group0().xyzx() * Simd32x3::from(self[e5]).with_w(self[e1])),
+                - (Simd32x4::from([self[e5], self[e5], self[e5], self[e1]]) * other.group0().xyzx()),
         );
     }
 }
@@ -22557,7 +22593,7 @@ impl GeometricAntiProduct<VersorEven> for RoundPoint {
             // e423, e431, e412, e12345
             Simd32x4::from([self[e4] * other[e1], self[e4] * other[e2], self[e4] * other[e3], self[e3] * other[e3] * -1.0])
                 + (self.group0().zxyw() * other.group0().yzx().with_w(other[e5]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e5] * other[e4])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e5] * other[e4])
                 - (self.group0().xyxx() * other.group3().ww().with_zw(other[e431], other[e1]))
                 - (self.group0().yzzy() * other.group0().zx().with_zw(other[e4], other[e2])),
             // e415, e425, e435, e321
@@ -22623,7 +22659,7 @@ impl GeometricAntiProduct<VersorOdd> for RoundPoint {
                 + (Simd32x3::from(self[e5]) * other.group3().xyz()).with_w(self[e4] * other[scalar])
                 - (self.group0().zxyw() * other.group2().yzx().with_w(other[e45])),
             // e4235, e4315, e4125, e3215
-            (self.group0().zxy() * other.group1().yzx()).with_w(self[e5] * other[scalar]) + (self.group0().www() * other.group2().xyz()).with_w(self[e5] * other[e45])
+            (self.group0().zxy() * other.group1().yzx()).with_w(self[e5] * other[scalar]) + (other.group2().xyz() * self.group0().www()).with_w(self[e5] * other[e45])
                 - (self.group0().xyxx() * other.group0().ww().with_zw(other[e31], other[e15]))
                 - (self.group0().yzzy() * other.group1().zx().with_zw(other[scalar], other[e25]))
                 - (Simd32x3::from(self[e5]) * other.group0().xyz()).with_w(self[e3] * other[e35]),
@@ -23103,7 +23139,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for Sphere {
                 other[e15] * self[e4315] * -1.0,
                 (other[e42] * self[e4315]) + (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
             ]) + (self.group0().yzxx() * other.group2().zxy().with_w(other[e41]))
-                - (self.group0().www() * other.group1().xyz()).with_w(other[scalar] * self[e1234]),
+                - (other.group1().xyz() * self.group0().www()).with_w(other[scalar] * self[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e12] * self[e4315]) + (other[e15] * self[e1234]) + (other[scalar] * self[e4235]),
@@ -23134,7 +23170,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for Sphere {
                 other[e412] * self[e4235] * -1.0,
                 other[e423] * self[e4315] * -1.0,
                 other[e5] * self[e1234],
-            ]) + (other.group3().xyzz() * Simd32x3::from(self[e1234]).with_w(self[e4125]))
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4125]]) * other.group3().xyzz())
                 + (self.group0().xyzy() * other.group2().www().with_w(other[e2]))
                 + (self.group0().yzxw() * other.group0().zxy().with_w(other[e4]))
                 + (Simd32x3::from(self[e1234]) * other.group1().xyz()).with_w(other[e1] * self[e4235]),
@@ -23158,7 +23194,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for Sphere {
                 other[e435] * self[e4235] * -1.0,
                 other[e415] * self[e4315] * -1.0,
                 other[e125] * self[e4125],
-            ]) + (other.group2().xyzy() * Simd32x3::from(self[e1234]).with_w(self[e4315]))
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4315]]) * other.group2().xyzy())
                 + (self.group0().yzxx() * other.group1().zxy().with_w(other[e235]))
                 - (Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321])),
         );
@@ -23168,16 +23204,16 @@ impl GeometricAntiProduct<AntiDualNum> for Sphere {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd4        0        4        0
+    //      f32        0        2        0
+    //    simd4        0        5        0
     // Totals...
     // yes simd        0        7        0
-    //  no simd        0       19        0
+    //  no simd        0       22        0
     fn geometric_anti_product(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(other[e3215] * self[e1234] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e3215] * self[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e415, e425, e435, e321
             Simd32x3::from(0.0).with_w(other[e3215] * self[e1234]),
             // e235, e315, e125, e5
@@ -23427,7 +23463,7 @@ impl GeometricAntiProduct<CircleRotor> for Sphere {
                 other[e435] * self[e4235] * -1.0,
                 other[e415] * self[e4315] * -1.0,
                 other[e12345] * self[e3215],
-            ]) + (other.group2().xyzy() * Simd32x3::from(self[e1234]).with_w(self[e4315]))
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4315]]) * other.group2().xyzy())
                 + (other.group2().wwwz() * self.group0().xyzz())
                 + (self.group0().yzxx() * other.group1().zxy().with_w(other[e235]))
                 - (Simd32x4::from(self[e3215]) * other.group0().with_w(other[e321])),
@@ -23490,7 +23526,7 @@ impl GeometricAntiProduct<DipoleInversion> for Sphere {
                 other[e1234] * self[e4315] * -1.0,
                 other[e1234] * self[e4125] * -1.0,
                 other[e4125] * self[e4125],
-            ]) + (other.group3().xyzy() * Simd32x3::from(self[e1234]).with_w(self[e4315]))
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4315]]) * other.group3().xyzy())
                 + (self.group0().zxyx() * other.group0().yzx().with_w(other[e4235]))
                 - (Simd32x4::from(self[e1234]) * other.group1().xyz().with_w(other[e3215]))
                 - (self.group0().yzxw() * other.group0().zxy().with_w(other[e1234])),
@@ -23662,8 +23698,8 @@ impl GeometricAntiProduct<Motor> for Sphere {
                 other[e435] * self[e4235] * -1.0,
                 other[e415] * self[e4315] * -1.0,
                 other[e125] * self[e4125],
-            ]) + (other.group0().zxyw() * self.group0().yzxw())
-                + (other.group1().xyzy() * Simd32x3::from(self[e1234]).with_w(self[e4315]))
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e4315]]) * other.group1().xyzy())
+                + (other.group0().zxyw() * self.group0().yzxw())
                 + (self.group0().xyzx() * other.group0().www().with_w(other[e235])),
         );
     }
@@ -23871,7 +23907,7 @@ impl GeometricAntiProduct<VersorEven> for Sphere {
                 - (self.group0().xyxx() * other.group1().ww().with_zw(other[e2], other[e415]))
                 - (self.group0().yzzy() * other.group3().zx().with_zw(other[e321], other[e425])),
             // e15, e25, e35, e1234
-            (self.group0().zxy() * other.group2().yzx()).with_w(self[e1234] * other[e12345]) + (self.group0().www() * other.group1().xyz()).with_w(self[e1234] * other[e321])
+            (self.group0().zxy() * other.group2().yzx()).with_w(self[e1234] * other[e12345]) + (other.group1().xyz() * self.group0().www()).with_w(self[e1234] * other[e321])
                 - (self.group0().xyxx() * other.group2().wwy().with_w(other[e423]))
                 - (self.group0().yzzy() * other.group2().zxw().with_w(other[e431]))
                 - (self.group0().wwwz() * other.group3().xyz().with_w(other[e412])),
@@ -23977,11 +24013,11 @@ impl GeometricAntiProduct<AntiCircleRotor> for VersorEven {
                 + (Simd32x4::from([self[e4], self[e412], self[e423], self[e2]]) * other.group2().xxy().with_w(other[e31]))
                 + (self.group2().ywwy() * other.group0().zyz().with_w(other[e42]))
                 + (self.group2().wzxx() * other.group0().xxy().with_w(other[e41]))
-                + (other.group2().www() * self.group1().xyz()).with_w(other[e45] * self[e12345])
+                + (self.group1().xyz() * other.group2().www()).with_w(other[e45] * self[e12345])
                 - (other.group2().yzxw() * self.group0().zxy().with_w(self[e321]))
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e15] * self[e423])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e25] * self[e431])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e35] * self[e412]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e35] * self[e412]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (other[e15] * self[e321]) + (other[e35] * self[e425]) + (other[e35] * self[e2]) + (other[scalar] * self[e235]),
@@ -23991,7 +24027,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for VersorEven {
             ]) + (Simd32x4::from([self[e12345], self[e435], self[e415], self[e4]]) * other.group2().xxyw())
                 + (other.group1().xxy() * self.group2().wzx()).with_w(other[e41] * self[e1])
                 + (other.group1().zyz() * self.group2().yww()).with_w(other[e42] * self[e2])
-                + (other.group1().www() * self.group2().xyz()).with_w(other[e43] * self[e3])
+                + (self.group2().xyz() * other.group1().www()).with_w(other[e43] * self[e3])
                 - (self.group1().zxyy() * other.group2().yzx().with_w(other[e42]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e41] * self[e415])
                 - (other.group2().yzx() * self.group3().zxy()).with_w(other[e43] * self[e435]),
@@ -24038,8 +24074,8 @@ impl GeometricAntiProduct<AntiDipoleInversion> for VersorEven {
                 - (Simd32x4::from(other[e431]) * self.group1().zw().with_zw(self[e1], self[e315]))
                 - (Simd32x4::from(other[e412]) * Simd32x4::from([self[e2], self[e415], self[e321], self[e125]]))
                 - (other.group1().yzxx() * self.group0().zxy().with_w(self[e415]))
-                - (other.group2().www() * self.group3().xyz()).with_w(other[e425] * self[e425])
-                - (other.group3().yzx() * self.group0().zxy()).with_w(other[e435] * self[e435]),
+                - (other.group3().yzx() * self.group0().zxy()).with_w(other[e435] * self[e435])
+                - (self.group3().xyz() * other.group2().www()).with_w(other[e425] * self[e425]),
             // e415, e425, e435, e321
             Simd32x4::from([
                 (other[e235] * self[e4]) + (other[e125] * self[e431]) + (other[e4] * self[e235]) + (other[e1] * self[e321]) + (other[e3] * self[e2]) + (other[e5] * self[e423]),
@@ -24050,7 +24086,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for VersorEven {
                 + (Simd32x4::from([self[e425], self[e12345], self[e12345], self[e412]]) * other.group1().zyz().with_w(other[e125]))
                 + (other.group0().xxy() * self.group2().wzx()).with_w(other[e321] * self[e12345])
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e235] * self[e423])
-                + (other.group1().www() * self.group3().xyz()).with_w(other[e4] * self[e5])
+                + (self.group3().xyz() * other.group1().www()).with_w(other[e4] * self[e5])
                 - (self.group2().zxyx() * other.group0().yzx().with_w(other[e423]))
                 - (self.group3().zxyx() * other.group3().yzx().with_w(other[e415]))
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e431] * self[e315])
@@ -24082,7 +24118,7 @@ impl GeometricAntiProduct<AntiDipoleInversion> for VersorEven {
                 + (Simd32x4::from([self[e2], self[e321], self[e321], self[e4]]) * other.group1().zyzw())
                 + (other.group0().xxy() * self.group2().wzx()).with_w(other[e423] * self[e1])
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e431] * self[e2])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e4] * self[e12345])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e4] * self[e12345])
                 - (Simd32x4::from([self[e431], self[e4], self[e4], self[e423]]) * other.group2().zyz().with_w(other[e415]))
                 - (Simd32x4::from([self[e4], self[e412], self[e423], self[e435]]) * other.group2().xxy().with_w(other[e412]))
                 - (self.group0().xyzz() * other.group3().www().with_w(other[e435]))
@@ -24137,7 +24173,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for VersorEven {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            (other.group0().www() * self.group0().xyz()).with_w((other[e321] * self[e321]) - (other[e235] * self[e423]) - (other[e315] * self[e431]) - (other[e125] * self[e412])),
+            (self.group0().xyz() * other.group0().www()).with_w((other[e321] * self[e321]) - (other[e235] * self[e423]) - (other[e315] * self[e431]) - (other[e125] * self[e412])),
             // e415, e425, e435, e321
             Simd32x4::from([
                 other[e315] * self[e412] * -1.0,
@@ -24485,7 +24521,7 @@ impl GeometricAntiProduct<Circle> for VersorEven {
             ]) - (self.group1().zxyx() * other.group2().yzx().with_w(other[e235]))
                 - (self.group3().zxyx() * other.group2().yzx().with_w(other[e235]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e315] * self[e425])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e315] * self[e2]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e315] * self[e2]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[e435] * self[e2]) + (other[e321] * self[e415]),
@@ -24538,7 +24574,7 @@ impl GeometricAntiProduct<CircleRotor> for VersorEven {
                 + (Simd32x4::from([self[e425], self[e12345], self[e12345], self[e412]]) * other.group1().zyz().with_w(other[e125]))
                 + (other.group0().xxy() * self.group2().wzx()).with_w(other[e321] * self[e12345])
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e235] * self[e423])
-                + (other.group1().www() * self.group3().xyz()).with_w(other[e12345] * self[e321])
+                + (self.group3().xyz() * other.group1().www()).with_w(other[e12345] * self[e321])
                 - (self.group2().zxyx() * other.group0().yzx().with_w(other[e423]))
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e431] * self[e315])
                 - (other.group2().yzx() * self.group0().zxy()).with_w(other[e412] * self[e125]),
@@ -24583,7 +24619,7 @@ impl GeometricAntiProduct<CircleRotor> for VersorEven {
                 + (Simd32x4::from([self[e2], self[e321], self[e321], self[e4]]) * other.group1().zyzw())
                 + (other.group0().xxy() * self.group2().wzx()).with_w(other[e423] * self[e1])
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e431] * self[e2])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e12345] * self[e4])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e12345] * self[e4])
                 - (Simd32x4::from([self[e431], self[e4], self[e4], self[e423]]) * other.group2().zyz().with_w(other[e415]))
                 - (Simd32x4::from([self[e4], self[e412], self[e423], self[e435]]) * other.group2().xxy().with_w(other[e412]))
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e423] * self[e415])
@@ -24684,7 +24720,7 @@ impl GeometricAntiProduct<DipoleInversion> for VersorEven {
                 - (Simd32x4::from([self[e4], self[e412], self[e423], self[e321]]) * other.group3().xxy().with_w(other[e45]))
                 - (other.group1().yzxx() * self.group0().zxy().with_w(self[e415]))
                 - (other.group1().wwwy() * self.group0().xyz().with_w(self[e425]))
-                - (other.group2().www() * self.group3().xyz()).with_w(other[e12] * self[e435]),
+                - (self.group3().xyz() * other.group2().www()).with_w(other[e12] * self[e435]),
             // e23, e31, e12, e45
             Simd32x4::from([other[e3215] * self[e423], other[e3215] * self[e431], other[e3215] * self[e412], other[e4125] * self[e435] * -1.0])
                 + (Simd32x4::from([self[e431], self[e4], self[e4], self[e3]]) * other.group2().zyz().with_w(other[e12]))
@@ -24694,13 +24730,13 @@ impl GeometricAntiProduct<DipoleInversion> for VersorEven {
                 + (other.group3().yzxw() * self.group3().zxyw())
                 + (self.group2().ywwy() * other.group0().zyz().with_w(other[e42]))
                 + (self.group2().wzxx() * other.group0().xxy().with_w(other[e41]))
-                + (other.group2().www() * self.group2().xyz()).with_w(other[e45] * self[e12345])
+                + (self.group2().xyz() * other.group2().www()).with_w(other[e45] * self[e12345])
                 - (Simd32x4::from([self[e321], self[e3], self[e1], self[e415]]) * other.group3().xxyx())
                 - (Simd32x4::from([self[e2], self[e321], self[e321], self[e425]]) * other.group3().zyzy())
                 - (other.group2().yzxw() * self.group0().zxy().with_w(self[e5]))
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e15] * self[e423])
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e25] * self[e431])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e35] * self[e412]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e35] * self[e412]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (other[e4235] * self[e5]) + (other[e4125] * self[e315]) + (other[e3215] * self[e415]) + (other[e3215] * self[e1]),
@@ -24713,7 +24749,7 @@ impl GeometricAntiProduct<DipoleInversion> for VersorEven {
                 + (Simd32x4::from([self[e2], self[e321], self[e321], self[e412]]) * other.group2().zyz().with_w(other[e4125]))
                 + (other.group1().xxy() * self.group2().wzx()).with_w(other[e41] * self[e1])
                 + (other.group1().zyz() * self.group2().yww()).with_w(other[e42] * self[e2])
-                + (other.group1().www() * self.group2().xyz()).with_w(other[e43] * self[e3])
+                + (self.group2().xyz() * other.group1().www()).with_w(other[e43] * self[e3])
                 - (self.group1().zxyy() * other.group2().yzx().with_w(other[e42]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e41] * self[e415])
                 - (other.group2().yzx() * self.group3().zxy()).with_w(other[e43] * self[e435])
@@ -24778,7 +24814,7 @@ impl GeometricAntiProduct<FlatPoint> for VersorEven {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            (other.group0().www() * self.group0().xyz() * Simd32x3::from(-1.0))
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0))
                 .with_w(-(other[e15] * self[e423]) - (other[e25] * self[e431]) - (other[e35] * self[e412]) - (other[e45] * self[e321])),
             // e23, e31, e12, e45
             Simd32x4::from([other[e35] * self[e431], other[e25] * self[e4], other[e35] * self[e4], other[e35] * self[e412] * -1.0])
@@ -24986,7 +25022,7 @@ impl GeometricAntiProduct<Motor> for VersorEven {
             ]) + (Simd32x4::from([self[e12345], self[e435], self[e415], self[e321]]) * other.group0().xxyw())
                 + (Simd32x4::from([self[e425], self[e12345], self[e12345], self[e423]]) * other.group0().zyz().with_w(other[e235]))
                 + (Simd32x4::from([self[e4], self[e412], self[e423], self[e412]]) * other.group1().xxyz())
-                + (other.group0().www() * self.group1().xyz()).with_w(other[e315] * self[e431])
+                + (self.group1().xyz() * other.group0().www()).with_w(other[e315] * self[e431])
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e1]))
                 - (other.group1().yzx() * self.group0().zxy()).with_w(other[e425] * self[e2]),
             // e235, e315, e125, e5
@@ -25017,7 +25053,7 @@ impl GeometricAntiProduct<Motor> for VersorEven {
                     - (other[e125] * self[e3]),
             ]) + (other.group0().xxyw() * self.group2().wzxw())
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e5] * self[e12345])
-                + (other.group0().www() * self.group2().xyz()).with_w(other[e5] * self[e321])
+                + (self.group2().xyz() * other.group0().www()).with_w(other[e5] * self[e321])
                 - (other.group0().yzxx() * self.group2().zxyx())
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e425] * self[e315])
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e435] * self[e125]),
@@ -25107,7 +25143,7 @@ impl GeometricAntiProduct<MultiVector> for VersorEven {
                 + (self.group2().xyzx() * other.group0().xx().with_zw(other[scalar], other[e41]))
                 + (self.group2().ywwz() * other.group5().zyz().with_w(other[e43]))
                 + (self.group2().wzxy() * other.group5().xxy().with_w(other[e42]))
-                + (other.group3().www() * self.group2().xyz()).with_w(other[e3215] * self[e4])
+                + (self.group2().xyz() * other.group3().www()).with_w(other[e3215] * self[e4])
                 - (other.group3().yzxx() * self.group1().zxy().with_w(self[e423]))
                 - (other.group3().yzxy() * self.group3().zxy().with_w(self[e431]))
                 - (other.group5().yzx() * self.group2().zxy()).with_w(other[scalar] * self[e321])
@@ -25391,7 +25427,7 @@ impl GeometricAntiProduct<Sphere> for VersorEven {
             (other.group0().xxyx() * self.group2().wzx().with_w(self[e423]))
                 + (other.group0().zyzy() * self.group2().yww().with_w(self[e431]))
                 + (other.group0().wwwz() * self.group1().xyz().with_w(self[e412]))
-                + (other.group0().www() * self.group3().xyz()).with_w(other[e1234] * self[e12345])
+                + (self.group3().xyz() * other.group0().www()).with_w(other[e1234] * self[e12345])
                 - (other.group0().yzx() * self.group2().zxy()).with_w(other[e1234] * self[e321]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([other[e3215] * self[e423], other[e3215] * self[e431], other[e3215] * self[e412], other[e4125] * self[e125] * -1.0])
@@ -25424,13 +25460,13 @@ impl GeometricAntiProduct<VersorEven> for VersorEven {
             ]) + (Simd32x4::from([self[e12345], self[e435], self[e2], self[e12345]]) * other.group0().xxxw())
                 + (Simd32x4::from([self[e425], self[e1], self[e12345], self[e4]]) * other.group0().zzz().with_w(other[e5]))
                 + (Simd32x4::from([self[e3], self[e12345], self[e415], self[e321]]) * other.group0().yyy().with_w(other[e321]))
-                + (other.group0().www() * self.group0().xyz()).with_w(other[e4] * self[e5])
+                + (self.group0().xyz() * other.group0().www()).with_w(other[e4] * self[e5])
                 - (Simd32x4::from(other[e423]) * Simd32x4::from([self[e321], self[e3], self[e425], self[e235]]))
                 - (Simd32x4::from(other[e431]) * self.group1().zw().with_zw(self[e1], self[e315]))
                 - (Simd32x4::from(other[e412]) * Simd32x4::from([self[e2], self[e415], self[e321], self[e125]]))
                 - (other.group1().yzxx() * self.group0().zxy().with_w(self[e415]))
                 - (other.group3().yzx() * self.group0().zxy()).with_w(other[e425] * self[e425])
-                - (other.group3().www() * self.group3().xyz()).with_w(other[e435] * self[e435]),
+                - (self.group3().xyz() * other.group3().www()).with_w(other[e435] * self[e435]),
             // e415, e425, e435, e321
             Simd32x4::from([
                 (other[e235] * self[e4]) + (other[e125] * self[e431]) + (other[e5] * self[e423]) + (other[e1] * self[e321]) + (other[e3] * self[e2]) + (other[e4] * self[e235]),
@@ -25441,8 +25477,8 @@ impl GeometricAntiProduct<VersorEven> for VersorEven {
                 + (Simd32x4::from([self[e425], self[e12345], self[e12345], self[e412]]) * other.group1().zyz().with_w(other[e125]))
                 + (other.group0().xxyw() * self.group2().wzx().with_w(self[e321]))
                 + (other.group0().zyz() * self.group2().yww()).with_w(other[e321] * self[e12345])
-                + (other.group0().www() * self.group1().xyz()).with_w(other[e235] * self[e423])
-                + (other.group1().www() * self.group3().xyz()).with_w(other[e4] * self[e5])
+                + (self.group1().xyz() * other.group0().www()).with_w(other[e235] * self[e423])
+                + (self.group3().xyz() * other.group1().www()).with_w(other[e4] * self[e5])
                 - (other.group0().yzxx() * self.group2().zxyx())
                 - (self.group3().zxyx() * other.group3().yzx().with_w(other[e415]))
                 - (other.group1().yzx() * self.group1().zxy()).with_w(other[e431] * self[e315])
@@ -25476,7 +25512,7 @@ impl GeometricAntiProduct<VersorEven> for VersorEven {
                 + (other.group0().xxyx() * self.group2().wzx().with_w(self[e1]))
                 + (other.group0().zyzy() * self.group2().yww().with_w(self[e2]))
                 + (other.group0().wwwz() * self.group3().xyzz())
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e4] * self[e12345])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e4] * self[e12345])
                 - (Simd32x4::from([self[e431], self[e4], self[e4], self[e423]]) * other.group2().zyz().with_w(other[e415]))
                 - (Simd32x4::from([self[e4], self[e412], self[e423], self[e435]]) * other.group2().xxy().with_w(other[e412]))
                 - (other.group0().yzxx() * self.group2().zxy().with_w(self[e415]))
@@ -25510,7 +25546,7 @@ impl GeometricAntiProduct<VersorOdd> for VersorEven {
                 + (Simd32x4::from([other[e4315], other[e23], other[scalar], other[e4235]]) * self.group0().zzz().with_w(self[e1]))
                 + (other.group0().zx().with_zw(other[e1234], other[e3215]) * self.group1().yzz().with_w(self[e4]))
                 + (other.group2().ww().with_zw(other[e42], other[e4125]) * self.group1().xyx().with_w(self[e3]))
-                + (self.group0().www() * other.group0().xyz()).with_w(self[e2] * other[e4315])
+                + (other.group0().xyz() * self.group0().www()).with_w(self[e2] * other[e4315])
                 - (Simd32x4::from(self[e423]) * other.group1().wz().with_zw(other[e4315], other[e15]))
                 - (Simd32x4::from(self[e431]) * Simd32x4::from([other[e4125], other[e45], other[e23], other[e25]]))
                 - (Simd32x4::from(self[e412]) * Simd32x4::from([other[e31], other[e4235], other[e45], other[e35]]))
@@ -25518,7 +25554,7 @@ impl GeometricAntiProduct<VersorOdd> for VersorEven {
                 - (self.group1().wwwy() * other.group0().xyz().with_w(other[e31]))
                 - (other.group0().zx().with_zw(other[e1234], other[e45]) * self.group3().yzz().with_w(self[e321]))
                 - (other.group2().ww().with_zw(other[e42], other[e12]) * self.group3().xyx().with_w(self[e435]))
-                - (self.group3().www() * other.group3().xyz()).with_w(self[e235] * other[e41]),
+                - (other.group3().xyz() * self.group3().www()).with_w(self[e235] * other[e41]),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (self[e3] * other[e4315]) + (self[e4] * other[e15]),
@@ -25531,14 +25567,14 @@ impl GeometricAntiProduct<VersorOdd> for VersorEven {
                 + (other.group1().zx().with_zw(other[scalar], other[e23]) * self.group1().yzz().with_w(self[e1]))
                 + (other.group2().zx().with_zw(other[e3215], other[e41]) * self.group0().yzz().with_w(self[e235]))
                 + (other.group2().ww().with_zw(other[e42], other[e31]) * self.group2().xyx().with_w(self[e2]))
-                + (self.group0().www() * other.group1().xyz()).with_w(self[e315] * other[e42])
-                + (self.group2().www() * other.group0().xyz()).with_w(self[e4] * other[e3215])
+                + (other.group0().xyz() * self.group2().www()).with_w(self[e4] * other[e3215])
+                + (other.group1().xyz() * self.group0().www()).with_w(self[e315] * other[e42])
                 - (self.group0().zxyx() * other.group2().yzxx())
                 - (other.group1().ww().with_zw(other[e4315], other[e4315]) * self.group3().xyx().with_w(self[e425]))
                 - (other.group3().zx().with_zw(other[e45], other[e4125]) * self.group3().yzz().with_w(self[e435]))
                 - (self.group1().zxy() * other.group1().yzx()).with_w(self[e431] * other[e25])
-                - (self.group1().www() * other.group3().xyz()).with_w(self[e412] * other[e35])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235]),
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e415] * other[e4235])
+                - (other.group3().xyz() * self.group1().www()).with_w(self[e412] * other[e35]),
             // e15, e25, e35, e1234
             Simd32x4::from([
                 (self[e5] * other[e23]) + (self[e5] * other[e4235]) + (self[e1] * other[e3215]) + (self[e2] * other[e35]),
@@ -25566,7 +25602,7 @@ impl GeometricAntiProduct<VersorOdd> for VersorEven {
             ]) + (self.group0().xyxw() * other.group3().ww().with_zw(other[e25], other[e3215]))
                 + (other.group1().ww().with_zw(other[e4315], other[e45]) * self.group1().xyx().with_w(self[e5]))
                 + (other.group2().zx().with_zw(other[e3215], other[e3215]) * self.group0().yzz().with_w(self[e321]))
-                + (self.group0().www() * other.group3().xyz()).with_w(self[e5] * other[scalar])
+                + (other.group3().xyz() * self.group0().www()).with_w(self[e5] * other[scalar])
                 - (self.group1().zxyy() * other.group3().yzx().with_w(other[e25]))
                 - (self.group1().wwwz() * other.group1().xyz().with_w(other[e35]))
                 - (self.group2().xyxx() * other.group2().ww().with_zw(other[e42], other[e23]))
@@ -25623,7 +25659,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for VersorOdd {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4315]]) * other.group0().zyz().with_w(other[e31]))
                 - (Simd32x4::from([self[e1234], self[e43], self[e41], self[e43]]) * other.group2().xxyz())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4235]]) * other.group0().xxy().with_w(other[e23]))
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e25] * self[e42]),
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e25] * self[e42]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(other[e35] * self[e31]) - (other[scalar] * self[e15]),
@@ -25638,7 +25674,7 @@ impl GeometricAntiProduct<AntiCircleRotor> for VersorOdd {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[scalar], self[e23], self[e3215]]) * other.group2().yyyw())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 -(other[e43] * self[e25]) - (other[e31] * self[e4125]) - (other[e25] * self[e43]),
@@ -25650,8 +25686,8 @@ impl GeometricAntiProduct<AntiCircleRotor> for VersorOdd {
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e12]]) * other.group2().xxy().with_w(other[e43]))
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e31]]) * other.group1().zyz().with_w(other[e42]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e42] * self[e4315])
-                + (other.group2().www() * self.group3().xyz()).with_w(other[e23] * self[e41])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e42] * self[e4315])
+                + (self.group3().xyz() * other.group2().www()).with_w(other[e23] * self[e41])
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e1234]]) * other.group0().xxy().with_w(other[scalar])),
         );
     }
@@ -25723,8 +25759,8 @@ impl GeometricAntiProduct<AntiDipoleInversion> for VersorOdd {
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4125]]) * other.group3().xxy().with_w(other[e412]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4315]) * other.group2().yyy().with_w(other[e431]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e423] * self[e4235])
-                - (other.group3().www() * self.group3().xyz()).with_w(other[e425] * self[e42]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e423] * self[e4235])
+                - (self.group3().xyz() * other.group3().www()).with_w(other[e425] * self[e42]),
             // e4235, e4315, e4125, e3215
             (Simd32x4::from(other[e5]) * self.group0())
                 + (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e25]]) * other.group2().zyz().with_w(other[e2]))
@@ -25791,7 +25827,7 @@ impl GeometricAntiProduct<AntiFlatPoint> for VersorOdd {
         use crate::elements::*;
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            (other.group0().www() * self.group0().xyz()).with_w(-(other[e235] * self[e41]) - (other[e315] * self[e42]) - (other[e125] * self[e43]) - (other[e321] * self[e45])),
+            (self.group0().xyz() * other.group0().www()).with_w(-(other[e235] * self[e41]) - (other[e315] * self[e42]) - (other[e125] * self[e43]) - (other[e321] * self[e45])),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (other[e235] * self[e1234]) + (other[e125] * self[e42]),
@@ -25835,7 +25871,7 @@ impl GeometricAntiProduct<AntiFlector> for VersorOdd {
             (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e4125]]) * other.group1().zyzz())
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e4315]]) * other.group1().xxyy())
                 + Simd32x3::from(0.0).with_w((other[e5] * self[e1234]) - (other[e315] * self[e42]) - (other[e125] * self[e43]) - (other[e321] * self[e45]))
-                + (other.group0().www() * self.group0().xyz()).with_w(other[e1] * self[e4235])
+                + (self.group0().xyz() * other.group0().www()).with_w(other[e1] * self[e4235])
                 - (self.group0().zxyx() * other.group1().yzx().with_w(other[e235])),
             // e23, e31, e12, e45
             (Simd32x4::from(other[e5]) * self.group0().xyz().with_w(self[e1234]))
@@ -25981,7 +26017,7 @@ impl GeometricAntiProduct<AntiMotor> for VersorOdd {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group0().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[scalar], self[e23], self[scalar]]) * other.group1().yyyw())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group0().xxyw())
-                - (other.group0().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group0().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 (other[e15] * self[e1234]) + (other[e35] * self[e42]) + (other[e3215] * self[e41]) - (other[e25] * self[e43]),
@@ -26134,7 +26170,7 @@ impl GeometricAntiProduct<Circle> for VersorOdd {
                 - (Simd32x4::from([self[e4315], self[e23], self[e45], self[e31]]) * other.group2().zzz().with_w(other[e431]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4235]) * other.group2().yyy().with_w(other[e423]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e431] * self[e4315])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e412] * self[e12]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e412] * self[e12]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (other[e415] * self[e45]) + (other[e435] * self[e4315]),
@@ -26225,7 +26261,7 @@ impl GeometricAntiProduct<CircleRotor> for VersorOdd {
                 - (Simd32x4::from([self[e4315], self[e23], self[e45], self[e12]]) * other.group2().zzz().with_w(other[e412]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4315]) * other.group2().yyy().with_w(other[e431]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e423] * self[e4235]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e423] * self[e4235]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([
                 (other[e125] * self[e42]) + (other[e12345] * self[e4235]),
@@ -26308,7 +26344,7 @@ impl GeometricAntiProduct<Dipole> for VersorOdd {
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e4235]]) * other.group2().xxy().with_w(other[e41]))
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e12]]) * other.group1().zyz().with_w(other[e43]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e43] * self[e4125]),
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e43] * self[e4125]),
         );
     }
 }
@@ -26378,8 +26414,8 @@ impl GeometricAntiProduct<DipoleInversion> for VersorOdd {
                 - (Simd32x4::from([self[e1234], self[e43], self[e41], self[e43]]) * other.group2().xxyz())
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], self[e12]]) * other.group3().zyzz())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4235]]) * other.group0().xxy().with_w(other[e23]))
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e25] * self[e42])
-                - (other.group2().www() * self.group2().xyz()).with_w(other[e4235] * self[e23]),
+                - (self.group2().xyz() * other.group2().www()).with_w(other[e4235] * self[e23])
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e25] * self[e42]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(other[e35] * self[e31]) - (other[e4235] * self[e3215]) - (other[e4125] * self[e25]) - (other[e3215] * self[e23]),
@@ -26391,12 +26427,12 @@ impl GeometricAntiProduct<DipoleInversion> for VersorOdd {
                 + (other.group1().yzxx() * self.group2().zxyx())
                 + (self.group1().zw().with_zw(self[e4235], self[e35]) * other.group2().yyy().with_w(other[e12]))
                 + (other.group3().yzx() * self.group2().zxy()).with_w(other[e25] * self[e31])
-                + (other.group3().www() * self.group3().xyz()).with_w(other[e35] * self[e12])
+                + (self.group3().xyz() * other.group3().www()).with_w(other[e35] * self[e12])
                 - (Simd32x4::from([self[scalar], self[e12], self[e4315], self[e4125]]) * other.group2().xxxz())
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[scalar], self[e23], self[scalar]]) * other.group2().yyy().with_w(other[e3215]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             Simd32x4::from([
                 other[e4315] * self[e12] * -1.0,
@@ -26411,12 +26447,12 @@ impl GeometricAntiProduct<DipoleInversion> for VersorOdd {
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e31]]) * other.group1().zyz().with_w(other[e42]))
                 + (self.group0().xyzz() * other.group3().www().with_w(other[e12]))
                 + (other.group0().yzx() * self.group2().zxy()).with_w(other[e41] * self[e23])
-                + (other.group1().www() * self.group1().xyz()).with_w(other[e42] * self[e4315])
+                + (self.group1().xyz() * other.group1().www()).with_w(other[e42] * self[e4315])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e45]]) * other.group0().zyz().with_w(other[e1234]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[scalar]]) * other.group0().xxy().with_w(other[e1234]))
                 - (self.group0().zxyy() * other.group2().yzx().with_w(other[e4315]))
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e4235] * self[e41])
-                - (other.group2().www() * self.group2().xyz()).with_w(other[e4125] * self[e43]),
+                - (self.group2().xyz() * other.group2().www()).with_w(other[e4125] * self[e43]),
         );
     }
 }
@@ -26459,7 +26495,7 @@ impl GeometricAntiProduct<FlatPoint> for VersorOdd {
         use crate::elements::*;
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            (other.group0().www() * self.group0().xyz()).with_w((other[e15] * self[e41]) + (other[e25] * self[e42]) + (other[e35] * self[e43]) - (other[e45] * self[e45])),
+            (self.group0().xyz() * other.group0().www()).with_w((other[e15] * self[e41]) + (other[e25] * self[e42]) + (other[e35] * self[e43]) - (other[e45] * self[e45])),
             // e415, e425, e435, e321
             (other.group0().yzxw() * self.group0().zxyw())
                 - (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e42]]) * other.group0().zyzy())
@@ -26719,8 +26755,8 @@ impl GeometricAntiProduct<MultiVector> for VersorOdd {
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e4315]]) * other.group5().zyz().with_w(other[e42]))
                 + (other.group0().xx().with_zw(other[scalar], other[e41]) * self.group3().xyz().with_w(self[e23]))
                 + (other.group4().yzx() * self.group2().zxy()).with_w(other[e41] * self[e4235])
-                + (other.group3().www() * self.group1().xyz()).with_w(other[e23] * self[e41])
-                + (other.group9().www() * self.group0().xyz()).with_w(other[e45] * self[e1234])
+                + (self.group0().xyz() * other.group9().www()).with_w(other[e45] * self[e1234])
+                + (self.group1().xyz() * other.group3().www()).with_w(other[e23] * self[e41])
                 - (Simd32x4::from(other[e1234]) * self.group2().xyz().with_w(self[e45]))
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e41]]) * other.group4().zyz().with_w(other[e4235]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e1234]]) * other.group4().xxy().with_w(other[scalar]))
@@ -26814,7 +26850,7 @@ impl GeometricAntiProduct<MultiVector> for VersorOdd {
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], other[e1234]]) * other.group9().zyz().with_w(self[e3215]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4315]]) * other.group4().xxy().with_w(other[e31]))
                 - (other.group0().xx().with_zw(other[scalar], other[e23]) * self.group1().xyz().with_w(self[e4235]))
-                - (other.group3().www() * self.group3().xyz()).with_w(other[e4315] * self[e31]),
+                - (self.group3().xyz() * other.group3().www()).with_w(other[e4315] * self[e31]),
             // e423, e431, e412
             (Simd32x3::from(other[e45]) * self.group0().xyz())
                 + (Simd32x3::from([self[e42], self[e1234], self[e1234]]) * other.group9().zyz())
@@ -26865,7 +26901,7 @@ impl GeometricAntiProduct<MultiVector> for VersorOdd {
                 - (other.group6().yzxw() * self.group3().zxyw())
                 - (self.group2().xyzz() * other.group1().www().with_w(other[e435]))
                 - (other.group8().yzx() * self.group0().zxy()).with_w(other[e125] * self[e12])
-                - (other.group6().www() * self.group1().xyz()).with_w(other[e5] * self[e45]),
+                - (self.group1().xyz() * other.group6().www()).with_w(other[e5] * self[e45]),
             // e1234
             (other[e12345] * self[e1234]) + (other[e4] * self[scalar]) + (other[e4] * self[e45]) + (other[e321] * self[e1234])
                 - (other[e1] * self[e41])
@@ -27064,7 +27100,7 @@ impl GeometricAntiProduct<VersorEven> for VersorOdd {
                 + (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e1234]]) * other.group0().xxy().with_w(other[e5]))
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e3215]]) * other.group1().xxy().with_w(other[e4]))
                 + (Simd32x4::from([self[e4315], self[e45], self[e45], self[e4315]]) * other.group0().zyz().with_w(other[e2]))
-                + (other.group0().www() * self.group0().xyz()).with_w(other[e3] * self[e4125])
+                + (self.group0().xyz() * other.group0().www()).with_w(other[e3] * self[e4125])
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e15]))
                 - (other.group0().yzxy() * self.group3().zxy().with_w(self[e25]))
                 - (other.group1().yzx() * self.group0().zxy()).with_w(other[e412] * self[e35])
@@ -27082,7 +27118,7 @@ impl GeometricAntiProduct<VersorEven> for VersorOdd {
                 + (Simd32x4::from([self[e1234], self[e43], self[e41], self[e23]]) * other.group2().xxy().with_w(other[e1]))
                 + (Simd32x4::from([self[e3215], self[e35], self[e15], self[e15]]) * other.group0().xxyx())
                 + (other.group0().wwwz() * self.group1().xyz().with_w(self[e35]))
-                + (other.group2().www() * self.group0().xyz()).with_w(other[e3] * self[e12])
+                + (self.group0().xyz() * other.group2().www()).with_w(other[e3] * self[e12])
                 - (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e41]]) * other.group3().xxy().with_w(other[e235]))
                 - (Simd32x4::from([self[e4315], self[e45], self[e45], self[e42]]) * other.group3().zyz().with_w(other[e315]))
                 - (other.group1().yzxy() * self.group1().zxy().with_w(self[e4315]))
@@ -27106,7 +27142,7 @@ impl GeometricAntiProduct<VersorEven> for VersorOdd {
                 - (self.group3().xyzz() * other.group2().www().with_w(other[e412]))
                 - (self.group1().zw().with_zw(self[e4235], self[e4315]) * other.group2().yyy().with_w(other[e431]))
                 - (other.group1().yzx() * self.group2().zxy()).with_w(other[e423] * self[e23])
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e423] * self[e4235]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e423] * self[e4235]),
             // e4235, e4315, e4125, e3215
             (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e15]]) * other.group2().zyz().with_w(other[e1]))
                 + (Simd32x4::from([self[e45], self[e4125], self[e4235], self[e4315]]) * other.group1().xxy().with_w(other[e315]))
@@ -27115,7 +27151,7 @@ impl GeometricAntiProduct<VersorEven> for VersorOdd {
                 + (other.group0().yzxw() * self.group2().zxy().with_w(self[e3215]))
                 + (other.group3().yzxz() * self.group1().zxy().with_w(self[e35]))
                 + (self.group3().xyzx() * other.group0().www().with_w(other[e235]))
-                + (other.group2().www() * self.group0().xyz()).with_w(other[e2] * self[e25])
+                + (self.group0().xyz() * other.group2().www()).with_w(other[e2] * self[e25])
                 - (Simd32x4::from(other[e321]) * self.group1().xyz().with_w(self[e3215]))
                 - (Simd32x4::from([self[scalar], self[e12], self[e23], self[e31]]) * other.group3().xxy().with_w(other[e315]))
                 - (Simd32x4::from([self[e31], self[scalar], self[scalar], self[e12]]) * other.group3().zyz().with_w(other[e125]))
@@ -27123,7 +27159,7 @@ impl GeometricAntiProduct<VersorEven> for VersorOdd {
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e15]]) * other.group0().xxy().with_w(other[e415]))
                 - (other.group1().yzxz() * self.group3().zxy().with_w(self[e35]))
                 - (other.group2().yzxx() * self.group0().zxy().with_w(self[e23]))
-                - (other.group3().www() * self.group2().xyz()).with_w(other[e5] * self[e45]),
+                - (self.group2().xyz() * other.group3().www()).with_w(other[e5] * self[e45]),
         );
     }
 }
@@ -27193,9 +27229,9 @@ impl GeometricAntiProduct<VersorOdd> for VersorOdd {
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4315]]) * other.group0().zyz().with_w(other[e31]))
                 - (Simd32x4::from([self[e1234], self[e43], self[e41], self[e3215]]) * other.group2().xxyw())
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e4235]]) * other.group0().xxy().with_w(other[e23]))
-                - (other.group0().www() * self.group1().xyz()).with_w(other[e12] * self[e4125])
-                - (other.group1().www() * self.group3().xyz()).with_w(other[e35] * self[e43])
-                - (other.group2().www() * self.group2().xyz()).with_w(other[e4315] * self[e31]),
+                - (self.group1().xyz() * other.group0().www()).with_w(other[e12] * self[e4125])
+                - (self.group2().xyz() * other.group2().www()).with_w(other[e4315] * self[e31])
+                - (self.group3().xyz() * other.group1().www()).with_w(other[e35] * self[e43]),
             // e235, e315, e125, e5
             Simd32x4::from([
                 -(other[e35] * self[e31]) - (other[e4235] * self[e3215]) - (other[e4125] * self[e25]) - (other[e3215] * self[e23]),
@@ -27207,13 +27243,13 @@ impl GeometricAntiProduct<VersorOdd> for VersorOdd {
                 + (other.group1().yzxx() * self.group2().zxyx())
                 + (self.group1().zw().with_zw(self[e4235], self[e35]) * other.group2().yyy().with_w(other[e12]))
                 + (other.group3().yzx() * self.group2().zxy()).with_w(other[e25] * self[e31])
-                + (other.group3().www() * self.group3().xyz()).with_w(other[e35] * self[e12])
+                + (self.group3().xyz() * other.group3().www()).with_w(other[e35] * self[e12])
                 - (Simd32x4::from(other[scalar]) * self.group2().xyz().with_w(self[e3215]))
                 - (Simd32x4::from([self[scalar], self[e12], self[e4315], self[e4125]]) * other.group2().xxxz())
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[e4235]]) * other.group1().zyz().with_w(other[e15]))
                 - (Simd32x4::from([self[e4125], self[scalar], self[e23], self[scalar]]) * other.group2().yyy().with_w(other[e3215]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e3215]]) * other.group1().xxyw())
-                - (other.group1().www() * self.group2().xyz()).with_w(other[e25] * self[e4315]),
+                - (self.group2().xyz() * other.group1().www()).with_w(other[e25] * self[e4315]),
             // e1, e2, e3, e4
             (Simd32x4::from([self[e42], self[e1234], self[e1234], self[e41]]) * other.group2().zyz().with_w(other[e23]))
                 + (Simd32x4::from([self[scalar], self[e12], self[e23], self[e42]]) * other.group3().xxy().with_w(other[e31]))
@@ -27224,13 +27260,13 @@ impl GeometricAntiProduct<VersorOdd> for VersorOdd {
                 + (other.group0().yzxx() * self.group2().zxy().with_w(self[e23]))
                 + (other.group0().wwwx() * self.group3().xyzx())
                 + (self.group1().xyzz() * other.group1().www().with_w(other[e43]))
-                + (other.group3().www() * self.group0().xyz()).with_w(other[e45] * self[e1234])
+                + (self.group0().xyz() * other.group3().www()).with_w(other[e45] * self[e1234])
                 - (Simd32x4::from([self[e25], self[e3215], self[e3215], self[scalar]]) * other.group0().zyz().with_w(other[e1234]))
                 - (Simd32x4::from([self[e3215], self[e35], self[e15], self[e1234]]) * other.group0().xxyw())
                 - (other.group3().yzxz() * self.group1().zxy().with_w(self[e43]))
                 - (self.group0().zxyx() * other.group2().yzx().with_w(other[e4235]))
                 - (other.group1().yzx() * self.group3().zxy()).with_w(other[e1234] * self[e45])
-                - (other.group2().www() * self.group2().xyz()).with_w(other[e4315] * self[e42]),
+                - (self.group2().xyz() * other.group2().www()).with_w(other[e4315] * self[e42]),
         );
     }
 }

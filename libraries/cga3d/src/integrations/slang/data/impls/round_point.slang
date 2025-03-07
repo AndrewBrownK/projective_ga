@@ -728,7 +728,7 @@ public extension RoundPoint {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );
@@ -740,7 +740,7 @@ public extension RoundPoint {
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125, e4 */
             float4(other.group0.xyz, this.e4) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
@@ -754,7 +754,7 @@ public extension RoundPoint {
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125, e4 */
             float4(other.group0.xyz, this.e4) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
@@ -812,7 +812,7 @@ public extension RoundPoint {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );
@@ -832,7 +832,7 @@ public extension RoundPoint {
     public VersorEven operator -(AntiScalar other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), other.e12345 * -1.0), 
+            float4(float3(0.0), other.e12345) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
@@ -930,7 +930,7 @@ public extension RoundPoint {
     public VersorEven operator -(DualNum other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), other.e12345 * -1.0), 
+            float4(float3(0.0), other.e12345) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
@@ -1014,7 +1014,7 @@ public extension RoundPoint {
     public VersorEven operator -(Motor other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), other.e12345 * -1.0), 
+            float4(float3(0.0), other.e12345) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e415, e425, e435, e321 */
             float4((other.group0.xyz * float3(-1.0)), 0.0), 
             /* e235, e315, e125, e5 */

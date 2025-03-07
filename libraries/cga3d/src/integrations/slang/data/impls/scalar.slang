@@ -708,7 +708,7 @@ public extension Scalar {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -736,7 +736,7 @@ public extension Scalar {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -940,7 +940,7 @@ public extension Scalar {
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), other.e45 * -1.0), 
+            float4(float3(0.0), other.e45) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e15, e25, e35, scalar */
             float4(other.group0.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0)
         );
@@ -952,7 +952,7 @@ public extension Scalar {
             /* e41, e42, e43, scalar */
             float4(float3(0.0), this.scalar), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), other.e45 * -1.0), 
+            float4(float3(0.0), other.e45) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e15, e25, e35, e1234 */
             float4((other.group0.xyz * float3(-1.0)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -1102,7 +1102,7 @@ public extension Scalar {
             /* e23, e31, e12, e45 */
             float4(0.0), 
             /* e15, e25, e35, e1234 */
-            float4(float3(0.0), other.e1234 * -1.0), 
+            float4(float3(0.0), other.e1234) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group0 * float4(-1.0)
         );

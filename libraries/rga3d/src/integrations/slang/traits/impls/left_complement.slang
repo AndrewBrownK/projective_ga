@@ -28,7 +28,7 @@ public extension DualNum {
     public DualNum left_complement() {
         return DualNum(
             /* scalar, e1234 */
-            this.group0.xy.yx
+            this.group0.yx
         );
     }
 }
@@ -114,7 +114,7 @@ public extension MultiVector {
     public MultiVector left_complement() {
         return MultiVector(
             /* scalar, e1234 */
-            this.group0.xy.yx, 
+            this.group0.yx, 
             /* e1, e2, e3, e4 */
             this.group4, 
             /* e41, e42, e43 */

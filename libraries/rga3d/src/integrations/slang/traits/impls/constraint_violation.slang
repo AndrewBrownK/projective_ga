@@ -26,15 +26,10 @@ public AntiScalar operator /(ConstraintViolationPrefixOrPostfix lhs, Flector rhs
 }
 public extension Flector {
     public AntiScalar constraint_violation() {
-        Flector reverse = Flector(
-            /* e1, e2, e3, e4 */
-            this.group0, 
-            /* e423, e431, e412, e321 */
-            this.group1 * float4(-1.0)
-        );
+        float4 reverse_g1 = this.group1 * float4(-1.0);
         return AntiScalar(
             /* e1234 */
-            (reverse.e423 * this.e1) + (reverse.e431 * this.e2) + (reverse.e412 * this.e3) + (reverse.e321 * this.e4) - (reverse.e1 * this.e423) - (reverse.e2 * this.e431) - (reverse.e3 * this.e412) - (reverse.e4 * this.e321)
+            (reverse_g1[0] * this.e1) + (reverse_g1[1] * this.e2) + (reverse_g1[2] * this.e3) + (reverse_g1[3] * this.e4) - (this.e1 * this.e423) - (this.e2 * this.e431) - (this.e3 * this.e412) - (this.e4 * this.e321)
         );
     }
 }
@@ -48,15 +43,11 @@ public AntiScalar operator /(ConstraintViolationPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public AntiScalar constraint_violation() {
-        Line reverse = Line(
-            /* e41, e42, e43 */
-            this.group0.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            this.group1.xyz * float3(-1.0)
-        );
+        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
+        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return AntiScalar(
             /* e1234 */
-            -(reverse.e41 * this.e23) - (reverse.e42 * this.e31) - (reverse.e43 * this.e12) - (reverse.e23 * this.e41) - (reverse.e31 * this.e42) - (reverse.e12 * this.e43)
+            -(reverse_g0[0] * this.e23) - (reverse_g0[1] * this.e31) - (reverse_g0[2] * this.e12) - (reverse_g1[0] * this.e41) - (reverse_g1[1] * this.e42) - (reverse_g1[2] * this.e43)
         );
     }
 }
@@ -70,15 +61,11 @@ public AntiScalar operator /(ConstraintViolationPrefixOrPostfix lhs, Motor rhs) 
 }
 public extension Motor {
     public AntiScalar constraint_violation() {
-        Motor reverse = Motor(
-            /* e41, e42, e43, e1234 */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e23, e31, e12, scalar */
-            this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e1234 */
-            (reverse.e1234 * this.scalar) + (reverse.scalar * this.e1234) - (reverse.e41 * this.e23) - (reverse.e42 * this.e31) - (reverse.e43 * this.e12) - (reverse.e23 * this.e41) - (reverse.e31 * this.e42) - (reverse.e12 * this.e43)
+            (reverse_g0[3] * this.scalar) + (reverse_g1[3] * this.e1234) - (reverse_g0[0] * this.e23) - (reverse_g0[1] * this.e31) - (reverse_g0[2] * this.e12) - (reverse_g1[0] * this.e41) - (reverse_g1[1] * this.e42) - (reverse_g1[2] * this.e43)
         );
     }
 }
@@ -92,35 +79,14 @@ public MultiVector operator /(ConstraintViolationPrefixOrPostfix lhs, MultiVecto
 }
 public extension MultiVector {
     public MultiVector constraint_violation() {
-        MultiVector reverse = MultiVector(
-            /* scalar, e1234 */
-            this.group0.xy, 
-            /* e1, e2, e3, e4 */
-            this.group1, 
-            /* e41, e42, e43 */
-            this.group2.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            this.group3.xyz * float3(-1.0), 
-            /* e423, e431, e412, e321 */
-            this.group4 * float4(-1.0)
-        );
-        MultiVector geometric_product = MultiVector(
-            /* scalar, e1234 */
-            float2(0.0, (reverse.e1234 * this.scalar) + (reverse.e321 * this.e4) - (reverse.e2 * this.e431) - (reverse.e3 * this.e412) - (reverse.e4 * this.e321) - (reverse.e23 * this.e41) - (reverse.e31 * this.e42) - (reverse.e12 * this.e43)) + (float2(reverse.scalar) * this.group0.xy) + (float2(this.e1) * float2(reverse.e1, reverse.e423)) + (float2(this.e2) * float2(reverse.e2, reverse.e431)) + (float2(this.e3) * float2(reverse.e3, reverse.e412)) - (float2(this.e23) * float2(reverse.e23, reverse.e41)) - (float2(this.e31) * float2(reverse.e31, reverse.e42)) - (float2(this.e12) * float2(reverse.e12, reverse.e43)) - (float2(reverse.e321, reverse.e1) * this.group4.wx), 
-            /* e1, e2, e3, e4 */
-            (float4(reverse.scalar) * this.group1) + (float4(reverse.e2, reverse.e321, reverse.e321, reverse.e3) * float4(this.group3.xyz.zyz, this.e43)) + (float4(reverse.e321, reverse.e3, reverse.e1, reverse.e2) * float4(this.group3.xyz.xxy, this.e42)) + (float4(this.group0.xy.xx, this.scalar, reverse.e1234) * float4(reverse.group1.xyz, this.e321)) + (float4(this.group1.zx, this.e321, reverse.e1) * float4(reverse.group3.xyz.yzz, this.e41)) + (float4(this.group4.ww, this.e2, reverse.e4) * float4(reverse.group3.xyz.xyx, this.scalar)) + float4(float3(0.0), -(reverse.e42 * this.e2) - (reverse.e43 * this.e3) - (reverse.e23 * this.e423) - (reverse.e31 * this.e431) - (reverse.e12 * this.e412) - (reverse.e423 * this.e23) - (reverse.e431 * this.e31) - (reverse.e412 * this.e12)) - float4((reverse.group3.xyz.zxy * this.group1.yzx), reverse.e321 * this.e1234) - float4((this.group3.xyz.yzx * reverse.group1.zxy), reverse.e41 * this.e1), 
-            /* e41, e42, e43 */
-            float3(0.0), 
-            /* e23, e31, e12 */
-            float3(0.0), 
-            /* e423, e431, e412, e321 */
-            float4(0.0)
-        );
+        float3 reverse_g2 = this.group2.xyz * float3(-1.0);
+        float3 reverse_g3 = this.group3.xyz * float3(-1.0);
+        float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, geometric_product.e1234), 
+            float2(0.0, (reverse_g4[0] * this.e1) + (reverse_g4[1] * this.e2) + (reverse_g4[2] * this.e3) + (reverse_g4[3] * this.e4) + 2.0 * (this.scalar * this.e1234) - (reverse_g2[0] * this.e23) - (reverse_g2[1] * this.e31) - (reverse_g2[2] * this.e12) - (reverse_g3[0] * this.e41) - (reverse_g3[1] * this.e42) - (reverse_g3[2] * this.e43) - (this.group4.wxzw[1] * this.e1) - (this.e2 * this.e431) - (this.e3 * this.e412) - (this.e4 * this.e321)), 
             /* e1, e2, e3, e4 */
-            geometric_product.group1, 
+            (float4(this.scalar) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(this.group3.xxy, this.e42)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(this.group3.zyz, this.e43)) + (float4(this.group0.xx, this.scalar, this.e1234) * float4(this.group1.xyz, this.e321)) + (float4(this.group1.zx, this.e321, this.e1) * float4(reverse_g3.yzz, this.e41)) + (float4(this.group4.ww, this.e2, this.e4) * float4(reverse_g3.xyx, this.scalar)) + float4(float3(0.0), -(reverse_g2[1] * this.e2) - (reverse_g2[2] * this.e3) - (reverse_g3[0] * this.e423) - (reverse_g3[1] * this.e431) - (reverse_g3[2] * this.e412) - (reverse_g4[0] * this.e23) - (reverse_g4[1] * this.e31) - (reverse_g4[2] * this.e12)) - float4((reverse_g3.zxy * this.group1.yzx), reverse_g4[3] * this.e1234) - float4((this.group3.yzx * this.group1.zxy), reverse_g2[0] * this.e1), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */

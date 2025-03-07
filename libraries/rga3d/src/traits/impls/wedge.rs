@@ -589,11 +589,10 @@ impl Wedge<Motor> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //    simd3        0        2        0
     // Totals...
-    // yes simd        5       10        0
-    //  no simd        5       21        0
+    // yes simd        5        8        0
+    //  no simd        5       12        0
     fn wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
@@ -602,7 +601,7 @@ impl Wedge<Motor> for Line {
                 -(self[e41] * other[e23]) - (self[e42] * other[e31]) - (self[e43] * other[e12]) - (self[e23] * other[e41]) - (self[e31] * other[e42]) - (self[e12] * other[e43]),
             ),
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * self.group1().with_w(0.0) * other.group1().www().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (self.group1() * other.group1().www()).with_w(0.0),
         );
     }
 }
@@ -765,11 +764,10 @@ impl Wedge<Line> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //    simd3        0        2        0
     // Totals...
-    // yes simd        5       10        0
-    //  no simd        5       21        0
+    // yes simd        5        8        0
+    //  no simd        5       12        0
     fn wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
@@ -778,7 +776,7 @@ impl Wedge<Line> for Motor {
                 -(other[e41] * self[e23]) - (other[e42] * self[e31]) - (other[e43] * self[e12]) - (other[e23] * self[e41]) - (other[e31] * self[e42]) - (other[e12] * self[e43]),
             ),
             // e23, e31, e12, scalar
-            Simd32x3::from(1.0).with_w(0.0) * other.group1().with_w(0.0) * self.group1().www().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (other.group1() * self.group1().www()).with_w(0.0),
         );
     }
 }

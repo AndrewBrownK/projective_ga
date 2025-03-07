@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0
 //   Median:         2       0       0
 //  Average:         2       0       0
-//  Maximum:        23      16       0
+//  Maximum:         7       0       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       0       0
 //  Average:         2       0       0
-//  Maximum:        23      16       0
+//  Maximum:         7       0       0
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiScalar;
     fn div(self, _rhs: FlatWeightNormPrefixOrPostfix) -> Self::Output {
@@ -54,8 +54,7 @@ impl FlatWeightNorm for AntiDipoleInversion {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
@@ -70,8 +69,7 @@ impl FlatWeightNorm for AntiDipoleInversionAtInfinity {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -86,8 +84,7 @@ impl FlatWeightNorm for AntiDipoleInversionOrthogonalOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -114,8 +111,7 @@ impl FlatWeightNorm for AntiMysteryDipoleInversion {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for AntiScalar {
@@ -146,8 +142,7 @@ impl FlatWeightNorm for Circle {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for CircleAligningOrigin {
@@ -162,8 +157,7 @@ impl FlatWeightNorm for CircleAligningOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for CircleAtInfinity {
@@ -178,8 +172,7 @@ impl FlatWeightNorm for CircleAtInfinity {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for CircleOnOrigin {
@@ -194,8 +187,7 @@ impl FlatWeightNorm for CircleOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group1());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for CircleRotor {
@@ -210,10 +202,9 @@ impl FlatWeightNorm for CircleRotor {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -229,10 +220,9 @@ impl FlatWeightNorm for CircleRotorAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -248,10 +238,9 @@ impl FlatWeightNorm for CircleRotorAligningOriginAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e12345]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -267,10 +256,9 @@ impl FlatWeightNorm for CircleRotorAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -286,10 +274,9 @@ impl FlatWeightNorm for CircleRotorOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group1().with_w(self[e12345]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -341,10 +328,9 @@ impl FlatWeightNorm for DipoleInversion {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -360,10 +346,9 @@ impl FlatWeightNorm for DipoleInversionAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -379,10 +364,9 @@ impl FlatWeightNorm for DipoleInversionAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -398,10 +382,9 @@ impl FlatWeightNorm for DipoleInversionOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -465,10 +448,9 @@ impl FlatWeightNorm for Flector {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -486,7 +468,7 @@ impl FlatWeightNorm for FlectorOnOrigin {
         use crate::elements::*;
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(self[e45], 2) + f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -502,8 +484,7 @@ impl FlatWeightNorm for Line {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for LineOnOrigin {
@@ -518,7 +499,7 @@ impl FlatWeightNorm for LineOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e415], 2) + f32::powi(self[e425], 2) + f32::powi(self[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for Motor {
@@ -533,10 +514,9 @@ impl FlatWeightNorm for Motor {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0());
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -554,7 +534,7 @@ impl FlatWeightNorm for MotorOnOrigin {
         use crate::elements::*;
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(self[e415], 2) + f32::powi(self[e425], 2) + f32::powi(self[e435], 2) + f32::powi(self[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -567,59 +547,19 @@ impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for MultiVector {
 impl FlatWeightNorm for MultiVector {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
-    // f32       23       16        0
+    // f32        7        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from([0.0, self[e12345]]),
-            // e1, e2, e3, e4
-            Simd32x4::from(0.0),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            Simd32x3::from(0.0).with_w(self[e45]),
-            // e15, e25, e35
-            Simd32x3::from(0.0),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            self.group6().xyz().with_w(0.0),
-            // e423, e431, e412
-            Simd32x3::from(0.0),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from([0.0, self[e4235], self[e4315], self[e4125]]),
-            // e3215
-            0.0,
-        );
         return AntiScalar::from_groups(
             // e12345
-            2.0 * (sub_type[e4] * sub_type[e5])
-                + 2.0 * (sub_type[e423] * sub_type[e235])
-                + 2.0 * (sub_type[e431] * sub_type[e315])
-                + 2.0 * (sub_type[e412] * sub_type[e125])
-                + f32::powi(sub_type[e12345], 2)
-                + f32::powi(sub_type[e45], 2)
-                + f32::powi(sub_type[e415], 2)
-                + f32::powi(sub_type[e425], 2)
-                + f32::powi(sub_type[e435], 2)
-                + f32::powi(sub_type[e4235], 2)
-                + f32::powi(sub_type[e4315], 2)
-                + f32::powi(sub_type[e4125], 2)
-                - f32::powi(sub_type[scalar], 2)
-                - f32::powi(sub_type[e1], 2)
-                - f32::powi(sub_type[e2], 2)
-                - f32::powi(sub_type[e3], 2)
-                - f32::powi(sub_type[e23], 2)
-                - f32::powi(sub_type[e31], 2)
-                - f32::powi(sub_type[e12], 2)
-                - f32::powi(sub_type[e321], 2)
-                - 2.0 * (sub_type[e41] * sub_type[e15])
-                - 2.0 * (sub_type[e42] * sub_type[e25])
-                - 2.0 * (sub_type[e43] * sub_type[e35])
-                - 2.0 * (sub_type[e1234] * sub_type[e3215]),
+            self[e12345] * self[e12345]
+                + self[e45] * self[e45]
+                + self[e415] * self[e415]
+                + self[e425] * self[e425]
+                + self[e435] * self[e435]
+                + self[e4235] * self[e4235]
+                + self[e4315] * self[e4315]
+                + self[e4125] * self[e4125],
         );
     }
 }
@@ -635,8 +575,7 @@ impl FlatWeightNorm for MysteryCircle {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for MysteryCircleRotor {
@@ -651,10 +590,9 @@ impl FlatWeightNorm for MysteryCircleRotor {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435] + self[e12345] * self[e12345],
         );
     }
 }
@@ -682,10 +620,9 @@ impl FlatWeightNorm for MysteryDipoleInversion {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -701,10 +638,9 @@ impl FlatWeightNorm for MysteryVersorEven {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -720,10 +656,9 @@ impl FlatWeightNorm for MysteryVersorOdd {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125] + self[e45] * self[e45],
         );
     }
 }
@@ -739,8 +674,7 @@ impl FlatWeightNorm for Plane {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for PlaneOnOrigin {
@@ -755,7 +689,7 @@ impl FlatWeightNorm for PlaneOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for Sphere {
@@ -770,8 +704,7 @@ impl FlatWeightNorm for Sphere {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for SphereOnOrigin {
@@ -786,8 +719,7 @@ impl FlatWeightNorm for SphereOnOrigin {
     // f32        2        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<FlatWeightNormPrefixOrPostfix> for VersorEven {
@@ -802,10 +734,9 @@ impl FlatWeightNorm for VersorEven {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -821,10 +752,9 @@ impl FlatWeightNorm for VersorEvenAligningOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -840,10 +770,9 @@ impl FlatWeightNorm for VersorEvenAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -859,10 +788,9 @@ impl FlatWeightNorm for VersorEvenOnOrigin {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e415], 2) + f32::powi(sub_type[e425], 2) + f32::powi(sub_type[e435], 2) + f32::powi(sub_type[e12345], 2),
+            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
         );
     }
 }
@@ -878,10 +806,9 @@ impl FlatWeightNorm for VersorOdd {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }
@@ -897,10 +824,9 @@ impl FlatWeightNorm for VersorOddAtInfinity {
     // f32        3        0        0
     fn flat_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e45], self[e4235], self[e4315], self[e4125]]));
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(sub_type[e45], 2) + f32::powi(sub_type[e4235], 2) + f32::powi(sub_type[e4315], 2) + f32::powi(sub_type[e4125], 2),
+            self[e45] * self[e45] + self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125],
         );
     }
 }

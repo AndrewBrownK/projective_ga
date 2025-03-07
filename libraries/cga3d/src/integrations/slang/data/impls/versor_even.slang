@@ -740,7 +740,7 @@ public extension VersorEven {
             /* e235, e315, e125 */
             this.group2.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );
@@ -824,7 +824,7 @@ public extension VersorEven {
             /* e235, e315, e125 */
             this.group2.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0), 
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e1234 */
             0.0
         );

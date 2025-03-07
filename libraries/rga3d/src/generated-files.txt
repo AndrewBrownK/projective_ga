@@ -44,8 +44,6 @@
 ./libraries/rga3d/src/traits/anti_wedge.rs
 ./libraries/rga3d/src/traits/auto_morphism.rs
 ./libraries/rga3d/src/traits/bulk.rs
-./libraries/rga3d/src/traits/bulk_norm.rs
-./libraries/rga3d/src/traits/bulk_norm_squared.rs
 ./libraries/rga3d/src/traits/conjugation.rs
 ./libraries/rga3d/src/traits/constraint_valid.rs
 ./libraries/rga3d/src/traits/constraint_violation.rs
@@ -76,8 +74,6 @@
 ./libraries/rga3d/src/traits/impls/anti_wedge.rs
 ./libraries/rga3d/src/traits/impls/auto_morphism.rs
 ./libraries/rga3d/src/traits/impls/bulk.rs
-./libraries/rga3d/src/traits/impls/bulk_norm.rs
-./libraries/rga3d/src/traits/impls/bulk_norm_squared.rs
 ./libraries/rga3d/src/traits/impls/conjugation.rs
 ./libraries/rga3d/src/traits/impls/constraint_valid.rs
 ./libraries/rga3d/src/traits/impls/constraint_violation.rs

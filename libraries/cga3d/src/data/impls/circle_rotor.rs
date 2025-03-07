@@ -17,7 +17,7 @@ use crate::traits::RightDual;
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         1       4       0
+//   Median:         1       5       0
 //  Average:        24      29       0
 //  Maximum:       320     355       0
 impl std::ops::Add<AntiCircleRotor> for CircleRotor {
@@ -811,11 +811,11 @@ impl std::ops::Mul<AntiDualNum> for CircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        6        0
-    //    simd3        1        2        0
-    //    simd4        1        5        0
+    //    simd3        1        3        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        2       13        0
-    //  no simd        7       32        0
+    // yes simd        2       11        0
+    //  no simd        7       23        0
     fn mul(self, other: AntiDualNum) -> Self::Output {
         return self.geometric_product(other);
     }
@@ -1228,11 +1228,11 @@ impl std::ops::Sub<AntiDualNum> for CircleRotor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
     //    simd2        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        0        2        0
-    //  no simd        0        3        0
+    //  no simd        0        6        0
     fn sub(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         return MultiVector::from_groups(
@@ -1255,7 +1255,7 @@ impl std::ops::Sub<AntiDualNum> for CircleRotor {
             // e235, e315, e125
             self.group2().xyz(),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(other[e3215] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234
             0.0,
         );
@@ -1357,12 +1357,12 @@ impl std::ops::Sub<AntiMotor> for CircleRotor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
     //    simd2        0        1        0
     //    simd3        0        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        0        4        0
-    //  no simd        0        9        0
+    //  no simd        0       12        0
     fn sub(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         return MultiVector::from_groups(
@@ -1385,7 +1385,7 @@ impl std::ops::Sub<AntiMotor> for CircleRotor {
             // e235, e315, e125
             self.group2().xyz(),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(other[e3215] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e1234
             0.0,
         );

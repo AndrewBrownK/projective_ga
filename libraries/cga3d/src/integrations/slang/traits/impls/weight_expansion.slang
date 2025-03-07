@@ -10,21 +10,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, 
 }
 public extension AntiCircleRotor {
     public CircleRotor weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((this.group2.www * right_anti_dual.group2.xyz), (this.scalar * right_anti_dual.e12345) - (this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412))
+            float4((right_anti_dual_g2.xyz * this.group2.www), (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43))
         );
     }
 }
@@ -34,25 +29,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiCircleRotor> l
 }
 public extension AntiCircleRotor {
     public DipoleInversion weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((this.group2.www * right_anti_dual.group2.xyz), (this.scalar * right_anti_dual.e1234) - (this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((right_anti_dual_g2.xyz * this.group2.www), (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42) + (this.scalar * right_anti_dual.e4235), (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43) + (this.scalar * right_anti_dual.e4315), (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41) + (this.scalar * right_anti_dual.e4125), -(this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + float4((this.group0.xyz.yzx * right_anti_dual.group2.zxy), this.scalar * right_anti_dual.e3215) - (right_anti_dual.group2.yzxx * float4(this.group0.xyz.zxy, this.e23)) - float4((right_anti_dual.group0.xyz.zxy * this.group2.yzx), this.e31 * right_anti_dual.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g3[0] * this.scalar) + (this.e35 * other.e431), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g3[1] * this.scalar) + (this.e15 * other.e412), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g3[2] * this.scalar) + (this.e25 * other.e423), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + float4((this.group0.yzx * right_anti_dual_g2.zxy), right_anti_dual_g3[3] * this.scalar) - (right_anti_dual_g2.yzxx * float4(this.group0.zxy, this.e23)) - float4((other.group0.zxy * this.group2.yzx), right_anti_dual_g2[1] * this.e31)
         );
     }
 }
@@ -62,15 +50,11 @@ public Motor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, AntiDu
 }
 public extension AntiCircleRotor {
     public Motor weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, right_anti_dual.e12345) * float4(this.group0.xyz, this.scalar), 
+            float4(other.group0.xx, other.e3215, other.scalar) * float4(this.group0.xyz, this.scalar), 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.e5) * float4(this.group1.xyz, this.scalar)
+            float4(other.e3215) * float4(this.group1.xyz, this.scalar)
         );
     }
 }
@@ -80,15 +64,12 @@ public Flector operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Anti
 }
 public extension AntiCircleRotor {
     public Flector weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -98,17 +79,13 @@ public Flector operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Anti
 }
 public extension AntiCircleRotor {
     public Flector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4235), (this.e31 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4315), (this.e12 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4125), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) + float4((this.group0.xyz.yzx * right_anti_dual.group0.zxy), this.scalar * right_anti_dual.e3215) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[3] * this.e23) + (right_anti_dual_g1[0] * this.scalar), (right_anti_dual_g0[3] * this.e31) + (right_anti_dual_g1[1] * this.scalar), (right_anti_dual_g0[3] * this.e12) + (right_anti_dual_g1[2] * this.scalar), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) + float4((this.group0.yzx * right_anti_dual_g0.zxy), right_anti_dual_g1[3] * this.scalar) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -118,17 +95,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, AntiLi
 }
 public extension AntiCircleRotor {
     public Motor weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group0.xyz), -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4((right_anti_dual_g0 * float3(this.scalar)), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(this.group2.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1 * this.group2.www), 0.0)
         );
     }
 }
@@ -138,17 +111,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, AntiMo
 }
 public extension AntiCircleRotor {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.scalar * right_anti_dual.e415, this.scalar * right_anti_dual.e425, this.scalar * right_anti_dual.e435, -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)) + float4((this.group0.xyz * right_anti_dual.group1.www), this.scalar * right_anti_dual.e12345), 
+            (float4(this.scalar, this.scalar, this.scalar, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43))) + float4((this.group0.xyz * right_anti_dual_g1.www), right_anti_dual_g0[3] * this.scalar), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.e5) * this.group1.xyz)), this.scalar * right_anti_dual.e5)
+            float4(((float3(right_anti_dual_g1[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.scalar)
         );
     }
 }
@@ -170,17 +139,14 @@ public AntiCircleRotor operator /(WeightExpansionInfixPartial<AntiCircleRotor> l
 }
 public extension AntiCircleRotor {
     public AntiCircleRotor weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return AntiCircleRotor(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e15, e25, e35, scalar */
-            float4(right_anti_dual.scalar) * this.group2
+            float4(right_anti_dual_g0) * this.group2
         );
     }
 }
@@ -190,23 +156,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiCircleRotor> l
 }
 public extension AntiCircleRotor {
     public DipoleInversion weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((float3(this.scalar) * other.group2.xyz), -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41), -(this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.xyz.yzx), this.e23 * right_anti_dual.e15) - float4((right_anti_dual.group0.xyz.zxy * this.group2.yzx), this.e31 * right_anti_dual.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (this.e42 * other.e125) + (this.e35 * other.e431), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (this.e43 * other.e235) + (this.e15 * other.e412), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (this.e41 * other.e315) + (this.e25 * other.e423), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (this.e12 * other.e125)) - float4((this.group0.zxy * other.group2.yzx), this.e23 * other.e235) - float4((other.group0.zxy * this.group2.yzx), this.e31 * other.e315)
         );
     }
 }
@@ -216,23 +175,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Ci
 }
 public extension AntiCircleRotor {
     public VersorOdd weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.scalar), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group0.xyz) + (float3(this.scalar) * other.group0.xyz)), right_anti_dual_g2[3] * this.scalar), 
             /* e23, e31, e12, e45 */
-            (float4(right_anti_dual.scalar) * this.group1) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g2[3]) * this.group1), 
             /* e15, e25, e35, e1234 */
-            float4((right_anti_dual.e15 * this.scalar) + (right_anti_dual.scalar * this.e15), (right_anti_dual.e25 * this.scalar) + (right_anti_dual.scalar * this.e25), (right_anti_dual.e35 * this.scalar) + (right_anti_dual.scalar * this.e35), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((right_anti_dual_g2[0] * this.scalar) + (right_anti_dual_g2[3] * this.e15), (right_anti_dual_g2[1] * this.scalar) + (right_anti_dual_g2[3] * this.e25), (right_anti_dual_g2[2] * this.scalar) + (right_anti_dual_g2[3] * this.e35), -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - (this.group2.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (this.e35 * other.e431), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (this.e15 * other.e412), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (this.e25 * other.e423), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - (this.group2.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0])) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -242,21 +195,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, 
 }
 public extension AntiCircleRotor {
     public CircleRotor weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412))
+            float4((right_anti_dual_g2 * float3(this.scalar)), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45))
         );
     }
 }
@@ -266,25 +214,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, D
 }
 public extension AntiCircleRotor {
     public VersorEven weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4((this.e42 * right_anti_dual.e3) + (this.e23 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e423), (this.e43 * right_anti_dual.e1) + (this.e31 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e431), (this.e41 * right_anti_dual.e2) + (this.e12 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e412), -(this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) - float4((this.group0.xyz.zxy * right_anti_dual.group3.yzx), this.e41 * right_anti_dual.e235), 
+            float4((right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g2[3] * this.e23) + (right_anti_dual_g3[2] * this.e42), (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g2[3] * this.e31) + (right_anti_dual_g3[0] * this.e43), (right_anti_dual_g0[2] * this.scalar) + (right_anti_dual_g2[3] * this.e12) + (right_anti_dual_g3[1] * this.e41), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) - float4((this.group0.zxy * right_anti_dual_g3.yzx), right_anti_dual_g2[0] * this.e41), 
             /* e415, e425, e435, e321 */
-            float4((this.e15 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e415), (this.e25 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e425), (this.e35 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e435), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + float4((this.group0.xyz * right_anti_dual.group3.www), this.scalar * right_anti_dual.e321) - (this.group1.wwwx * right_anti_dual.group3.xyzx), 
+            float4((right_anti_dual_g1[0] * this.scalar) + (right_anti_dual_g2[3] * this.e15), (right_anti_dual_g1[1] * this.scalar) + (right_anti_dual_g2[3] * this.e25), (right_anti_dual_g1[2] * this.scalar) + (right_anti_dual_g2[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + float4((this.group0.xyz * right_anti_dual_g3.www), right_anti_dual_g1[3] * this.scalar) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group2.xyz) + (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group3.yzx) - (this.group2.yzx * right_anti_dual.group3.zxy)), this.scalar * right_anti_dual.e5), 
+            float4(((float3(right_anti_dual_g3[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group2.zxy) - (right_anti_dual_g3.zxy * this.group2.yzx)), right_anti_dual_g3[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4)
+            float4(this.scalar) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3])
         );
     }
 }
@@ -294,19 +236,16 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Du
 }
 public extension AntiCircleRotor {
     public VersorOdd weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(right_anti_dual.scalar) * float4(this.group0.xyz, this.scalar), 
+            float4(right_anti_dual_g0[1]) * float4(this.group0.xyz, this.scalar), 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(this.group2.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group2.xyz * float3(right_anti_dual_g0.yy, right_anti_dual_g0[1])), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), this.scalar * right_anti_dual.e3215)
+            float4(float3(0.0), right_anti_dual_g0[0] * this.scalar)
         );
     }
 }
@@ -316,17 +255,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, 
 }
 public extension AntiCircleRotor {
     public CircleRotor weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.scalar * right_anti_dual.e321), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((this.group2.www * right_anti_dual.group0.xyz), -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e45 * right_anti_dual.e321))
+            float4((right_anti_dual_g0.xyz * this.group2.www), -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45))
         );
     }
 }
@@ -336,21 +272,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, F
 }
 public extension AntiCircleRotor {
     public VersorEven weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.e42 * right_anti_dual.e3, this.e43 * right_anti_dual.e1, this.e41 * right_anti_dual.e2, -(this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e45 * right_anti_dual.e321)) - float4((this.group0.xyz.zxy * right_anti_dual.group1.yzx), this.e41 * right_anti_dual.e235), 
+            float4(((this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx)), -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + float4((this.group0.xyz * right_anti_dual.group1.www), this.scalar * right_anti_dual.e321) - (this.group1.wwwx * right_anti_dual.group1.xyzx), 
+            float4(float3(0.0), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((this.group0.xyz * right_anti_dual_g1.www), right_anti_dual_g0[3] * this.scalar) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group1.yzx) - (this.group2.yzx * right_anti_dual.group1.zxy)), this.scalar * right_anti_dual.e5), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.yzx * this.group2.zxy) - (right_anti_dual_g1.zxy * this.group2.yzx)), right_anti_dual_g1[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(this.group2.www, 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1.xyz * this.group2.www), 0.0)
         );
     }
 }
@@ -360,21 +292,15 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiCircleRotor> l
 }
 public extension AntiCircleRotor {
     public DipoleInversion weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return DipoleInversion(
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(this.group2.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((other.group0.xyz * this.group2.www), 0.0), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group1.xyz), -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12)), 
+            float4((float3(this.scalar) * other.group1.xyz), -(this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e45 * right_anti_dual.e23), (this.e43 * right_anti_dual.e15) + (this.e45 * right_anti_dual.e31), (this.e41 * right_anti_dual.e25) + (this.e45 * right_anti_dual.e12), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group1.xyz.yzx), this.e15 * right_anti_dual.e23)
+            float4((this.e42 * other.e125) + (this.e45 * other.e415), (this.e43 * other.e235) + (this.e45 * other.e425), (this.e41 * other.e315) + (this.e45 * other.e435), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e25 * other.e425) - (this.e35 * other.e435)) - float4((this.group0.zxy * other.group1.yzx), this.e15 * other.e415)
         );
     }
 }
@@ -384,21 +310,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Mo
 }
 public extension AntiCircleRotor {
     public VersorOdd weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(right_anti_dual.scalar) * float4(this.group0.xyz, this.scalar), 
+            float4(right_anti_dual_g0[3]) * float4(this.group0.xyz, this.scalar), 
             /* e23, e31, e12, e45 */
-            float4(((float3(this.scalar) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.scalar) * this.group1.xyz)), this.e45 * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.e15 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e15), (this.e25 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e25), (this.e35 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e35), -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12)), 
+            float4((right_anti_dual_g0[3] * this.e15) + (right_anti_dual_g1[0] * this.scalar), (right_anti_dual_g0[3] * this.e25) + (right_anti_dual_g1[1] * this.scalar), (right_anti_dual_g0[3] * this.e35) + (right_anti_dual_g1[2] * this.scalar), -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e45 * right_anti_dual.e23, this.e45 * right_anti_dual.e31, this.e45 * right_anti_dual.e12, -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + (right_anti_dual.group1.zxyw * float4(this.group0.xyz.yzx, this.scalar)) - (right_anti_dual.group1.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            (float4(this.e45, this.e45, this.e45, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12))) + (right_anti_dual_g1.zxyw * float4(this.group0.yzx, this.scalar)) - (right_anti_dual_g1.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -408,53 +330,36 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, 
 }
 public extension AntiCircleRotor {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group8.xyz, other.e321 * -1.0);
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * right_anti_dual.scalar, (this.scalar * right_anti_dual.e12345) - (this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)), 
+            float2(right_anti_dual_g0[0] * this.scalar, (right_anti_dual_g0[1] * this.scalar) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g8[0] * this.e41) - (right_anti_dual_g8[1] * this.e42) - (right_anti_dual_g8[2] * this.e43) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12) - (right_anti_dual_g6[3] * this.e45)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e5 */
-            this.scalar * right_anti_dual.e5, 
+            this.scalar * other.e3215, 
             /* e15, e25, e35, e45 */
-            (float4(this.scalar) * right_anti_dual.group3) + (float4(right_anti_dual.scalar) * float4(this.group2.xyz, this.e45)), 
+            (right_anti_dual_g3 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * float4(this.group2.xyz, this.e45)), 
             /* e41, e42, e43 */
-            (float3(this.scalar) * right_anti_dual.group4.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.scalar) * other.group7.xyz), 
             /* e23, e31, e12 */
-            (float3(this.scalar) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group1.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group1.xyz) + (float3(this.scalar) * other.group6.xyz), 
             /* e415, e425, e435, e321 */
-            float4((this.e15 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e415), (this.e25 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e425), (this.e35 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e435), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + float4((float3(right_anti_dual.e5) * this.group0.xyz), this.scalar * right_anti_dual.e321) - (this.group1.wwwx * right_anti_dual.group1.xyzx), 
+            float4((right_anti_dual_g1[3] * this.e15) + (right_anti_dual_g6[0] * this.scalar), (right_anti_dual_g1[3] * this.e25) + (right_anti_dual_g6[1] * this.scalar), (right_anti_dual_g1[3] * this.e35) + (right_anti_dual_g6[2] * this.scalar), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((float3(other.e3215) * this.group0.xyz), right_anti_dual_g6[3] * this.scalar) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e423, e431, e412 */
-            (float3(this.scalar) * right_anti_dual.group7.xyz) + (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group1.zxy) - (this.group0.xyz.zxy * right_anti_dual.group1.yzx), 
+            (right_anti_dual_g7 * float3(this.scalar)) + (float3(right_anti_dual_g1[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx), 
             /* e235, e315, e125 */
-            (float3(this.scalar) * right_anti_dual.group8.xyz) + (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group1.yzx) - (this.group2.yzx * right_anti_dual.group1.zxy), 
+            (right_anti_dual_g8 * float3(this.scalar)) + (float3(other.e3215) * this.group1.xyz) + (right_anti_dual_g1.yzx * this.group2.zxy) - (right_anti_dual_g1.zxy * this.group2.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42) + (this.scalar * right_anti_dual.e4235), (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43) + (this.scalar * right_anti_dual.e4315), (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41) + (this.scalar * right_anti_dual.e4125), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e35 * right_anti_dual.e12)) + float4((this.group0.xyz.yzx * right_anti_dual.group3.zxy), this.scalar * right_anti_dual.e3215) - (this.group2.yzxy * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e31)) - float4((this.group0.xyz.zxy * right_anti_dual.group3.yzx), this.e15 * right_anti_dual.e23), 
+            float4((right_anti_dual_g3[3] * this.e23) + (right_anti_dual_g9[0] * this.scalar) + (this.e45 * other.e415) + (this.e35 * other.e431), (right_anti_dual_g3[3] * this.e31) + (right_anti_dual_g9[1] * this.scalar) + (this.e45 * other.e425) + (this.e15 * other.e412), (right_anti_dual_g3[3] * this.e12) + (right_anti_dual_g9[2] * this.scalar) + (this.e45 * other.e435) + (this.e25 * other.e423), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12) - (this.e35 * other.e435)) + float4((this.group0.yzx * right_anti_dual_g3.zxy), right_anti_dual_g9[3] * this.scalar) - (this.group2.yzxy * float4(other.group7.zxy, other.e425)) - float4((this.group0.zxy * right_anti_dual_g3.yzx), this.e15 * other.e415), 
             /* e1234 */
-            (this.scalar * right_anti_dual.e1234) - (this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412) - (this.scalar * other.e4)
         );
     }
 }
@@ -464,19 +369,16 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<AntiCircleRoto
 }
 public extension AntiCircleRotor {
     public AntiDipoleInversion weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(this.e41 * right_anti_dual.e5, this.e42 * right_anti_dual.e5, this.e43 * right_anti_dual.e5, -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group0.xyzx), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e4 */
-            float4((float3(right_anti_dual.e5) * this.group1.xyz), 0.0) + float4((this.group2.zxy * right_anti_dual.group0.yzx), 0.0) - float4((this.group2.yzx * right_anti_dual.group0.zxy), 0.0), 
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), 0.0) + float4((right_anti_dual_g0.yzx * this.group2.zxy), 0.0) - float4((right_anti_dual_g0.zxy * this.group2.yzx), 0.0), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.scalar)
         );
     }
 }
@@ -486,17 +388,11 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Round
 }
 public extension AntiCircleRotor {
     public Sphere weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            this.scalar * other.e4 * -1.0
         );
     }
 }
@@ -518,21 +414,16 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<AntiCircleRoto
 }
 public extension AntiCircleRotor {
     public AntiDipoleInversion weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group0.xyzx), 
+            float4((right_anti_dual_g0[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g0[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g0[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e4 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group0.yzx) - (this.group2.yzx * right_anti_dual.group0.zxy)), this.scalar * right_anti_dual.e4), 
+            float4(((float3(other.e3215) * this.group1.xyz) + (right_anti_dual_g0.yzx * this.group2.zxy) - (right_anti_dual_g0.zxy * this.group2.yzx)), right_anti_dual_g0[3] * this.scalar), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * float4(right_anti_dual.group0.xyz, right_anti_dual.e5)
+            float4(this.scalar) * float4(right_anti_dual_g0.xyz, other.e3215)
         );
     }
 }
@@ -542,25 +433,19 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, Ve
 }
 public extension AntiCircleRotor {
     public VersorOdd weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(((float3(this.scalar) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz)), this.scalar * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.scalar), 
             /* e23, e31, e12, e45 */
-            (float4(this.scalar) * right_anti_dual.group1) + (float4(right_anti_dual.scalar) * this.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g0[3]) * this.group1), 
             /* e15, e25, e35, e1234 */
-            float4(this.scalar * right_anti_dual.e15, this.scalar * right_anti_dual.e25, this.scalar * right_anti_dual.e35, -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)) + (this.group2 * float4(right_anti_dual.group0.www, right_anti_dual.e1234)), 
+            (float4(this.scalar, this.scalar, this.scalar, 1.0) * float4(right_anti_dual_g2.xyz, -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43))) + (this.group2 * float4(right_anti_dual_g0.www, right_anti_dual_g2[3])), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42) + (this.scalar * right_anti_dual.e4235), (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43) + (this.scalar * right_anti_dual.e4315), (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41) + (this.scalar * right_anti_dual.e4125), -(this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + float4((this.group0.xyz.yzx * right_anti_dual.group2.zxy), this.scalar * right_anti_dual.e3215) - (right_anti_dual.group2.yzxx * float4(this.group0.xyz.zxy, this.e23)) - float4((this.group2.yzx * right_anti_dual.group0.zxy), this.e31 * right_anti_dual.e25)
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g3[0] * this.scalar), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g3[1] * this.scalar), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g3[2] * this.scalar), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + float4((this.group0.yzx * right_anti_dual_g2.zxy), right_anti_dual_g3[3] * this.scalar) - (right_anti_dual_g2.yzxx * float4(this.group0.zxy, this.e23)) - float4((right_anti_dual_g0.zxy * this.group2.yzx), right_anti_dual_g2[1] * this.e31)
         );
     }
 }
@@ -570,25 +455,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiCircleRotor> lhs, V
 }
 public extension AntiCircleRotor {
     public VersorEven weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4((this.e23 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e423), (this.e31 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e431), (this.e12 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e412), -(this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) + float4((this.group0.xyz.yzx * right_anti_dual.group3.zxy), this.scalar * right_anti_dual.e12345) - float4((this.group0.xyz.zxy * right_anti_dual.group3.yzx), this.e41 * right_anti_dual.e235), 
+            float4((right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g3[3] * this.e23), (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g3[3] * this.e31), (right_anti_dual_g0[2] * this.scalar) + (right_anti_dual_g3[3] * this.e12), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) + float4((this.group0.yzx * right_anti_dual_g3.zxy), right_anti_dual_g0[3] * this.scalar) - float4((this.group0.zxy * right_anti_dual_g3.yzx), right_anti_dual_g2[0] * this.e41), 
             /* e415, e425, e435, e321 */
-            float4((this.e15 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e415), (this.e25 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e425), (this.e35 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e435), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + float4((this.group0.xyz * right_anti_dual.group2.www), this.scalar * right_anti_dual.e321) - (this.group1.wwwx * right_anti_dual.group3.xyzx), 
+            float4((right_anti_dual_g1[0] * this.scalar) + (right_anti_dual_g3[3] * this.e15), (right_anti_dual_g1[1] * this.scalar) + (right_anti_dual_g3[3] * this.e25), (right_anti_dual_g1[2] * this.scalar) + (right_anti_dual_g3[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + float4((this.group0.xyz * right_anti_dual_g2.www), right_anti_dual_g1[3] * this.scalar) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group2.xyz) + (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group3.yzx) - (this.group2.yzx * right_anti_dual.group3.zxy)), this.scalar * right_anti_dual.e5), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group2.zxy) - (right_anti_dual_g3.zxy * this.group2.yzx)), right_anti_dual_g2[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3
+            right_anti_dual_g3 * float4(this.scalar)
         );
     }
 }
@@ -602,19 +481,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, A
 }
 public extension AntiDipoleInversion {
     public Sphere weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e4 * right_anti_dual.e235) + (this.e3 * right_anti_dual.e425), (this.e4 * right_anti_dual.e315) + (this.e1 * right_anti_dual.e435), (this.e4 * right_anti_dual.e125) + (this.e2 * right_anti_dual.e415), -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group3.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((right_anti_dual.group0.xyz * this.group3.www), this.e1 * right_anti_dual.e235), 
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g1[3] * this.e5) - (right_anti_dual_g2[2] * this.e3)) - (this.group3.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * this.group3.www), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (this.e4 * right_anti_dual.e321) + (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -624,23 +498,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiDipoleInversion> l
 }
 public extension AntiDipoleInversion {
     public CircleRotor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group3.zxy) - (right_anti_dual.group0.xyz.zxy * this.group3.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group3.zxy) - (other.group0.zxy * this.group3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e4 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e41), (this.e4 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e42), (this.e4 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e43), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group3.xyzx * right_anti_dual.group1.wwwx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (other.e423 * this.e5), (right_anti_dual_g2[1] * this.e4) + (other.e431 * this.e5), (right_anti_dual_g2[2] * this.e4) + (other.e412 * this.e5), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e12345 */
-            (this.group3.wwwx * float4(right_anti_dual.group1.xyz, right_anti_dual.e4235)) + float4(float3(0.0), (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)) + float4((this.group3.yzx * right_anti_dual.group2.zxy), this.e4 * right_anti_dual.e3215) - (right_anti_dual.group2.yzxx * float4(this.group3.zxy, this.e423))
+            (this.group3.wwwx * float4(right_anti_dual_g1.xyz, right_anti_dual_g3[0])) + float4(float3(0.0), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)) + float4((right_anti_dual_g2.zxy * this.group3.yzx), right_anti_dual_g3[3] * this.e4) - (right_anti_dual_g2.yzxx * float4(this.group3.zxy, this.e423))
         );
     }
 }
@@ -650,15 +517,11 @@ public Flector operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, 
 }
 public extension AntiDipoleInversion {
     public Flector weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * float4(this.group3.xyz, this.e4), 
+            float4(other.e3215) * float4(this.group3.xyz, this.e4), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)
+            float4(other.e3215) * float4(this.group0.xyz, this.e321)
         );
     }
 }
@@ -668,15 +531,12 @@ public Motor operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, An
 }
 public extension AntiDipoleInversion {
     public Motor weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e4 * right_anti_dual.e15, this.e4 * right_anti_dual.e25, this.e4 * right_anti_dual.e35, -(this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)) - (right_anti_dual.group0.wwwx * float4(this.group3.xyz, this.e423)), 
+            (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321))) - (right_anti_dual_g0.wwwx * float4(this.group3.xyz, this.e423)), 
             /* e235, e315, e125, e5 */
-            float4(((this.group3.yzx * right_anti_dual.group0.zxy) - (this.group3.zxy * right_anti_dual.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), 0.0)
         );
     }
 }
@@ -686,17 +546,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, An
 }
 public extension AntiDipoleInversion {
     public Motor weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (float4(this.e4) * float4(right_anti_dual.group0.xyz, right_anti_dual.e3215)) + float4(float3(0.0), (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)) - (right_anti_dual.group0.wwwx * float4(this.group3.xyz, this.e423)), 
+            (float4(this.e4) * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3])) + float4(float3(0.0), (right_anti_dual_g1[0] * this.e1) + (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)) - (right_anti_dual_g0.wwwx * float4(this.group3.xyz, this.e423)), 
             /* e235, e315, e125, e5 */
-            float4(((this.group3.yzx * right_anti_dual.group0.zxy) - (this.group3.zxy * right_anti_dual.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), 0.0)
         );
     }
 }
@@ -706,15 +562,11 @@ public Plane operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, An
 }
 public extension AntiDipoleInversion {
     public Plane weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e4 * right_anti_dual.e235) + (this.e3 * right_anti_dual.e425), (this.e4 * right_anti_dual.e315) + (this.e1 * right_anti_dual.e435), (this.e4 * right_anti_dual.e125) + (this.e2 * right_anti_dual.e415), -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) - (this.group3.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group3.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -724,17 +576,13 @@ public Flector operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, 
 }
 public extension AntiDipoleInversion {
     public Flector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * float4(this.group3.xyz, this.e4), 
+            float4(right_anti_dual_g1[3]) * float4(this.group3.xyz, this.e4), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e4 * right_anti_dual.e235) + (this.e3 * right_anti_dual.e425), (this.e4 * right_anti_dual.e315) + (this.e1 * right_anti_dual.e435), (this.e4 * right_anti_dual.e125) + (this.e2 * right_anti_dual.e415), -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) - (this.group3.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + (float4(right_anti_dual_g1[3]) * float4(this.group0.xyz, this.e321)) - (this.group3.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -744,13 +592,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public AntiScalar weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e4 * right_anti_dual.e3215) + (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4)
         );
     }
 }
@@ -760,19 +605,16 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInve
 }
 public extension AntiDipoleInversion {
     public AntiDipoleInversion weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e235, e315, e125, e4 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0) * this.group2, 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0) * this.group3
         );
     }
 }
@@ -782,21 +624,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiDipoleInversion> l
 }
 public extension AntiDipoleInversion {
     public CircleRotor weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group3.zxy) - (right_anti_dual.group0.xyz.zxy * this.group3.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group3.zxy) - (other.group0.zxy * this.group3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e4 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e41), (this.e4 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e42), (this.e4 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e43), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group3.xyzx * right_anti_dual.group1.wwwx), 
+            float4((this.e4 * other.e235) + (this.e5 * other.e423), (this.e4 * other.e315) + (this.e5 * other.e431), (this.e4 * other.e125) + (this.e5 * other.e412), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e12345 */
-            float4((this.e2 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e23), (this.e3 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e31), (this.e1 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e12), -(this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)) - float4((right_anti_dual.group2.xyz.yzx * this.group3.zxy), this.e423 * right_anti_dual.e15)
+            float4((right_anti_dual_g1[0] * this.e5) + (this.e2 * other.e125), (right_anti_dual_g1[1] * this.e5) + (this.e3 * other.e235), (right_anti_dual_g1[2] * this.e5) + (this.e1 * other.e315), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)) - float4((other.group2.yzx * this.group3.zxy), this.e423 * other.e235)
         );
     }
 }
@@ -806,23 +641,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public VersorEven weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4((right_anti_dual.e42 * this.e3) + (right_anti_dual.e23 * this.e4) + (right_anti_dual.scalar * this.e423), (right_anti_dual.e43 * this.e1) + (right_anti_dual.e31 * this.e4) + (right_anti_dual.scalar * this.e431), (right_anti_dual.e41 * this.e2) + (right_anti_dual.e12 * this.e4) + (right_anti_dual.scalar * this.e412), -(right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) - float4((right_anti_dual.group0.xyz.zxy * this.group3.yzx), right_anti_dual.e41 * this.e235), 
+            float4((right_anti_dual_g1[0] * this.e4) + (right_anti_dual_g2[3] * this.e423) + (this.e3 * other.e431), (right_anti_dual_g1[1] * this.e4) + (right_anti_dual_g2[3] * this.e431) + (this.e1 * other.e412), (right_anti_dual_g1[2] * this.e4) + (right_anti_dual_g2[3] * this.e412) + (this.e2 * other.e423), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (this.e315 * other.e431) - (this.e125 * other.e412)) - float4((other.group0.zxy * this.group3.yzx), this.e235 * other.e423), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e15 * this.e4) + (right_anti_dual.scalar * this.e415), (right_anti_dual.e25 * this.e4) + (right_anti_dual.scalar * this.e425), (right_anti_dual.e35 * this.e4) + (right_anti_dual.scalar * this.e435), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + float4((right_anti_dual.group0.xyz * this.group3.www), right_anti_dual.scalar * this.e321) - (right_anti_dual.group1.wwwx * this.group3.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g2[3] * this.e415), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g2[3] * this.e425), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g2[3] * this.e435), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((other.group0.xyz * this.group3.www), right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group2.xyz) + (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group3.yzx) - (right_anti_dual.group2.yzx * this.group3.zxy)), right_anti_dual.scalar * this.e5), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group3.yzx) - (right_anti_dual_g2.yzx * this.group3.zxy)), right_anti_dual_g2[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * float4(this.group3.xyz, this.e4)
+            float4(right_anti_dual_g2[3]) * float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -832,19 +661,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, D
 }
 public extension AntiDipoleInversion {
     public Sphere weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e4 * right_anti_dual.e235) + (this.e3 * right_anti_dual.e425), (this.e4 * right_anti_dual.e315) + (this.e1 * right_anti_dual.e435), (this.e4 * right_anti_dual.e125) + (this.e2 * right_anti_dual.e415), -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group3.wwwx * float4(right_anti_dual.group0.xyz, right_anti_dual.e235)) - float4((this.group3.yzx * right_anti_dual.group1.zxy), this.e2 * right_anti_dual.e315), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g1[1] * this.e3), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g1[2] * this.e1), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g1[0] * this.e2), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group3.wwwx * float4(right_anti_dual_g0, right_anti_dual_g2[0])) - float4((right_anti_dual_g1.zxy * this.group3.yzx), right_anti_dual_g2[1] * this.e2), 
             /* e1234 */
-            (this.e4 * right_anti_dual.e321) + (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -854,25 +678,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInversio
 }
 public extension AntiDipoleInversion {
     public DipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g2[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            (right_anti_dual.group3.zxyw * float4(this.group3.yzx, this.e4)) - (this.group3.zxyw * float4(right_anti_dual.group3.yzx, right_anti_dual.e4)), 
+            (right_anti_dual_g3.zxyw * float4(this.group3.yzx, this.e4)) - (this.group3.zxyw * float4(right_anti_dual_g3.yzx, right_anti_dual_g2[3])), 
             /* e15, e25, e35, e1234 */
-            (this.group3.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e423)) + float4(float3(0.0), (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4) - (right_anti_dual.e4 * this.e321) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)) - float4((this.group3.www * right_anti_dual.group3.xyz), right_anti_dual.e1 * this.e423), 
+            (this.group3.xyzx * float4(right_anti_dual_g3.www, right_anti_dual_g0[0])) + float4(float3(0.0), (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412)) - float4((right_anti_dual_g3.xyz * this.group3.www), right_anti_dual_g3[0] * this.e423), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group3.yzxw * this.group1.zxyw) + (this.group2.wwwz * float4(right_anti_dual.group2.xyz, right_anti_dual.e3)) + float4((this.group0.xyz * right_anti_dual.group3.www), right_anti_dual.e1 * this.e235) + float4((right_anti_dual.group1.yzx * this.group3.zxy), right_anti_dual.e2 * this.e315) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (right_anti_dual.group2.wwwy * float4(this.group2.xyz, this.e2)) - (this.group3.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)) - float4((right_anti_dual.group3.zxy * this.group1.yzx), right_anti_dual.e125 * this.e3)
+            (right_anti_dual_g3.yzxw * this.group1.zxyw) + (this.group2.wwwz * float4(right_anti_dual_g2.xyz, right_anti_dual_g3[2])) + float4((this.group0.xyz * right_anti_dual_g3.www), right_anti_dual_g3[0] * this.e235) + float4((right_anti_dual_g1.yzx * this.group3.zxy), right_anti_dual_g3[1] * this.e315) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (right_anti_dual_g2.wwwy * float4(this.group2.xyz, this.e2)) - (this.group3.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])) - float4((right_anti_dual_g3.zxy * this.group1.yzx), right_anti_dual_g2[2] * this.e3)
         );
     }
 }
@@ -882,19 +700,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public VersorEven weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, right_anti_dual.e3215) * float4(this.group0.xyz, this.e4), 
+            float4(right_anti_dual_g0.yy, right_anti_dual_g0[1], right_anti_dual_g0[0]) * float4(this.group0.xyz, this.e4), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.scalar) * float4(this.group2.xyz, this.e5), 
+            float4(right_anti_dual_g0[1]) * float4(this.group2.xyz, this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * float4(this.group3.xyz, this.e4)
+            float4(right_anti_dual_g0[1]) * float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -904,15 +719,12 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lhs, F
 }
 public extension AntiDipoleInversion {
     public Sphere weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.group2.www * right_anti_dual.group0.xyz), -(this.e1 * right_anti_dual.e235) - (this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)), 
+            float4((right_anti_dual_g0.xyz * this.group2.www), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)), 
             /* e1234 */
-            this.e4 * right_anti_dual.e321
+            right_anti_dual_g0[3] * this.e4
         );
     }
 }
@@ -922,21 +734,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInversio
 }
 public extension AntiDipoleInversion {
     public DipoleInversion weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group1.xyz, 
+            float3(this.e4) * right_anti_dual_g1.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((this.group3.yzx * right_anti_dual.group1.zxy) - (this.group3.zxy * right_anti_dual.group1.yzx)), this.e4 * right_anti_dual.e5), 
+            float4(((right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy)), right_anti_dual_g1[3] * this.e4), 
             /* e15, e25, e35, e1234 */
-            float4(float3(0.0), -(this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3)) + float4((right_anti_dual.group1.www * this.group3.xyz), this.e4 * right_anti_dual.e321) - (right_anti_dual.group1.xyzx * float4(this.group3.www, this.e423)), 
+            float4(float3(0.0), -(right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)) + float4((this.group3.xyz * right_anti_dual_g1.www), right_anti_dual_g0[3] * this.e4) - (right_anti_dual_g1.xyzx * float4(this.group3.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (this.group2.wwwy * float4(right_anti_dual.group0.xyz, right_anti_dual.e2)) + (right_anti_dual.group1.yzxx * float4(this.group1.zxy, this.e235)) + float4(float3(0.0), (this.e125 * right_anti_dual.e3) - (this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - float4((this.group1.yzx * right_anti_dual.group1.zxy), this.e1 * right_anti_dual.e235)
+            (float4(right_anti_dual_g1[3]) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g1.yzxx * float4(this.group1.zxy, this.e235)) + (this.group2.wwwy * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[1])) + float4(float3(0.0), (right_anti_dual_g1[2] * this.e125) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)) - float4((right_anti_dual_g1.zxy * this.group1.yzx), right_anti_dual_g0[0] * this.e1)
         );
     }
 }
@@ -946,19 +754,13 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiDipoleInversion> l
 }
 public extension AntiDipoleInversion {
     public CircleRotor weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(this.e4) * right_anti_dual.group1.xyz), -(this.e1 * right_anti_dual.e23) - (this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)), 
+            float4((float3(this.e4) * other.group1.xyz), -(this.e1 * other.e415) - (this.e2 * other.e425) - (this.e3 * other.e435)), 
             /* e235, e315, e125, e12345 */
-            float4((this.e2 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e23), (this.e3 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e31), (this.e1 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e12), -(this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12)) - float4((right_anti_dual.group1.xyz.yzx * this.group3.zxy), this.e423 * right_anti_dual.e15)
+            float4((this.e2 * other.e125) + (this.e5 * other.e415), (this.e3 * other.e235) + (this.e5 * other.e425), (this.e1 * other.e315) + (this.e5 * other.e435), -(this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435)) - float4((other.group1.yzx * this.group3.zxy), this.e423 * other.e235)
         );
     }
 }
@@ -968,21 +770,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public VersorEven weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.e4 * right_anti_dual.e23, this.e4 * right_anti_dual.e31, this.e4 * right_anti_dual.e12, -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12)) + float4((this.group0.xyz * right_anti_dual.group0.www), this.e4 * right_anti_dual.e3215), 
+            (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412))) + float4((this.group0.xyz * right_anti_dual_g0.www), right_anti_dual_g1[3] * this.e4), 
             /* e415, e425, e435, e321 */
-            float4(this.e4 * right_anti_dual.e15, this.e4 * right_anti_dual.e25, this.e4 * right_anti_dual.e35, -(this.e1 * right_anti_dual.e23) - (this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group1), 
+            (float4(right_anti_dual_g0[3]) * this.group1) + (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g1.xyz, -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3))), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.scalar) * this.group2.xyz) + (this.group3.yzx * right_anti_dual.group1.zxy) - (this.group3.zxy * right_anti_dual.group1.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * float4(this.group3.xyz, this.e4)
+            float4(right_anti_dual_g0[3]) * float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -992,53 +790,36 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiDipoleInversion> l
 }
 public extension AntiDipoleInversion {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e4 * right_anti_dual.e3215) + (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(0.0, (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) + (right_anti_dual_g9[3] * this.e4) - (right_anti_dual_g3_w * this.e321) - (this.e423 * other.e235) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412) - (this.e5 * other.e4)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * float4(this.group3.xyz, this.e4), 
+            float4(right_anti_dual_g0[0]) * float4(this.group3.xyz, this.e4), 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * float4(this.group3.xyz, this.e4)) - (float4(this.e5) * right_anti_dual.group1), 
+            (float4(other.e3215) * float4(this.group3.xyz, this.e4)) - (right_anti_dual_g1 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) - (float3(right_anti_dual_g1[3]) * this.group3.xyz), 
             /* e23, e31, e12 */
-            (this.group3.yzx * right_anti_dual.group1.zxy) - (this.group3.zxy * right_anti_dual.group1.yzx), 
+            (right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy), 
             /* e415, e425, e435, e321 */
-            float4((this.e4 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e41), (this.e4 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e42), (this.e4 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e43), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group1) - float4((right_anti_dual.group3.www * this.group3.xyz), this.e1 * right_anti_dual.e23), 
+            float4((this.e4 * other.e235) + (this.e5 * other.e423), (this.e4 * other.e315) + (this.e5 * other.e431), (this.e4 * other.e125) + (this.e5 * other.e412), -(this.e2 * other.e425) - (this.e3 * other.e435)) + (float4(right_anti_dual_g0[0]) * this.group1) - float4((float3(right_anti_dual_g3_w) * this.group3.xyz), this.e1 * other.e415), 
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz) + (right_anti_dual.group4.xyz.yzx * this.group3.zxy) - (right_anti_dual.group4.xyz.zxy * this.group3.yzx), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.e4) * other.group6.xyz) + (other.group7.yzx * this.group3.zxy) - (other.group7.zxy * this.group3.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group2.xyz) + (this.group3.yzx * right_anti_dual.group3.zxy) - (this.group3.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g0[0]) * this.group2.xyz) + (float3(this.e5) * other.group6.xyz) + (other.group8.zxy * this.group3.yzx) - (other.group8.yzx * this.group3.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group1.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual.group8.xyz * this.group2.www), this.e235 * right_anti_dual.e1) + float4((this.group3.zxy * right_anti_dual.group6.yzx), this.e125 * right_anti_dual.e3) - (this.group3.yzxw * right_anti_dual.group6.zxyw) - (this.group3.wwwx * float4(right_anti_dual.group7.xyz, right_anti_dual.e235)) - float4((this.group1.yzx * right_anti_dual.group1.zxy), this.e2 * right_anti_dual.e315) - float4((right_anti_dual.group1.www * this.group2.xyz), this.e3 * right_anti_dual.e125), 
+            (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g1.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual_g8 * this.group2.www), right_anti_dual_g1[0] * this.e235) + float4((right_anti_dual_g6.yzx * this.group3.zxy), right_anti_dual_g1[2] * this.e125) - (right_anti_dual_g6.zxyw * this.group3.yzxw) - (this.group3.wwwx * float4(right_anti_dual_g7, right_anti_dual_g8[0])) - float4((right_anti_dual_g1.zxy * this.group1.yzx), right_anti_dual_g8[1] * this.e2) - float4((this.group2.xyz * right_anti_dual_g1.www), right_anti_dual_g8[2] * this.e3), 
             /* e1234 */
-            (this.e4 * right_anti_dual.e321) + (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412) - (this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3) + (right_anti_dual_g6[3] * this.e4) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321)
         );
     }
 }
@@ -1048,19 +829,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInversio
 }
 public extension AntiDipoleInversion {
     public DipoleInversion weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * right_anti_dual_g0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((this.group3.yzx * right_anti_dual.group0.zxy) - (this.group3.zxy * right_anti_dual.group0.yzx)), this.e4 * right_anti_dual.e5), 
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e4), 
             /* e15, e25, e35, e1234 */
-            float4(this.e1 * right_anti_dual.e5, this.e2 * right_anti_dual.e5, this.e3 * right_anti_dual.e5, -(this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3)) - (right_anti_dual.group0.xyzx * float4(this.group3.www, this.e423)), 
+            float4((this.group3.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)) - (right_anti_dual_g0.xyzx * float4(this.group3.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e425 * right_anti_dual.e3 * -1.0, this.e435 * right_anti_dual.e1 * -1.0, this.e415 * right_anti_dual.e2 * -1.0, (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group0.yzxx * float4(this.group1.zxy, this.e235))
+            (float4(right_anti_dual_g0[3]) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g0.yzxx * float4(this.group1.zxy, this.e235)) + float4((right_anti_dual_g0.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125))
         );
     }
 }
@@ -1070,15 +848,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public AntiScalar weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e4 * right_anti_dual.e3215) + (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4) - (this.e5 * other.e4)
         );
     }
 }
@@ -1088,21 +861,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInversio
 }
 public extension AntiDipoleInversion {
     public DipoleInversion weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            float4((this.group3.yzx * right_anti_dual.group0.zxy), this.e4 * right_anti_dual.e5) - (this.group3.zxyw * right_anti_dual.group0.yzxw), 
+            float4((right_anti_dual_g0.zxy * this.group3.yzx), this.e4 * other.e3215) - (right_anti_dual_g0.yzxw * this.group3.zxyw), 
             /* e15, e25, e35, e1234 */
-            float4(this.e1 * right_anti_dual.e5, this.e2 * right_anti_dual.e5, this.e3 * right_anti_dual.e5, -(this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)) - (right_anti_dual.group0.xyzx * float4(this.group3.www, this.e423)), 
+            float4((float3(other.e3215) * this.group3.xyz), -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)) - (right_anti_dual_g0.xyzx * float4(this.group3.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group0.yzxx * float4(this.group1.zxy, this.e235))
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125)) + (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g0.yzxx * float4(this.group1.zxy, this.e235))
         );
     }
 }
@@ -1112,25 +880,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDipoleInversion> lh
 }
 public extension AntiDipoleInversion {
     public VersorEven weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (this.group3.zxyy * float4(right_anti_dual.group0.yzx, right_anti_dual.e4315)) + float4(float3(0.0), (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)) + float4((this.group0.xyz * right_anti_dual.group0.www), this.e4 * right_anti_dual.e3215) + float4((this.group2.www * right_anti_dual.group1.xyz), this.e1 * right_anti_dual.e4235) - float4((this.group3.yzx * right_anti_dual.group0.zxy), this.e423 * right_anti_dual.e15), 
+            (this.group3.zxyy * float4(right_anti_dual_g0.yzx, right_anti_dual_g3[1])) + float4(float3(0.0), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[2] * this.e3) - (right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412)) + float4((this.group0.xyz * right_anti_dual_g0.www), right_anti_dual_g3[3] * this.e4) + float4((right_anti_dual_g1.xyz * this.group2.www), right_anti_dual_g3[0] * this.e1) - float4((right_anti_dual_g0.zxy * this.group3.yzx), right_anti_dual_g2[0] * this.e423), 
             /* e415, e425, e435, e321 */
-            float4((this.e4 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e41), (this.e4 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e42), (this.e4 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e43), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group1) - (this.group3.xyzx * right_anti_dual.group1.wwwx), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + (float4(right_anti_dual_g0[3]) * this.group1) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group2.xyz) + (this.group3.yzx * right_anti_dual.group2.zxy) - (this.group3.zxy * right_anti_dual.group2.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group3.yzx) - (right_anti_dual_g2.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * float4(this.group3.xyz, this.e4)
+            float4(right_anti_dual_g0[3]) * float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -1140,25 +902,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDipoleInversio
 }
 public extension AntiDipoleInversion {
     public DipoleInversion weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g3[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            float4((this.group3.yzx * right_anti_dual.group3.zxy), this.e4 * right_anti_dual.e5) - (this.group3.zxyw * right_anti_dual.group3.yzxw), 
+            float4((right_anti_dual_g3.zxy * this.group3.yzx), right_anti_dual_g2[3] * this.e4) - (right_anti_dual_g3.yzxw * this.group3.zxyw), 
             /* e15, e25, e35, e1234 */
-            float4(float3(0.0), (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)) + float4((right_anti_dual.group2.www * this.group3.xyz), this.e4 * right_anti_dual.e321) - (right_anti_dual.group3.xyzx * float4(this.group3.www, this.e423)), 
+            float4(float3(0.0), (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321)) + float4((this.group3.xyz * right_anti_dual_g2.www), right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g3.xyzx * float4(this.group3.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (this.group2.wwwy * float4(right_anti_dual.group2.xyz, right_anti_dual.e2)) + (right_anti_dual.group3.yzxx * float4(this.group1.zxy, this.e235)) + float4((this.group3.zxy * right_anti_dual.group1.yzx), this.e125 * right_anti_dual.e3) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group3.yzxz * float4(right_anti_dual.group1.zxy, right_anti_dual.e125)) - float4((this.group1.yzx * right_anti_dual.group3.zxy), this.e1 * right_anti_dual.e235) - float4((right_anti_dual.group3.www * this.group2.xyz), this.e2 * right_anti_dual.e315)
+            (float4(right_anti_dual_g2[3]) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g3.yzxx * float4(this.group1.zxy, this.e235)) + (this.group2.wwwy * float4(right_anti_dual_g2.xyz, right_anti_dual_g3[1])) + float4((right_anti_dual_g1.yzx * this.group3.zxy), right_anti_dual_g3[2] * this.e125) - (float4(this.e5) * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3])) - (this.group3.yzxz * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[2])) - float4((right_anti_dual_g3.zxy * this.group1.yzx), right_anti_dual_g2[0] * this.e1) - float4((this.group2.xyz * right_anti_dual_g3.www), right_anti_dual_g2[1] * this.e2)
         );
     }
 }
@@ -1172,21 +928,13 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Anti
 }
 public extension AntiDualNum {
     public CircleRotor weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e12345 */
-            float4(this.scalar) * right_anti_dual.group2
+            float4(this.scalar) * other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -1196,25 +944,15 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, 
 }
 public extension AntiDualNum {
     public DipoleInversion weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group3
+            float4(this.scalar) * other.group3 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -1248,17 +986,11 @@ public Flector operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, AntiFlec
 }
 public extension AntiDualNum {
     public Flector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -1268,17 +1000,11 @@ public Line operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, AntiLine rh
 }
 public extension AntiDualNum {
     public Line weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
         return Line(
             /* e415, e425, e435 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group1.xyz
+            float3(this.scalar) * other.group1.xyz * float3(-1.0)
         );
     }
 }
@@ -1288,17 +1014,11 @@ public Motor operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, AntiMotor 
 }
 public extension AntiDualNum {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -1332,21 +1052,13 @@ public Dipole operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Circle rh
 }
 public extension AntiDualNum {
     public Dipole weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
         return Dipole(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35 */
-            float3(this.scalar) * right_anti_dual.group2.xyz
+            float3(this.scalar) * other.group2.xyz
         );
     }
 }
@@ -1356,23 +1068,16 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Circle
 }
 public extension AntiDualNum {
     public VersorOdd weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.scalar) * float4(right_anti_dual.group0.xyz, right_anti_dual.scalar), 
+            float4(this.scalar) * float4(other.group0.xyz, right_anti_dual_g2[3]), 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.group0.xy.yy, this.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group2.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((right_anti_dual_g2.xyz * float3(this.group0.yy, this.scalar)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), right_anti_dual.scalar * this.e3215)
+            float4(float3(0.0), right_anti_dual_g2[3] * this.e3215)
         );
     }
 }
@@ -1382,21 +1087,13 @@ public Circle operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Dipole rh
 }
 public extension AntiDualNum {
     public Circle weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
         return Circle(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group2.xyz
+            float3(this.scalar) * other.group2.xyz * float3(-1.0)
         );
     }
 }
@@ -1406,25 +1103,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Dipol
 }
 public extension AntiDualNum {
     public VersorEven weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.group0.xy.yy, this.scalar, this.e3215) * float4(right_anti_dual.group0.xyz, right_anti_dual.e4), 
+            float4(this.group0.yy, this.scalar, this.e3215) * float4((other.group0.xyz * float3(-1.0)), right_anti_dual_g2[3]), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.scalar) * float4(right_anti_dual.group2.xyz, right_anti_dual.e5), 
+            float4(this.scalar) * float4(right_anti_dual_g2.xyz, right_anti_dual_g3[3]), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4)
+            float4(this.scalar) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3])
         );
     }
 }
@@ -1434,13 +1123,10 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Dual
 }
 public extension AntiDualNum {
     public AntiDualNum weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return AntiDualNum(
             /* e3215, scalar */
-            float2((right_anti_dual.e3215 * this.scalar) + (right_anti_dual.scalar * this.e3215), right_anti_dual.scalar * this.scalar)
+            float2((right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g0[1] * this.e3215), right_anti_dual_g0[1] * this.scalar)
         );
     }
 }
@@ -1462,17 +1148,11 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Flec
 }
 public extension AntiDualNum {
     public AntiFlector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -1482,17 +1162,11 @@ public AntiLine operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Line rh
 }
 public extension AntiDualNum {
     public AntiLine weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiLine(
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e15, e25, e35 */
-            float3(this.scalar) * right_anti_dual.group1.xyz
+            float3(this.scalar) * other.group1.xyz
         );
     }
 }
@@ -1502,17 +1176,13 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Motor 
 }
 public extension AntiDualNum {
     public AntiMotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e15, e25, e35, e3215 */
-            float4(this.group0.xy.yy, this.scalar, (this.e3215 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e3215)) * float4(right_anti_dual.group1.xyz, 1.0)
+            float4(this.group0.yy, this.scalar, (right_anti_dual_g0[3] * this.e3215) + (right_anti_dual_g1[3] * this.scalar)) * float4(right_anti_dual_g1.xyz, 1.0)
         );
     }
 }
@@ -1522,53 +1192,32 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Mult
 }
 public extension AntiDualNum {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * right_anti_dual.scalar, (this.e3215 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e12345)), 
+            float2(right_anti_dual_g0[0] * this.scalar, (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g1[3] * this.e3215)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e5 */
-            this.scalar * right_anti_dual.e5, 
+            this.scalar * other.e3215, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group3, 
+            float4(this.scalar) * float4(other.group8.xyz, other.e321 * -1.0), 
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group4.xyz, 
+            float3(this.scalar) * other.group7.xyz, 
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group5.xyz, 
+            float3(this.scalar) * other.group6.xyz, 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group6, 
+            float4(this.scalar) * float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group7.xyz, 
+            float3(this.scalar) * other.group4.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group8.xyz, 
+            float3(this.scalar) * other.group3.xyz * float3(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.group0.xy.yy, this.scalar, (this.e3215 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e3215)) * float4(right_anti_dual.group9.xyz, 1.0), 
+            float4(this.group0.yy, this.scalar, (right_anti_dual_g0[0] * this.e3215) + (right_anti_dual_g9[3] * this.scalar)) * float4(right_anti_dual_g9.xyz, 1.0), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            this.scalar * other.e4 * -1.0
         );
     }
 }
@@ -1590,17 +1239,11 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, RoundPoin
 }
 public extension AntiDualNum {
     public Sphere weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            this.scalar * other.e4 * -1.0
         );
     }
 }
@@ -1622,21 +1265,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Spher
 }
 public extension AntiDualNum {
     public VersorEven weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), this.e3215 * right_anti_dual.e4), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.e3215), 
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), this.scalar * right_anti_dual.e5), 
+            float4(float3(0.0), this.scalar * other.e3215), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.scalar)
         );
     }
 }
@@ -1646,25 +1284,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Versor
 }
 public extension AntiDualNum {
     public VersorOdd weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.group0.xy.yy, this.scalar, (this.e3215 * right_anti_dual.scalar) + (this.scalar * right_anti_dual.e3215)) * float4(right_anti_dual.group3.xyz, 1.0)
+            float4(this.group0.yy, this.scalar, (right_anti_dual_g0[3] * this.e3215) + (right_anti_dual_g3[3] * this.scalar)) * float4(right_anti_dual_g3.xyz, 1.0)
         );
     }
 }
@@ -1674,25 +1304,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiDualNum> lhs, Verso
 }
 public extension AntiDualNum {
     public VersorEven weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.group0.xy.yy, this.scalar, (this.e3215 * right_anti_dual.e4) + (this.scalar * right_anti_dual.e12345)) * float4(right_anti_dual.group0.xyz, 1.0), 
+            float4(this.group0.yy, this.scalar, (right_anti_dual_g0[3] * this.scalar) + (right_anti_dual_g3[3] * this.e3215)) * float4(right_anti_dual_g0.xyz, 1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3
+            right_anti_dual_g3 * float4(this.scalar)
         );
     }
 }
@@ -1706,19 +1328,9 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Ant
 }
 public extension AntiFlatPoint {
     public AntiScalar weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return AntiScalar(
             /* e12345 */
-            -(this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)
+            (other.e321 * this.e321) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)
         );
     }
 }
@@ -1742,7 +1354,7 @@ public extension AntiFlatPoint {
     public AntiScalar weight_expansion(AntiFlatPoint other) {
         return AntiScalar(
             /* e12345 */
-            float4(other.group0.xyz, other.e321 * -1.0)[3] * this.e321 * -1.0
+            other.e321 * this.e321
         );
     }
 }
@@ -1754,7 +1366,7 @@ public extension AntiFlatPoint {
     public AntiScalar weight_expansion(AntiFlector other) {
         return AntiScalar(
             /* e12345 */
-            float4(other.group0.xyz, other.e321 * -1.0)[3] * this.e321 * -1.0
+            this.e321 * other.e321
         );
     }
 }
@@ -1788,17 +1400,9 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Cir
 }
 public extension AntiFlatPoint {
     public AntiScalar weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
         return AntiScalar(
             /* e12345 */
-            -(this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)
+            (this.e321 * other.e321) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)
         );
     }
 }
@@ -1808,21 +1412,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Ci
 }
 public extension AntiFlatPoint {
     public CircleRotor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), right_anti_dual.scalar * this.e321), 
+            float4(float3(0.0), right_anti_dual_g2[3] * this.e321), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.group2.www * this.group0.xyz), -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e45 * this.e321))
+            float4((this.group0.xyz * right_anti_dual_g2.www), (this.e321 * other.e321) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412))
         );
     }
 }
@@ -1832,21 +1429,13 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, DipoleI
 }
 public extension AntiFlatPoint {
     public Sphere weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.group2.www * this.group0.xyz * float3(-1.0)), (right_anti_dual.e1 * this.e235) + (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)), 
+            float4((this.group0.xyz * right_anti_dual_g2.www * float3(-1.0)), (right_anti_dual_g3[0] * this.e235) + (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125) + (right_anti_dual_g3[3] * this.e321)), 
             /* e1234 */
-            right_anti_dual.e4 * this.e321 * -1.0
+            right_anti_dual_g2[3] * this.e321 * -1.0
         );
     }
 }
@@ -1868,15 +1457,10 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Fl
 }
 public extension AntiFlatPoint {
     public AntiDualNum weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDualNum(
             /* e3215, scalar */
-            float2((this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5), 0.0)
+            float2((right_anti_dual_g1[0] * this.e235) + (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125) + (right_anti_dual_g1[3] * this.e321), 0.0)
         );
     }
 }
@@ -1888,7 +1472,7 @@ public extension AntiFlatPoint {
     public AntiFlatPoint weight_expansion(Motor other) {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(float4(other.group0.xyz, other.e12345 * -1.0)[3]) * this.group0
+            float4(other.e12345 * -1.0) * this.group0
         );
     }
 }
@@ -1898,33 +1482,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Mu
 }
 public extension AntiFlatPoint {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)), 
+            float2(0.0, (this.e321 * other.e321) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -1936,15 +1498,15 @@ public extension AntiFlatPoint {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e321 * right_anti_dual.scalar), 
+            float4(float3(0.0), right_anti_dual_g0[0] * this.e321), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0)), (this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5)), 
+            float4((float3(right_anti_dual_g1[3]) * this.group0.xyz * float3(-1.0)), (right_anti_dual_g1[0] * this.e235) + (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125) + (this.e321 * other.e3215)), 
             /* e1234 */
-            this.e321 * right_anti_dual.e4 * -1.0
+            right_anti_dual_g1[3] * this.e321 * -1.0
         );
     }
 }
@@ -1954,13 +1516,10 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Pl
 }
 public extension AntiFlatPoint {
     public AntiDualNum weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDualNum(
             /* e3215, scalar */
-            float2((this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5), 0.0)
+            float2((right_anti_dual_g0[0] * this.e235) + (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321), 0.0)
         );
     }
 }
@@ -1970,17 +1529,12 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Sphere 
 }
 public extension AntiFlatPoint {
     public Sphere weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0)), (this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz * float3(-1.0)), (right_anti_dual_g0[0] * this.e235) + (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125) + (this.e321 * other.e3215)), 
             /* e1234 */
-            this.e321 * right_anti_dual.e4 * -1.0
+            right_anti_dual_g0[3] * this.e321 * -1.0
         );
     }
 }
@@ -1990,23 +1544,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, Ve
 }
 public extension AntiFlatPoint {
     public CircleRotor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e321 * right_anti_dual.scalar), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.e321), 
             /* e235, e315, e125, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group0.xyz), -(this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45))
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), (this.e321 * other.e321) - (right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125))
         );
     }
 }
@@ -2016,21 +1561,12 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiFlatPoint> lhs, VersorO
 }
 public extension AntiFlatPoint {
     public Sphere weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0)), (this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5)), 
+            float4((float3(right_anti_dual_g3[3]) * this.group0.xyz * float3(-1.0)), (right_anti_dual_g3[0] * this.e235) + (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125) + (this.e321 * other.e3215)), 
             /* e1234 */
-            this.e321 * right_anti_dual.e4 * -1.0
+            right_anti_dual_g3[3] * this.e321 * -1.0
         );
     }
 }
@@ -2044,19 +1580,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiCircl
 }
 public extension AntiFlector {
     public Sphere weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group1.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((right_anti_dual.group0.xyz * this.group1.www), this.e1 * right_anti_dual.e235), 
+            float4((right_anti_dual_g1.yzx * this.group1.zxy), -(right_anti_dual_g1[3] * this.e5) - (right_anti_dual_g2[2] * this.e3)) - (this.group1.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * this.group1.www), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -2066,23 +1597,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Anti
 }
 public extension AntiFlector {
     public CircleRotor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (right_anti_dual.group0.xyz.yzx * this.group1.zxy) - (right_anti_dual.group0.xyz.zxy * this.group1.yzx), 
+            (other.group0.yzx * this.group1.zxy) - (other.group0.zxy * this.group1.yzx), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group1.xyzx * right_anti_dual.group1.wwwx), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e235, e315, e125, e12345 */
-            (this.group1.yzxx * float4(right_anti_dual.group2.zxy, right_anti_dual.e4235)) + (this.group1.wwwy * float4(right_anti_dual.group1.xyz, right_anti_dual.e4315)) + float4(float3(0.0), (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)) - float4((this.group1.zxy * right_anti_dual.group2.yzx), this.e235 * right_anti_dual.e41)
+            (this.group1.yzxx * float4(right_anti_dual_g2.zxy, right_anti_dual_g3[0])) + (this.group1.wwwy * float4(right_anti_dual_g1.xyz, right_anti_dual_g3[1])) + float4(float3(0.0), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[2] * this.e3) - (right_anti_dual_g1[3] * this.e321) - (other.e431 * this.e315) - (other.e412 * this.e125)) - float4((right_anti_dual_g2.yzx * this.group1.zxy), other.e423 * this.e235)
         );
     }
 }
@@ -2092,15 +1616,11 @@ public Flector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiDual
 }
 public extension AntiFlector {
     public Flector weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, 0.0) * float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group1.xyz * float3(other.group0.xx, other.e3215)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), this.e321 * right_anti_dual.e5)
+            float4(float3(0.0), other.e3215 * this.e321)
         );
     }
 }
@@ -2110,15 +1630,12 @@ public Motor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiFlatPo
 }
 public extension AntiFlector {
     public Motor weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.e45) * float4(this.group1.xyz, this.e321) * float4(-1.0), 
+            float4(right_anti_dual_g0[3]) * float4(this.group1.xyz, this.e321) * float4(-1.0), 
             /* e235, e315, e125, e5 */
-            float4(((this.group1.yzx * right_anti_dual.group0.zxy) - (this.group1.zxy * right_anti_dual.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy)), 0.0)
         );
     }
 }
@@ -2128,17 +1645,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiFlecto
 }
 public extension AntiFlector {
     public Motor weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.e45) * this.group1.xyz * float3(-1.0)), (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) - (this.e321 * right_anti_dual.e45)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz * float3(-1.0)), (right_anti_dual_g1[0] * this.e1) + (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3) - (right_anti_dual_g0[3] * this.e321)), 
             /* e235, e315, e125, e5 */
-            float4(((this.group1.yzx * right_anti_dual.group0.zxy) - (this.group1.zxy * right_anti_dual.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy)), 0.0)
         );
     }
 }
@@ -2148,15 +1661,11 @@ public Plane operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiLine r
 }
 public extension AntiFlector {
     public Plane weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) - (this.group1.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0.yzx * this.group1.zxy), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group1.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -2166,17 +1675,13 @@ public Flector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiMoto
 }
 public extension AntiFlector {
     public Flector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.www, 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group1.xyz * right_anti_dual_g1.www), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) + float4((this.group1.zxy * right_anti_dual.group0.yzx), this.e321 * right_anti_dual.e5) - (this.group1.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235))
+            float4(float3(0.0), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((right_anti_dual_g0.yzx * this.group1.zxy), right_anti_dual_g1[3] * this.e321) - (this.group1.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -2186,13 +1691,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiFlector> lhs, AntiP
 }
 public extension AntiFlector {
     public AntiScalar weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -2202,15 +1704,12 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Anti
 }
 public extension AntiFlector {
     public AntiFlector weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0) * this.group1
         );
     }
 }
@@ -2220,21 +1719,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Circ
 }
 public extension AntiFlector {
     public CircleRotor weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (right_anti_dual.group0.xyz.yzx * this.group1.zxy) - (right_anti_dual.group0.xyz.zxy * this.group1.yzx), 
+            (other.group0.yzx * this.group1.zxy) - (other.group0.zxy * this.group1.yzx), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group1.xyzx * right_anti_dual.group1.wwwx), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e235, e315, e125, e12345 */
-            float4((this.e2 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e23), (this.e3 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e31), (this.e1 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e12), -(this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)) - float4((right_anti_dual.group2.xyz.yzx * this.group1.zxy), this.e235 * right_anti_dual.e41)
+            float4((right_anti_dual_g1[0] * this.e5) + (this.e2 * other.e125), (right_anti_dual_g1[1] * this.e5) + (this.e3 * other.e235), (right_anti_dual_g1[2] * this.e5) + (this.e1 * other.e315), -(right_anti_dual_g1[3] * this.e321) - (this.e315 * other.e431) - (this.e125 * other.e412)) - float4((other.group2.yzx * this.group1.zxy), this.e235 * other.e423)
         );
     }
 }
@@ -2244,23 +1736,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Circl
 }
 public extension AntiFlector {
     public VersorEven weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.e42 * this.e3, right_anti_dual.e43 * this.e1, right_anti_dual.e41 * this.e2, -(right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e45 * this.e321)) - float4((right_anti_dual.group0.xyz.zxy * this.group1.yzx), right_anti_dual.e41 * this.e235), 
+            float4(this.e3 * other.e431, this.e1 * other.e412, this.e2 * other.e423, -(right_anti_dual_g1[3] * this.e321) - (this.e315 * other.e431) - (this.e125 * other.e412)) - float4((other.group0.zxy * this.group1.yzx), this.e235 * other.e423), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + float4((right_anti_dual.group0.xyz * this.group1.www), right_anti_dual.scalar * this.e321) - (right_anti_dual.group1.wwwx * this.group1.xyzx), 
+            float4(float3(0.0), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((other.group0.xyz * this.group1.www), right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group1.yzx) - (right_anti_dual.group2.yzx * this.group1.zxy)), right_anti_dual.scalar * this.e5), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group0.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group1.yzx) - (right_anti_dual_g2.yzx * this.group1.zxy)), right_anti_dual_g2[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group2.www, 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g2.www), 0.0)
         );
     }
 }
@@ -2270,19 +1756,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Dipole rh
 }
 public extension AntiFlector {
     public Sphere weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group1.wwwx * float4(right_anti_dual.group0.xyz, right_anti_dual.e235)) - float4((this.group1.yzx * right_anti_dual.group1.zxy), this.e2 * right_anti_dual.e315), 
+            float4((right_anti_dual_g1.yzx * this.group1.zxy), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group1.wwwx * float4(right_anti_dual_g0, right_anti_dual_g2[0])) - float4((right_anti_dual_g1.zxy * this.group1.yzx), right_anti_dual_g2[1] * this.e2), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -2292,25 +1773,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiFlector> lhs, 
 }
 public extension AntiFlector {
     public DipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group1.xyz * float3(-1.0), 
+            float3(right_anti_dual_g2[3]) * this.group1.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group3.zxy * this.group1.yzx) - (right_anti_dual.group3.yzx * this.group1.zxy)), right_anti_dual.e4 * this.e5 * -1.0), 
+            float4(((right_anti_dual_g3.zxy * this.group1.yzx) - (right_anti_dual_g3.yzx * this.group1.zxy)), right_anti_dual_g2[3] * this.e5 * -1.0), 
             /* e15, e25, e35, e1234 */
-            (this.group1.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e423)) + float4(float3(0.0), (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3)) - float4((this.group1.www * right_anti_dual.group3.xyz), right_anti_dual.e4 * this.e321), 
+            (this.group1.xyzx * float4(right_anti_dual_g3.www, right_anti_dual_g0[0])) + float4(float3(0.0), (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)) - float4((right_anti_dual_g3.xyz * this.group1.www), right_anti_dual_g2[3] * this.e321), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321) - (right_anti_dual.e125 * this.e3)) + float4((right_anti_dual.group1.yzx * this.group1.zxy), right_anti_dual.e1 * this.e235) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (right_anti_dual.group2.wwwy * float4(this.group0.xyz, this.e2)) - (this.group1.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235))
+            float4(float3(0.0), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125) + (right_anti_dual_g3[3] * this.e321) - (right_anti_dual_g2[2] * this.e3)) + float4((right_anti_dual_g1.yzx * this.group1.zxy), right_anti_dual_g3[0] * this.e235) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (right_anti_dual_g2.wwwy * float4(this.group0.xyz, this.e2)) - (this.group1.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0]))
         );
     }
 }
@@ -2320,15 +1795,12 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Dual
 }
 public extension AntiFlector {
     public AntiFlector weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0[1]) * this.group1
         );
     }
 }
@@ -2338,13 +1810,10 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Flat
 }
 public extension AntiFlector {
     public AntiDualNum weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDualNum(
             /* e3215, scalar */
-            float2(-(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5), 0.0)
+            float2(-(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5), 0.0)
         );
     }
 }
@@ -2354,17 +1823,13 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Flecto
 }
 public extension AntiFlector {
     public AntiMotor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(((right_anti_dual.group1.zxy * this.group1.yzx) - (right_anti_dual.group1.yzx * this.group1.zxy)), 0.0), 
+            float4(((right_anti_dual_g1.zxy * this.group1.yzx) - (right_anti_dual_g1.yzx * this.group1.zxy)), 0.0), 
             /* e15, e25, e35, e3215 */
-            (right_anti_dual.group1.wwwx * float4(this.group1.xyz, this.e235)) + float4(float3(0.0), (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)) - (this.group1.wwwx * float4(right_anti_dual.group1.xyz, right_anti_dual.e235))
+            (right_anti_dual_g1.wwwx * float4(this.group1.xyz, this.e235)) + float4(float3(0.0), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125) + (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)) - (this.group1.wwwx * float4(right_anti_dual_g1.xyz, right_anti_dual_g0[0]))
         );
     }
 }
@@ -2374,15 +1839,9 @@ public AntiFlatPoint operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Li
 }
 public extension AntiFlector {
     public AntiFlatPoint weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4((this.e2 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e23), (this.e3 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e31), (this.e1 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e12), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group1.zxyx * float4(right_anti_dual.group1.xyz.yzx, right_anti_dual.e23))
+            float4((this.e2 * other.e125) + (this.e5 * other.e415), (this.e3 * other.e235) + (this.e5 * other.e425), (this.e1 * other.e315) + (this.e5 * other.e435), -(this.e2 * other.e425) - (this.e3 * other.e435)) - (this.group1.zxyx * float4(other.group1.yzx, other.e415))
         );
     }
 }
@@ -2392,17 +1851,13 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Moto
 }
 public extension AntiFlector {
     public AntiFlector weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4((this.e2 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e23), (this.e3 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e31), (this.e1 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e12), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group0) - (this.group1.zxyx * float4(right_anti_dual.group1.yzx, right_anti_dual.e23)), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g1[2] * this.e2), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g1[0] * this.e3), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g1[1] * this.e1), -(right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3)) + (float4(right_anti_dual_g0[3]) * this.group0) - (this.group1.zxyx * float4(right_anti_dual_g1.yzx, right_anti_dual_g0[0])), 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0[3]) * this.group1
         );
     }
 }
@@ -2412,53 +1867,36 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Mult
 }
 public extension AntiFlector {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)), 
+            float2(0.0, (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) - (right_anti_dual_g3_w * this.e321) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412) - (this.e5 * other.e4)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group1.xyz * float3(right_anti_dual_g0.xx, right_anti_dual_g0[0])), 0.0), 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) - (float3(this.e5) * right_anti_dual.group1.xyz)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((float3(other.e3215) * this.group1.xyz) - (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.e5 * -1.0), 
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group1.xyz * float3(-1.0), 
+            float3(right_anti_dual_g1[3]) * this.group1.xyz * float3(-1.0), 
             /* e23, e31, e12 */
-            (this.group1.yzx * right_anti_dual.group1.zxy) - (this.group1.zxy * right_anti_dual.group1.yzx), 
+            (right_anti_dual_g1.zxy * this.group1.yzx) - (right_anti_dual_g1.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + float4((right_anti_dual.group4.xyz * this.group1.www), this.e321 * right_anti_dual.scalar) - float4((right_anti_dual.group3.www * this.group1.xyz), this.e1 * right_anti_dual.e23), 
+            float4(float3(0.0), -(this.e2 * other.e425) - (this.e3 * other.e435)) + float4((other.group7.xyz * this.group1.www), right_anti_dual_g0[0] * this.e321) - float4((float3(right_anti_dual_g3_w) * this.group1.xyz), this.e1 * other.e415), 
             /* e423, e431, e412 */
-            (right_anti_dual.group4.xyz.yzx * this.group1.zxy) - (right_anti_dual.group4.xyz.zxy * this.group1.yzx), 
+            (other.group7.yzx * this.group1.zxy) - (other.group7.zxy * this.group1.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz) + (this.group1.yzx * right_anti_dual.group3.zxy) - (this.group1.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.e5) * other.group6.xyz) + (other.group8.zxy * this.group1.yzx) - (other.group8.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5) - (this.e5 * right_anti_dual.e321)) + float4((this.group1.zxy * right_anti_dual.group6.yzx), this.e235 * right_anti_dual.e1) - (this.group1.wwwx * float4(right_anti_dual.group7.xyz, right_anti_dual.e235)) - float4((this.group1.yzx * right_anti_dual.group6.zxy), this.e3 * right_anti_dual.e125) - float4((right_anti_dual.group1.www * this.group0.xyz), this.e2 * right_anti_dual.e315), 
+            float4(float3(0.0), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125) + (this.e321 * other.e3215) - (right_anti_dual_g6[3] * this.e5)) + float4((right_anti_dual_g6.yzx * this.group1.zxy), right_anti_dual_g1[0] * this.e235) - (this.group1.wwwx * float4(right_anti_dual_g7, right_anti_dual_g8[0])) - float4((right_anti_dual_g6.zxy * this.group1.yzx), right_anti_dual_g8[2] * this.e3) - float4((this.group0.xyz * right_anti_dual_g1.www), right_anti_dual_g8[1] * this.e2), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412) - (this.e321 * right_anti_dual.e4)
+            (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3) - (right_anti_dual_g1[3] * this.e321)
         );
     }
 }
@@ -2468,15 +1906,12 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Plane 
 }
 public extension AntiFlector {
     public AntiMotor weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(((this.group1.yzx * right_anti_dual.group0.zxy) - (this.group1.zxy * right_anti_dual.group0.yzx)), 0.0), 
+            float4(((right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy)), 0.0), 
             /* e15, e25, e35, e3215 */
-            float4(this.e5 * right_anti_dual.e1 * -1.0, this.e5 * right_anti_dual.e2 * -1.0, this.e5 * right_anti_dual.e3 * -1.0, (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5)) + (right_anti_dual.group0.wwwx * float4(this.group1.xyz, this.e235))
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g0.xyz, (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321)) * float4(-1.0, -1.0, -1.0, 1.0)) + (right_anti_dual_g0.wwwx * float4(this.group1.xyz, this.e235))
         );
     }
 }
@@ -2486,15 +1921,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Round
 }
 public extension AntiFlector {
     public AntiScalar weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) - (this.e5 * other.e4)
         );
     }
 }
@@ -2504,21 +1934,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiFlector> lhs, 
 }
 public extension AntiFlector {
     public DipoleInversion weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group1.xyz * float3(-1.0), 
+            float3(right_anti_dual_g0[3]) * this.group1.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((this.group1.yzx * right_anti_dual.group0.zxy) - (this.group1.zxy * right_anti_dual.group0.yzx)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy)), right_anti_dual_g0[3] * this.e5 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)), this.e321 * right_anti_dual.e4 * -1.0), 
+            float4(((float3(other.e3215) * this.group1.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.e321 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0)), (this.e235 * right_anti_dual.e1) + (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5))
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz * float3(-1.0)), (right_anti_dual_g0[0] * this.e235) + (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125) + (this.e321 * other.e3215))
         );
     }
 }
@@ -2528,25 +1953,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiFlector> lhs, Verso
 }
 public extension AntiFlector {
     public VersorEven weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (this.group1.zxyx * float4(right_anti_dual.group0.yzx, right_anti_dual.e4235)) + float4(float3(0.0), (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43) - (this.e321 * right_anti_dual.e45)) - (right_anti_dual.group0.zxyx * float4(this.group1.yzx, this.e235)), 
+            (this.group1.zxyx * float4(right_anti_dual_g0.yzx, right_anti_dual_g3[0])) + float4(float3(0.0), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[3] * this.e321)) - (right_anti_dual_g0.zxyx * float4(this.group1.yzx, this.e235)), 
             /* e415, e425, e435, e321 */
-            (right_anti_dual.group0 * float4(this.group1.www, this.e321)) + float4(float3(0.0), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group1.xyzx * right_anti_dual.group1.wwwx), 
+            (right_anti_dual_g0 * float4(this.group1.www, this.e321)) + float4(float3(0.0), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz) + (this.group1.yzx * right_anti_dual.group2.zxy) - (this.group1.zxy * right_anti_dual.group2.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group0.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group1.yzx) - (right_anti_dual_g2.yzx * this.group1.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g0.www), 0.0)
         );
     }
 }
@@ -2556,25 +1975,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiFlector> lhs, 
 }
 public extension AntiFlector {
     public DipoleInversion weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group1.xyz * float3(-1.0), 
+            float3(right_anti_dual_g3[3]) * this.group1.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((this.group1.yzx * right_anti_dual.group3.zxy) - (this.group1.zxy * right_anti_dual.group3.yzx)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((right_anti_dual_g3.zxy * this.group1.yzx) - (right_anti_dual_g3.yzx * this.group1.zxy)), right_anti_dual_g3[3] * this.e5 * -1.0), 
             /* e15, e25, e35, e1234 */
-            (this.group1.xyzx * float4(right_anti_dual.group2.www, right_anti_dual.e423)) + float4(float3(0.0), (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)) - (right_anti_dual.group3 * float4(this.group1.www, this.e321)), 
+            (this.group1.xyzx * float4(right_anti_dual_g2.www, right_anti_dual_g0[0])) + float4(float3(0.0), (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)) - (right_anti_dual_g3 * float4(this.group1.www, this.e321)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3) + (this.e321 * right_anti_dual.e5) - (this.e5 * right_anti_dual.e321)) + float4((this.group1.zxy * right_anti_dual.group1.yzx), this.e235 * right_anti_dual.e1) - (this.group1.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - (this.group1.wwwz * float4(right_anti_dual.group0.xyz, right_anti_dual.e125)) - float4((right_anti_dual.group3.www * this.group0.xyz), this.e1 * right_anti_dual.e235)
+            float4(float3(0.0), (right_anti_dual_g2[3] * this.e321) + (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125) - (right_anti_dual_g1[3] * this.e5)) + float4((right_anti_dual_g1.yzx * this.group1.zxy), right_anti_dual_g3[0] * this.e235) - (this.group1.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - (this.group1.wwwz * float4(right_anti_dual_g0.xyz, right_anti_dual_g2[2])) - float4((this.group0.xyz * right_anti_dual_g3.www), right_anti_dual_g2[0] * this.e1)
         );
     }
 }
@@ -2588,17 +2001,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiCirc
 }
 public extension AntiLine {
     public AntiScalar weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)
         );
     }
 }
@@ -2608,21 +2015,13 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiDipoleIn
 }
 public extension AntiLine {
     public Sphere weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e35 * right_anti_dual.e42), (this.e31 * right_anti_dual.e45) + (this.e15 * right_anti_dual.e43), (this.e12 * right_anti_dual.e45) + (this.e25 * right_anti_dual.e41), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group1.xyz.yzx * right_anti_dual.group0.xyz.zxy), this.e23 * right_anti_dual.e15), 
+            float4((right_anti_dual_g1[3] * this.e23) + (other.e431 * this.e35), (right_anti_dual_g1[3] * this.e31) + (other.e412 * this.e15), (right_anti_dual_g1[3] * this.e12) + (other.e423 * this.e25), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((other.group0.zxy * this.group1.yzx), right_anti_dual_g2[0] * this.e23), 
             /* e1234 */
-            -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -2632,13 +2031,9 @@ public AntiFlatPoint operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiD
 }
 public extension AntiLine {
     public AntiFlatPoint weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, 0.0) * float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group0.xyz * float3(other.group0.xx, other.e3215)), 0.0)
         );
     }
 }
@@ -2648,13 +2043,10 @@ public Plane operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiFlatPoint
 }
 public extension AntiLine {
     public Plane weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e45) * this.group0.xyz), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35))
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12))
         );
     }
 }
@@ -2664,15 +2056,10 @@ public Plane operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiFlector r
 }
 public extension AntiLine {
     public Plane weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e45) * this.group0.xyz), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35))
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12))
         );
     }
 }
@@ -2682,15 +2069,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiLine
 }
 public extension AntiLine {
     public AntiScalar weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)
+            -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)
         );
     }
 }
@@ -2700,17 +2082,12 @@ public Motor operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiMotor rhs
 }
 public extension AntiLine {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(float3(0.0), -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4(float3(0.0), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(right_anti_dual.group1.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group0.xyz * (other.group1 * float4(-1.0, -1.0, -1.0, 1.0)).www), 0.0)
         );
     }
 }
@@ -2720,15 +2097,12 @@ public AntiLine operator /(WeightExpansionInfixPartial<AntiLine> lhs, AntiScalar
 }
 public extension AntiLine {
     public AntiLine weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return AntiLine(
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e15, e25, e35 */
-            float3(right_anti_dual.scalar) * this.group1.xyz
+            float3(right_anti_dual_g0) * this.group1.xyz
         );
     }
 }
@@ -2738,19 +2112,12 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiLine> lhs, Circle rhs) 
 }
 public extension AntiLine {
     public Sphere weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e35 * right_anti_dual.e42), (this.e31 * right_anti_dual.e45) + (this.e15 * right_anti_dual.e43), (this.e12 * right_anti_dual.e45) + (this.e25 * right_anti_dual.e41), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group1.xyz.yzx * right_anti_dual.group0.xyz.zxy), this.e23 * right_anti_dual.e15), 
+            float4((right_anti_dual_g1[3] * this.e23) + (this.e35 * other.e431), (right_anti_dual_g1[3] * this.e31) + (this.e15 * other.e412), (right_anti_dual_g1[3] * this.e12) + (this.e25 * other.e423), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (this.e31 * other.e315) - (this.e12 * other.e125)) - float4((this.group1.yzx * other.group0.zxy), this.e23 * other.e235), 
             /* e1234 */
-            -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)
         );
     }
 }
@@ -2760,23 +2127,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiLine> lhs, Cir
 }
 public extension AntiLine {
     public DipoleInversion weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(right_anti_dual.group2.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * right_anti_dual_g2.www), 0.0), 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group1.xyz), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12)), 
+            float4((float3(right_anti_dual_g2[3]) * this.group1.xyz), -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e45 * this.e23), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e45 * this.e31), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e45 * this.e12), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group1.xyz.yzx), right_anti_dual.e15 * this.e23)
+            float4((right_anti_dual_g1[3] * this.e23) + (this.e35 * other.e431), (right_anti_dual_g1[3] * this.e31) + (this.e15 * other.e412), (right_anti_dual_g1[3] * this.e12) + (this.e25 * other.e423), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((this.group1.yzx * other.group0.zxy), right_anti_dual_g2[0] * this.e23)
         );
     }
 }
@@ -2786,17 +2147,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiLine> lhs, Dipole r
 }
 public extension AntiLine {
     public AntiScalar weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)
         );
     }
 }
@@ -2806,23 +2161,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiLine> lhs, DipoleI
 }
 public extension AntiLine {
     public CircleRotor weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.e4) * this.group0.xyz, 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(right_anti_dual.e4) * this.group1.xyz), -(right_anti_dual.e1 * this.e23) - (right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)), 
+            float4((float3(right_anti_dual_g2[3]) * this.group1.xyz), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.e2 * this.e35) + (right_anti_dual.e5 * this.e23), (right_anti_dual.e3 * this.e15) + (right_anti_dual.e5 * this.e31), (right_anti_dual.e1 * this.e25) + (right_anti_dual.e5 * this.e12), -(right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12)) - float4((this.group1.xyz.yzx * right_anti_dual.group3.zxy), right_anti_dual.e423 * this.e15)
+            float4((right_anti_dual_g3[1] * this.e35) + (right_anti_dual_g3[3] * this.e23), (right_anti_dual_g3[2] * this.e15) + (right_anti_dual_g3[3] * this.e31), (right_anti_dual_g3[0] * this.e25) + (right_anti_dual_g3[3] * this.e12), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - float4((this.group1.yzx * right_anti_dual_g3.zxy), right_anti_dual_g0[0] * this.e15)
         );
     }
 }
@@ -2832,15 +2181,12 @@ public AntiLine operator /(WeightExpansionInfixPartial<AntiLine> lhs, DualNum rh
 }
 public extension AntiLine {
     public AntiLine weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return AntiLine(
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e15, e25, e35 */
-            float3(right_anti_dual.scalar) * this.group1.xyz
+            float3(right_anti_dual_g0[1]) * this.group1.xyz
         );
     }
 }
@@ -2850,15 +2196,10 @@ public AntiFlatPoint operator /(WeightExpansionInfixPartial<AntiLine> lhs, Flect
 }
 public extension AntiLine {
     public AntiFlatPoint weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4((right_anti_dual.e2 * this.e35) + (right_anti_dual.e5 * this.e23), (right_anti_dual.e3 * this.e15) + (right_anti_dual.e5 * this.e31), (right_anti_dual.e1 * this.e25) + (right_anti_dual.e5 * this.e12), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group1.zxyx * float4(this.group1.xyz.yzx, this.e23))
+            float4((right_anti_dual_g1[1] * this.e35) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g1[2] * this.e15) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g1[0] * this.e25) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.zxyx * float4(this.group1.yzx, this.e23))
         );
     }
 }
@@ -2868,15 +2209,9 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiLine> lhs, Line rh
 }
 public extension AntiLine {
     public AntiDualNum weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiDualNum(
             /* e3215, scalar */
-            float2(-(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12), 0.0)
+            float2(-(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e15 * other.e415) - (this.e25 * other.e425) - (this.e35 * other.e435), 0.0)
         );
     }
 }
@@ -2886,17 +2221,13 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiLine> lhs, Motor rhs
 }
 public extension AntiLine {
     public AntiMotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), 0.0), 
             /* e15, e25, e35, e3215 */
-            float4((float3(right_anti_dual.scalar) * this.group1.xyz), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12))
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12))
         );
     }
 }
@@ -2906,53 +2237,34 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiLine> lhs, MultiVe
 }
 public extension AntiLine {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)), 
+            float2(0.0, -(right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group1.xyz * float3(right_anti_dual_g0.xx, right_anti_dual_g0[0])), 0.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(right_anti_dual.e4) * this.group1.xyz), -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)), 
+            float4((float3(right_anti_dual_g1[3]) * this.group1.xyz), -(right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)), 
             /* e423, e431, e412 */
-            float3(right_anti_dual.e4) * this.group0.xyz, 
+            float3(right_anti_dual_g1[3]) * this.group0.xyz, 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) + (this.group1.xyz.zxy * right_anti_dual.group1.yzx) - (this.group1.xyz.yzx * right_anti_dual.group1.zxy), 
+            (float3(other.e3215) * this.group0.xyz) + (this.group1.zxy * right_anti_dual_g1.yzx) - (this.group1.yzx * right_anti_dual_g1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e35 * right_anti_dual.e42), (this.e31 * right_anti_dual.e45) + (this.e15 * right_anti_dual.e43), (this.e12 * right_anti_dual.e45) + (this.e25 * right_anti_dual.e41), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group1.xyz.yzx * right_anti_dual.group4.xyz.zxy), this.e23 * right_anti_dual.e15), 
+            float4((right_anti_dual_g3_w * this.e23) + (this.e35 * other.e431), (right_anti_dual_g3_w * this.e31) + (this.e15 * other.e412), (right_anti_dual_g3_w * this.e12) + (this.e25 * other.e423), -(this.e31 * other.e315) - (this.e12 * other.e125) - (this.e15 * other.e415) - (this.e25 * other.e425) - (this.e35 * other.e435)) - float4((this.group1.yzx * other.group7.zxy), this.e23 * other.e235), 
             /* e1234 */
-            -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)
         );
     }
 }
@@ -2962,13 +2274,10 @@ public AntiFlatPoint operator /(WeightExpansionInfixPartial<AntiLine> lhs, Plane
 }
 public extension AntiLine {
     public AntiFlatPoint weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4((this.e23 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e2), (this.e31 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e3), (this.e12 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e1), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (right_anti_dual.group0.zxyx * float4(this.group1.xyz.yzx, this.e23))
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.zxyx * float4(this.group1.yzx, this.e23))
         );
     }
 }
@@ -2978,19 +2287,14 @@ public Circle operator /(WeightExpansionInfixPartial<AntiLine> lhs, Sphere rhs) 
 }
 public extension AntiLine {
     public Circle weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Circle(
             /* e423, e431, e412 */
-            float3(right_anti_dual.e4) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(right_anti_dual.e4) * this.group1.xyz), -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) + (this.group1.xyz.zxy * right_anti_dual.group0.yzx) - (this.group1.xyz.yzx * right_anti_dual.group0.zxy)
+            (float3(other.e3215) * this.group0.xyz) + (this.group1.zxy * right_anti_dual_g0.yzx) - (this.group1.yzx * right_anti_dual_g0.zxy)
         );
     }
 }
@@ -3000,25 +2304,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiLine> lhs, Ver
 }
 public extension AntiLine {
     public DipoleInversion weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), 0.0), 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group1.xyz), -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e35 * right_anti_dual.e42), (this.e31 * right_anti_dual.e45) + (this.e15 * right_anti_dual.e43), (this.e12 * right_anti_dual.e45) + (this.e25 * right_anti_dual.e41), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((this.group1.xyz.yzx * right_anti_dual.group0.zxy), this.e23 * right_anti_dual.e15)
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((this.group1.yzx * right_anti_dual_g0.zxy), right_anti_dual_g2[0] * this.e23)
         );
     }
 }
@@ -3028,23 +2325,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiLine> lhs, VersorO
 }
 public extension AntiLine {
     public CircleRotor weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.e4) * this.group0.xyz, 
+            float3(right_anti_dual_g3[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(right_anti_dual.e4) * this.group1.xyz), -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)), 
+            float4((float3(right_anti_dual_g3[3]) * this.group1.xyz), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)), 
             /* e235, e315, e125, e12345 */
-            float4((this.e23 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e2), (this.e31 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e3), (this.e12 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e1), -(this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) - float4((this.group1.xyz.yzx * right_anti_dual.group3.zxy), this.e23 * right_anti_dual.e415)
+            float4((right_anti_dual_g2[3] * this.e23) + (right_anti_dual_g3[1] * this.e35), (right_anti_dual_g2[3] * this.e31) + (right_anti_dual_g3[2] * this.e15), (right_anti_dual_g2[3] * this.e12) + (right_anti_dual_g3[0] * this.e25), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - float4((this.group1.yzx * right_anti_dual_g3.zxy), right_anti_dual_g1[0] * this.e23)
         );
     }
 }
@@ -3058,21 +2349,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiCi
 }
 public extension AntiMotor {
     public CircleRotor weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((this.group0.www * right_anti_dual.group2.xyz), (this.scalar * right_anti_dual.e12345) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412))
+            float4((right_anti_dual_g2.xyz * this.group0.www), (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12))
         );
     }
 }
@@ -3082,25 +2368,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiMotor> lhs, An
 }
 public extension AntiMotor {
     public DipoleInversion weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.www * right_anti_dual.group2.xyz), (this.scalar * right_anti_dual.e1234) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((right_anti_dual_g2.xyz * this.group0.www), (right_anti_dual_g2[3] * this.scalar) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4235), (this.e31 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4315), (this.e12 * right_anti_dual.e45) + (this.scalar * right_anti_dual.e4125), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + float4((right_anti_dual.group0.xyz.yzx * this.group1.zxy), this.scalar * right_anti_dual.e3215) - float4((right_anti_dual.group0.xyz.zxy * this.group1.yzx), this.e23 * right_anti_dual.e15)
+            float4((right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g3[0] * this.scalar), (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g3[1] * this.scalar), (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g3[2] * this.scalar), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + float4((other.group0.yzx * this.group1.zxy), right_anti_dual_g3[3] * this.scalar) - float4((other.group0.zxy * this.group1.yzx), right_anti_dual_g2[0] * this.e23)
         );
     }
 }
@@ -3110,15 +2389,11 @@ public Motor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiDualNum 
 }
 public extension AntiMotor {
     public Motor weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(float3(0.0), this.scalar * right_anti_dual.e12345), 
+            float4(float3(0.0), other.scalar * this.scalar), 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.e5) * this.group0
+            float4(other.e3215) * this.group0
         );
     }
 }
@@ -3128,15 +2403,12 @@ public Flector operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiFlatPo
 }
 public extension AntiMotor {
     public Flector weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(right_anti_dual.e45) * this.group0.xyz), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35))
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12))
         );
     }
 }
@@ -3146,17 +2418,13 @@ public Flector operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiFlecto
 }
 public extension AntiMotor {
     public Flector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar * right_anti_dual.e4235, this.scalar * right_anti_dual.e4315, this.scalar * right_anti_dual.e4125, -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) + (this.group0 * float4(right_anti_dual.group0.www, right_anti_dual.e3215))
+            (float4(this.scalar, this.scalar, this.scalar, 1.0) * float4(right_anti_dual_g1.xyz, -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12))) + (this.group0 * float4(right_anti_dual_g0.www, right_anti_dual_g1[3]))
         );
     }
 }
@@ -3166,17 +2434,12 @@ public Motor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiLine rhs
 }
 public extension AntiMotor {
     public Motor weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group0.xyz), -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4((right_anti_dual_g0 * float3(this.scalar)), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(this.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((other.group1.xyz * this.group0.www * float3(-1.0)), 0.0)
         );
     }
 }
@@ -3186,17 +2449,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiMotor rh
 }
 public extension AntiMotor {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((this.group0.www * right_anti_dual.group0.xyz), (this.scalar * right_anti_dual.e12345) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4((right_anti_dual_g0.xyz * this.group0.www), (right_anti_dual_g0[3] * this.scalar) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.e5) * this.group0.xyz)), this.scalar * right_anti_dual.e5)
+            float4(((float3(right_anti_dual_g1[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.scalar)
         );
     }
 }
@@ -3218,15 +2477,12 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, AntiScal
 }
 public extension AntiMotor {
     public AntiMotor weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e15, e25, e35, e3215 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0) * this.group1
         );
     }
 }
@@ -3236,23 +2492,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Ci
 }
 public extension AntiMotor {
     public DipoleInversion weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((float3(this.scalar) * other.group2.xyz), -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e35 * right_anti_dual.e42), (this.e31 * right_anti_dual.e45) + (this.e15 * right_anti_dual.e43), (this.e12 * right_anti_dual.e45) + (this.e25 * right_anti_dual.e41), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group1.yzx), this.e23 * right_anti_dual.e15)
+            float4((right_anti_dual_g1[3] * this.e23) + (this.e35 * other.e431), (right_anti_dual_g1[3] * this.e31) + (this.e15 * other.e412), (right_anti_dual_g1[3] * this.e12) + (this.e25 * other.e423), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (this.e31 * other.e315) - (this.e12 * other.e125)) - float4((other.group0.zxy * this.group1.yzx), this.e23 * other.e235)
         );
     }
 }
@@ -3262,23 +2511,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiMotor> lhs, CircleRo
 }
 public extension AntiMotor {
     public VersorOdd weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.scalar) * float4(right_anti_dual.group0.xyz, right_anti_dual.scalar), 
+            float4(this.scalar) * float4(other.group0.xyz, right_anti_dual_g2[3]), 
             /* e23, e31, e12, e45 */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group1.xyz)), right_anti_dual.e45 * this.scalar), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((right_anti_dual.e15 * this.scalar) + (right_anti_dual.scalar * this.e15), (right_anti_dual.e25 * this.scalar) + (right_anti_dual.scalar * this.e25), (right_anti_dual.e35 * this.scalar) + (right_anti_dual.scalar * this.e35), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12)), 
+            float4((right_anti_dual_g2[0] * this.scalar) + (right_anti_dual_g2[3] * this.e15), (right_anti_dual_g2[1] * this.scalar) + (right_anti_dual_g2[3] * this.e25), (right_anti_dual_g2[2] * this.scalar) + (right_anti_dual_g2[3] * this.e35), -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e45 * this.e23, right_anti_dual.e45 * this.e31, right_anti_dual.e45 * this.e12, -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (this.group1.zxyw * float4(right_anti_dual.group0.xyz.yzx, right_anti_dual.scalar)) - (this.group1.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            (this.group1.zxyw * float4(other.group0.yzx, right_anti_dual_g2[3])) + float4((this.group0.xyz * right_anti_dual_g1.www), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - (this.group1.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -3288,21 +2531,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Dipole
 }
 public extension AntiMotor {
     public CircleRotor weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412))
+            float4((float3(this.scalar) * other.group2.xyz * float3(-1.0)), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12))
         );
     }
 }
@@ -3312,25 +2549,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiMotor> lhs, DipoleI
 }
 public extension AntiMotor {
     public VersorEven weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.e4 * this.e23, right_anti_dual.e4 * this.e31, right_anti_dual.e4 * this.e12, -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12)) + float4((right_anti_dual.group0.xyz * this.group0.www), right_anti_dual.e4 * this.e3215), 
+            float4(((right_anti_dual_g0 * this.group0.www) + (this.group0.xyz * right_anti_dual_g2.www)), (right_anti_dual_g2[3] * this.e3215) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e4 * this.e15, right_anti_dual.e4 * this.e25, right_anti_dual.e4 * this.e35, -(right_anti_dual.e1 * this.e23) - (right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + float4((this.group1.xyz * right_anti_dual_g2.www), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group2.xyz) + (right_anti_dual.group3.yzx * this.group1.zxy) - (right_anti_dual.group3.zxy * this.group1.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(right_anti_dual_g3[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group1.zxy) - (right_anti_dual_g3.zxy * this.group1.yzx)), right_anti_dual_g3[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4)
+            float4(this.scalar) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3])
         );
     }
 }
@@ -3340,15 +2571,12 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, DualNum 
 }
 public extension AntiMotor {
     public AntiMotor weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e15, e25, e35, e3215 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, (right_anti_dual.e3215 * this.scalar) + (right_anti_dual.scalar * this.e3215)) * float4(this.group1.xyz, 1.0)
+            float4(right_anti_dual_g0.yy, right_anti_dual_g0[1], (right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g0[1] * this.e3215)) * float4(this.group1.xyz, 1.0)
         );
     }
 }
@@ -3370,17 +2598,12 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Flecto
 }
 public extension AntiMotor {
     public AntiFlector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4((right_anti_dual.e2 * this.e35) + (right_anti_dual.e5 * this.e23), (right_anti_dual.e3 * this.e15) + (right_anti_dual.e5 * this.e31), (right_anti_dual.e1 * this.e25) + (right_anti_dual.e5 * this.e12), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + (float4(this.scalar) * right_anti_dual.group0) - (right_anti_dual.group1.zxyx * float4(this.group1.yzx, this.e23)), 
+            float4((right_anti_dual_g1[1] * this.e35) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g1[2] * this.e15) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g1[0] * this.e25) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + (float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0)) - (right_anti_dual_g1.zxyx * float4(this.group1.yzx, this.e23)), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group1
+            right_anti_dual_g1 * float4(this.scalar)
         );
     }
 }
@@ -3390,17 +2613,11 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Line rhs
 }
 public extension AntiMotor {
     public AntiMotor weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(this.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((other.group0.xyz * this.group0.www), 0.0), 
             /* e15, e25, e35, e3215 */
-            float4((float3(this.scalar) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12))
+            float4((float3(this.scalar) * other.group1.xyz), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e15 * other.e415) - (this.e25 * other.e425) - (this.e35 * other.e435))
         );
     }
 }
@@ -3410,17 +2627,13 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Motor rh
 }
 public extension AntiMotor {
     public AntiMotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.scalar), 
             /* e15, e25, e35, e3215 */
-            (float4(right_anti_dual.scalar) * this.group1) + (float4(this.scalar) * right_anti_dual.group1) + float4(float3(0.0), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12))
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g0[3]) * this.group1) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12))
         );
     }
 }
@@ -3430,53 +2643,35 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiMotor> lhs, MultiV
 }
 public extension AntiMotor {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * right_anti_dual.scalar, (this.scalar * right_anti_dual.e12345) + (this.e3215 * right_anti_dual.e4) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)), 
+            float2(right_anti_dual_g0[0] * this.scalar, (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g1[3] * this.e3215) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e5 */
-            this.scalar * right_anti_dual.e5, 
+            this.scalar * other.e3215, 
             /* e15, e25, e35, e45 */
-            float4(((float3(this.scalar) * right_anti_dual.group3.xyz) + (float3(right_anti_dual.scalar) * this.group1.xyz)), this.scalar * right_anti_dual.e45), 
+            float4(((float3(right_anti_dual_g0[0]) * this.group1.xyz) + (float3(this.scalar) * other.group8.xyz)), right_anti_dual_g3_w * this.scalar), 
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group4.xyz, 
+            float3(this.scalar) * other.group7.xyz, 
             /* e23, e31, e12 */
-            (float3(this.scalar) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.scalar) * other.group6.xyz), 
             /* e415, e425, e435, e321 */
-            float4(this.e15 * right_anti_dual.e4, this.e25 * right_anti_dual.e4, this.e35 * right_anti_dual.e4, -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + (float4(this.scalar) * right_anti_dual.group6), 
+            (right_anti_dual_g6 * float4(this.scalar)) + float4((this.group1.xyz * right_anti_dual_g1.www), -(right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)), 
             /* e423, e431, e412 */
-            (float3(this.scalar) * right_anti_dual.group7.xyz) + (float3(right_anti_dual.e4) * this.group0.xyz), 
+            (right_anti_dual_g7 * float3(this.scalar)) + (float3(right_anti_dual_g1[3]) * this.group0.xyz), 
             /* e235, e315, e125 */
-            (float3(this.scalar) * right_anti_dual.group8.xyz) + (float3(right_anti_dual.e5) * this.group0.xyz) + (this.group1.zxy * right_anti_dual.group1.yzx) - (this.group1.yzx * right_anti_dual.group1.zxy), 
+            (float3(other.e3215) * this.group0.xyz) + (right_anti_dual_g1.yzx * this.group1.zxy) - (float3(this.scalar) * other.group3.xyz) - (right_anti_dual_g1.zxy * this.group1.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar * right_anti_dual.e4235, this.scalar * right_anti_dual.e4315, this.scalar * right_anti_dual.e4125, -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + (this.group0 * float4(right_anti_dual.group3.www, right_anti_dual.e3215)) + (this.group1.zxyw * float4(right_anti_dual.group4.xyz.yzx, right_anti_dual.scalar)) - (this.group1.yzxx * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e23)), 
+            (float4(this.scalar, this.scalar, this.scalar, 1.0) * float4(right_anti_dual_g9.xyz, -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e25 * other.e425) - (this.e35 * other.e435))) + (this.group0 * float4(float3(right_anti_dual_g3_w), right_anti_dual_g9[3])) + (this.group1.zxyw * float4(other.group7.yzx, right_anti_dual_g0[0])) - (this.group1.yzxx * float4(other.group7.zxy, other.e415)), 
             /* e1234 */
-            (this.scalar * right_anti_dual.e1234) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412) - (this.scalar * other.e4)
         );
     }
 }
@@ -3486,15 +2681,12 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Plane 
 }
 public extension AntiMotor {
     public AntiFlector weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4((this.e23 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e2), (this.e31 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e3), (this.e12 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e1), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (right_anti_dual.group0.zxyx * float4(this.group1.yzx, this.e23)), 
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.zxyx * float4(this.group1.yzx, this.e23)), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.scalar)
         );
     }
 }
@@ -3504,17 +2696,11 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiMotor> lhs, RoundPoint 
 }
 public extension AntiMotor {
     public Sphere weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            this.scalar * other.e4 * -1.0
         );
     }
 }
@@ -3536,21 +2722,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiMotor> lhs, Sphere 
 }
 public extension AntiMotor {
     public VersorEven weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.e4) * float4(this.group0.xyz, this.e3215), 
+            float4(right_anti_dual_g0[3]) * float4(this.group0.xyz, this.e3215), 
             /* e415, e425, e435, e321 */
-            float4((float3(right_anti_dual.e4) * this.group1.xyz), -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group0.xyz) + (this.group1.zxy * right_anti_dual.group0.yzx) - (this.group1.yzx * right_anti_dual.group0.zxy)), this.scalar * right_anti_dual.e5), 
+            float4(((float3(other.e3215) * this.group0.xyz) + (right_anti_dual_g0.yzx * this.group1.zxy) - (right_anti_dual_g0.zxy * this.group1.yzx)), this.scalar * other.e3215), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.scalar)
         );
     }
 }
@@ -3560,25 +2741,19 @@ public VersorOdd operator /(WeightExpansionInfixPartial<AntiMotor> lhs, VersorEv
 }
 public extension AntiMotor {
     public VersorOdd weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e23, e31, e12, e45 */
-            float4(((float3(this.scalar) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz)), this.scalar * right_anti_dual.e45), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4(this.e15 * right_anti_dual.scalar, this.e25 * right_anti_dual.scalar, this.e35 * right_anti_dual.scalar, -(this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)) + (float4(this.scalar) * right_anti_dual.group2), 
+            (right_anti_dual_g2 * float4(this.scalar)) + float4((this.group1.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e35 * right_anti_dual.e42, this.e15 * right_anti_dual.e43, this.e25 * right_anti_dual.e41, -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + (this.group0 * float4(right_anti_dual.group1.www, right_anti_dual.e3215)) + float4((this.group0.www * right_anti_dual.group3.xyz), this.e3215 * right_anti_dual.scalar) - float4((this.group1.yzx * right_anti_dual.group0.zxy), this.e23 * right_anti_dual.e15)
+            (this.group0 * float4(right_anti_dual_g1.www, right_anti_dual_g3[3])) + float4((right_anti_dual_g0.yzx * this.group1.zxy), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + float4((right_anti_dual_g3.xyz * this.group0.www), right_anti_dual_g0[3] * this.e3215) - float4((right_anti_dual_g0.zxy * this.group1.yzx), right_anti_dual_g2[0] * this.e23)
         );
     }
 }
@@ -3588,25 +2763,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiMotor> lhs, VersorO
 }
 public extension AntiMotor {
     public VersorEven weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (this.group0 * float4(right_anti_dual.group3.www, right_anti_dual.e12345)) + float4(float3(0.0), -(this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) + float4((this.group0.www * right_anti_dual.group0.xyz), this.e3215 * right_anti_dual.e4), 
+            (this.group0 * float4(right_anti_dual_g3.www, right_anti_dual_g0[3])) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((right_anti_dual_g0.xyz * this.group0.www), right_anti_dual_g3[3] * this.e3215), 
             /* e415, e425, e435, e321 */
-            float4(this.e15 * right_anti_dual.e4, this.e25 * right_anti_dual.e4, this.e35 * right_anti_dual.e4, -(this.e23 * right_anti_dual.e1) - (this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + float4((this.group1.xyz * right_anti_dual_g3.www), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.scalar) * right_anti_dual.group2.xyz) + (float3(right_anti_dual.e5) * this.group0.xyz) + (this.group1.zxy * right_anti_dual.group3.yzx) - (this.group1.yzx * right_anti_dual.group3.zxy)), this.scalar * right_anti_dual.e5), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group1.zxy) - (right_anti_dual_g3.zxy * this.group1.yzx)), right_anti_dual_g2[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3
+            right_anti_dual_g3 * float4(this.scalar)
         );
     }
 }
@@ -3620,19 +2789,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiCircleR
 }
 public extension AntiPlane {
     public Sphere weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group0.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((right_anti_dual.group0.xyz * this.group0.www), this.e1 * right_anti_dual.e235), 
+            float4((right_anti_dual_g1.yzx * this.group0.zxy), -(right_anti_dual_g1[3] * this.e5) - (right_anti_dual_g2[2] * this.e3)) - (this.group0.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * this.group0.www), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -3642,23 +2806,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiDi
 }
 public extension AntiPlane {
     public CircleRotor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group0.xyzx * right_anti_dual.group1.wwwx), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e12345 */
-            float4(this.e3 * right_anti_dual.e25 * -1.0, this.e1 * right_anti_dual.e35 * -1.0, this.e2 * right_anti_dual.e15 * -1.0, (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)) + (this.group0.yzxx * float4(right_anti_dual.group2.zxy, right_anti_dual.e4235)) + (this.group0.wwwy * float4(right_anti_dual.group1.xyz, right_anti_dual.e4315))
+            (this.group0.yzxx * float4(right_anti_dual_g2.zxy, right_anti_dual_g3[0])) + (this.group0.wwwy * float4(right_anti_dual_g1.xyz, right_anti_dual_g3[1])) + float4((right_anti_dual_g2.yzx * this.group0.zxy * float3(-1.0)), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[2] * this.e3))
         );
     }
 }
@@ -3668,13 +2825,9 @@ public FlatPoint operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiDual
 }
 public extension AntiPlane {
     public FlatPoint weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, 0.0) * float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group0.xyz * float3(other.group0.xx, other.e3215)), 0.0)
         );
     }
 }
@@ -3684,15 +2837,12 @@ public Line operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiFlatPoint
 }
 public extension AntiPlane {
     public Line weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Line(
             /* e415, e425, e435 */
-            float3(right_anti_dual.e45) * this.group0.xyz * float3(-1.0), 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            (this.group0.yzx * right_anti_dual.group0.zxy) - (this.group0.zxy * right_anti_dual.group0.yzx)
+            (right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)
         );
     }
 }
@@ -3702,17 +2852,13 @@ public Motor operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiFlector 
 }
 public extension AntiPlane {
     public Motor weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.e45) * this.group0.xyz * float3(-1.0)), (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz * float3(-1.0)), (right_anti_dual_g1[0] * this.e1) + (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3)), 
             /* e235, e315, e125, e5 */
-            float4(((this.group0.yzx * right_anti_dual.group0.zxy) - (this.group0.zxy * right_anti_dual.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)), 0.0)
         );
     }
 }
@@ -3722,15 +2868,11 @@ public Plane operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiLine rhs
 }
 public extension AntiPlane {
     public Plane weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0.yzx * this.group0.zxy), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -3740,17 +2882,13 @@ public Flector operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiMotor 
 }
 public extension AntiPlane {
     public Flector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.www, 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * right_anti_dual_g1.www), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e2 * right_anti_dual.e315) - (this.e3 * right_anti_dual.e125)) - (this.group0.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0.yzx * this.group0.zxy), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -3760,13 +2898,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiPlane> lhs, AntiPla
 }
 public extension AntiPlane {
     public AntiScalar weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -3788,21 +2923,14 @@ public Circle operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Circle rhs)
 }
 public extension AntiPlane {
     public Circle weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Circle(
             /* e423, e431, e412 */
-            (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group0.xyzx * right_anti_dual.group1.wwwx), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.xyz.zxy * this.group0.yzx) - (right_anti_dual.group2.xyz.yzx * this.group0.zxy)
+            (float3(this.e5) * right_anti_dual_g1.xyz) + (other.group2.zxy * this.group0.yzx) - (other.group2.yzx * this.group0.zxy)
         );
     }
 }
@@ -3812,23 +2940,17 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<AntiPlane> lhs
 }
 public extension AntiPlane {
     public AntiDipoleInversion weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e41 * this.e5, right_anti_dual.e42 * this.e5, right_anti_dual.e43 * this.e5, -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group0.xyzx), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e4 */
-            float4((float3(this.e5) * right_anti_dual.group1.xyz), 0.0) + float4((right_anti_dual.group2.zxy * this.group0.yzx), 0.0) - float4((right_anti_dual.group2.yzx * this.group0.zxy), 0.0), 
+            float4((float3(this.e5) * right_anti_dual_g1.xyz), 0.0) + float4((right_anti_dual_g2.zxy * this.group0.yzx), 0.0) - float4((right_anti_dual_g2.yzx * this.group0.zxy), 0.0), 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group0
+            float4(right_anti_dual_g2[3]) * this.group0
         );
     }
 }
@@ -3838,19 +2960,14 @@ public Sphere operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Dipole rhs)
 }
 public extension AntiPlane {
     public Sphere weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group0.wwwx * float4(right_anti_dual.group0.xyz, right_anti_dual.e235)) - float4((this.group0.yzx * right_anti_dual.group1.zxy), this.e2 * right_anti_dual.e315), 
+            float4((right_anti_dual_g1.yzx * this.group0.zxy), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group0.wwwx * float4(right_anti_dual_g0, right_anti_dual_g2[0])) - float4((right_anti_dual_g1.zxy * this.group0.yzx), right_anti_dual_g2[1] * this.e2), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)
         );
     }
 }
@@ -3860,25 +2977,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Di
 }
 public extension AntiPlane {
     public DipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0), 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group3.zxy * this.group0.yzx) - (right_anti_dual.group3.yzx * this.group0.zxy)), right_anti_dual.e4 * this.e5 * -1.0), 
+            float4(((right_anti_dual_g3.zxy * this.group0.yzx) - (right_anti_dual_g3.yzx * this.group0.zxy)), right_anti_dual_g2[3] * this.e5 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.e1 * this.e5 * -1.0, right_anti_dual.e2 * this.e5 * -1.0, right_anti_dual.e3 * this.e5 * -1.0, (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3)) + (this.group0.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e423)), 
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g3.xyz, (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)) * float4(-1.0, -1.0, -1.0, 1.0)) + (this.group0.xyzx * float4(right_anti_dual_g3.www, right_anti_dual_g0[0])), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e425 * this.e3, right_anti_dual.e435 * this.e1, right_anti_dual.e415 * this.e2, -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group0.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g1.yzx * this.group0.zxy), -(right_anti_dual_g2[1] * this.e2) - (right_anti_dual_g2[2] * this.e3)) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group0.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0]))
         );
     }
 }
@@ -3900,13 +3011,10 @@ public AntiDualNum operator /(WeightExpansionInfixPartial<AntiPlane> lhs, FlatPo
 }
 public extension AntiPlane {
     public AntiDualNum weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiDualNum(
             /* e3215, scalar */
-            float2(-(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5), 0.0)
+            float2(-(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5), 0.0)
         );
     }
 }
@@ -3916,17 +3024,13 @@ public AntiMotor operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Flector 
 }
 public extension AntiPlane {
     public AntiMotor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(((right_anti_dual.group1.zxy * this.group0.yzx) - (right_anti_dual.group1.yzx * this.group0.zxy)), 0.0), 
+            float4(((right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy)), 0.0), 
             /* e15, e25, e35, e3215 */
-            float4(right_anti_dual.e5 * this.e1, right_anti_dual.e5 * this.e2, right_anti_dual.e5 * this.e3, -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)) - (this.group0.wwwx * float4(right_anti_dual.group1.xyz, right_anti_dual.e235))
+            float4((this.group0.xyz * right_anti_dual_g1.www), -(right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)) - (this.group0.wwwx * float4(right_anti_dual_g1.xyz, right_anti_dual_g0[0]))
         );
     }
 }
@@ -3936,15 +3040,9 @@ public AntiFlatPoint operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Line
 }
 public extension AntiPlane {
     public AntiFlatPoint weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4((right_anti_dual.e23 * this.e5) + (right_anti_dual.e35 * this.e2), (right_anti_dual.e31 * this.e5) + (right_anti_dual.e15 * this.e3), (right_anti_dual.e12 * this.e5) + (right_anti_dual.e25 * this.e1), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (this.group0.zxyx * float4(right_anti_dual.group1.xyz.yzx, right_anti_dual.e23))
+            float4((this.e2 * other.e125) + (this.e5 * other.e415), (this.e3 * other.e235) + (this.e5 * other.e425), (this.e1 * other.e315) + (this.e5 * other.e435), -(this.e2 * other.e425) - (this.e3 * other.e435)) - (this.group0.zxyx * float4(other.group1.yzx, other.e415))
         );
     }
 }
@@ -3954,17 +3052,13 @@ public AntiFlector operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Motor 
 }
 public extension AntiPlane {
     public AntiFlector weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4((right_anti_dual.e23 * this.e5) + (right_anti_dual.e35 * this.e2), (right_anti_dual.e31 * this.e5) + (right_anti_dual.e15 * this.e3), (right_anti_dual.e12 * this.e5) + (right_anti_dual.e25 * this.e1), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (this.group0.zxyx * float4(right_anti_dual.group1.yzx, right_anti_dual.e23)), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g1[2] * this.e2), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g1[0] * this.e3), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g1[1] * this.e1), -(right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3)) - (this.group0.zxyx * float4(right_anti_dual_g1.yzx, right_anti_dual_g0[0])), 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * this.group0
+            float4(right_anti_dual_g0[3]) * this.group0
         );
     }
 }
@@ -3974,53 +3068,35 @@ public MultiVector operator /(WeightExpansionInfixPartial<AntiPlane> lhs, MultiV
 }
 public extension AntiPlane {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)), 
+            float2(0.0, (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) - (this.e5 * other.e4)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * float3(right_anti_dual_g0.xx, right_anti_dual_g0[0])), 0.0), 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(((float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group1.xyz)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((float3(other.e3215) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.e5 * -1.0), 
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0), 
+            float3(right_anti_dual_g1[3]) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */
-            (this.group0.yzx * right_anti_dual.group1.zxy) - (this.group0.zxy * right_anti_dual.group1.yzx), 
+            (right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - float4((right_anti_dual.group3.www * this.group0.xyz), this.e1 * right_anti_dual.e23), 
+            float4(((float3(this.e5) * other.group7.xyz) - (float3(other.e321 * -1.0) * this.group0.xyz)), -(this.e1 * other.e415) - (this.e2 * other.e425) - (this.e3 * other.e435)), 
             /* e423, e431, e412 */
-            (right_anti_dual.group4.xyz.yzx * this.group0.zxy) - (right_anti_dual.group4.xyz.zxy * this.group0.yzx), 
+            (other.group7.yzx * this.group0.zxy) - (other.group7.zxy * this.group0.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group5.xyz) + (this.group0.yzx * right_anti_dual.group3.zxy) - (this.group0.zxy * right_anti_dual.group3.yzx), 
+            (float3(this.e5) * other.group6.xyz) + (other.group8.zxy * this.group0.yzx) - (other.group8.yzx * this.group0.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group0.wwwx * float4(right_anti_dual.group7.xyz, right_anti_dual.e235)) - float4((this.group0.yzx * right_anti_dual.group6.zxy), this.e2 * right_anti_dual.e315), 
+            float4((right_anti_dual_g6.yzx * this.group0.zxy), -(right_anti_dual_g8[2] * this.e3) - (right_anti_dual_g6[3] * this.e5)) - (this.group0.wwwx * float4(right_anti_dual_g7, right_anti_dual_g8[0])) - float4((right_anti_dual_g6.zxy * this.group0.yzx), right_anti_dual_g8[1] * this.e2), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)
+            (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3)
         );
     }
 }
@@ -4030,15 +3106,12 @@ public AntiLine operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Plane rhs
 }
 public extension AntiPlane {
     public AntiLine weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiLine(
             /* e23, e31, e12 */
-            (right_anti_dual.group0.zxy * this.group0.yzx) - (right_anti_dual.group0.yzx * this.group0.zxy), 
+            (right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy), 
             /* e15, e25, e35 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)
+            (float3(right_anti_dual_g0[3]) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)
         );
     }
 }
@@ -4048,15 +3121,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<AntiPlane> lhs, RoundPo
 }
 public extension AntiPlane {
     public AntiScalar weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) - (this.e5 * other.e4)
         );
     }
 }
@@ -4066,19 +3134,14 @@ public Dipole operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Sphere rhs)
 }
 public extension AntiPlane {
     public Dipole weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Dipole(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0), 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((this.group0.yzx * right_anti_dual.group0.zxy) - (this.group0.zxy * right_anti_dual.group0.yzx)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)), right_anti_dual_g0[3] * this.e5 * -1.0), 
             /* e15, e25, e35 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)
+            (float3(other.e3215) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)
         );
     }
 }
@@ -4088,25 +3151,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<AntiPlane> lhs, VersorE
 }
 public extension AntiPlane {
     public VersorEven weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.e2 * right_anti_dual.e43 * -1.0, this.e3 * right_anti_dual.e41 * -1.0, this.e1 * right_anti_dual.e42 * -1.0, (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e5 * right_anti_dual.e1234)) + (this.group0.zxyx * float4(right_anti_dual.group0.yzx, right_anti_dual.e4235)), 
+            (this.group0.zxyx * float4(right_anti_dual_g0.yzx, right_anti_dual_g3[0])) + float4((right_anti_dual_g0.zxy * this.group0.yzx * float3(-1.0)), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3)), 
             /* e415, e425, e435, e321 */
-            float4(this.e5 * right_anti_dual.e41, this.e5 * right_anti_dual.e42, this.e5 * right_anti_dual.e43, -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group0.xyzx * right_anti_dual.group1.wwwx), 
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3))) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (this.group0.yzx * right_anti_dual.group2.zxy) - (this.group0.zxy * right_anti_dual.group2.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group0.yzx) - (right_anti_dual_g2.yzx * this.group0.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group0.xyz * right_anti_dual_g0.www), 0.0)
         );
     }
 }
@@ -4116,25 +3173,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<AntiPlane> lhs, Ve
 }
 public extension AntiPlane {
     public DipoleInversion weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.e4) * this.group0.xyz * float3(-1.0), 
+            float3(right_anti_dual_g3[3]) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(((this.group0.yzx * right_anti_dual.group3.zxy) - (this.group0.zxy * right_anti_dual.group3.yzx)), this.e5 * right_anti_dual.e4 * -1.0), 
+            float4(((right_anti_dual_g3.zxy * this.group0.yzx) - (right_anti_dual_g3.yzx * this.group0.zxy)), right_anti_dual_g3[3] * this.e5 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.e5 * right_anti_dual.e1 * -1.0, this.e5 * right_anti_dual.e2 * -1.0, this.e5 * right_anti_dual.e3 * -1.0, (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412)) + (this.group0.xyzx * float4(right_anti_dual.group2.www, right_anti_dual.e423)), 
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g3.xyz, (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3)) * float4(-1.0, -1.0, -1.0, 1.0)) + (this.group0.xyzx * float4(right_anti_dual_g2.www, right_anti_dual_g0[0])), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e3 * right_anti_dual.e425, this.e1 * right_anti_dual.e435, this.e2 * right_anti_dual.e415, -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group0.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)) - (this.group0.wwwy * float4(right_anti_dual.group0.xyz, right_anti_dual.e315))
+            float4((right_anti_dual_g1.yzx * this.group0.zxy), -(right_anti_dual_g1[3] * this.e5) - (right_anti_dual_g2[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])) - (this.group0.wwwy * float4(right_anti_dual_g0.xyz, right_anti_dual_g2[1]))
         );
     }
 }
@@ -4162,7 +3213,7 @@ public extension AntiScalar {
     public AntiScalar weight_expansion(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            float4(other.group2.xyz, other.e12345 * -1.0)[3] * this.e12345
+            this.e12345 * other.e12345 * -1.0
         );
     }
 }
@@ -4186,7 +3237,7 @@ public extension AntiScalar {
     public AntiScalar weight_expansion(Motor other) {
         return AntiScalar(
             /* e12345 */
-            float4(other.group0.xyz, other.e12345 * -1.0)[3] * this.e12345
+            this.e12345 * other.e12345 * -1.0
         );
     }
 }
@@ -4210,7 +3261,7 @@ public extension AntiScalar {
     public AntiScalar weight_expansion(VersorEven other) {
         return AntiScalar(
             /* e12345 */
-            float4(other.group0.xyz, other.e12345 * -1.0)[3] * this.e12345
+            this.e12345 * other.e12345 * -1.0
         );
     }
 }
@@ -4224,19 +3275,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Circle> lhs, AntiDipole
 }
 public extension Circle {
     public AntiScalar weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)
         );
     }
 }
@@ -4258,13 +3301,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Circle> lhs, AntiFlatPo
 }
 public extension Circle {
     public AntiScalar weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4274,15 +3314,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Circle> lhs, AntiFlecto
 }
 public extension Circle {
     public AntiScalar weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4304,17 +3339,14 @@ public Circle operator /(WeightExpansionInfixPartial<Circle> lhs, AntiScalar rhs
 }
 public extension Circle {
     public Circle weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Circle(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group2.xyz
+            float3(right_anti_dual_g0) * this.group2.xyz
         );
     }
 }
@@ -4324,17 +3356,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Circle> lhs, Circle rhs
 }
 public extension Circle {
     public AntiScalar weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)
         );
     }
 }
@@ -4344,21 +3369,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Circle> lhs, CircleRot
 }
 public extension Circle {
     public CircleRotor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g2[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412))
+            float4((float3(right_anti_dual_g2[3]) * this.group2.xyz), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412))
         );
     }
 }
@@ -4368,21 +3387,13 @@ public Sphere operator /(WeightExpansionInfixPartial<Circle> lhs, DipoleInversio
 }
 public extension Circle {
     public Sphere weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(right_anti_dual.e4 * this.e235) - (right_anti_dual.e3 * this.e425), -(right_anti_dual.e4 * this.e315) - (right_anti_dual.e1 * this.e435), -(right_anti_dual.e4 * this.e125) - (right_anti_dual.e2 * this.e415), (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group3.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual.group3.yzx * this.group1.zxy), right_anti_dual.e2 * this.e315), 
+            float4(-(right_anti_dual_g2[3] * this.e235) - (right_anti_dual_g3[2] * this.e425), -(right_anti_dual_g2[3] * this.e315) - (right_anti_dual_g3[0] * this.e435), -(right_anti_dual_g2[3] * this.e125) - (right_anti_dual_g3[1] * this.e415), (right_anti_dual_g3[2] * this.e125) + (right_anti_dual_g3[3] * this.e321)) + (right_anti_dual_g3.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual_g3.yzx * this.group1.zxy), right_anti_dual_g3[1] * this.e315), 
             /* e1234 */
-            -(right_anti_dual.e4 * this.e321) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412)
         );
     }
 }
@@ -4392,17 +3403,14 @@ public Circle operator /(WeightExpansionInfixPartial<Circle> lhs, DualNum rhs) {
 }
 public extension Circle {
     public Circle weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Circle(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group2.xyz
+            float3(right_anti_dual_g0[1]) * this.group2.xyz
         );
     }
 }
@@ -4412,17 +3420,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Circle> lhs, Flector rhs) {
 }
 public extension Circle {
     public Sphere weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group1.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual.group1.yzx * this.group1.zxy), right_anti_dual.e2 * this.e315), 
+            (right_anti_dual_g1.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual_g1.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g1[2] * this.e125) + (right_anti_dual_g1[3] * this.e321)) + float4((right_anti_dual_g1.yzx * this.group1.zxy), right_anti_dual_g1[1] * this.e315), 
             /* e1234 */
-            -(right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)
         );
     }
 }
@@ -4432,15 +3435,9 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Circle> lhs, Line rhs) 
 }
 public extension Circle {
     public AntiScalar weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)
+            -(this.e423 * other.e235) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435)
         );
     }
 }
@@ -4450,19 +3447,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Circle> lhs, Motor rhs
 }
 public extension Circle {
     public CircleRotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412))
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), -(right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412))
         );
     }
 }
@@ -4472,33 +3465,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<Circle> lhs, MultiVect
 }
 public extension Circle {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(0.0, (this.e321 * other.e321) - (this.e423 * other.e235) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -4510,15 +3481,15 @@ public extension Circle {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[0]) * this.group1, 
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group2.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group2.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e321 * right_anti_dual.e5) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group1.yzxy * float4(this.group1.zxy, this.e315)) + float4((float3(right_anti_dual.e5) * this.group0.xyz), this.e235 * right_anti_dual.e1), 
+            float4(-(right_anti_dual_g1[2] * this.e425) - (right_anti_dual_g1[3] * this.e235), -(right_anti_dual_g1[0] * this.e435) - (right_anti_dual_g1[3] * this.e315), -(right_anti_dual_g1[1] * this.e415) - (right_anti_dual_g1[3] * this.e125), (right_anti_dual_g1[2] * this.e125) + (this.e321 * other.e3215)) + (right_anti_dual_g1.yzxy * float4(this.group1.zxy, this.e315)) + float4((float3(other.e3215) * this.group0.xyz), right_anti_dual_g1[0] * this.e235), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321)
         );
     }
 }
@@ -4528,15 +3499,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Circle> lhs, Plane rhs) {
 }
 public extension Circle {
     public Sphere weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group0.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual.group0.yzx * this.group1.zxy), right_anti_dual.e2 * this.e315), 
+            (right_anti_dual_g0.wwwx * float4(this.group0.xyz, this.e235)) + float4((right_anti_dual_g0.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321)) + float4((right_anti_dual_g0.yzx * this.group1.zxy), right_anti_dual_g0[1] * this.e315), 
             /* e1234 */
-            -(right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)
         );
     }
 }
@@ -4546,17 +3514,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Circle> lhs, Sphere rhs) {
 }
 public extension Circle {
     public Sphere weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e321 * right_anti_dual.e5) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group0.yzxy * float4(this.group1.zxy, this.e315)) + float4((float3(right_anti_dual.e5) * this.group0.xyz), this.e235 * right_anti_dual.e1), 
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[2] * this.e125) + (this.e321 * other.e3215)) + (right_anti_dual_g0.yzxy * float4(this.group1.zxy, this.e315)) + float4((float3(other.e3215) * this.group0.xyz), right_anti_dual_g0[0] * this.e235), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4566,23 +3529,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Circle> lhs, VersorEve
 }
 public extension Circle {
     public CircleRotor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43))
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), -(right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412))
         );
     }
 }
@@ -4592,21 +3548,13 @@ public Sphere operator /(WeightExpansionInfixPartial<Circle> lhs, VersorOdd rhs)
 }
 public extension Circle {
     public Sphere weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e321 * right_anti_dual.e5) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group3.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual.group2.www), this.e235 * right_anti_dual.e1), 
+            float4(-(right_anti_dual_g3[2] * this.e425) - (right_anti_dual_g3[3] * this.e235), -(right_anti_dual_g3[0] * this.e435) - (right_anti_dual_g3[3] * this.e315), -(right_anti_dual_g3[1] * this.e415) - (right_anti_dual_g3[3] * this.e125), (right_anti_dual_g2[3] * this.e321) + (right_anti_dual_g3[2] * this.e125)) + (right_anti_dual_g3.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual_g2.www), right_anti_dual_g3[0] * this.e235), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321)
         );
     }
 }
@@ -4620,19 +3568,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<CircleRotor> lhs, AntiD
 }
 public extension CircleRotor {
     public AntiScalar weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)
         );
     }
 }
@@ -4654,13 +3594,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<CircleRotor> lhs, AntiF
 }
 public extension CircleRotor {
     public AntiScalar weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4670,15 +3607,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<CircleRotor> lhs, AntiF
 }
 public extension CircleRotor {
     public AntiScalar weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e321 * right_anti_dual.e45)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4700,17 +3632,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Anti
 }
 public extension CircleRotor {
     public CircleRotor weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4(right_anti_dual.scalar) * this.group2
+            float4(right_anti_dual_g0) * this.group2
         );
     }
 }
@@ -4720,17 +3649,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Circl
 }
 public extension CircleRotor {
     public AntiScalar weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)
         );
     }
 }
@@ -4740,21 +3662,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Circ
 }
 public extension CircleRotor {
     public CircleRotor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g2[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.group2.www * this.group2.xyz), (right_anti_dual.scalar * this.e12345) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412))
+            float4((this.group2.xyz * right_anti_dual_g2.www), (right_anti_dual_g2[3] * this.e12345) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125))
         );
     }
 }
@@ -4764,21 +3680,13 @@ public Sphere operator /(WeightExpansionInfixPartial<CircleRotor> lhs, DipoleInv
 }
 public extension CircleRotor {
     public Sphere weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(right_anti_dual.e4 * this.e235) - (right_anti_dual.e3 * this.e425), -(right_anti_dual.e4 * this.e315) - (right_anti_dual.e1 * this.e435), -(right_anti_dual.e4 * this.e125) - (right_anti_dual.e2 * this.e415), (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group3.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual.group3.www), right_anti_dual.e1 * this.e235), 
+            float4(-(right_anti_dual_g2[3] * this.e235) - (right_anti_dual_g3[2] * this.e425), -(right_anti_dual_g2[3] * this.e315) - (right_anti_dual_g3[0] * this.e435), -(right_anti_dual_g2[3] * this.e125) - (right_anti_dual_g3[1] * this.e415), (right_anti_dual_g3[2] * this.e125) + (right_anti_dual_g3[3] * this.e321)) + (right_anti_dual_g3.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual_g3.www), right_anti_dual_g3[0] * this.e235), 
             /* e1234 */
-            -(right_anti_dual.e4 * this.e321) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412)
         );
     }
 }
@@ -4788,17 +3696,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Dual
 }
 public extension CircleRotor {
     public CircleRotor weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4(right_anti_dual.scalar) * this.group2
+            float4(right_anti_dual_g0[1]) * this.group2
         );
     }
 }
@@ -4808,17 +3713,12 @@ public Sphere operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Flector r
 }
 public extension CircleRotor {
     public Sphere weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group1.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual.group1.www), right_anti_dual.e1 * this.e235), 
+            (right_anti_dual_g1.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual_g1.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g1[2] * this.e125) + (right_anti_dual_g1[3] * this.e321)) + float4((this.group0.xyz * right_anti_dual_g1.www), right_anti_dual_g1[0] * this.e235), 
             /* e1234 */
-            -(right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)
         );
     }
 }
@@ -4828,15 +3728,9 @@ public AntiScalar operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Line 
 }
 public extension CircleRotor {
     public AntiScalar weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)
+            -(this.e423 * other.e235) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435)
         );
     }
 }
@@ -4846,19 +3740,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Moto
 }
 public extension CircleRotor {
     public CircleRotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.group0.www * this.group2.xyz), (right_anti_dual.scalar * this.e12345) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412))
+            float4((this.group2.xyz * right_anti_dual_g0.www), (right_anti_dual_g0[3] * this.e12345) - (right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412))
         );
     }
 }
@@ -4868,33 +3758,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Mult
 }
 public extension CircleRotor {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e12345 * right_anti_dual.scalar) - (this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e12345) + (this.e321 * other.e321) - (this.e423 * other.e235) - (this.e431 * other.e315) - (this.e412 * other.e125) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -4906,15 +3774,15 @@ public extension CircleRotor {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[0]) * this.group1, 
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group2.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group2.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group1.yzxx * float4(this.group1.zxy, this.e235)), 
+            float4(-(right_anti_dual_g1[2] * this.e425) - (right_anti_dual_g1[3] * this.e235), -(right_anti_dual_g1[0] * this.e435) - (right_anti_dual_g1[3] * this.e315), -(right_anti_dual_g1[1] * this.e415) - (right_anti_dual_g1[3] * this.e125), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125)) + (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g1.yzxx * float4(this.group1.zxy, this.e235)), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321)
         );
     }
 }
@@ -4924,15 +3792,12 @@ public Sphere operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Plane rhs
 }
 public extension CircleRotor {
     public Sphere weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group0.yzxy * float4(this.group1.zxy, this.e315)) + float4((this.group0.xyz * right_anti_dual.group0.www), right_anti_dual.e1 * this.e235), 
+            (right_anti_dual_g0.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual_g0.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321)) + float4((this.group0.xyz * right_anti_dual_g0.www), right_anti_dual_g0[0] * this.e235), 
             /* e1234 */
-            -(right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)
         );
     }
 }
@@ -4942,17 +3807,12 @@ public Sphere operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Sphere rh
 }
 public extension CircleRotor {
     public Sphere weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group0.yzxx * float4(this.group1.zxy, this.e235)), 
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125)) + (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g0.yzxx * float4(this.group1.zxy, this.e235)), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -4962,23 +3822,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<CircleRotor> lhs, Vers
 }
 public extension CircleRotor {
     public CircleRotor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e235, e315, e125, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), (this.e12345 * right_anti_dual.scalar) - (this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43))
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), (right_anti_dual_g0[3] * this.e12345) - (right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412))
         );
     }
 }
@@ -4988,21 +3841,12 @@ public Sphere operator /(WeightExpansionInfixPartial<CircleRotor> lhs, VersorOdd
 }
 public extension CircleRotor {
     public Sphere weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group3.yzxx * float4(this.group1.zxy, this.e235)), 
+            float4(-(right_anti_dual_g3[2] * this.e425) - (right_anti_dual_g3[3] * this.e235), -(right_anti_dual_g3[0] * this.e435) - (right_anti_dual_g3[3] * this.e315), -(right_anti_dual_g3[1] * this.e415) - (right_anti_dual_g3[3] * this.e125), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125)) + (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g3.yzxx * float4(this.group1.zxy, this.e235)), 
             /* e1234 */
-            -(this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3) - (this.e321 * right_anti_dual.e4)
+            -(right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321)
         );
     }
 }
@@ -5016,17 +3860,12 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiCircle
 }
 public extension Dipole {
     public AntiScalar weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)
         );
     }
 }
@@ -5036,21 +3875,13 @@ public Sphere operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiDipoleInve
 }
 public extension Dipole {
     public Sphere weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e35 * right_anti_dual.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), this.e15 * right_anti_dual.e23) - float4((this.group2.xyz.yzx * right_anti_dual.group0.xyz.zxy), this.e25 * right_anti_dual.e31), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (other.e423 * this.e25), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((other.group0.zxy * this.group2.yzx), right_anti_dual_g1[1] * this.e25) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[0] * this.e15), 
             /* e1234 */
-            -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -5060,15 +3891,11 @@ public Line operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiDualNum rhs)
 }
 public extension Dipole {
     public Line weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Line(
             /* e415, e425, e435 */
-            float3(right_anti_dual.e5) * this.group0.xyz, 
+            float3(other.e3215) * this.group0.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.e5) * this.group1.xyz
+            float3(other.e3215) * this.group1.xyz
         );
     }
 }
@@ -5078,13 +3905,10 @@ public Plane operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiFlatPoint r
 }
 public extension Dipole {
     public Plane weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -5094,15 +3918,10 @@ public Plane operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiFlector rhs
 }
 public extension Dipole {
     public Plane weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -5112,15 +3931,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiLine r
 }
 public extension Dipole {
     public AntiScalar weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)
+            -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)
         );
     }
 }
@@ -5130,17 +3945,13 @@ public Motor operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiMotor rhs) 
 }
 public extension Dipole {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.e5) * this.group0.xyz), -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4((float3(right_anti_dual_g1[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.www, 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g1.www), 0.0)
         );
     }
 }
@@ -5150,17 +3961,14 @@ public Dipole operator /(WeightExpansionInfixPartial<Dipole> lhs, AntiScalar rhs
 }
 public extension Dipole {
     public Dipole weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Dipole(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e15, e25, e35 */
-            float3(right_anti_dual.scalar) * this.group2.xyz
+            float3(right_anti_dual_g0) * this.group2.xyz
         );
     }
 }
@@ -5170,19 +3978,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Dipole> lhs, Circle rhs) {
 }
 public extension Dipole {
     public Sphere weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group2.xyz.yzx), right_anti_dual.e15 * this.e23) - float4((right_anti_dual.group2.xyz.yzx * this.group0.xyz.zxy), right_anti_dual.e25 * this.e31), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (other.e431 * this.e35) + (other.e125 * this.e42), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (other.e412 * this.e15) + (other.e235 * this.e43), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (other.e423 * this.e25) + (other.e315 * this.e41), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (other.e125 * this.e12)) - float4((other.group0.zxy * this.group2.yzx), other.e235 * this.e23) - float4((other.group2.yzx * this.group0.zxy), other.e315 * this.e31), 
             /* e1234 */
-            -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -5192,23 +3993,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<Dipole> lhs, Circl
 }
 public extension Dipole {
     public DipoleInversion weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g2[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((float3(right_anti_dual_g2[3]) * this.group2.xyz), -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group2.xyz.yzx), right_anti_dual.e23 * this.e15) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (other.e423 * this.e25), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((other.group0.zxy * this.group2.yzx), right_anti_dual_g1[0] * this.e15) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -5218,17 +4013,12 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Dipole> lhs, Dipole rhs
 }
 public extension Dipole {
     public AntiScalar weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45)
         );
     }
 }
@@ -5238,23 +4028,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Dipole> lhs, DipoleInv
 }
 public extension Dipole {
     public CircleRotor weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group3.zxy) - (this.group0.xyz.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g2[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g3.zxy) - (this.group0.zxy * right_anti_dual_g3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group3.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g2[3] * this.e15) + (right_anti_dual_g3[3] * this.e41), (right_anti_dual_g2[3] * this.e25) + (right_anti_dual_g3[3] * this.e42), (right_anti_dual_g2[3] * this.e35) + (right_anti_dual_g3[3] * this.e43), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.e2 * this.e35) + (right_anti_dual.e5 * this.e23), (right_anti_dual.e3 * this.e15) + (right_anti_dual.e5 * this.e31), (right_anti_dual.e1 * this.e25) + (right_anti_dual.e5 * this.e12), -(right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)) - float4((this.group2.xyz.yzx * right_anti_dual.group3.zxy), right_anti_dual.e423 * this.e15)
+            float4((right_anti_dual_g3[1] * this.e35) + (right_anti_dual_g3[3] * this.e23), (right_anti_dual_g3[2] * this.e15) + (right_anti_dual_g3[3] * this.e31), (right_anti_dual_g3[0] * this.e25) + (right_anti_dual_g3[3] * this.e12), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) - float4((this.group2.yzx * right_anti_dual_g3.zxy), right_anti_dual_g0[0] * this.e15)
         );
     }
 }
@@ -5264,17 +4048,14 @@ public Dipole operator /(WeightExpansionInfixPartial<Dipole> lhs, DualNum rhs) {
 }
 public extension Dipole {
     public Dipole weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Dipole(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e15, e25, e35 */
-            float3(right_anti_dual.scalar) * this.group2.xyz
+            float3(right_anti_dual_g0[1]) * this.group2.xyz
         );
     }
 }
@@ -5284,13 +4065,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Dipole> lhs, FlatPoint 
 }
 public extension Dipole {
     public AntiScalar weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)
         );
     }
 }
@@ -5300,19 +4078,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Dipole> lhs, Flector r
 }
 public extension Dipole {
     public CircleRotor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (this.group0.xyz.yzx * right_anti_dual.group1.zxy) - (this.group0.xyz.zxy * right_anti_dual.group1.yzx), 
+            (this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group1.xyzx * this.group1.wwwx), 
+            float4((this.group0.xyz * right_anti_dual_g1.www), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.e2 * this.e35) + (right_anti_dual.e5 * this.e23), (right_anti_dual.e3 * this.e15) + (right_anti_dual.e5 * this.e31), (right_anti_dual.e1 * this.e25) + (right_anti_dual.e5 * this.e12), -(right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)) - float4((this.group2.xyz.yzx * right_anti_dual.group1.zxy), right_anti_dual.e235 * this.e41)
+            float4((right_anti_dual_g1[1] * this.e35) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g1[2] * this.e15) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g1[0] * this.e25) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)) - float4((this.group2.yzx * right_anti_dual_g1.zxy), right_anti_dual_g0[0] * this.e41)
         );
     }
 }
@@ -5322,17 +4096,11 @@ public Sphere operator /(WeightExpansionInfixPartial<Dipole> lhs, Line rhs) {
 }
 public extension Dipole {
     public Sphere weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group1.xyz.yzx * this.group0.xyz.zxy), right_anti_dual.e23 * this.e15), 
+            float4((this.e42 * other.e125) + (this.e45 * other.e415), (this.e43 * other.e235) + (this.e45 * other.e425), (this.e41 * other.e315) + (this.e45 * other.e435), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e25 * other.e425) - (this.e35 * other.e435)) - float4((this.group0.zxy * other.group1.yzx), this.e15 * other.e415), 
             /* e1234 */
-            -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435)
         );
     }
 }
@@ -5342,21 +4110,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<Dipole> lhs, Motor
 }
 public extension Dipole {
     public DipoleInversion weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group1.yzx), right_anti_dual.e23 * this.e15)
+            float4((right_anti_dual_g0[0] * this.e45) + (right_anti_dual_g1[2] * this.e42), (right_anti_dual_g0[1] * this.e45) + (right_anti_dual_g1[0] * this.e43), (right_anti_dual_g0[2] * this.e45) + (right_anti_dual_g1[1] * this.e41), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - float4((this.group0.zxy * right_anti_dual_g1.yzx), right_anti_dual_g0[0] * this.e15)
         );
     }
 }
@@ -5366,53 +4130,35 @@ public MultiVector operator /(WeightExpansionInfixPartial<Dipole> lhs, MultiVect
 }
 public extension Dipole {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)), 
+            float2(0.0, -(right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g8[0] * this.e41) - (right_anti_dual_g8[1] * this.e42) - (right_anti_dual_g8[2] * this.e43) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12) - (right_anti_dual_g6[3] * this.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * float4(this.group2.xyz, this.e45), 
+            float4(right_anti_dual_g0[0]) * float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group1.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group1.xyzx), 
+            float4((right_anti_dual_g1[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g1[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g1[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group1.zxy) - (this.group0.xyz.zxy * right_anti_dual.group1.yzx), 
+            (float3(right_anti_dual_g1[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.xyz.zxy * right_anti_dual.group1.yzx) - (this.group2.xyz.yzx * right_anti_dual.group1.zxy), 
+            (float3(other.e3215) * this.group1.xyz) + (this.group2.zxy * right_anti_dual_g1.yzx) - (this.group2.yzx * right_anti_dual_g1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e35 * right_anti_dual.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group3.yzx), this.e15 * right_anti_dual.e23) - float4((this.group2.xyz.yzx * right_anti_dual.group4.xyz.zxy), this.e25 * right_anti_dual.e31), 
+            float4((right_anti_dual_g3_w * this.e23) + (this.e42 * other.e125) + (this.e45 * other.e415) + (this.e35 * other.e431), (right_anti_dual_g3_w * this.e31) + (this.e43 * other.e235) + (this.e45 * other.e425) + (this.e15 * other.e412), (right_anti_dual_g3_w * this.e12) + (this.e41 * other.e315) + (this.e45 * other.e435) + (this.e25 * other.e423), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e35 * other.e435)) - float4((this.group0.zxy * other.group8.yzx), this.e15 * other.e415) - float4((this.group2.yzx * other.group7.zxy), this.e25 * other.e425), 
             /* e1234 */
-            -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            -(this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)
         );
     }
 }
@@ -5422,17 +4168,14 @@ public Circle operator /(WeightExpansionInfixPartial<Dipole> lhs, Plane rhs) {
 }
 public extension Dipole {
     public Circle weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Circle(
             /* e423, e431, e412 */
-            (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group0.xyzx * this.group1.wwwx), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.xyz.zxy * right_anti_dual.group0.yzx) - (this.group2.xyz.yzx * right_anti_dual.group0.zxy)
+            (float3(right_anti_dual_g0[3]) * this.group1.xyz) + (this.group2.zxy * right_anti_dual_g0.yzx) - (this.group2.yzx * right_anti_dual_g0.zxy)
         );
     }
 }
@@ -5442,19 +4185,14 @@ public Circle operator /(WeightExpansionInfixPartial<Dipole> lhs, Sphere rhs) {
 }
 public extension Dipole {
     public Circle weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Circle(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group0.xyzx), 
+            float4((right_anti_dual_g0[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g0[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g0[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.xyz.zxy * right_anti_dual.group0.yzx) - (this.group2.xyz.yzx * right_anti_dual.group0.zxy)
+            (float3(other.e3215) * this.group1.xyz) + (this.group2.zxy * right_anti_dual_g0.yzx) - (this.group2.yzx * right_anti_dual_g0.zxy)
         );
     }
 }
@@ -5464,25 +4202,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<Dipole> lhs, Verso
 }
 public extension Dipole {
     public DipoleInversion weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), -(this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e35 * right_anti_dual.e12)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), this.e15 * right_anti_dual.e23) - float4((this.group2.xyz.yzx * right_anti_dual.group0.zxy), this.e25 * right_anti_dual.e31)
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[0] * this.e15) - float4((this.group2.yzx * right_anti_dual_g0.zxy), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -5492,23 +4223,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Dipole> lhs, VersorOdd
 }
 public extension Dipole {
     public CircleRotor weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group3.zxy) - (this.group0.xyz.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g3[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g3.zxy) - (this.group0.zxy * right_anti_dual_g3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group3.xyzx), 
+            float4((right_anti_dual_g2[3] * this.e41) + (right_anti_dual_g3[3] * this.e15), (right_anti_dual_g2[3] * this.e42) + (right_anti_dual_g3[3] * this.e25), (right_anti_dual_g2[3] * this.e43) + (right_anti_dual_g3[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            float4((this.e23 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e2), (this.e31 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e3), (this.e12 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e1), -(this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) - float4((this.group2.xyz.yzx * right_anti_dual.group3.zxy), this.e41 * right_anti_dual.e235)
+            float4((right_anti_dual_g2[3] * this.e23) + (right_anti_dual_g3[1] * this.e35), (right_anti_dual_g2[3] * this.e31) + (right_anti_dual_g3[2] * this.e15), (right_anti_dual_g2[3] * this.e12) + (right_anti_dual_g3[0] * this.e25), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) - float4((this.group2.yzx * right_anti_dual_g3.zxy), right_anti_dual_g2[0] * this.e41)
         );
     }
 }
@@ -5522,17 +4247,12 @@ public AntiScalar operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, A
 }
 public extension DipoleInversion {
     public AntiScalar weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)
         );
     }
 }
@@ -5542,21 +4262,13 @@ public Sphere operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, AntiD
 }
 public extension DipoleInversion {
     public Sphere weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - (this.group2.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), right_anti_dual.e31 * this.e25), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (other.e423 * this.e25), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) - (this.group2.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0])) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[1] * this.e25), 
             /* e1234 */
-            -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -5566,15 +4278,11 @@ public Motor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, AntiDu
 }
 public extension DipoleInversion {
     public Motor weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e1234), 
+            float4(other.e3215) * float4(this.group0.xyz, this.e1234), 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, 0.0) * float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * float3(other.group0.xx, other.e3215)), 0.0)
         );
     }
 }
@@ -5584,13 +4292,10 @@ public Plane operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, AntiFl
 }
 public extension DipoleInversion {
     public Plane weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -5600,15 +4305,10 @@ public Plane operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, AntiFl
 }
 public extension DipoleInversion {
     public Plane weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45), -(this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35)) - (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -5618,15 +4318,11 @@ public AntiScalar operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, A
 }
 public extension DipoleInversion {
     public AntiScalar weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)
+            -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)
         );
     }
 }
@@ -5636,17 +4332,13 @@ public Motor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, AntiMo
 }
 public extension DipoleInversion {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.e5) * this.group0.xyz), (this.e1234 * right_anti_dual.e5) - (this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float4((float3(right_anti_dual_g1[3]) * this.group0.xyz), (right_anti_dual_g1[3] * this.e1234) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.www, 0.0) * float4(this.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g1.www), 0.0)
         );
     }
 }
@@ -5656,19 +4348,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<DipoleInversion> l
 }
 public extension DipoleInversion {
     public DipoleInversion weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0) * this.group3
         );
     }
 }
@@ -5678,19 +4367,12 @@ public Sphere operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, Circl
 }
 public extension DipoleInversion {
     public Sphere weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group2.yzx), right_anti_dual.e15 * this.e23) - float4((right_anti_dual.group2.xyz.yzx * this.group0.xyz.zxy), right_anti_dual.e25 * this.e31), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (other.e431 * this.e35) + (other.e125 * this.e42), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (other.e412 * this.e15) + (other.e235 * this.e43), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (other.e423 * this.e25) + (other.e315 * this.e41), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (other.e125 * this.e12)) - float4((other.group0.zxy * this.group2.yzx), other.e235 * this.e23) - float4((other.group2.yzx * this.group0.zxy), other.e315 * this.e31), 
             /* e1234 */
-            -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -5700,23 +4382,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<DipoleInversion> l
 }
 public extension DipoleInversion {
     public DipoleInversion weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g2[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g2[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((right_anti_dual.group2.www * this.group2.xyz), (right_anti_dual.scalar * this.e1234) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((this.group2.xyz * right_anti_dual_g2.www), (right_anti_dual_g2[3] * this.e1234) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42) + (right_anti_dual.scalar * this.e4235), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43) + (right_anti_dual.scalar * this.e4315), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41) + (right_anti_dual.scalar * this.e4125), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + float4((right_anti_dual.group0.xyz.yzx * this.group2.zxy), right_anti_dual.scalar * this.e3215) - (this.group2.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23)) - float4((this.group0.xyz.zxy * right_anti_dual.group2.yzx), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (right_anti_dual_g2[3] * this.e4235), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (right_anti_dual_g2[3] * this.e4315), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (right_anti_dual_g2[3] * this.e4125), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + float4((other.group0.yzx * this.group2.zxy), right_anti_dual_g2[3] * this.e3215) - (this.group2.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0])) - float4((this.group0.zxy * right_anti_dual_g2.yzx), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -5726,17 +4402,12 @@ public AntiScalar operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, D
 }
 public extension DipoleInversion {
     public AntiScalar weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45)
         );
     }
 }
@@ -5746,23 +4417,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public CircleRotor weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group3.zxy) - (this.group0.xyz.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g2[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g3.zxy) - (this.group0.zxy * right_anti_dual_g3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group3.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g2[3] * this.e15) + (right_anti_dual_g3[3] * this.e41), (right_anti_dual_g2[3] * this.e25) + (right_anti_dual_g3[3] * this.e42), (right_anti_dual_g2[3] * this.e35) + (right_anti_dual_g3[3] * this.e43), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            (right_anti_dual.group3.wwwx * float4(this.group1.xyz, this.e4235)) + float4(float3(0.0), (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)) + float4((right_anti_dual.group3.yzx * this.group2.zxy), right_anti_dual.e4 * this.e3215) - (this.group2.yzxx * float4(right_anti_dual.group3.zxy, right_anti_dual.e423))
+            (right_anti_dual_g3.wwwx * float4(this.group1.xyz, this.e4235)) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e1234) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) + float4((right_anti_dual_g3.yzx * this.group2.zxy), right_anti_dual_g2[3] * this.e3215) - (this.group2.yzxx * float4(right_anti_dual_g3.zxy, right_anti_dual_g0[0]))
         );
     }
 }
@@ -5772,19 +4437,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<DipoleInversion> l
 }
 public extension DipoleInversion {
     public DipoleInversion weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0[1]) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0[1]) * this.group3
         );
     }
 }
@@ -5794,13 +4456,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, F
 }
 public extension DipoleInversion {
     public AntiScalar weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)
         );
     }
 }
@@ -5810,19 +4469,15 @@ public CircleRotor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public CircleRotor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (this.group0.xyz.yzx * right_anti_dual.group1.zxy) - (this.group0.xyz.zxy * right_anti_dual.group1.yzx), 
+            (this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group1.xyzx * this.group1.wwwx), 
+            float4((this.group0.xyz * right_anti_dual_g1.www), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            (right_anti_dual.group1.yzxx * float4(this.group2.zxy, this.e4235)) + (right_anti_dual.group1.wwwy * float4(this.group1.xyz, this.e4315)) + float4(float3(0.0), (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)) - float4((right_anti_dual.group1.zxy * this.group2.yzx), right_anti_dual.e235 * this.e41)
+            (right_anti_dual_g1.yzxx * float4(this.group2.zxy, this.e4235)) + (right_anti_dual_g1.wwwy * float4(this.group1.xyz, this.e4315)) + float4(float3(0.0), (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e1234) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)) - float4((right_anti_dual_g1.zxy * this.group2.yzx), right_anti_dual_g0[0] * this.e41)
         );
     }
 }
@@ -5832,17 +4487,11 @@ public Sphere operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, Line 
 }
 public extension DipoleInversion {
     public Sphere weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group1.xyz.yzx * this.group0.xyz.zxy), right_anti_dual.e23 * this.e15), 
+            float4((this.e42 * other.e125) + (this.e45 * other.e415), (this.e43 * other.e235) + (this.e45 * other.e425), (this.e41 * other.e315) + (this.e45 * other.e435), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e25 * other.e425) - (this.e35 * other.e435)) - float4((this.group0.zxy * other.group1.yzx), this.e15 * other.e415), 
             /* e1234 */
-            -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435)
         );
     }
 }
@@ -5852,21 +4501,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<DipoleInversion> l
 }
 public extension DipoleInversion {
     public DipoleInversion weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((right_anti_dual.group0.www * this.group2.xyz), (right_anti_dual.scalar * this.e1234) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((this.group2.xyz * right_anti_dual_g0.www), (right_anti_dual_g0[3] * this.e1234) - (right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.scalar * this.e4235), (right_anti_dual.e31 * this.e45) + (right_anti_dual.scalar * this.e4315), (right_anti_dual.e12 * this.e45) + (right_anti_dual.scalar * this.e4125), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + float4((this.group0.xyz.yzx * right_anti_dual.group1.zxy), right_anti_dual.scalar * this.e3215) - float4((this.group0.xyz.zxy * right_anti_dual.group1.yzx), right_anti_dual.e23 * this.e15)
+            float4((right_anti_dual_g0[0] * this.e45) + (right_anti_dual_g0[3] * this.e4235), (right_anti_dual_g0[1] * this.e45) + (right_anti_dual_g0[3] * this.e4315), (right_anti_dual_g0[2] * this.e45) + (right_anti_dual_g0[3] * this.e4125), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((this.group0.yzx * right_anti_dual_g1.zxy), right_anti_dual_g0[3] * this.e3215) - float4((this.group0.zxy * right_anti_dual_g1.yzx), right_anti_dual_g0[0] * this.e15)
         );
     }
 }
@@ -5876,53 +4521,35 @@ public MultiVector operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e1234 * right_anti_dual.e5) + (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) - (this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215) + (this.e1234 * other.e3215) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g8[0] * this.e41) - (right_anti_dual_g8[1] * this.e42) - (right_anti_dual_g8[2] * this.e43) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12) - (right_anti_dual_g6[3] * this.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * float4(this.group2.xyz, this.e45), 
+            float4(right_anti_dual_g0[0]) * float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group0.xyz, 
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group1.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group1.xyzx), 
+            float4((right_anti_dual_g1[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g1[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g1[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group1.zxy) - (this.group0.xyz.zxy * right_anti_dual.group1.yzx), 
+            (float3(right_anti_dual_g1[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g1.zxy) - (this.group0.zxy * right_anti_dual_g1.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group1.xyz) + (this.group2.zxy * right_anti_dual.group1.yzx) - (this.group2.yzx * right_anti_dual.group1.zxy), 
+            (float3(other.e3215) * this.group1.xyz) + (right_anti_dual_g1.yzx * this.group2.zxy) - (right_anti_dual_g1.zxy * this.group2.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e42 * right_anti_dual.e35) + (this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42), (this.e43 * right_anti_dual.e15) + (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43), (this.e41 * right_anti_dual.e25) + (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41), -(this.e23 * right_anti_dual.e15) - (this.e31 * right_anti_dual.e25) - (this.e12 * right_anti_dual.e35) - (this.e35 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group3) - (this.group2.yzxy * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e31)) - float4((this.group0.xyz.zxy * right_anti_dual.group3.yzx), this.e15 * right_anti_dual.e23), 
+            float4((right_anti_dual_g3_w * this.e23) + (this.e42 * other.e125) + (this.e45 * other.e415) + (this.e35 * other.e431), (right_anti_dual_g3_w * this.e31) + (this.e43 * other.e235) + (this.e45 * other.e425) + (this.e15 * other.e412), (right_anti_dual_g3_w * this.e12) + (this.e41 * other.e315) + (this.e45 * other.e435) + (this.e25 * other.e423), -(this.e23 * other.e235) - (this.e31 * other.e315) - (this.e12 * other.e125) - (this.e35 * other.e435)) + (float4(right_anti_dual_g0[0]) * this.group3) - (this.group2.yzxy * float4(other.group7.zxy, other.e425)) - float4((this.group0.zxy * other.group8.yzx), this.e15 * other.e415), 
             /* e1234 */
-            (this.e1234 * right_anti_dual.scalar) - (this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            (right_anti_dual_g0[0] * this.e1234) - (this.e41 * other.e415) - (this.e42 * other.e425) - (this.e43 * other.e435) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)
         );
     }
 }
@@ -5932,17 +4559,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public CircleRotor weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group0.xyzx * this.group1.wwwx), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            float4(right_anti_dual.e3 * this.e25 * -1.0, right_anti_dual.e1 * this.e35 * -1.0, right_anti_dual.e2 * this.e15 * -1.0, (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)) + (right_anti_dual.group0.yzxx * float4(this.group2.zxy, this.e4235)) + (right_anti_dual.group0.wwwy * float4(this.group1.xyz, this.e4315))
+            (right_anti_dual_g0.yzxx * float4(this.group2.zxy, this.e4235)) + (right_anti_dual_g0.wwwy * float4(this.group1.xyz, this.e4315)) + float4((right_anti_dual_g0.zxy * this.group2.yzx * float3(-1.0)), (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e1234))
         );
     }
 }
@@ -5952,19 +4576,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public CircleRotor weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group0.zxy) - (this.group0.xyz.zxy * right_anti_dual.group0.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g0.zxy) - (this.group0.zxy * right_anti_dual_g0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group0.xyzx), 
+            float4((right_anti_dual_g0[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g0[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g0[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            float4(this.e25 * right_anti_dual.e3 * -1.0, this.e35 * right_anti_dual.e1 * -1.0, this.e15 * right_anti_dual.e2 * -1.0, (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4)) + (float4(right_anti_dual.e5) * float4(this.group1.xyz, this.e1234)) + (right_anti_dual.group0.yzxx * float4(this.group2.zxy, this.e4235))
+            (float4(other.e3215) * float4(this.group1.xyz, this.e1234)) + (right_anti_dual_g0.yzxx * float4(this.group2.zxy, this.e4235)) + float4((right_anti_dual_g0.zxy * this.group2.yzx * float3(-1.0)), (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215))
         );
     }
 }
@@ -5974,25 +4593,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<DipoleInversion> l
 }
 public extension DipoleInversion {
     public DipoleInversion weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4((float3(right_anti_dual.scalar) * this.group2.xyz), (this.e1234 * right_anti_dual.scalar) - (this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group2.xyz), (right_anti_dual_g0[3] * this.e1234) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e23 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e23) + (this.e35 * right_anti_dual.e42) + (this.e4235 * right_anti_dual.scalar), (this.e31 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e31) + (this.e15 * right_anti_dual.e43) + (this.e4315 * right_anti_dual.scalar), (this.e12 * right_anti_dual.e45) + (this.e45 * right_anti_dual.e12) + (this.e25 * right_anti_dual.e41) + (this.e4125 * right_anti_dual.scalar), -(this.e12 * right_anti_dual.e35) - (this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + float4((this.group0.xyz.yzx * right_anti_dual.group2.zxy), this.e3215 * right_anti_dual.scalar) - (right_anti_dual.group2.yzxx * float4(this.group0.xyz.zxy, this.e23)) - float4((this.group2.yzx * right_anti_dual.group0.zxy), this.e31 * right_anti_dual.e25)
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g0[3] * this.e4235) + (right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g0[3] * this.e4315) + (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g0[3] * this.e4125) + (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + float4((this.group0.yzx * right_anti_dual_g2.zxy), right_anti_dual_g0[3] * this.e3215) - (right_anti_dual_g2.yzxx * float4(this.group0.zxy, this.e23)) - float4((right_anti_dual_g0.zxy * this.group2.yzx), right_anti_dual_g2[1] * this.e31)
         );
     }
 }
@@ -6002,23 +4614,17 @@ public CircleRotor operator /(WeightExpansionInfixPartial<DipoleInversion> lhs, 
 }
 public extension DipoleInversion {
     public CircleRotor weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (this.group0.xyz.yzx * right_anti_dual.group3.zxy) - (this.group0.xyz.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g3[3]) * this.group1.xyz) + (this.group0.yzx * right_anti_dual_g3.zxy) - (this.group0.zxy * right_anti_dual_g3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((this.e41 * right_anti_dual.e5) + (this.e15 * right_anti_dual.e4), (this.e42 * right_anti_dual.e5) + (this.e25 * right_anti_dual.e4), (this.e43 * right_anti_dual.e5) + (this.e35 * right_anti_dual.e4), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (this.group1.wwwx * right_anti_dual.group3.xyzx), 
+            float4((right_anti_dual_g2[3] * this.e41) + (right_anti_dual_g3[3] * this.e15), (right_anti_dual_g2[3] * this.e42) + (right_anti_dual_g3[3] * this.e25), (right_anti_dual_g2[3] * this.e43) + (right_anti_dual_g3[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e12345 */
-            (float4(right_anti_dual.e5) * float4(this.group1.xyz, this.e1234)) + (right_anti_dual.group3.yzxx * float4(this.group2.zxy, this.e4235)) + float4(float3(0.0), (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435) - (this.e45 * right_anti_dual.e321) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412)) - float4((this.group2.yzx * right_anti_dual.group3.zxy), this.e41 * right_anti_dual.e235)
+            (float4(right_anti_dual_g2[3]) * float4(this.group1.xyz, this.e1234)) + (right_anti_dual_g3.yzxx * float4(this.group2.zxy, this.e4235)) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) - float4((right_anti_dual_g3.zxy * this.group2.yzx), right_anti_dual_g2[0] * this.e41)
         );
     }
 }
@@ -6032,17 +4638,9 @@ public Plane operator /(WeightExpansionInfixPartial<DualNum> lhs, AntiCircleRoto
 }
 public extension DualNum {
     public Plane weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45) * float4(-1.0)
         );
     }
 }
@@ -6052,21 +4650,11 @@ public Motor operator /(WeightExpansionInfixPartial<DualNum> lhs, AntiDipoleInve
 }
 public extension DualNum {
     public Motor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e1234), 
+            float4(this.e5) * float4(other.group0.xyz, other.e4 * -1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.group0.xy.xx, this.e5, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4(((other.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz * float3(this.group0.xx, this.e5)), 0.0)
         );
     }
 }
@@ -6088,19 +4676,11 @@ public Line operator /(WeightExpansionInfixPartial<DualNum> lhs, Circle rhs) {
 }
 public extension DualNum {
     public Line weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
         return Line(
             /* e415, e425, e435 */
-            float3(this.e5) * right_anti_dual.group0.xyz, 
+            float3(this.e5) * other.group0.xyz, 
             /* e235, e315, e125 */
-            float3(this.e5) * right_anti_dual.group1.xyz
+            float3(this.e5) * (other.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz
         );
     }
 }
@@ -6110,19 +4690,12 @@ public Motor operator /(WeightExpansionInfixPartial<DualNum> lhs, CircleRotor rh
 }
 public extension DualNum {
     public Motor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.group0.xy.xx, this.e5, this.e12345) * float4(right_anti_dual.group0.xyz, right_anti_dual.scalar), 
+            float4(this.group0.xx, this.e5, this.e12345) * float4(other.group0.xyz, right_anti_dual_g2[3]), 
             /* e235, e315, e125, e5 */
-            float4(this.e5) * float4(right_anti_dual.group1.xyz, right_anti_dual.scalar)
+            float4(this.e5) * float4((other.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, right_anti_dual_g2[3])
         );
     }
 }
@@ -6132,17 +4705,9 @@ public Plane operator /(WeightExpansionInfixPartial<DualNum> lhs, Dipole rhs) {
 }
 public extension DualNum {
     public Plane weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45) * float4(-1.0)
         );
     }
 }
@@ -6152,21 +4717,11 @@ public Flector operator /(WeightExpansionInfixPartial<DualNum> lhs, DipoleInvers
 }
 public extension DualNum {
     public Flector weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e5) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4) * float4(-1.0), 
+            float4(this.e5) * float4((other.group3 * float4(-1.0, -1.0, -1.0, 1.0)).xyz, other.e1234) * float4(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45) * float4(-1.0)
         );
     }
 }
@@ -6200,17 +4755,11 @@ public Flector operator /(WeightExpansionInfixPartial<DualNum> lhs, Flector rhs)
 }
 public extension DualNum {
     public Flector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.group0.xy.xx, this.e5, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(-1.0, -1.0, -1.0, 0.0), 
+            float4(((other.group1 * float4(-1.0, -1.0, -1.0, 1.0)).xyz * float3(this.group0.xx, this.e5) * float3(-1.0)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), right_anti_dual.e321 * this.e5 * -1.0)
+            float4(float3(0.0), this.e5 * other.e45) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }
@@ -6222,7 +4771,7 @@ public extension DualNum {
     public AntiFlatPoint weight_expansion(Line other) {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(this.group0.xy.xx, this.e5, 0.0) * float4(float3(1.0), 0.0) * float4(other.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((other.group0.xyz * float3(this.group0.xx, this.e5)), 0.0)
         );
     }
 }
@@ -6232,17 +4781,12 @@ public Motor operator /(WeightExpansionInfixPartial<DualNum> lhs, Motor rhs) {
 }
 public extension DualNum {
     public Motor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(float3(0.0), right_anti_dual.scalar * this.e12345), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.e12345), 
             /* e235, e315, e125, e5 */
-            float4(this.e5) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.e5)
         );
     }
 }
@@ -6252,51 +4796,28 @@ public MultiVector operator /(WeightExpansionInfixPartial<DualNum> lhs, MultiVec
 }
 public extension DualNum {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e5 * right_anti_dual.e1234) + (this.e12345 * right_anti_dual.scalar)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e12345) - (this.e5 * other.e4)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e5) * right_anti_dual.group1 * float4(-1.0), 
+            float4(this.e5) * float4(other.group9.xyz, other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(this.group0.xy.xx, this.e5, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group4.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((other.group7.xyz * float3(this.group0.xx, this.e5)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(this.e5) * right_anti_dual.group5.xyz, 
+            float3(this.e5) * other.group6.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group7.xyz, right_anti_dual.e321) * float4(-1.0), 
+            float4(this.e5) * float4((other.group4.xyz * float3(-1.0)), other.e45) * float4(-1.0), 
             /* e1234 */
             0.0
         );
@@ -6310,7 +4831,7 @@ public extension DualNum {
     public FlatPoint weight_expansion(Plane other) {
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(this.group0.xy.xx, this.e5, 0.0) * float4(float3(1.0), 0.0) * float4(float4(other.e4235 * -1.0, other.e4315 * -1.0, other.e4125 * -1.0, other.e3215).xyz, 0.0) * float4(-1.0, -1.0, -1.0, 0.0)
+            float4((float3(other.e4235 * -1.0, other.e4315 * -1.0, other.e4125 * -1.0) * float3(this.group0.xx, this.e5) * float3(-1.0)), 0.0)
         );
     }
 }
@@ -6344,21 +4865,12 @@ public Motor operator /(WeightExpansionInfixPartial<DualNum> lhs, VersorEven rhs
 }
 public extension DualNum {
     public Motor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.group0.xy.xx, this.e5, (this.e5 * right_anti_dual.e1234) + (this.e12345 * right_anti_dual.scalar)) * float4(right_anti_dual.group0.xyz, 1.0), 
+            float4(this.group0.xx, this.e5, (right_anti_dual_g0[3] * this.e12345) - (this.e5 * other.e4)) * float4(right_anti_dual_g0.xyz, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.e5) * float4(right_anti_dual.group1.xyz, right_anti_dual.scalar)
+            float4(this.e5) * float4((other.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, right_anti_dual_g0[3])
         );
     }
 }
@@ -6368,21 +4880,11 @@ public Flector operator /(WeightExpansionInfixPartial<DualNum> lhs, VersorOdd rh
 }
 public extension DualNum {
     public Flector weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e5) * right_anti_dual.group3 * float4(-1.0), 
+            float4(this.e5) * float4(other.group3.xyz, other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0 * float4(-1.0, -1.0, -1.0, 1.0)).xyz, other.e45) * float4(-1.0)
         );
     }
 }
@@ -6396,17 +4898,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<FlatPoint> lhs, AntiCir
 }
 public extension FlatPoint {
     public AntiScalar weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)
         );
     }
 }
@@ -6416,19 +4911,10 @@ public Plane operator /(WeightExpansionInfixPartial<FlatPoint> lhs, AntiDipoleIn
 }
 public extension FlatPoint {
     public Plane weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (other.e423 * this.e25), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6450,17 +4936,10 @@ public Plane operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Circle rhs) 
 }
 public extension FlatPoint {
     public Plane weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (other.e423 * this.e25), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6470,19 +4949,12 @@ public Flector operator /(WeightExpansionInfixPartial<FlatPoint> lhs, CircleRoto
 }
 public extension FlatPoint {
     public Flector weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(other.e12345 * -1.0) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (other.e423 * this.e25), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6492,17 +4964,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Dipole 
 }
 public extension FlatPoint {
     public AntiScalar weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)
         );
     }
 }
@@ -6512,21 +4977,13 @@ public Motor operator /(WeightExpansionInfixPartial<FlatPoint> lhs, DipoleInvers
 }
 public extension FlatPoint {
     public Motor weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.e4 * this.e15, right_anti_dual.e4 * this.e25, right_anti_dual.e4 * this.e35, -(right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)) - (this.group0.wwwx * float4(right_anti_dual.group3.xyz, right_anti_dual.e423)), 
+            float4((this.group0.xyz * (other.group2 * float4(-1.0, -1.0, -1.0, 1.0)).www), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)) - (this.group0.wwwx * float4(right_anti_dual_g3.xyz, right_anti_dual_g0[0])), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group3.yzx * this.group0.zxy) - (right_anti_dual.group3.zxy * this.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g3.yzx * this.group0.zxy) - (right_anti_dual_g3.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -6560,17 +5017,12 @@ public Motor operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Flector rhs)
 }
 public extension FlatPoint {
     public Motor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e45) * float4(right_anti_dual.group1.xyz, right_anti_dual.e321) * float4(-1.0), 
+            float4(this.e45) * float4(right_anti_dual_g1.xyz, other.e45) * float4(-1.0), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group1.yzx * this.group0.zxy) - (right_anti_dual.group1.zxy * this.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g1.yzx * this.group0.zxy) - (right_anti_dual_g1.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -6580,15 +5032,9 @@ public Plane operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Line rhs) {
 }
 public extension FlatPoint {
     public Plane weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e45) * right_anti_dual.group0.xyz), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35))
+            float4((float3(this.e45) * other.group0.xyz), -(this.e15 * other.e415) - (this.e25 * other.e425) - (this.e35 * other.e435))
         );
     }
 }
@@ -6598,17 +5044,12 @@ public Flector operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Motor rhs)
 }
 public extension FlatPoint {
     public Flector weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e45) * right_anti_dual.group0.xyz), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35))
+            float4((float3(this.e45) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35))
         );
     }
 }
@@ -6618,51 +5059,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<FlatPoint> lhs, MultiV
 }
 public extension FlatPoint {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412) - (this.e45 * right_anti_dual.e321)), 
+            float2(0.0, -(right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (this.e45 * other.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(other.group0.yx[0] * -1.0) * this.group0, 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(right_anti_dual.e4) * this.group0.xyz) - (float3(this.e45) * right_anti_dual.group1.xyz)), 0.0), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group0.xyz) - (float3(this.e45) * right_anti_dual_g1.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (this.group0.zxy * right_anti_dual.group1.yzx) - (this.group0.yzx * right_anti_dual.group1.zxy), 
+            (right_anti_dual_g1.yzx * this.group0.zxy) - (right_anti_dual_g1.zxy * this.group0.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e35 * right_anti_dual.e42) + (this.e45 * right_anti_dual.e23), (this.e15 * right_anti_dual.e43) + (this.e45 * right_anti_dual.e31), (this.e25 * right_anti_dual.e41) + (this.e45 * right_anti_dual.e12), -(this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - (this.group0.yzxx * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e23)), 
+            float4((this.e35 * other.e431) + (this.e45 * other.e415), (this.e15 * other.e412) + (this.e45 * other.e425), (this.e25 * other.e423) + (this.e45 * other.e435), -(this.e25 * other.e425) - (this.e35 * other.e435)) - (this.group0.yzxx * float4(other.group7.zxy, other.e415)), 
             /* e1234 */
             0.0
         );
@@ -6674,15 +5093,12 @@ public Line operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Plane rhs) {
 }
 public extension FlatPoint {
     public Line weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Line(
             /* e415, e425, e435 */
-            float3(this.e45) * right_anti_dual.group0.xyz * float3(-1.0), 
+            float3(this.e45) * right_anti_dual_g0.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            (right_anti_dual.group0.yzx * this.group0.zxy) - (right_anti_dual.group0.zxy * this.group0.yzx)
+            (right_anti_dual_g0.yzx * this.group0.zxy) - (right_anti_dual_g0.zxy * this.group0.yzx)
         );
     }
 }
@@ -6692,17 +5108,12 @@ public Line operator /(WeightExpansionInfixPartial<FlatPoint> lhs, Sphere rhs) {
 }
 public extension FlatPoint {
     public Line weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Line(
             /* e415, e425, e435 */
-            (float3(right_anti_dual.e4) * this.group0.xyz) - (float3(this.e45) * right_anti_dual.group0.xyz), 
+            (float3(right_anti_dual_g0[3]) * this.group0.xyz) - (float3(this.e45) * right_anti_dual_g0.xyz), 
             /* e235, e315, e125 */
-            (this.group0.zxy * right_anti_dual.group0.yzx) - (this.group0.yzx * right_anti_dual.group0.zxy)
+            (right_anti_dual_g0.yzx * this.group0.zxy) - (right_anti_dual_g0.zxy * this.group0.yzx)
         );
     }
 }
@@ -6712,21 +5123,13 @@ public Flector operator /(WeightExpansionInfixPartial<FlatPoint> lhs, VersorEven
 }
 public extension FlatPoint {
     public Flector weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e35 * right_anti_dual.e42) + (this.e45 * right_anti_dual.e23), (this.e15 * right_anti_dual.e43) + (this.e45 * right_anti_dual.e31), (this.e25 * right_anti_dual.e41) + (this.e45 * right_anti_dual.e12), -(this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) - (this.group0.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g1[0] * this.e45), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g1[1] * this.e45), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g1[2] * this.e45), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6736,21 +5139,13 @@ public Motor operator /(WeightExpansionInfixPartial<FlatPoint> lhs, VersorOdd rh
 }
 public extension FlatPoint {
     public Motor weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e15 * right_anti_dual.e4, this.e25 * right_anti_dual.e4, this.e35 * right_anti_dual.e4, -(this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412) - (this.e45 * right_anti_dual.e321)) - (this.group0.wwwx * float4(right_anti_dual.group3.xyz, right_anti_dual.e423)), 
+            float4((this.group0.xyz * right_anti_dual_g3.www), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (this.e45 * other.e45)) - (this.group0.wwwx * float4(right_anti_dual_g3.xyz, right_anti_dual_g0[0])), 
             /* e235, e315, e125, e5 */
-            float4(((this.group0.zxy * right_anti_dual.group3.yzx) - (this.group0.yzx * right_anti_dual.group3.zxy)), 0.0)
+            float4(((right_anti_dual_g3.yzx * this.group0.zxy) - (right_anti_dual_g3.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -6764,17 +5159,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Flector> lhs, AntiCircl
 }
 public extension Flector {
     public AntiScalar weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)
         );
     }
 }
@@ -6784,19 +5172,10 @@ public Plane operator /(WeightExpansionInfixPartial<Flector> lhs, AntiDipoleInve
 }
 public extension Flector {
     public Plane weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (other.e423 * this.e25), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6806,15 +5185,12 @@ public Flector operator /(WeightExpansionInfixPartial<Flector> lhs, AntiScalar r
 }
 public extension Flector {
     public Flector weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0) * this.group1
         );
     }
 }
@@ -6824,17 +5200,10 @@ public Plane operator /(WeightExpansionInfixPartial<Flector> lhs, Circle rhs) {
 }
 public extension Flector {
     public Plane weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (other.e423 * this.e25), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6844,19 +5213,13 @@ public Flector operator /(WeightExpansionInfixPartial<Flector> lhs, CircleRotor 
 }
 public extension Flector {
     public Flector weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g2[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.scalar * this.e4235), (right_anti_dual.e31 * this.e45) + (right_anti_dual.scalar * this.e4315), (right_anti_dual.e12 * this.e45) + (right_anti_dual.scalar * this.e4125), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) + float4((right_anti_dual.group0.xyz.yzx * this.group0.zxy), right_anti_dual.scalar * this.e3215) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g2[3] * this.e4235), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g2[3] * this.e4315), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g2[3] * this.e4125), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) + float4((other.group0.yzx * this.group0.zxy), right_anti_dual_g2[3] * this.e3215) - (this.group0.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -6866,17 +5229,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Flector> lhs, Dipole rh
 }
 public extension Flector {
     public AntiScalar weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)
+            -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)
         );
     }
 }
@@ -6886,21 +5242,13 @@ public Motor operator /(WeightExpansionInfixPartial<Flector> lhs, DipoleInversio
 }
 public extension Flector {
     public Motor weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (float4(right_anti_dual.e4) * float4(this.group0.xyz, this.e3215)) + float4(float3(0.0), (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e321 * this.e45)) - (this.group0.wwwx * float4(right_anti_dual.group3.xyz, right_anti_dual.e423)), 
+            (float4(other.e1234) * float4(this.group0.xyz, this.e3215)) + float4(float3(0.0), (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (other.e45 * this.e45)) - (this.group0.wwwx * float4(right_anti_dual_g3.xyz, right_anti_dual_g0[0])), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group3.yzx * this.group0.zxy) - (right_anti_dual.group3.zxy * this.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g3.yzx * this.group0.zxy) - (right_anti_dual_g3.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -6910,15 +5258,12 @@ public Flector operator /(WeightExpansionInfixPartial<Flector> lhs, DualNum rhs)
 }
 public extension Flector {
     public Flector weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0[1]) * this.group1
         );
     }
 }
@@ -6940,17 +5285,12 @@ public Motor operator /(WeightExpansionInfixPartial<Flector> lhs, Flector rhs) {
 }
 public extension Flector {
     public Motor weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.e45) * right_anti_dual.group1.xyz * float3(-1.0)), (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) - (right_anti_dual.e321 * this.e45)), 
+            float4((float3(this.e45) * right_anti_dual_g1.xyz * float3(-1.0)), (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) - (other.e45 * this.e45)), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group1.yzx * this.group0.zxy) - (right_anti_dual.group1.zxy * this.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g1.yzx * this.group0.zxy) - (right_anti_dual_g1.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -6960,15 +5300,9 @@ public Plane operator /(WeightExpansionInfixPartial<Flector> lhs, Line rhs) {
 }
 public extension Flector {
     public Plane weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e45) * right_anti_dual.group0.xyz), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35))
+            float4((float3(this.e45) * other.group0.xyz), -(this.e15 * other.e415) - (this.e25 * other.e425) - (this.e35 * other.e435))
         );
     }
 }
@@ -6978,17 +5312,12 @@ public Flector operator /(WeightExpansionInfixPartial<Flector> lhs, Motor rhs) {
 }
 public extension Flector {
     public Flector weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar * this.e4235, right_anti_dual.scalar * this.e4315, right_anti_dual.scalar * this.e4125, -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35)) + (right_anti_dual.group0 * float4(this.group0.www, this.e3215))
+            (right_anti_dual_g0 * float4(this.group0.www, this.e3215)) + float4((this.group1.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35))
         );
     }
 }
@@ -6998,51 +5327,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<Flector> lhs, MultiVec
 }
 public extension Flector {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412) - (this.e45 * right_anti_dual.e321)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (this.e45 * other.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[0]) * this.group0, 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(right_anti_dual.e4) * this.group0.xyz) - (float3(this.e45) * right_anti_dual.group1.xyz)), 0.0), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group0.xyz) - (float3(this.e45) * right_anti_dual_g1.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (this.group0.zxy * right_anti_dual.group1.yzx) - (this.group0.yzx * right_anti_dual.group1.zxy), 
+            (right_anti_dual_g1.yzx * this.group0.zxy) - (right_anti_dual_g1.zxy * this.group0.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e35 * right_anti_dual.e42) + (this.e45 * right_anti_dual.e23), (this.e15 * right_anti_dual.e43) + (this.e45 * right_anti_dual.e31), (this.e25 * right_anti_dual.e41) + (this.e45 * right_anti_dual.e12), -(this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group1) - (this.group0.yzxx * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e23)), 
+            float4((this.e35 * other.e431) + (this.e45 * other.e415), (this.e15 * other.e412) + (this.e45 * other.e425), (this.e25 * other.e423) + (this.e45 * other.e435), -(this.e25 * other.e425) - (this.e35 * other.e435)) + (float4(right_anti_dual_g0[0]) * this.group1) - (this.group0.yzxx * float4(other.group7.zxy, other.e415)), 
             /* e1234 */
             0.0
         );
@@ -7054,15 +5362,12 @@ public Motor operator /(WeightExpansionInfixPartial<Flector> lhs, Plane rhs) {
 }
 public extension Flector {
     public Motor weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.e45) * right_anti_dual.group0.xyz * float3(-1.0)), (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125)), 
+            float4((float3(this.e45) * right_anti_dual_g0.xyz * float3(-1.0)), (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125)), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group0.yzx * this.group0.zxy) - (right_anti_dual.group0.zxy * this.group0.yzx)), 0.0)
+            float4(((right_anti_dual_g0.yzx * this.group0.zxy) - (right_anti_dual_g0.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -7072,17 +5377,12 @@ public Motor operator /(WeightExpansionInfixPartial<Flector> lhs, Sphere rhs) {
 }
 public extension Flector {
     public Motor weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e45 * right_anti_dual.e1 * -1.0, this.e45 * right_anti_dual.e2 * -1.0, this.e45 * right_anti_dual.e3 * -1.0, (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4)) + (right_anti_dual.group0.wwwx * float4(this.group0.xyz, this.e4235)), 
+            (float4(this.e45, this.e45, this.e45, 1.0) * float4(right_anti_dual_g0.xyz, (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215)) * float4(-1.0, -1.0, -1.0, 1.0)) + (right_anti_dual_g0.wwwx * float4(this.group0.xyz, this.e4235)), 
             /* e235, e315, e125, e5 */
-            float4(((this.group0.zxy * right_anti_dual.group0.yzx) - (this.group0.yzx * right_anti_dual.group0.zxy)), 0.0)
+            float4(((right_anti_dual_g0.yzx * this.group0.zxy) - (right_anti_dual_g0.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -7092,21 +5392,13 @@ public Flector operator /(WeightExpansionInfixPartial<Flector> lhs, VersorEven r
 }
 public extension Flector {
     public Flector weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e45 * right_anti_dual.e23) + (this.e4235 * right_anti_dual.scalar), (this.e45 * right_anti_dual.e31) + (this.e4315 * right_anti_dual.scalar), (this.e45 * right_anti_dual.e12) + (this.e4125 * right_anti_dual.scalar), -(this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12)) + (right_anti_dual.group0.yzxw * float4(this.group0.zxy, this.e3215)) - (this.group0.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e23))
+            float4((right_anti_dual_g0[3] * this.e4235) + (right_anti_dual_g1[0] * this.e45), (right_anti_dual_g0[3] * this.e4315) + (right_anti_dual_g1[1] * this.e45), (right_anti_dual_g0[3] * this.e4125) + (right_anti_dual_g1[2] * this.e45), -(right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35)) + (right_anti_dual_g0.yzxw * float4(this.group0.zxy, this.e3215)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -7116,21 +5408,13 @@ public Motor operator /(WeightExpansionInfixPartial<Flector> lhs, VersorOdd rhs)
 }
 public extension Flector {
     public Motor weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (right_anti_dual.group3.wwwx * float4(this.group0.xyz, this.e4235)) + float4(float3(0.0), (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412) - (this.e45 * right_anti_dual.e321)) - (this.group0.wwwx * float4(right_anti_dual.group3.xyz, right_anti_dual.e423)), 
+            (right_anti_dual_g3.wwwx * float4(this.group0.xyz, this.e4235)) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (this.e45 * other.e45)) - (this.group0.wwwx * float4(right_anti_dual_g3.xyz, right_anti_dual_g0[0])), 
             /* e235, e315, e125, e5 */
-            float4(((this.group0.zxy * right_anti_dual.group3.yzx) - (this.group0.yzx * right_anti_dual.group3.zxy)), 0.0)
+            float4(((right_anti_dual_g3.yzx * this.group0.zxy) - (right_anti_dual_g3.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -7144,19 +5428,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Line> lhs, AntiDipoleIn
 }
 public extension Line {
     public AntiScalar weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)
         );
     }
 }
@@ -7166,15 +5441,12 @@ public Line operator /(WeightExpansionInfixPartial<Line> lhs, AntiScalar rhs) {
 }
 public extension Line {
     public Line weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Line(
             /* e415, e425, e435 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0) * this.group0.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group1.xyz
+            float3(right_anti_dual_g0) * this.group1.xyz
         );
     }
 }
@@ -7184,17 +5456,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Line> lhs, Circle rhs) 
 }
 public extension Line {
     public AntiScalar weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)
+            -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)
         );
     }
 }
@@ -7204,19 +5469,13 @@ public Motor operator /(WeightExpansionInfixPartial<Line> lhs, CircleRotor rhs) 
 }
 public extension Line {
     public Motor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group0.xyz), -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4((float3(right_anti_dual_g2[3]) * this.group0.xyz), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(right_anti_dual.group2.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g2.www), 0.0)
         );
     }
 }
@@ -7226,19 +5485,11 @@ public Plane operator /(WeightExpansionInfixPartial<Line> lhs, DipoleInversion r
 }
 public extension Line {
     public Plane weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(right_anti_dual.e4 * this.e235) - (right_anti_dual.e3 * this.e425), -(right_anti_dual.e4 * this.e315) - (right_anti_dual.e1 * this.e435), -(right_anti_dual.e4 * this.e125) - (right_anti_dual.e2 * this.e415), (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) + (right_anti_dual.group3.yzxx * float4(this.group0.xyz.zxy, this.e235))
+            float4(-(right_anti_dual_g2[3] * this.e235) - (right_anti_dual_g3[2] * this.e425), -(right_anti_dual_g2[3] * this.e315) - (right_anti_dual_g3[0] * this.e435), -(right_anti_dual_g2[3] * this.e125) - (right_anti_dual_g3[1] * this.e415), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125)) + (right_anti_dual_g3.yzxx * float4(this.group0.zxy, this.e235))
         );
     }
 }
@@ -7248,15 +5499,12 @@ public Line operator /(WeightExpansionInfixPartial<Line> lhs, DualNum rhs) {
 }
 public extension Line {
     public Line weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Line(
             /* e415, e425, e435 */
-            float3(right_anti_dual.scalar) * this.group0.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group0.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group1.xyz
+            float3(right_anti_dual_g0[1]) * this.group1.xyz
         );
     }
 }
@@ -7266,15 +5514,10 @@ public Plane operator /(WeightExpansionInfixPartial<Line> lhs, Flector rhs) {
 }
 public extension Line {
     public Plane weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) + (right_anti_dual.group1.yzxx * float4(this.group0.xyz.zxy, this.e235))
+            (right_anti_dual_g1.yzxx * float4(this.group0.zxy, this.e235)) + float4((this.group0.yzx * right_anti_dual_g1.zxy * float3(-1.0)), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125))
         );
     }
 }
@@ -7284,15 +5527,9 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Line> lhs, Line rhs) {
 }
 public extension Line {
     public AntiScalar weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiScalar(
             /* e12345 */
-            -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)
+            -(other.e415 * this.e415) - (other.e425 * this.e425) - (other.e435 * this.e435)
         );
     }
 }
@@ -7302,17 +5539,12 @@ public Motor operator /(WeightExpansionInfixPartial<Line> lhs, Motor rhs) {
 }
 public extension Line {
     public Motor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group0.xyz), -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g0.www), 0.0)
         );
     }
 }
@@ -7322,33 +5554,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<Line> lhs, MultiVector
 }
 public extension Line {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(0.0, -(this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -7360,13 +5570,13 @@ public extension Line {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(this.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group0.xyz * float3(right_anti_dual_g0.xx, right_anti_dual_g0[0])), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group1.xyz, 
+            float3(right_anti_dual_g0[0]) * this.group1.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group1.yzxx * float4(this.group0.xyz.zxy, this.e235)), 
+            float4(-(right_anti_dual_g1[2] * this.e425) - (right_anti_dual_g1[3] * this.e235), -(right_anti_dual_g1[0] * this.e435) - (right_anti_dual_g1[3] * this.e315), -(right_anti_dual_g1[1] * this.e415) - (right_anti_dual_g1[3] * this.e125), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125)) + (right_anti_dual_g1.yzxx * float4(this.group0.zxy, this.e235)), 
             /* e1234 */
             0.0
         );
@@ -7378,13 +5588,10 @@ public Plane operator /(WeightExpansionInfixPartial<Line> lhs, Plane rhs) {
 }
 public extension Line {
     public Plane weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) + (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e235))
+            (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e235)) + float4((this.group0.yzx * right_anti_dual_g0.zxy * float3(-1.0)), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125))
         );
     }
 }
@@ -7394,15 +5601,10 @@ public Plane operator /(WeightExpansionInfixPartial<Line> lhs, Sphere rhs) {
 }
 public extension Line {
     public Plane weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group0.yzxx * float4(this.group0.xyz.zxy, this.e235))
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125)) + (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e235))
         );
     }
 }
@@ -7412,21 +5614,13 @@ public Motor operator /(WeightExpansionInfixPartial<Line> lhs, VersorEven rhs) {
 }
 public extension Line {
     public Motor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(right_anti_dual.scalar) * this.group0.xyz), -(this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float4((float3(right_anti_dual_g0[3]) * this.group0.xyz), -(right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group1.xyz, 0.0) * float4(right_anti_dual.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((this.group1.xyz * right_anti_dual_g0.www), 0.0)
         );
     }
 }
@@ -7436,19 +5630,10 @@ public Plane operator /(WeightExpansionInfixPartial<Line> lhs, VersorOdd rhs) {
 }
 public extension Line {
     public Plane weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group3.yzxx * float4(this.group0.xyz.zxy, this.e235))
+            float4(-(right_anti_dual_g3[2] * this.e425) - (right_anti_dual_g3[3] * this.e235), -(right_anti_dual_g3[0] * this.e435) - (right_anti_dual_g3[3] * this.e315), -(right_anti_dual_g3[1] * this.e415) - (right_anti_dual_g3[3] * this.e125), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125)) + (right_anti_dual_g3.yzxx * float4(this.group0.zxy, this.e235))
         );
     }
 }
@@ -7462,17 +5647,9 @@ public Plane operator /(WeightExpansionInfixPartial<Motor> lhs, AntiCircleRotor 
 }
 public extension Motor {
     public Plane weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45) * float4(-1.0)
         );
     }
 }
@@ -7482,21 +5659,12 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, AntiDipoleInvers
 }
 public extension Motor {
     public Motor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.e5) * right_anti_dual.group0.xyz), (right_anti_dual.e1234 * this.e5) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e4 * this.e5)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group1.www, 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1.xyz * this.group1.www), 0.0)
         );
     }
 }
@@ -7506,15 +5674,12 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, AntiScalar rhs) 
 }
 public extension Motor {
     public Motor weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0) * this.group1
         );
     }
 }
@@ -7524,19 +5689,12 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, Circle rhs) {
 }
 public extension Motor {
     public Motor weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.e5) * right_anti_dual.group0.xyz), -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4((float3(this.e5) * other.group0.xyz), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(this.group1.www, 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1.xyz * this.group1.www), 0.0)
         );
     }
 }
@@ -7546,19 +5704,13 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, CircleRotor rhs)
 }
 public extension Motor {
     public Motor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.scalar * this.e415, right_anti_dual.scalar * this.e425, right_anti_dual.scalar * this.e435, -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)) + float4((right_anti_dual.group0.xyz * this.group1.www), right_anti_dual.scalar * this.e12345), 
+            float4(((other.group0.xyz * this.group1.www) + (this.group0.xyz * right_anti_dual_g2.www)), (right_anti_dual_g2[3] * this.e12345) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group1.xyz) + (float3(this.e5) * right_anti_dual.group1.xyz)), right_anti_dual.scalar * this.e5)
+            float4(((float3(right_anti_dual_g2[3]) * this.group1.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g2[3] * this.e5)
         );
     }
 }
@@ -7568,17 +5720,9 @@ public Plane operator /(WeightExpansionInfixPartial<Motor> lhs, Dipole rhs) {
 }
 public extension Motor {
     public Plane weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321) * float4(-1.0)
+            float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45) * float4(-1.0)
         );
     }
 }
@@ -7588,21 +5732,13 @@ public Flector operator /(WeightExpansionInfixPartial<Motor> lhs, DipoleInversio
 }
 public extension Motor {
     public Flector weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e5) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4) * float4(-1.0), 
+            float4(this.e5) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3]) * float4(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(right_anti_dual.e4 * this.e235) - (right_anti_dual.e3 * this.e425), -(right_anti_dual.e4 * this.e315) - (right_anti_dual.e1 * this.e435), -(right_anti_dual.e4 * this.e125) - (right_anti_dual.e2 * this.e415), (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) + (right_anti_dual.group3.yzxx * float4(this.group0.zxy, this.e235)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321))
+            float4(-(right_anti_dual_g2[3] * this.e235) - (right_anti_dual_g3[2] * this.e425), -(right_anti_dual_g2[3] * this.e315) - (right_anti_dual_g3[0] * this.e435), -(right_anti_dual_g2[3] * this.e125) - (right_anti_dual_g3[1] * this.e415), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125)) + (right_anti_dual_g3.yzxx * float4(this.group0.zxy, this.e235)) - (float4(this.e5) * float4((other.group0.xyz * float3(-1.0)), other.e45))
         );
     }
 }
@@ -7612,15 +5748,12 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, DualNum rhs) {
 }
 public extension Motor {
     public Motor weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.scalar) * this.group1
+            float4(right_anti_dual_g0[1]) * this.group1
         );
     }
 }
@@ -7642,17 +5775,12 @@ public Flector operator /(WeightExpansionInfixPartial<Motor> lhs, Flector rhs) {
 }
 public extension Motor {
     public Flector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(float3(1.0), 0.0) * float4(this.group1.www, 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(-1.0, -1.0, -1.0, 0.0), 
+            float4((right_anti_dual_g1.xyz * this.group1.www * float3(-1.0)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group1.yzxx * float4(this.group0.zxy, this.e235)) + float4(float3(0.0), (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) - float4((right_anti_dual.group1.zxy * this.group0.yzx), right_anti_dual.e321 * this.e5)
+            (right_anti_dual_g1.yzxx * float4(this.group0.zxy, this.e235)) + float4(float3(0.0), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125)) - float4((right_anti_dual_g1.zxy * this.group0.yzx), other.e45 * this.e5)
         );
     }
 }
@@ -7662,17 +5790,11 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, Line rhs) {
 }
 public extension Motor {
     public Motor weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(float3(0.0), -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4(float3(0.0), -(other.e415 * this.e415) - (other.e425 * this.e425) - (other.e435 * this.e435)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(this.group1.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((other.group0.xyz * this.group1.www), 0.0)
         );
     }
 }
@@ -7682,17 +5804,12 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, Motor rhs) {
 }
 public extension Motor {
     public Motor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((right_anti_dual.group0.www * this.group0.xyz), (right_anti_dual.scalar * this.e12345) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), (right_anti_dual_g0[3] * this.e12345) - (right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group1.xyz) + (float3(this.e5) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.e5)
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) + (float3(this.e5) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.e5)
         );
     }
 }
@@ -7702,51 +5819,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<Motor> lhs, MultiVecto
 }
 public extension Motor {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e12345 * right_anti_dual.scalar) + (this.e5 * right_anti_dual.e1234) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e12345) - (this.e415 * other.e415) - (this.e425 * other.e425) - (this.e435 * other.e435) - (this.e235 * other.e423) - (this.e315 * other.e431) - (this.e125 * other.e412) - (this.e5 * other.e4)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e5) * right_anti_dual.group1 * float4(-1.0), 
+            right_anti_dual_g1 * float4(this.e5) * float4(-1.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(this.e5) * right_anti_dual.group4.xyz) + (float3(right_anti_dual.scalar) * this.group0.xyz)), 0.0), 
+            float4(((float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.e5) * other.group7.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group5.xyz) + (float3(right_anti_dual.scalar) * this.group1.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group1.xyz) + (float3(this.e5) * other.group6.xyz), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group1.yzxx * float4(this.group0.zxy, this.e235)) - float4((right_anti_dual.group7.xyz * this.group1.www), this.e5 * right_anti_dual.e321), 
+            float4(-(right_anti_dual_g1[2] * this.e425) - (right_anti_dual_g1[3] * this.e235), -(right_anti_dual_g1[0] * this.e435) - (right_anti_dual_g1[3] * this.e315), -(right_anti_dual_g1[1] * this.e415) - (right_anti_dual_g1[3] * this.e125), (right_anti_dual_g1[1] * this.e315) + (right_anti_dual_g1[2] * this.e125)) + (right_anti_dual_g1.yzxx * float4(this.group0.zxy, this.e235)) - float4((other.group4.xyz * this.group1.www * float3(-1.0)), this.e5 * other.e45), 
             /* e1234 */
             0.0
         );
@@ -7758,15 +5853,12 @@ public Flector operator /(WeightExpansionInfixPartial<Motor> lhs, Plane rhs) {
 }
 public extension Motor {
     public Flector weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(float3(1.0), 0.0) * float4(this.group1.www, 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(-1.0, -1.0, -1.0, 0.0), 
+            float4((right_anti_dual_g0.xyz * this.group1.www * float3(-1.0)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e2 * this.e315) + (right_anti_dual.e3 * this.e125)) + (right_anti_dual.group0.yzxx * float4(this.group0.zxy, this.e235))
+            (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e235)) + float4((right_anti_dual_g0.zxy * this.group0.yzx * float3(-1.0)), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125))
         );
     }
 }
@@ -7788,17 +5880,12 @@ public Flector operator /(WeightExpansionInfixPartial<Motor> lhs, Sphere rhs) {
 }
 public extension Motor {
     public Flector weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e5) * right_anti_dual.group0 * float4(-1.0), 
+            right_anti_dual_g0 * float4(this.e5) * float4(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group0.yzxx * float4(this.group0.zxy, this.e235))
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[1] * this.e315) + (right_anti_dual_g0[2] * this.e125)) + (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e235))
         );
     }
 }
@@ -7808,21 +5895,13 @@ public Motor operator /(WeightExpansionInfixPartial<Motor> lhs, VersorEven rhs) 
 }
 public extension Motor {
     public Motor weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e1234)) + (float4(right_anti_dual.scalar) * this.group0) + float4(float3(0.0), -(this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            (float4(right_anti_dual_g0[3]) * this.group0) + (float4(this.e5) * float4(right_anti_dual_g0.xyz, other.e4 * -1.0)) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group1.xyz)), this.e5 * right_anti_dual.scalar)
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g0[3] * this.e5)
         );
     }
 }
@@ -7832,21 +5911,13 @@ public Flector operator /(WeightExpansionInfixPartial<Motor> lhs, VersorOdd rhs)
 }
 public extension Motor {
     public Flector weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e5) * right_anti_dual.group3 * float4(-1.0), 
+            right_anti_dual_g3 * float4(this.e5) * float4(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e235 * right_anti_dual.e4) - (this.e5 * right_anti_dual.e423), -(this.e315 * right_anti_dual.e4) - (this.e5 * right_anti_dual.e431), -(this.e125 * right_anti_dual.e4) - (this.e5 * right_anti_dual.e412), (this.e315 * right_anti_dual.e2) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group3.yzxx * float4(this.group0.zxy, this.e235)) - float4((this.group0.yzx * right_anti_dual.group3.zxy), this.e5 * right_anti_dual.e321)
+            float4(-(right_anti_dual_g0[0] * this.e5) - (right_anti_dual_g3[3] * this.e235), -(right_anti_dual_g0[1] * this.e5) - (right_anti_dual_g3[3] * this.e315), -(right_anti_dual_g0[2] * this.e5) - (right_anti_dual_g3[3] * this.e125), (right_anti_dual_g3[1] * this.e315) + (right_anti_dual_g3[2] * this.e125)) + (right_anti_dual_g3.yzxx * float4(this.group0.zxy, this.e235)) - float4((right_anti_dual_g3.zxy * this.group0.yzx), this.e5 * other.e45)
         );
     }
 }
@@ -7860,17 +5931,12 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e12345 * this.scalar) - (right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(0.0, (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -7882,15 +5948,15 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group2.xyz, 
+            float3(this.scalar) * right_anti_dual_g2.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group1.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)), 
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g2[1] * this.e2) - (right_anti_dual_g2[2] * this.e3)) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group1.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -7900,39 +5966,32 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e1234 * this.e5) + (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)), 
+            float2(0.0, (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[0] * this.e1) + (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * float4(right_anti_dual.group2.xyz, right_anti_dual.e45), 
+            float4(this.scalar) * float4(right_anti_dual_g2.xyz, right_anti_dual_g1[3]), 
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group1.xyz, 
+            float3(this.scalar) * right_anti_dual_g1.xyz, 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group1.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (other.e423 * this.e5), (right_anti_dual_g2[1] * this.e4) + (other.e431 * this.e5), (right_anti_dual_g2[2] * this.e4) + (other.e412 * this.e5), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group1.zxy) - (right_anti_dual.group0.xyz.zxy * this.group1.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group1.zxy) - (other.group0.zxy * this.group1.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group1.yzx) - (right_anti_dual.group2.yzx * this.group1.zxy), 
+            (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group1.yzx) - (right_anti_dual_g2.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) + (float4(this.scalar) * right_anti_dual.group3) - (right_anti_dual.group2.yzxy * float4(this.group4.xyz.zxy, this.e31)) - float4((right_anti_dual.group0.xyz.zxy * this.group3.yzx), right_anti_dual.e15 * this.e23), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (other.e431 * this.e35), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (other.e412 * this.e15), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (other.e423 * this.e25), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + (right_anti_dual_g3 * float4(this.scalar)) - (right_anti_dual_g2.yzxy * float4(this.group4.zxy, this.e31)) - float4((other.group0.zxy * this.group3.yzx), right_anti_dual_g2[0] * this.e23), 
             /* e1234 */
-            (right_anti_dual.e1234 * this.scalar) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -7942,31 +6001,27 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e5 * this.e1234) + (right_anti_dual.e12345 * this.scalar)), 
+            float2(0.0, (other.e3215 * this.e1234) + (other.scalar * this.scalar)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            other.e3215 * this.scalar, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * this.group1, 
+            float4(other.e3215) * this.group1, 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, 0.0) * float4(float3(1.0), 0.0) * float4(this.group4.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((this.group4.xyz * float3(other.group0.xx, other.e3215)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(right_anti_dual.e5) * this.group5.xyz, 
+            float3(other.e3215) * this.group5.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e5) * float4(this.group7.xyz, this.e321), 
+            float4(other.e3215) * float4(this.group7.xyz, this.e321), 
             /* e1234 */
             0.0
         );
@@ -7978,31 +6033,28 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321)), 
+            float2(0.0, -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e45) * this.group1.xyz)), 0.0), 
+            float4(((float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group1.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (right_anti_dual.group0.zxy * this.group1.yzx) - (right_anti_dual.group0.yzx * this.group1.zxy), 
+            (right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e35 * this.e42) + (right_anti_dual.e45 * this.e23), (right_anti_dual.e15 * this.e43) + (right_anti_dual.e45 * this.e31), (right_anti_dual.e25 * this.e41) + (right_anti_dual.e45 * this.e12), -(right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - (right_anti_dual.group0.yzxx * float4(this.group4.xyz.zxy, this.e23)), 
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group4.zxy, this.e23)), 
             /* e1234 */
             0.0
         );
@@ -8014,33 +6066,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e1) + (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e45) * this.group1.xyz)), 0.0), 
+            float4(((float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group1.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (right_anti_dual.group0.zxy * this.group1.yzx) - (right_anti_dual.group0.yzx * this.group1.zxy), 
+            (right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e35 * this.e42) + (right_anti_dual.e45 * this.e23), (right_anti_dual.e15 * this.e43) + (right_anti_dual.e45 * this.e31), (right_anti_dual.e25 * this.e41) + (right_anti_dual.e45 * this.e12), -(right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (float4(this.scalar) * right_anti_dual.group1) - (right_anti_dual.group0.yzxx * float4(this.group4.xyz.zxy, this.e23)), 
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) + (right_anti_dual_g1 * float4(this.scalar)) - (right_anti_dual_g0.yzxx * float4(this.group4.zxy, this.e23)), 
             /* e1234 */
             0.0
         );
@@ -8052,15 +6100,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(0.0, -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8072,13 +6116,13 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(this.group0.xy.xx, this.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((right_anti_dual_g0 * float3(this.group0.xx, this.scalar)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group1.xyz, 
+            right_anti_dual_g1 * float3(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (this.group1.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235)), 
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group1.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0])), 
             /* e1234 */
             0.0
         );
@@ -8090,33 +6134,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e12345 * this.scalar) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(0.0, (right_anti_dual_g0[3] * this.scalar) + (right_anti_dual_g1[3] * this.e1234) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            right_anti_dual_g1[3] * this.scalar, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * this.group1, 
+            float4(right_anti_dual_g1[3]) * this.group1, 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(((float3(right_anti_dual.e5) * this.group4.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), 0.0), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group4.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), 0.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group1.xyz), 
+            (float3(right_anti_dual_g1[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) + float4((this.group7.xyz * right_anti_dual.group1.www), right_anti_dual.e5 * this.e321) - (this.group1.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235)), 
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((this.group7.xyz * right_anti_dual_g1.www), right_anti_dual_g1[3] * this.e321) - (this.group1.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0])), 
             /* e1234 */
             0.0
         );
@@ -8128,13 +6168,10 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8152,7 +6189,7 @@ public extension MultiVector {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e1234 */
             0.0
         );
@@ -8164,33 +6201,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Anti
 }
 public extension MultiVector {
     public MultiVector weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar) * this.group0.xy, 
+            float2(right_anti_dual_g0) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0 * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group3, 
+            float4(right_anti_dual_g0) * this.group3, 
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group4.xyz, 
+            float3(right_anti_dual_g0) * this.group4.xyz, 
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group5.xyz, 
+            float3(right_anti_dual_g0) * this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group6, 
+            float4(right_anti_dual_g0) * this.group6, 
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group7.xyz, 
+            float3(right_anti_dual_g0) * this.group7.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group8.xyz, 
+            float3(right_anti_dual_g0) * this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group9, 
+            float4(right_anti_dual_g0) * this.group9, 
             /* e1234 */
-            this.e1234 * right_anti_dual.scalar
+            right_anti_dual_g0 * this.e1234
         );
     }
 }
@@ -8200,37 +6234,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Circ
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)), 
+            float2(0.0, -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * float4(right_anti_dual.group2.xyz, right_anti_dual.e45), 
+            float4(this.scalar) * float4(other.group2.xyz, right_anti_dual_g1[3]), 
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group1.xyz, 
+            float3(this.scalar) * right_anti_dual_g1.xyz, 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group1.xyzx), 
+            float4((other.e423 * this.e5) + (other.e235 * this.e4), (other.e431 * this.e5) + (other.e315 * this.e4), (other.e412 * this.e5) + (other.e125 * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group1.zxy) - (right_anti_dual.group0.xyz.zxy * this.group1.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group1.zxy) - (other.group0.zxy * this.group1.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.xyz.zxy * this.group1.yzx) - (right_anti_dual.group2.xyz.yzx * this.group1.zxy), 
+            (float3(this.e5) * right_anti_dual_g1.xyz) + (other.group2.zxy * this.group1.yzx) - (other.group2.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group3.yzx), right_anti_dual.e15 * this.e23) - float4((right_anti_dual.group2.xyz.yzx * this.group4.xyz.zxy), right_anti_dual.e25 * this.e31), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (other.e431 * this.e35) + (other.e125 * this.e42), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (other.e412 * this.e15) + (other.e235 * this.e43), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (other.e423 * this.e25) + (other.e315 * this.e41), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (other.e125 * this.e12)) - float4((other.group0.zxy * this.group3.yzx), other.e235 * this.e23) - float4((other.group2.yzx * this.group4.zxy), other.e315 * this.e31), 
             /* e1234 */
-            -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -8240,37 +6267,31 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Circ
 }
 public extension MultiVector {
     public MultiVector weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar * this.scalar, (right_anti_dual.scalar * this.e12345) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)), 
+            float2(right_anti_dual_g2[3] * this.scalar, (right_anti_dual_g2[3] * this.e12345) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g2[3]) * this.group1, 
             /* e5 */
-            right_anti_dual.scalar * this.e5, 
+            right_anti_dual_g2[3] * this.e5, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.scalar) * this.group3) + (float4(this.scalar) * float4(right_anti_dual.group2.xyz, right_anti_dual.e45)), 
+            (float4(right_anti_dual_g2[3]) * this.group3) + (float4(this.scalar) * float4(right_anti_dual_g2.xyz, right_anti_dual_g1[3])), 
             /* e41, e42, e43 */
-            (float3(right_anti_dual.scalar) * this.group4.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz), 
+            (float3(right_anti_dual_g2[3]) * this.group4.xyz) + (float3(this.scalar) * other.group0.xyz), 
             /* e23, e31, e12 */
-            (float3(right_anti_dual.scalar) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group1.xyz), 
+            (float3(right_anti_dual_g2[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e15 * this.e4) + (right_anti_dual.scalar * this.e415), (right_anti_dual.e25 * this.e4) + (right_anti_dual.scalar * this.e425), (right_anti_dual.e35 * this.e4) + (right_anti_dual.scalar * this.e435), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + float4((float3(this.e5) * right_anti_dual.group0.xyz), right_anti_dual.scalar * this.e321) - (right_anti_dual.group1.wwwx * this.group1.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g2[3] * this.e415), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g2[3] * this.e425), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g2[3] * this.e435), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((float3(this.e5) * other.group0.xyz), right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.scalar) * this.group7.xyz) + (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group1.zxy) - (right_anti_dual.group0.xyz.zxy * this.group1.yzx), 
+            (float3(right_anti_dual_g2[3]) * this.group7.xyz) + (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group1.zxy) - (other.group0.zxy * this.group1.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.scalar) * this.group8.xyz) + (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group1.yzx) - (right_anti_dual.group2.yzx * this.group1.zxy), 
+            (float3(right_anti_dual_g2[3]) * this.group8.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group1.yzx) - (right_anti_dual_g2.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42) + (right_anti_dual.scalar * this.e4235), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43) + (right_anti_dual.scalar * this.e4315), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41) + (right_anti_dual.scalar * this.e4125), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) + float4((right_anti_dual.group0.xyz.yzx * this.group3.zxy), right_anti_dual.scalar * this.e3215) - (right_anti_dual.group2.yzxy * float4(this.group4.xyz.zxy, this.e31)) - float4((right_anti_dual.group0.xyz.zxy * this.group3.yzx), right_anti_dual.e15 * this.e23), 
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (right_anti_dual_g2[3] * this.e4235), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (right_anti_dual_g2[3] * this.e4315), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (right_anti_dual_g2[3] * this.e4125), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + float4((other.group0.yzx * this.group3.zxy), right_anti_dual_g2[3] * this.e3215) - (right_anti_dual_g2.yzxy * float4(this.group4.zxy, this.e31)) - float4((other.group0.zxy * this.group3.yzx), right_anti_dual_g2[0] * this.e23), 
             /* e1234 */
-            (right_anti_dual.scalar * this.e1234) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            (right_anti_dual_g2[3] * this.e1234) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -8280,17 +6301,12 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Dipo
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(0.0, -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8302,15 +6318,15 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group2.xyz, 
+            right_anti_dual_g2 * float3(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e321 * this.e5) - (right_anti_dual.e125 * this.e3)) - (this.group1.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((float3(this.e5) * right_anti_dual.group0.xyz), right_anti_dual.e235 * this.e1), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g1[1] * this.e3), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g1[2] * this.e1), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g1[0] * this.e2), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group1.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * float3(this.e5)), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -8320,39 +6336,33 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Dipo
 }
 public extension MultiVector {
     public MultiVector weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(0.0, (right_anti_dual_g2[3] * this.e3215) + (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e1234) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4), 
+            float4(this.scalar) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3]), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            right_anti_dual_g3[3] * this.scalar, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * this.group1) - (float4(this.e5) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4)), 
+            (float4(right_anti_dual_g3[3]) * this.group1) - (float4(this.e5) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3])), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group1.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g2[3]) * this.group1.xyz), 
             /* e23, e31, e12 */
-            (right_anti_dual.group3.zxy * this.group1.yzx) - (right_anti_dual.group3.yzx * this.group1.zxy), 
+            (right_anti_dual_g3.zxy * this.group1.yzx) - (right_anti_dual_g3.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + (float4(this.scalar) * right_anti_dual.group1) - float4((this.group3.www * right_anti_dual.group3.xyz), right_anti_dual.e1 * this.e23), 
+            float4((right_anti_dual_g2[3] * this.e15) + (right_anti_dual_g3[3] * this.e41), (right_anti_dual_g2[3] * this.e25) + (right_anti_dual_g3[3] * this.e42), (right_anti_dual_g2[3] * this.e35) + (right_anti_dual_g3[3] * this.e43), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + (right_anti_dual_g1 * float4(this.scalar)) - float4((right_anti_dual_g3.xyz * this.group3.www), right_anti_dual_g3[0] * this.e23), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz) + (this.group4.xyz.yzx * right_anti_dual.group3.zxy) - (this.group4.xyz.zxy * right_anti_dual.group3.yzx), 
+            (right_anti_dual_g0 * float3(this.scalar)) + (float3(right_anti_dual_g2[3]) * this.group5.xyz) + (this.group4.yzx * right_anti_dual_g3.zxy) - (this.group4.zxy * right_anti_dual_g3.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group2.xyz) + (right_anti_dual.group3.yzx * this.group3.zxy) - (right_anti_dual.group3.zxy * this.group3.yzx), 
+            (float3(right_anti_dual_g3[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group3.zxy) - (right_anti_dual_g3.zxy * this.group3.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group3.yzxw * this.group6.zxyw) + (right_anti_dual.group3.wwwx * float4(this.group7.xyz, this.e235)) + float4((right_anti_dual.group1.yzx * this.group1.zxy), right_anti_dual.e2 * this.e315) + float4((this.group1.www * right_anti_dual.group2.xyz), right_anti_dual.e3 * this.e125) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group1.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((this.group8.xyz * right_anti_dual.group2.www), right_anti_dual.e235 * this.e1) - float4((right_anti_dual.group3.zxy * this.group6.yzx), right_anti_dual.e125 * this.e3), 
+            (right_anti_dual_g3.yzxw * this.group6.zxyw) + (right_anti_dual_g3.wwwx * float4(this.group7.xyz, this.e235)) + float4((right_anti_dual_g1.yzx * this.group1.zxy), right_anti_dual_g3[1] * this.e315) + float4((right_anti_dual_g2.xyz * this.group1.www), right_anti_dual_g3[2] * this.e125) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group1.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((this.group8.xyz * right_anti_dual_g2.www), right_anti_dual_g2[0] * this.e1) - float4((right_anti_dual_g3.zxy * this.group6.yzx), right_anti_dual_g2[2] * this.e3), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4) - (right_anti_dual.e4 * this.e321) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412)
         );
     }
 }
@@ -8362,33 +6372,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Dual
 }
 public extension MultiVector {
     public MultiVector weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar * this.scalar, (right_anti_dual.e3215 * this.e4) + (right_anti_dual.scalar * this.e12345)), 
+            float2(right_anti_dual_g0[1] * this.scalar, (right_anti_dual_g0[0] * this.e4) + (right_anti_dual_g0[1] * this.e12345)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e5 */
-            right_anti_dual.scalar * this.e5, 
+            right_anti_dual_g0[1] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.scalar) * this.group3, 
+            float4(right_anti_dual_g0[1]) * this.group3, 
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group4.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group4.xyz, 
             /* e23, e31, e12 */
-            float3(right_anti_dual.scalar) * this.group5.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group6, 
+            float4(right_anti_dual_g0[1]) * this.group6, 
             /* e423, e431, e412 */
-            float3(right_anti_dual.scalar) * this.group7.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group7.xyz, 
             /* e235, e315, e125 */
-            float3(right_anti_dual.scalar) * this.group8.xyz, 
+            float3(right_anti_dual_g0[1]) * this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, (right_anti_dual.e3215 * this.scalar) + (right_anti_dual.scalar * this.e3215)) * float4(this.group9.xyz, 1.0), 
+            float4(right_anti_dual_g0.yy, right_anti_dual_g0[1], (right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g0[1] * this.e3215)) * float4(this.group9.xyz, 1.0), 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g0[1] * this.e1234
         );
     }
 }
@@ -8398,13 +6405,10 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Flat
 }
 public extension MultiVector {
     public MultiVector weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)), 
+            float2(0.0, -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8416,15 +6420,15 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), right_anti_dual.e321 * this.scalar), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.scalar), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * right_anti_dual_g0.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e4) * right_anti_dual.group0.xyz), -(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)), 
+            float4((float3(this.e4) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)), 
             /* e1234 */
-            right_anti_dual.e321 * this.e4
+            right_anti_dual_g0[3] * this.e4
         );
     }
 }
@@ -8434,35 +6438,31 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Flec
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e1234) - (right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)), 
             /* e1, e2, e3, e4 */
-            float4(this.group0.xy.xx, this.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((right_anti_dual_g1.xyz * float3(this.group0.xx, this.scalar)), 0.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            right_anti_dual_g1[3] * this.scalar, 
             /* e15, e25, e35, e45 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) - (float3(this.e5) * right_anti_dual.group1.xyz)), right_anti_dual.e5 * this.e4), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group1.xyz) - (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.e4), 
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group1.xyz, 
+            float3(this.e4) * right_anti_dual_g1.xyz, 
             /* e23, e31, e12 */
-            (right_anti_dual.group1.zxy * this.group1.yzx) - (right_anti_dual.group1.yzx * this.group1.zxy), 
+            (right_anti_dual_g1.zxy * this.group1.yzx) - (right_anti_dual_g1.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + float4((this.group4.xyz * right_anti_dual.group1.www), right_anti_dual.e321 * this.scalar) - float4((this.group3.www * right_anti_dual.group1.xyz), right_anti_dual.e1 * this.e23), 
+            float4(float3(0.0), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((this.group4.xyz * right_anti_dual_g1.www), right_anti_dual_g0[3] * this.scalar) - float4((right_anti_dual_g1.xyz * this.group3.www), right_anti_dual_g1[0] * this.e23), 
             /* e423, e431, e412 */
-            (this.group4.xyz.yzx * right_anti_dual.group1.zxy) - (this.group4.xyz.zxy * right_anti_dual.group1.yzx), 
+            (this.group4.yzx * right_anti_dual_g1.zxy) - (this.group4.zxy * right_anti_dual_g1.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.yzx * this.group3.zxy) - (right_anti_dual.group1.zxy * this.group3.yzx), 
+            (float3(right_anti_dual_g1[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.yzx * this.group3.zxy) - (right_anti_dual_g1.zxy * this.group3.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group1.wwwx * float4(this.group7.xyz, this.e235)) + float4(float3(0.0), (right_anti_dual.e5 * this.e321) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)) + float4((right_anti_dual.group1.yzx * this.group6.zxy), right_anti_dual.e3 * this.e125) + float4((this.group1.www * right_anti_dual.group0.xyz), right_anti_dual.e2 * this.e315) - float4((right_anti_dual.group1.zxy * this.group6.yzx), right_anti_dual.e235 * this.e1), 
+            (right_anti_dual_g1.wwwx * float4(this.group7.xyz, this.e235)) + float4(float3(0.0), (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)) + float4((right_anti_dual_g1.yzx * this.group6.zxy), right_anti_dual_g1[2] * this.e125) + float4((right_anti_dual_g0.xyz * this.group1.www), right_anti_dual_g1[1] * this.e315) - float4((right_anti_dual_g1.zxy * this.group6.yzx), right_anti_dual_g0[0] * this.e1), 
             /* e1234 */
-            (right_anti_dual.e321 * this.e4) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            (right_anti_dual_g0[3] * this.e4) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)
         );
     }
 }
@@ -8472,35 +6472,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Line
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)), 
+            float2(0.0, -(other.e415 * this.e415) - (other.e425 * this.e425) - (other.e435 * this.e435) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.group0.xy.xx, this.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((other.group1.xyz * float3(this.group0.xx, this.scalar)), 0.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(this.e4) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)), 
+            float4((float3(this.e4) * other.group1.xyz), -(other.e415 * this.e1) - (other.e425 * this.e2) - (other.e435 * this.e3)), 
             /* e423, e431, e412 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * other.group0.xyz, 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.xyz.zxy * this.group1.yzx) - (right_anti_dual.group1.xyz.yzx * this.group1.zxy), 
+            (float3(this.e5) * other.group0.xyz) + (other.group1.zxy * this.group1.yzx) - (other.group1.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group1.xyz.yzx * this.group4.xyz.zxy), right_anti_dual.e23 * this.e15), 
+            float4((other.e415 * this.e45) + (other.e125 * this.e42), (other.e425 * this.e45) + (other.e235 * this.e43), (other.e435 * this.e45) + (other.e315 * this.e41), -(other.e425 * this.e25) - (other.e435 * this.e35) - (other.e235 * this.e23) - (other.e315 * this.e31) - (other.e125 * this.e12)) - float4((other.group1.yzx * this.group4.zxy), other.e415 * this.e15), 
             /* e1234 */
-            -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            -(other.e415 * this.e41) - (other.e425 * this.e42) - (other.e435 * this.e43)
         );
     }
 }
@@ -8510,35 +6504,31 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Moto
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar * this.scalar, (right_anti_dual.scalar * this.e12345) + (right_anti_dual.e3215 * this.e4) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)), 
+            float2(right_anti_dual_g0[3] * this.scalar, (right_anti_dual_g0[3] * this.e12345) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e5 */
-            right_anti_dual.scalar * this.e5, 
+            right_anti_dual_g0[3] * this.e5, 
             /* e15, e25, e35, e45 */
-            float4(((float3(right_anti_dual.scalar) * this.group3.xyz) + (float3(this.scalar) * right_anti_dual.group1.xyz)), right_anti_dual.scalar * this.e45), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group3.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g0[3] * this.e45), 
             /* e41, e42, e43 */
-            float3(right_anti_dual.scalar) * this.group4.xyz, 
+            float3(right_anti_dual_g0[3]) * this.group4.xyz, 
             /* e23, e31, e12 */
-            (float3(right_anti_dual.scalar) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz), 
+            (float3(right_anti_dual_g0[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e15 * this.e4, right_anti_dual.e25 * this.e4, right_anti_dual.e35 * this.e4, -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + (float4(right_anti_dual.scalar) * this.group6), 
+            (float4(right_anti_dual_g0[3]) * this.group6) + (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g1.xyz, -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3))), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.scalar) * this.group7.xyz) + (float3(this.e4) * right_anti_dual.group0.xyz), 
+            (float3(right_anti_dual_g0[3]) * this.group7.xyz) + (float3(this.e4) * right_anti_dual_g0.xyz), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.scalar) * this.group8.xyz) + (float3(this.e5) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.zxy * this.group1.yzx) - (right_anti_dual.group1.yzx * this.group1.zxy), 
+            (float3(right_anti_dual_g0[3]) * this.group8.xyz) + (float3(this.e5) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.zxy * this.group1.yzx) - (right_anti_dual_g1.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar * this.e4235, right_anti_dual.scalar * this.e4315, right_anti_dual.scalar * this.e4125, -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (right_anti_dual.group0 * float4(this.group3.www, this.e3215)) + (right_anti_dual.group1.zxyw * float4(this.group4.xyz.yzx, this.scalar)) - (right_anti_dual.group1.yzxx * float4(this.group4.xyz.zxy, this.e23)), 
+            (right_anti_dual_g0 * float4(this.group3.www, this.e3215)) + (right_anti_dual_g1.zxyw * float4(this.group4.yzx, this.scalar)) + float4((this.group9.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.yzxx * float4(this.group4.zxy, this.e23)), 
             /* e1234 */
-            (right_anti_dual.scalar * this.e1234) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            (right_anti_dual_g0[3] * this.e1234) - (right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43)
         );
     }
 }
@@ -8548,53 +6538,37 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Mult
 }
 public extension MultiVector {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group8.xyz, other.e321 * -1.0);
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
+        float right_anti_dual_g10 = other.e4 * -1.0;
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar * this.scalar, (right_anti_dual.scalar * this.e12345) + (right_anti_dual.e12345 * this.scalar) + (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e5 * this.e1234) + (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) + (right_anti_dual.e1234 * this.e5) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(right_anti_dual_g0[0] * this.scalar, (right_anti_dual_g10 * this.e5) + (right_anti_dual_g0[0] * this.e12345) + (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215) + (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) + (right_anti_dual_g9[3] * this.e4) + (other.e3215 * this.e1234) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g8[0] * this.e41) - (right_anti_dual_g8[1] * this.e42) - (right_anti_dual_g8[2] * this.e43) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12) - (right_anti_dual_g6[3] * this.e45) - (other.e415 * this.e415) - (other.e425 * this.e425) - (other.e435 * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125)), 
             /* e1, e2, e3, e4 */
-            (float4(right_anti_dual.scalar) * this.group1) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * this.group1), 
             /* e5 */
-            (right_anti_dual.scalar * this.e5) + (right_anti_dual.e5 * this.scalar), 
+            (right_anti_dual_g0[0] * this.e5) + (other.e3215 * this.scalar), 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.scalar) * this.group3) + (float4(right_anti_dual.e5) * this.group1) + (float4(this.scalar) * right_anti_dual.group3) - (float4(this.e5) * right_anti_dual.group1), 
+            (right_anti_dual_g3 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * this.group3) + (float4(other.e3215) * this.group1) - (right_anti_dual_g1 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(right_anti_dual.scalar) * this.group4.xyz) + (float3(this.scalar) * right_anti_dual.group4.xyz) + (float3(this.e4) * right_anti_dual.group1.xyz) - (float3(right_anti_dual.e4) * this.group1.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group4.xyz) + (float3(this.scalar) * other.group7.xyz) + (float3(this.e4) * right_anti_dual_g1.xyz) - (float3(right_anti_dual_g1[3]) * this.group1.xyz), 
             /* e23, e31, e12 */
-            (float3(right_anti_dual.scalar) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group5.xyz) + (right_anti_dual.group1.zxy * this.group1.yzx) - (right_anti_dual.group1.yzx * this.group1.zxy), 
+            (float3(right_anti_dual_g0[0]) * this.group5.xyz) + (float3(this.scalar) * other.group6.xyz) + (right_anti_dual_g1.zxy * this.group1.yzx) - (right_anti_dual_g1.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41) + (right_anti_dual.e15 * this.e4) + (right_anti_dual.e41 * this.e5), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42) + (right_anti_dual.e25 * this.e4) + (right_anti_dual.e42 * this.e5), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43) + (right_anti_dual.e35 * this.e4) + (right_anti_dual.e43 * this.e5), -(right_anti_dual.e1 * this.e23) - (right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12) - (right_anti_dual.e12 * this.e3)) + (float4(right_anti_dual.scalar) * this.group6) + (float4(this.scalar) * right_anti_dual.group6) - (this.group1.xyzy * float4(right_anti_dual.group3.www, right_anti_dual.e31)) - float4((this.group3.www * right_anti_dual.group1.xyz), right_anti_dual.e23 * this.e1), 
+            float4((right_anti_dual_g1[3] * this.e15) + (right_anti_dual_g3[0] * this.e4) + (other.e423 * this.e5) + (other.e3215 * this.e41), (right_anti_dual_g1[3] * this.e25) + (right_anti_dual_g3[1] * this.e4) + (other.e431 * this.e5) + (other.e3215 * this.e42), (right_anti_dual_g1[3] * this.e35) + (right_anti_dual_g3[2] * this.e4) + (other.e412 * this.e5) + (other.e3215 * this.e43), -(right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (other.e435 * this.e3)) + (right_anti_dual_g6 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * this.group6) - (this.group1.xyzy * float4(right_anti_dual_g3.www, other.e425)) - float4((right_anti_dual_g1.xyz * this.group3.www), other.e415 * this.e1), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.scalar) * this.group7.xyz) + (float3(right_anti_dual.e4) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group7.xyz) + (float3(this.e4) * right_anti_dual.group5.xyz) + (right_anti_dual.group4.xyz.yzx * this.group1.zxy) + (this.group4.xyz.yzx * right_anti_dual.group1.zxy) - (right_anti_dual.group4.xyz.zxy * this.group1.yzx) - (this.group4.xyz.zxy * right_anti_dual.group1.yzx), 
+            (right_anti_dual_g7 * float3(this.scalar)) + (float3(right_anti_dual_g0[0]) * this.group7.xyz) + (float3(right_anti_dual_g1[3]) * this.group5.xyz) + (float3(this.e4) * other.group6.xyz) + (other.group7.yzx * this.group1.zxy) + (this.group4.yzx * right_anti_dual_g1.zxy) - (other.group7.zxy * this.group1.yzx) - (this.group4.zxy * right_anti_dual_g1.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.scalar) * this.group8.xyz) + (float3(right_anti_dual.e5) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual.group8.xyz) + (float3(this.e5) * right_anti_dual.group5.xyz) + (right_anti_dual.group1.yzx * this.group3.zxy) + (right_anti_dual.group3.zxy * this.group1.yzx) - (right_anti_dual.group1.zxy * this.group3.yzx) - (right_anti_dual.group3.yzx * this.group1.zxy), 
+            (right_anti_dual_g8 * float3(this.scalar)) + (float3(right_anti_dual_g0[0]) * this.group8.xyz) + (float3(other.e3215) * this.group5.xyz) + (float3(this.e5) * other.group6.xyz) + (right_anti_dual_g1.yzx * this.group3.zxy) + (right_anti_dual_g3.zxy * this.group1.yzx) - (right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g3.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e2 * this.e435) + (right_anti_dual.e5 * this.e423) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e425 * this.e3), (right_anti_dual.e3 * this.e415) + (right_anti_dual.e5 * this.e431) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e435 * this.e1), (right_anti_dual.e1 * this.e425) + (right_anti_dual.e5 * this.e412) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e415 * this.e2), -(right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12) - (right_anti_dual.e321 * this.e5)) + (float4(right_anti_dual.scalar) * this.group9) + (float4(this.scalar) * right_anti_dual.group9) + float4((right_anti_dual.group5.xyz * this.group3.www), right_anti_dual.e2 * this.e315) + float4((right_anti_dual.group8.xyz * this.group1.www), right_anti_dual.e3 * this.e125) + float4((right_anti_dual.group4.xyz.yzx * this.group3.zxy), right_anti_dual.e1 * this.e235) + float4((this.group4.xyz.yzx * right_anti_dual.group3.zxy), right_anti_dual.e5 * this.e321) - (this.group1.yzxz * float4(right_anti_dual.group6.zxy, right_anti_dual.e125)) - (this.group3.yzxx * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e23)) - float4((float3(this.e5) * right_anti_dual.group7.xyz), right_anti_dual.e31 * this.e25) - float4((this.group8.xyz * right_anti_dual.group1.www), right_anti_dual.e235 * this.e1) - float4((this.group4.xyz.zxy * right_anti_dual.group3.yzx), right_anti_dual.e12 * this.e35) - float4((right_anti_dual.group1.zxy * this.group6.yzx), right_anti_dual.e315 * this.e2), 
+            float4((right_anti_dual_g1[1] * this.e435) + (right_anti_dual_g3[3] * this.e23) + (right_anti_dual_g6[1] * this.e3) + (other.e3215 * this.e423), (right_anti_dual_g1[2] * this.e415) + (right_anti_dual_g3[3] * this.e31) + (right_anti_dual_g6[2] * this.e1) + (other.e3215 * this.e431), (right_anti_dual_g1[0] * this.e425) + (right_anti_dual_g3[3] * this.e12) + (right_anti_dual_g6[0] * this.e2) + (other.e3215 * this.e412), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12) - (right_anti_dual_g6[3] * this.e5)) + (right_anti_dual_g9 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * this.group9) + float4((right_anti_dual_g8 * this.group1.www), right_anti_dual_g1[2] * this.e125) + float4((other.group7.yzx * this.group3.zxy), right_anti_dual_g1[0] * this.e235) + float4((this.group4.yzx * right_anti_dual_g3.zxy), other.e3215 * this.e321) + float4((other.group6.xyz * this.group3.www), right_anti_dual_g1[1] * this.e315) - (this.group1.yzxz * float4(right_anti_dual_g6.zxy, right_anti_dual_g8[2])) - (this.group3.yzxx * float4(other.group7.zxy, other.e415)) - float4((right_anti_dual_g7 * float3(this.e5)), other.e425 * this.e25) - float4((this.group8.xyz * right_anti_dual_g1.www), right_anti_dual_g8[0] * this.e1) - float4((this.group4.zxy * right_anti_dual_g3.yzx), other.e435 * this.e35) - float4((right_anti_dual_g1.zxy * this.group6.yzx), right_anti_dual_g8[1] * this.e2), 
             /* e1234 */
-            (right_anti_dual.scalar * this.e1234) + (right_anti_dual.e321 * this.e4) + (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e1234 * this.scalar) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412) - (right_anti_dual.e4 * this.e321) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            (right_anti_dual_g10 * this.scalar) + (right_anti_dual_g0[0] * this.e1234) + (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3) + (right_anti_dual_g6[3] * this.e4) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321) - (other.e415 * this.e41) - (other.e425 * this.e42) - (other.e435 * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -8604,33 +6578,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Plan
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e1234)), 
             /* e1, e2, e3, e4 */
-            float4(this.group0.xy.xx, this.scalar, 0.0) * float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((right_anti_dual_g0.xyz * float3(this.group0.xx, this.scalar)), 0.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            right_anti_dual_g0[3] * this.scalar, 
             /* e15, e25, e35, e45 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)), right_anti_dual.e5 * this.e4), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.e4), 
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * right_anti_dual_g0.xyz, 
             /* e23, e31, e12 */
-            (right_anti_dual.group0.zxy * this.group1.yzx) - (right_anti_dual.group0.yzx * this.group1.zxy), 
+            (right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - float4((this.group3.www * right_anti_dual.group0.xyz), right_anti_dual.e1 * this.e23), 
+            float4(((this.group4.xyz * right_anti_dual_g0.www) - (right_anti_dual_g0.xyz * this.group3.www)), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)), 
             /* e423, e431, e412 */
-            (this.group4.xyz.yzx * right_anti_dual.group0.zxy) - (this.group4.xyz.zxy * right_anti_dual.group0.yzx), 
+            (this.group4.yzx * right_anti_dual_g0.zxy) - (this.group4.zxy * right_anti_dual_g0.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group5.xyz) + (right_anti_dual.group0.yzx * this.group3.zxy) - (right_anti_dual.group0.zxy * this.group3.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group5.xyz) + (right_anti_dual_g0.yzx * this.group3.zxy) - (right_anti_dual_g0.zxy * this.group3.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group0.wwwx * float4(this.group7.xyz, this.e235)) + float4((right_anti_dual.group0.yzx * this.group6.zxy), right_anti_dual.e2 * this.e315), 
+            (right_anti_dual_g0.wwwx * float4(this.group7.xyz, this.e235)) + float4((right_anti_dual_g0.zxy * this.group6.yzx * float3(-1.0)), (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321)) + float4((right_anti_dual_g0.yzx * this.group6.zxy), right_anti_dual_g0[1] * this.e315), 
             /* e1234 */
-            -(right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)
         );
     }
 }
@@ -8640,15 +6611,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Roun
 }
 public extension MultiVector {
     public MultiVector weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
+        float right_anti_dual_g1 = other.e4 * -1.0;
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215) + (this.e5 * right_anti_dual.e1234)), 
+            float2(0.0, (right_anti_dual_g1 * this.e5) + (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8666,9 +6633,9 @@ public extension MultiVector {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            right_anti_dual_g1 * this.scalar
         );
     }
 }
@@ -8690,35 +6657,30 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Sphe
 }
 public extension MultiVector {
     public MultiVector weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) + (this.e1234 * right_anti_dual.e5)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215) + (this.e1234 * other.e3215)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e5 */
-            this.scalar * right_anti_dual.e5, 
+            this.scalar * other.e3215, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * this.group1) - (float4(this.e5) * right_anti_dual.group0), 
+            (float4(other.e3215) * this.group1) - (right_anti_dual_g0 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e4) * this.group1.xyz), 
+            (float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group1.xyz), 
             /* e23, e31, e12 */
-            (this.group1.yzx * right_anti_dual.group0.zxy) - (this.group1.zxy * right_anti_dual.group0.yzx), 
+            (right_anti_dual_g0.zxy * this.group1.yzx) - (right_anti_dual_g0.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4((this.e15 * right_anti_dual.e4) + (this.e41 * right_anti_dual.e5), (this.e25 * right_anti_dual.e4) + (this.e42 * right_anti_dual.e5), (this.e35 * right_anti_dual.e4) + (this.e43 * right_anti_dual.e5), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) - (right_anti_dual.group0.xyzx * float4(this.group3.www, this.e23)), 
+            float4((right_anti_dual_g0[3] * this.e15) + (this.e41 * other.e3215), (right_anti_dual_g0[3] * this.e25) + (this.e42 * other.e3215), (right_anti_dual_g0[3] * this.e35) + (this.e43 * other.e3215), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * float4(this.group3.www, this.e23)), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group5.xyz) + (this.group4.xyz.yzx * right_anti_dual.group0.zxy) - (this.group4.xyz.zxy * right_anti_dual.group0.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group5.xyz) + (this.group4.yzx * right_anti_dual_g0.zxy) - (this.group4.zxy * right_anti_dual_g0.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group5.xyz) + (this.group3.zxy * right_anti_dual.group0.yzx) - (this.group3.yzx * right_anti_dual.group0.zxy), 
+            (float3(other.e3215) * this.group5.xyz) + (right_anti_dual_g0.yzx * this.group3.zxy) - (right_anti_dual_g0.zxy * this.group3.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(this.e425 * right_anti_dual.e3) - (this.e235 * right_anti_dual.e4), -(this.e435 * right_anti_dual.e1) - (this.e315 * right_anti_dual.e4), -(this.e415 * right_anti_dual.e2) - (this.e125 * right_anti_dual.e4), (this.e321 * right_anti_dual.e5) + (this.e125 * right_anti_dual.e3)) + (right_anti_dual.group0.yzxy * float4(this.group6.zxy, this.e315)) + float4((float3(right_anti_dual.e5) * this.group7.xyz), this.e235 * right_anti_dual.e1), 
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[2] * this.e125) + (this.e321 * other.e3215)) + (right_anti_dual_g0.yzxy * float4(this.group6.zxy, this.e315)) + float4((float3(other.e3215) * this.group7.xyz), right_anti_dual_g0[0] * this.e235), 
             /* e1234 */
-            -(this.e321 * right_anti_dual.e4) - (this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3)
+            -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)
         );
     }
 }
@@ -8728,39 +6690,33 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Vers
 }
 public extension MultiVector {
     public MultiVector weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * right_anti_dual.scalar, (this.e12345 * right_anti_dual.scalar) + (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215) + (this.e5 * right_anti_dual.e1234) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e423 * right_anti_dual.e15) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)), 
+            float2(right_anti_dual_g0[3] * this.scalar, (right_anti_dual_g0[3] * this.e12345) + (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[0] * this.e1) + (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4) - (right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[3]) * this.group1, 
             /* e5 */
-            this.e5 * right_anti_dual.scalar, 
+            right_anti_dual_g0[3] * this.e5, 
             /* e15, e25, e35, e45 */
-            (float4(this.scalar) * float4(right_anti_dual.group2.xyz, right_anti_dual.e45)) + (float4(right_anti_dual.scalar) * this.group3), 
+            (float4(right_anti_dual_g0[3]) * this.group3) + (float4(this.scalar) * float4(right_anti_dual_g2.xyz, right_anti_dual_g1[3])), 
             /* e41, e42, e43 */
-            (float3(this.scalar) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.scalar) * this.group4.xyz), 
+            (float3(right_anti_dual_g0[3]) * this.group4.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz), 
             /* e23, e31, e12 */
-            (float3(this.scalar) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group5.xyz), 
+            (float3(right_anti_dual_g0[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz), 
             /* e415, e425, e435, e321 */
-            float4((this.e5 * right_anti_dual.e41) + (this.e415 * right_anti_dual.scalar), (this.e5 * right_anti_dual.e42) + (this.e425 * right_anti_dual.scalar), (this.e5 * right_anti_dual.e43) + (this.e435 * right_anti_dual.scalar), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + float4((this.group1.www * right_anti_dual.group2.xyz), this.e321 * right_anti_dual.scalar) - (this.group1.xyzx * right_anti_dual.group1.wwwx), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g0[3] * this.e415), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g0[3] * this.e425), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g0[3] * this.e435), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((right_anti_dual_g2.xyz * this.group1.www), right_anti_dual_g0[3] * this.e321) - (right_anti_dual_g1.wwwx * this.group1.xyzx), 
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group7.xyz) + (this.group1.zxy * right_anti_dual.group0.yzx) - (this.group1.yzx * right_anti_dual.group0.zxy), 
+            (float3(right_anti_dual_g0[3]) * this.group7.xyz) + (float3(this.e4) * right_anti_dual_g1.xyz) + (right_anti_dual_g0.yzx * this.group1.zxy) - (right_anti_dual_g0.zxy * this.group1.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group8.xyz) + (this.group1.yzx * right_anti_dual.group2.zxy) - (this.group1.zxy * right_anti_dual.group2.yzx), 
+            (float3(right_anti_dual_g0[3]) * this.group8.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group1.yzx) - (right_anti_dual_g2.yzx * this.group1.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e35 * right_anti_dual.e42) + (this.e45 * right_anti_dual.e23) + (this.e23 * right_anti_dual.e45) + (this.e4235 * right_anti_dual.scalar), (this.e15 * right_anti_dual.e43) + (this.e45 * right_anti_dual.e31) + (this.e31 * right_anti_dual.e45) + (this.e4315 * right_anti_dual.scalar), (this.e25 * right_anti_dual.e41) + (this.e45 * right_anti_dual.e12) + (this.e12 * right_anti_dual.e45) + (this.e4125 * right_anti_dual.scalar), -(this.e15 * right_anti_dual.e23) - (this.e25 * right_anti_dual.e31) - (this.e35 * right_anti_dual.e12) - (this.e12 * right_anti_dual.e35)) + (float4(this.scalar) * right_anti_dual.group3) + float4((this.group4.xyz.yzx * right_anti_dual.group2.zxy), this.e3215 * right_anti_dual.scalar) - (right_anti_dual.group2.yzxx * float4(this.group4.xyz.zxy, this.e23)) - float4((this.group3.yzx * right_anti_dual.group0.zxy), this.e31 * right_anti_dual.e25), 
+            float4((right_anti_dual_g0[1] * this.e35) + (right_anti_dual_g0[3] * this.e4235) + (right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23), (right_anti_dual_g0[2] * this.e15) + (right_anti_dual_g0[3] * this.e4315) + (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31), (right_anti_dual_g0[0] * this.e25) + (right_anti_dual_g0[3] * this.e4125) + (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[2] * this.e12)) + (right_anti_dual_g3 * float4(this.scalar)) + float4((this.group4.yzx * right_anti_dual_g2.zxy), right_anti_dual_g0[3] * this.e3215) - (right_anti_dual_g2.yzxx * float4(this.group4.zxy, this.e23)) - float4((right_anti_dual_g0.zxy * this.group3.yzx), right_anti_dual_g2[1] * this.e31), 
             /* e1234 */
-            (this.scalar * right_anti_dual.e1234) + (this.e1234 * right_anti_dual.scalar) - (this.e41 * right_anti_dual.e23) - (this.e42 * right_anti_dual.e31) - (this.e43 * right_anti_dual.e12) - (this.e23 * right_anti_dual.e41) - (this.e31 * right_anti_dual.e42) - (this.e12 * right_anti_dual.e43)
+            (right_anti_dual_g0[3] * this.e1234) + (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)
         );
     }
 }
@@ -8770,39 +6726,33 @@ public MultiVector operator /(WeightExpansionInfixPartial<MultiVector> lhs, Vers
 }
 public extension MultiVector {
     public MultiVector weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (this.scalar * right_anti_dual.e12345) + (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) + (this.e1234 * right_anti_dual.e5) - (this.e15 * right_anti_dual.e423) - (this.e25 * right_anti_dual.e431) - (this.e35 * right_anti_dual.e412) - (this.e45 * right_anti_dual.e321) - (this.e41 * right_anti_dual.e235) - (this.e42 * right_anti_dual.e315) - (this.e43 * right_anti_dual.e125) - (this.e23 * right_anti_dual.e415) - (this.e31 * right_anti_dual.e425) - (this.e12 * right_anti_dual.e435)), 
+            float2(0.0, (right_anti_dual_g0[3] * this.scalar) + (right_anti_dual_g2[3] * this.e1234) + (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3, 
+            right_anti_dual_g3 * float4(this.scalar), 
             /* e5 */
-            this.scalar * right_anti_dual.e5, 
+            right_anti_dual_g2[3] * this.scalar, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * this.group1) - (float4(this.e5) * right_anti_dual.group3), 
+            (float4(right_anti_dual_g2[3]) * this.group1) - (right_anti_dual_g3 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group1.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g3[3]) * this.group1.xyz), 
             /* e23, e31, e12 */
-            (this.group1.yzx * right_anti_dual.group3.zxy) - (this.group1.zxy * right_anti_dual.group3.yzx), 
+            (right_anti_dual_g3.zxy * this.group1.yzx) - (right_anti_dual_g3.yzx * this.group1.zxy), 
             /* e415, e425, e435, e321 */
-            float4((this.e15 * right_anti_dual.e4) + (this.e41 * right_anti_dual.e5), (this.e25 * right_anti_dual.e4) + (this.e42 * right_anti_dual.e5), (this.e35 * right_anti_dual.e4) + (this.e43 * right_anti_dual.e5), -(this.e31 * right_anti_dual.e2) - (this.e12 * right_anti_dual.e3)) + (float4(this.scalar) * right_anti_dual.group1) - (right_anti_dual.group3.xyzx * float4(this.group3.www, this.e23)), 
+            float4((right_anti_dual_g2[3] * this.e41) + (right_anti_dual_g3[3] * this.e15), (right_anti_dual_g2[3] * this.e42) + (right_anti_dual_g3[3] * this.e25), (right_anti_dual_g2[3] * this.e43) + (right_anti_dual_g3[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + (right_anti_dual_g1 * float4(this.scalar)) - (right_anti_dual_g3.xyzx * float4(this.group3.www, this.e23)), 
             /* e423, e431, e412 */
-            (float3(this.scalar) * right_anti_dual.group0.xyz) + (float3(right_anti_dual.e4) * this.group5.xyz) + (this.group4.xyz.yzx * right_anti_dual.group3.zxy) - (this.group4.xyz.zxy * right_anti_dual.group3.yzx), 
+            (float3(right_anti_dual_g3[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz) + (this.group4.yzx * right_anti_dual_g3.zxy) - (this.group4.zxy * right_anti_dual_g3.yzx), 
             /* e235, e315, e125 */
-            (float3(this.scalar) * right_anti_dual.group2.xyz) + (float3(right_anti_dual.e5) * this.group5.xyz) + (this.group3.zxy * right_anti_dual.group3.yzx) - (this.group3.yzx * right_anti_dual.group3.zxy), 
+            (float3(right_anti_dual_g2[3]) * this.group5.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group3.zxy) - (right_anti_dual_g3.zxy * this.group3.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            (this.group6.zxyw * float4(right_anti_dual.group3.yzx, right_anti_dual.e5)) + float4((this.group7.xyz * right_anti_dual.group2.www), this.e235 * right_anti_dual.e1) + float4((this.group1.zxy * right_anti_dual.group1.yzx), this.e315 * right_anti_dual.e2) + float4((this.group1.www * right_anti_dual.group2.xyz), this.e125 * right_anti_dual.e3) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group1.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((this.group8.xyz * right_anti_dual.group3.www), this.e1 * right_anti_dual.e235) - float4((this.group6.yzx * right_anti_dual.group3.zxy), this.e3 * right_anti_dual.e125), 
+            (this.group6.zxyw * float4(right_anti_dual_g3.yzx, right_anti_dual_g2[3])) + float4((this.group7.xyz * right_anti_dual_g2.www), right_anti_dual_g3[0] * this.e235) + float4((right_anti_dual_g1.yzx * this.group1.zxy), right_anti_dual_g3[1] * this.e315) + float4((right_anti_dual_g2.xyz * this.group1.www), right_anti_dual_g3[2] * this.e125) - (float4(this.e5) * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3])) - (this.group1.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((this.group8.xyz * right_anti_dual_g3.www), right_anti_dual_g2[0] * this.e1) - float4((right_anti_dual_g3.zxy * this.group6.yzx), right_anti_dual_g2[2] * this.e3), 
             /* e1234 */
-            (this.e1 * right_anti_dual.e423) + (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412) + (this.e4 * right_anti_dual.e321) - (this.e321 * right_anti_dual.e4) - (this.e423 * right_anti_dual.e1) - (this.e431 * right_anti_dual.e2) - (this.e412 * right_anti_dual.e3)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321)
         );
     }
 }
@@ -8830,7 +6780,7 @@ public extension Plane {
     public Plane weight_expansion(CircleRotor other) {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(float4(other.group2.xyz, other.e12345 * -1.0)[3]) * this.group0
+            float4(other.e12345 * -1.0) * this.group0
         );
     }
 }
@@ -8840,19 +6790,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Plane> lhs, DipoleInver
 }
 public extension Plane {
     public AntiScalar weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125)
+            (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (other.e1234 * this.e3215)
         );
     }
 }
@@ -8874,15 +6815,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Plane> lhs, Flector rhs
 }
 public extension Plane {
     public AntiScalar weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125)
+            (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125)
         );
     }
 }
@@ -8894,7 +6830,7 @@ public extension Plane {
     public Plane weight_expansion(Motor other) {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(float4(other.group0.xyz, other.e12345 * -1.0)[3]) * this.group0
+            float4(other.e12345 * -1.0) * this.group0
         );
     }
 }
@@ -8904,33 +6840,10 @@ public MultiVector operator /(WeightExpansionInfixPartial<Plane> lhs, MultiVecto
 }
 public extension Plane {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -8948,7 +6861,7 @@ public extension Plane {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(other.group0.yx[0] * -1.0) * this.group0, 
             /* e1234 */
             0.0
         );
@@ -8960,13 +6873,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Plane> lhs, Plane rhs) 
 }
 public extension Plane {
     public AntiScalar weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125)
+            (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125)
         );
     }
 }
@@ -8976,15 +6886,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Plane> lhs, Sphere rhs)
 }
 public extension Plane {
     public AntiScalar weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4)
+            (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215)
         );
     }
 }
@@ -8996,7 +6901,7 @@ public extension Plane {
     public Plane weight_expansion(VersorEven other) {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(float4(other.group0.xyz, other.e12345 * -1.0)[3]) * this.group0
+            float4(other.e12345 * -1.0) * this.group0
         );
     }
 }
@@ -9006,19 +6911,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Plane> lhs, VersorOdd r
 }
 public extension Plane {
     public AntiScalar weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4)
+            (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215)
         );
     }
 }
@@ -9032,19 +6928,14 @@ public Sphere operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiCircle
 }
 public extension RoundPoint {
     public Sphere weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group0.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)), 
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g2[1] * this.e2) - (right_anti_dual_g2[2] * this.e3)) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group0.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -9054,23 +6945,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiD
 }
 public extension RoundPoint {
     public CircleRotor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group0.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (other.e423 * this.e5), (right_anti_dual_g2[1] * this.e4) + (other.e431 * this.e5), (right_anti_dual_g2[2] * this.e4) + (other.e412 * this.e5), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e12345 */
-            float4(right_anti_dual.e25 * this.e3 * -1.0, right_anti_dual.e35 * this.e1 * -1.0, right_anti_dual.e15 * this.e2 * -1.0, (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4)) + (float4(this.e5) * float4(right_anti_dual.group1.xyz, right_anti_dual.e1234)) + (this.group0.yzxx * float4(right_anti_dual.group2.zxy, right_anti_dual.e4235))
+            (float4(this.e5) * float4(right_anti_dual_g1.xyz, right_anti_dual_g2[3])) + (this.group0.yzxx * float4(right_anti_dual_g2.zxy, right_anti_dual_g3[0])) + float4((right_anti_dual_g2.yzx * this.group0.zxy * float3(-1.0)), (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4))
         );
     }
 }
@@ -9092,15 +6976,12 @@ public Line operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiFlatPoin
 }
 public extension RoundPoint {
     public Line weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Line(
             /* e415, e425, e435 */
-            (float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e45) * this.group0.xyz), 
+            (float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group0.xyz), 
             /* e235, e315, e125 */
-            (right_anti_dual.group0.zxy * this.group0.yzx) - (right_anti_dual.group0.yzx * this.group0.zxy)
+            (right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)
         );
     }
 }
@@ -9110,17 +6991,13 @@ public Motor operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiFlector
 }
 public extension RoundPoint {
     public Motor weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.e45 * this.e1 * -1.0, right_anti_dual.e45 * this.e2 * -1.0, right_anti_dual.e45 * this.e3 * -1.0, (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4)) + (this.group0.wwwx * float4(right_anti_dual.group0.xyz, right_anti_dual.e4235)), 
+            (this.group0.wwwx * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[0])) + float4((this.group0.xyz * right_anti_dual_g0.www * float3(-1.0)), (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group0.zxy * this.group0.yzx) - (right_anti_dual.group0.yzx * this.group0.zxy)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)), 0.0)
         );
     }
 }
@@ -9130,15 +7007,11 @@ public Plane operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiLine rh
 }
 public extension RoundPoint {
     public Plane weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (this.group0.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -9148,17 +7021,13 @@ public Flector operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiMotor
 }
 public extension RoundPoint {
     public Flector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * this.group0, 
+            float4(right_anti_dual_g1[3]) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (this.group0.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -9168,13 +7037,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiPl
 }
 public extension RoundPoint {
     public AntiScalar weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4)
         );
     }
 }
@@ -9184,15 +7050,12 @@ public RoundPoint operator /(WeightExpansionInfixPartial<RoundPoint> lhs, AntiSc
 }
 public extension RoundPoint {
     public RoundPoint weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e5 */
-            this.e5 * right_anti_dual.scalar
+            right_anti_dual_g0 * this.e5
         );
     }
 }
@@ -9202,21 +7065,14 @@ public Circle operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Circle rhs
 }
 public extension RoundPoint {
     public Circle weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Circle(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group0.xyzx), 
+            float4((other.e423 * this.e5) + (other.e235 * this.e4), (other.e431 * this.e5) + (other.e315 * this.e4), (other.e412 * this.e5) + (other.e125 * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.xyz.zxy * this.group0.yzx) - (right_anti_dual.group2.xyz.yzx * this.group0.zxy)
+            (float3(this.e5) * right_anti_dual_g1.xyz) + (other.group2.zxy * this.group0.yzx) - (other.group2.yzx * this.group0.zxy)
         );
     }
 }
@@ -9226,23 +7082,17 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<RoundPoint> lh
 }
 public extension RoundPoint {
     public AntiDipoleInversion weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group0.zxy) - (right_anti_dual.group0.xyz.zxy * this.group0.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group0.zxy) - (other.group0.zxy * this.group0.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group0.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (other.e423 * this.e5), (right_anti_dual_g2[1] * this.e4) + (other.e431 * this.e5), (right_anti_dual_g2[2] * this.e4) + (other.e412 * this.e5), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e4 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group0.yzx) - (right_anti_dual.group2.yzx * this.group0.zxy)), right_anti_dual.scalar * this.e4), 
+            float4(((float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group0.yzx) - (right_anti_dual_g2.yzx * this.group0.zxy)), right_anti_dual_g2[3] * this.e4), 
             /* e1, e2, e3, e5 */
-            float4(right_anti_dual.scalar) * float4(this.group0.xyz, this.e5)
+            float4(right_anti_dual_g2[3]) * float4(this.group0.xyz, this.e5)
         );
     }
 }
@@ -9252,19 +7102,14 @@ public Sphere operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Dipole rhs
 }
 public extension RoundPoint {
     public Sphere weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e321 * this.e5) - (right_anti_dual.e125 * this.e3)) - (this.group0.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((float3(this.e5) * right_anti_dual.group0.xyz), right_anti_dual.e235 * this.e1), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g1[1] * this.e3), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g1[2] * this.e1), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g1[0] * this.e2), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group0.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * float3(this.e5)), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -9274,25 +7119,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<RoundPoint> lhs, D
 }
 public extension RoundPoint {
     public DipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group0.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g2[3]) * this.group0.xyz), 
             /* e23, e31, e12, e45 */
-            (right_anti_dual.group3.zxyw * this.group0.yzxw) - float4((right_anti_dual.group3.yzx * this.group0.zxy), right_anti_dual.e4 * this.e5), 
+            (right_anti_dual_g3.zxyw * this.group0.yzxw) - float4((right_anti_dual_g3.yzx * this.group0.zxy), right_anti_dual_g2[3] * this.e5), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.e1 * this.e5 * -1.0, right_anti_dual.e2 * this.e5 * -1.0, right_anti_dual.e3 * this.e5 * -1.0, (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)) + (this.group0.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e423)), 
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g3.xyz, (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)) * float4(-1.0, -1.0, -1.0, 1.0)) + (this.group0.xyzx * float4(right_anti_dual_g3.www, right_anti_dual_g0[0])), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group0.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g2[1] * this.e2) - (right_anti_dual_g2[2] * this.e3)) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group0.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0]))
         );
     }
 }
@@ -9302,19 +7141,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<RoundPoint> lhs, DualNu
 }
 public extension RoundPoint {
     public VersorEven weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), right_anti_dual.e3215 * this.e4), 
+            float4(float3(0.0), right_anti_dual_g0[0] * this.e4), 
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), right_anti_dual.scalar * this.e5), 
+            float4(float3(0.0), right_anti_dual_g0[1] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group0
+            float4(right_anti_dual_g0[1]) * this.group0
         );
     }
 }
@@ -9324,15 +7160,12 @@ public Sphere operator /(WeightExpansionInfixPartial<RoundPoint> lhs, FlatPoint 
 }
 public extension RoundPoint {
     public Sphere weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e4) * right_anti_dual.group0.xyz), -(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)), 
+            float4((float3(this.e4) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)), 
             /* e1234 */
-            right_anti_dual.e321 * this.e4
+            right_anti_dual_g0[3] * this.e4
         );
     }
 }
@@ -9342,21 +7175,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<RoundPoint> lhs, F
 }
 public extension RoundPoint {
     public DipoleInversion weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group1.xyz, 
+            float3(this.e4) * right_anti_dual_g1.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group1.zxy * this.group0.yzx) - (right_anti_dual.group1.yzx * this.group0.zxy)), right_anti_dual.e5 * this.e4), 
+            float4(((right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy)), right_anti_dual_g1[3] * this.e4), 
             /* e15, e25, e35, e1234 */
-            float4(((float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group1.xyz)), right_anti_dual.e321 * this.e4), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g1.xyz)), right_anti_dual_g0[3] * this.e4), 
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e4) * right_anti_dual.group0.xyz), -(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5))
+            float4((float3(this.e4) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5))
         );
     }
 }
@@ -9366,19 +7195,13 @@ public Circle operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Line rhs) 
 }
 public extension RoundPoint {
     public Circle weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return Circle(
             /* e423, e431, e412 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(this.e4) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)), 
+            float4((float3(this.e4) * other.group1.xyz), -(other.e415 * this.e1) - (other.e425 * this.e2) - (other.e435 * this.e3)), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.xyz.zxy * this.group0.yzx) - (right_anti_dual.group1.xyz.yzx * this.group0.zxy)
+            (float3(this.e5) * other.group0.xyz) + (other.group1.zxy * this.group0.yzx) - (other.group1.yzx * this.group0.zxy)
         );
     }
 }
@@ -9388,21 +7211,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Motor 
 }
 public extension RoundPoint {
     public VersorEven weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.e4) * float4(right_anti_dual.group0.xyz, right_anti_dual.e3215), 
+            float4(this.e4) * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3]), 
             /* e415, e425, e435, e321 */
-            float4((float3(this.e4) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)), 
+            float4((float3(this.e4) * right_anti_dual_g1.xyz), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.zxy * this.group0.yzx) - (right_anti_dual.group1.yzx * this.group0.zxy)), right_anti_dual.scalar * this.e5), 
+            float4(((float3(this.e5) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group0
+            float4(right_anti_dual_g0[3]) * this.group0
         );
     }
 }
@@ -9412,53 +7231,35 @@ public MultiVector operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Multi
 }
 public extension RoundPoint {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) + (right_anti_dual.e1234 * this.e5)), 
+            float2(0.0, (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) + (right_anti_dual_g9[3] * this.e4) - (other.e4 * this.e5)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[0]) * this.group0, 
             /* e5 */
-            right_anti_dual.scalar * this.e5, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * this.group0) - (float4(this.e5) * right_anti_dual.group1), 
+            (float4(other.e3215) * this.group0) - (right_anti_dual_g1 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) - (float3(right_anti_dual.e4) * this.group0.xyz), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) - (float3(right_anti_dual_g1[3]) * this.group0.xyz), 
             /* e23, e31, e12 */
-            (right_anti_dual.group1.zxy * this.group0.yzx) - (right_anti_dual.group1.yzx * this.group0.zxy), 
+            (right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e15 * this.e4) + (right_anti_dual.e41 * this.e5), (right_anti_dual.e25 * this.e4) + (right_anti_dual.e42 * this.e5), (right_anti_dual.e35 * this.e4) + (right_anti_dual.e43 * this.e5), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (this.group0.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e23)), 
+            float4((other.e423 * this.e5) + (other.e235 * this.e4), (other.e431 * this.e5) + (other.e315 * this.e4), (other.e412 * this.e5) + (other.e125 * this.e4), -(other.e425 * this.e2) - (other.e435 * this.e3)) - (this.group0.xyzx * float4(float3(other.e321 * -1.0), other.e415)), 
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group5.xyz) + (right_anti_dual.group4.xyz.yzx * this.group0.zxy) - (right_anti_dual.group4.xyz.zxy * this.group0.yzx), 
+            (float3(this.e4) * other.group6.xyz) + (other.group7.yzx * this.group0.zxy) - (other.group7.zxy * this.group0.yzx), 
             /* e235, e315, e125 */
-            (float3(this.e5) * right_anti_dual.group5.xyz) + (right_anti_dual.group3.zxy * this.group0.yzx) - (right_anti_dual.group3.yzx * this.group0.zxy), 
+            (float3(this.e5) * other.group6.xyz) + (other.group8.zxy * this.group0.yzx) - (other.group8.yzx * this.group0.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e321 * this.e5) - (right_anti_dual.e125 * this.e3)) - (this.group0.yzxy * float4(right_anti_dual.group6.zxy, right_anti_dual.e315)) - float4((float3(this.e5) * right_anti_dual.group7.xyz), right_anti_dual.e235 * this.e1), 
+            float4((right_anti_dual_g8[0] * this.e4) + (right_anti_dual_g6[1] * this.e3), (right_anti_dual_g8[1] * this.e4) + (right_anti_dual_g6[2] * this.e1), (right_anti_dual_g8[2] * this.e4) + (right_anti_dual_g6[0] * this.e2), -(right_anti_dual_g8[2] * this.e3) - (right_anti_dual_g6[3] * this.e5)) - (this.group0.yzxy * float4(right_anti_dual_g6.zxy, right_anti_dual_g8[1])) - float4((right_anti_dual_g7 * float3(this.e5)), right_anti_dual_g8[0] * this.e1), 
             /* e1234 */
-            (right_anti_dual.e321 * this.e4) + (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3)
+            (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3) + (right_anti_dual_g6[3] * this.e4)
         );
     }
 }
@@ -9468,17 +7269,14 @@ public Dipole operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Plane rhs)
 }
 public extension RoundPoint {
     public Dipole weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Dipole(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * right_anti_dual_g0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group0.zxy * this.group0.yzx) - (right_anti_dual.group0.yzx * this.group0.zxy)), right_anti_dual.e5 * this.e4), 
+            float4(((right_anti_dual_g0.zxy * this.group0.yzx) - (right_anti_dual_g0.yzx * this.group0.zxy)), right_anti_dual_g0[3] * this.e4), 
             /* e15, e25, e35 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)
+            (float3(right_anti_dual_g0[3]) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)
         );
     }
 }
@@ -9488,15 +7286,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<RoundPoint> lhs, RoundP
 }
 public extension RoundPoint {
     public AntiScalar weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e1 * right_anti_dual.e4235) + (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215) + (this.e5 * right_anti_dual.e1234)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4) - (other.e4 * this.e5)
         );
     }
 }
@@ -9506,19 +7299,14 @@ public Dipole operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Sphere rhs
 }
 public extension RoundPoint {
     public Dipole weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return Dipole(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e4) * this.group0.xyz), 
+            (float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group0.xyz), 
             /* e23, e31, e12, e45 */
-            float4((right_anti_dual.group0.zxy * this.group0.yzx), right_anti_dual.e5 * this.e4) - (right_anti_dual.group0.yzxw * float4(this.group0.zxy, this.e5)), 
+            float4((right_anti_dual_g0.zxy * this.group0.yzx), this.e4 * other.e3215) - (right_anti_dual_g0.yzxw * float4(this.group0.zxy, this.e5)), 
             /* e15, e25, e35 */
-            (float3(right_anti_dual.e5) * this.group0.xyz) - (float3(this.e5) * right_anti_dual.group0.xyz)
+            (float3(other.e3215) * this.group0.xyz) - (float3(this.e5) * right_anti_dual_g0.xyz)
         );
     }
 }
@@ -9528,25 +7316,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<RoundPoint> lhs, Versor
 }
 public extension RoundPoint {
     public VersorEven weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.e2 * right_anti_dual.e43 * -1.0, this.e3 * right_anti_dual.e41 * -1.0, this.e1 * right_anti_dual.e42 * -1.0, (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215) + (this.e5 * right_anti_dual.e1234)) + (this.group0.zxyx * float4(right_anti_dual.group0.yzx, right_anti_dual.e4235)) + (this.group0.wwwy * float4(right_anti_dual.group1.xyz, right_anti_dual.e4315)), 
+            (this.group0.zxyx * float4(right_anti_dual_g0.yzx, right_anti_dual_g3[0])) + (this.group0.wwwy * float4(right_anti_dual_g1.xyz, right_anti_dual_g3[1])) + float4((right_anti_dual_g0.zxy * this.group0.yzx * float3(-1.0)), (right_anti_dual_g2[3] * this.e5) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4)), 
             /* e415, e425, e435, e321 */
-            float4((this.e4 * right_anti_dual.e15) + (this.e5 * right_anti_dual.e41), (this.e4 * right_anti_dual.e25) + (this.e5 * right_anti_dual.e42), (this.e4 * right_anti_dual.e35) + (this.e5 * right_anti_dual.e43), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) - (this.group0.xyzx * right_anti_dual.group1.wwwx), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group0.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (this.group0.yzx * right_anti_dual.group2.zxy) - (this.group0.zxy * right_anti_dual.group2.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group0.yzx) - (right_anti_dual_g2.yzx * this.group0.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group0
+            float4(right_anti_dual_g0[3]) * this.group0
         );
     }
 }
@@ -9556,25 +7338,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<RoundPoint> lhs, V
 }
 public extension RoundPoint {
     public DipoleInversion weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group0.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g3[3]) * this.group0.xyz), 
             /* e23, e31, e12, e45 */
-            (this.group0.yzxw * float4(right_anti_dual.group3.zxy, right_anti_dual.e5)) - float4((this.group0.zxy * right_anti_dual.group3.yzx), this.e5 * right_anti_dual.e4), 
+            (this.group0.yzxw * float4(right_anti_dual_g3.zxy, right_anti_dual_g2[3])) - float4((right_anti_dual_g3.yzx * this.group0.zxy), right_anti_dual_g3[3] * this.e5), 
             /* e15, e25, e35, e1234 */
-            float4(this.e5 * right_anti_dual.e1 * -1.0, this.e5 * right_anti_dual.e2 * -1.0, this.e5 * right_anti_dual.e3 * -1.0, (this.e2 * right_anti_dual.e431) + (this.e3 * right_anti_dual.e412) + (this.e4 * right_anti_dual.e321)) + (this.group0.xyzx * float4(right_anti_dual.group2.www, right_anti_dual.e423)), 
+            (float4(this.e5, this.e5, this.e5, 1.0) * float4(right_anti_dual_g3.xyz, (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)) * float4(-1.0, -1.0, -1.0, 1.0)) + (this.group0.xyzx * float4(right_anti_dual_g2.www, right_anti_dual_g0[0])), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.e3 * right_anti_dual.e425) + (this.e4 * right_anti_dual.e235), (this.e1 * right_anti_dual.e435) + (this.e4 * right_anti_dual.e315), (this.e2 * right_anti_dual.e415) + (this.e4 * right_anti_dual.e125), -(this.e3 * right_anti_dual.e125) - (this.e5 * right_anti_dual.e321)) - (this.group0.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)) - float4((float3(this.e5) * right_anti_dual.group0.xyz), this.e2 * right_anti_dual.e315)
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g1[3] * this.e5) - (right_anti_dual_g2[2] * this.e3)) - (this.group0.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])) - float4((float3(this.e5) * right_anti_dual_g0.xyz), right_anti_dual_g2[1] * this.e2)
         );
     }
 }
@@ -9588,21 +7364,13 @@ public CircleRotor operator /(WeightExpansionInfixPartial<Scalar> lhs, AntiCircl
 }
 public extension Scalar {
     public CircleRotor weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e12345 */
-            float4(this.scalar) * right_anti_dual.group2
+            float4(this.scalar) * other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -9612,25 +7380,15 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<Scalar> lhs, AntiD
 }
 public extension Scalar {
     public DipoleInversion weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group3
+            float4(this.scalar) * other.group3 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -9664,17 +7422,11 @@ public Flector operator /(WeightExpansionInfixPartial<Scalar> lhs, AntiFlector r
 }
 public extension Scalar {
     public Flector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -9684,17 +7436,11 @@ public Line operator /(WeightExpansionInfixPartial<Scalar> lhs, AntiLine rhs) {
 }
 public extension Scalar {
     public Line weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
         return Line(
             /* e415, e425, e435 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group1.xyz
+            float3(this.scalar) * other.group1.xyz * float3(-1.0)
         );
     }
 }
@@ -9704,17 +7450,11 @@ public Motor operator /(WeightExpansionInfixPartial<Scalar> lhs, AntiMotor rhs) 
 }
 public extension Scalar {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -9748,21 +7488,13 @@ public Dipole operator /(WeightExpansionInfixPartial<Scalar> lhs, Circle rhs) {
 }
 public extension Scalar {
     public Dipole weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
         return Dipole(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35 */
-            float3(this.scalar) * right_anti_dual.group2.xyz
+            float3(this.scalar) * other.group2.xyz
         );
     }
 }
@@ -9772,21 +7504,13 @@ public AntiCircleRotor operator /(WeightExpansionInfixPartial<Scalar> lhs, Circl
 }
 public extension Scalar {
     public AntiCircleRotor weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return AntiCircleRotor(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, scalar */
-            float4(this.scalar) * right_anti_dual.group2
+            float4(this.scalar) * other.group2 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -9796,21 +7520,13 @@ public Circle operator /(WeightExpansionInfixPartial<Scalar> lhs, Dipole rhs) {
 }
 public extension Scalar {
     public Circle weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
         return Circle(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group2.xyz
+            float3(this.scalar) * other.group2.xyz * float3(-1.0)
         );
     }
 }
@@ -9820,25 +7536,15 @@ public AntiDipoleInversion operator /(WeightExpansionInfixPartial<Scalar> lhs, D
 }
 public extension Scalar {
     public AntiDipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e4 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group3
+            float4(this.scalar) * other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -9872,17 +7578,11 @@ public AntiFlector operator /(WeightExpansionInfixPartial<Scalar> lhs, Flector r
 }
 public extension Scalar {
     public AntiFlector weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -9892,17 +7592,11 @@ public AntiLine operator /(WeightExpansionInfixPartial<Scalar> lhs, Line rhs) {
 }
 public extension Scalar {
     public AntiLine weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return AntiLine(
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e15, e25, e35 */
-            float3(this.scalar) * right_anti_dual.group1.xyz
+            float3(this.scalar) * other.group1.xyz
         );
     }
 }
@@ -9912,17 +7606,11 @@ public AntiMotor operator /(WeightExpansionInfixPartial<Scalar> lhs, Motor rhs) 
 }
 public extension Scalar {
     public AntiMotor weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e3215 */
-            float4(this.scalar) * right_anti_dual.group1
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -9932,53 +7620,29 @@ public MultiVector operator /(WeightExpansionInfixPartial<Scalar> lhs, MultiVect
 }
 public extension Scalar {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar) * right_anti_dual.group0.xy, 
+            float2(this.scalar) * other.group0.yx * float2(-1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            other.e3215 * this.scalar, 
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group3, 
+            float4(this.scalar) * float4(other.group8.xyz, other.e321 * -1.0), 
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group4.xyz, 
+            float3(this.scalar) * other.group7.xyz, 
             /* e23, e31, e12 */
-            float3(this.scalar) * right_anti_dual.group5.xyz, 
+            float3(this.scalar) * other.group6.xyz, 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group6, 
+            float4(this.scalar) * float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group7.xyz, 
+            float3(this.scalar) * other.group4.xyz * float3(-1.0), 
             /* e235, e315, e125 */
-            float3(this.scalar) * right_anti_dual.group8.xyz, 
+            float3(this.scalar) * other.group3.xyz * float3(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group9, 
+            float4(this.scalar) * float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            right_anti_dual.e1234 * this.scalar
+            other.e4 * this.scalar * -1.0
         );
     }
 }
@@ -10000,17 +7664,11 @@ public Sphere operator /(WeightExpansionInfixPartial<Scalar> lhs, RoundPoint rhs
 }
 public extension Scalar {
     public Sphere weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            this.scalar * right_anti_dual.e1234
+            other.e4 * this.scalar * -1.0
         );
     }
 }
@@ -10032,17 +7690,11 @@ public RoundPoint operator /(WeightExpansionInfixPartial<Scalar> lhs, Sphere rhs
 }
 public extension Scalar {
     public RoundPoint weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar
+            this.scalar * other.e3215
         );
     }
 }
@@ -10052,25 +7704,15 @@ public VersorOdd operator /(WeightExpansionInfixPartial<Scalar> lhs, VersorEven 
 }
 public extension Scalar {
     public VersorOdd weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group3
+            float4(this.scalar) * float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -10080,25 +7722,15 @@ public VersorEven operator /(WeightExpansionInfixPartial<Scalar> lhs, VersorOdd 
 }
 public extension Scalar {
     public VersorEven weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            float4(this.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.scalar) * right_anti_dual.group2, 
+            float4(this.scalar) * float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3
+            float4(this.scalar) * float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -10136,15 +7768,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Sphere> lhs, AntiScalar rhs
 }
 public extension Sphere {
     public Sphere weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g0 * this.e1234
         );
     }
 }
@@ -10154,19 +7783,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Sphere> lhs, CircleRotor rh
 }
 public extension Sphere {
     public Sphere weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g2[3]) * this.group0, 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g2[3] * this.e1234
         );
     }
 }
@@ -10176,19 +7798,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Sphere> lhs, DipoleInve
 }
 public extension Sphere {
     public AntiScalar weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)
+            (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e1234) + (other.e1234 * this.e3215)
         );
     }
 }
@@ -10198,15 +7811,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Sphere> lhs, DualNum rhs) {
 }
 public extension Sphere {
     public Sphere weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g0[1] * this.e1234
         );
     }
 }
@@ -10216,15 +7826,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Sphere> lhs, Flector rh
 }
 public extension Sphere {
     public AntiScalar weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)
+            (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e1234)
         );
     }
 }
@@ -10234,17 +7839,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Sphere> lhs, Motor rhs) {
 }
 public extension Sphere {
     public Sphere weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g0[3] * this.e1234
         );
     }
 }
@@ -10254,33 +7854,11 @@ public MultiVector operator /(WeightExpansionInfixPartial<Sphere> lhs, MultiVect
 }
 public extension Sphere {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e5 * this.e1234)), 
+            float2(0.0, (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215) + (other.e3215 * this.e1234)), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -10298,9 +7876,9 @@ public extension Sphere {
             /* e235, e315, e125 */
             float3(0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[0]) * this.group0, 
             /* e1234 */
-            right_anti_dual.scalar * this.e1234
+            right_anti_dual_g0[0] * this.e1234
         );
     }
 }
@@ -10310,13 +7888,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Sphere> lhs, Plane rhs)
 }
 public extension Sphere {
     public AntiScalar weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)
+            (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e1234)
         );
     }
 }
@@ -10326,15 +7901,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Sphere> lhs, Sphere rhs
 }
 public extension Sphere {
     public AntiScalar weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e5 * this.e1234)
+            (right_anti_dual_g0[0] * this.e4235) + (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215) + (other.e3215 * this.e1234)
         );
     }
 }
@@ -10344,21 +7914,12 @@ public Sphere operator /(WeightExpansionInfixPartial<Sphere> lhs, VersorEven rhs
 }
 public extension Sphere {
     public Sphere weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e1234 */
-            this.e1234 * right_anti_dual.scalar
+            right_anti_dual_g0[3] * this.e1234
         );
     }
 }
@@ -10368,19 +7929,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<Sphere> lhs, VersorOdd 
 }
 public extension Sphere {
     public AntiScalar weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * right_anti_dual.e1) + (this.e4315 * right_anti_dual.e2) + (this.e4125 * right_anti_dual.e3) + (this.e3215 * right_anti_dual.e4) + (this.e1234 * right_anti_dual.e5)
+            (right_anti_dual_g3[0] * this.e4235) + (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215) + (this.e1234 * other.e3215)
         );
     }
 }
@@ -10394,19 +7946,14 @@ public Sphere operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiCircle
 }
 public extension VersorEven {
     public Sphere weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group3.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)), 
+            float4((right_anti_dual_g1[1] * this.e3) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g1[2] * this.e1) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g1[0] * this.e2) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g2[1] * this.e2) - (right_anti_dual_g2[2] * this.e3)) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (this.group3.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -10416,23 +7963,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiD
 }
 public extension VersorEven {
     public CircleRotor weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group3.zxy) - (right_anti_dual.group0.xyz.zxy * this.group3.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group3.zxy) - (other.group0.zxy * this.group3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group3.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (other.e423 * this.e5), (right_anti_dual_g2[1] * this.e4) + (other.e431 * this.e5), (right_anti_dual_g2[2] * this.e4) + (other.e412 * this.e5), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e12345 */
-            (float4(this.e5) * float4(right_anti_dual.group1.xyz, right_anti_dual.e1234)) + (this.group3.yzxx * float4(right_anti_dual.group2.zxy, right_anti_dual.e4235)) + float4(float3(0.0), (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) - float4((right_anti_dual.group2.yzx * this.group3.zxy), right_anti_dual.e41 * this.e235)
+            (float4(this.e5) * float4(right_anti_dual_g1.xyz, right_anti_dual_g2[3])) + (this.group3.yzxx * float4(right_anti_dual_g2.zxy, right_anti_dual_g3[0])) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e431 * this.e315) - (other.e412 * this.e125)) - float4((right_anti_dual_g2.yzx * this.group3.zxy), other.e423 * this.e235)
         );
     }
 }
@@ -10442,15 +7982,11 @@ public Flector operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiDualN
 }
 public extension VersorEven {
     public Flector weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * this.group3, 
+            float4(other.e3215) * this.group3, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)
+            float4(other.e3215) * float4(this.group0.xyz, this.e321)
         );
     }
 }
@@ -10460,15 +7996,12 @@ public Motor operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiFlatPoi
 }
 public extension VersorEven {
     public Motor weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.e15 * this.e4, right_anti_dual.e25 * this.e4, right_anti_dual.e35 * this.e4, -(right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321)) - (right_anti_dual.group0.wwwx * float4(this.group3.xyz, this.e423)), 
+            (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g0.xyz, -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321))) - (right_anti_dual_g0.wwwx * float4(this.group3.xyz, this.e423)), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group0.zxy * this.group3.yzx) - (right_anti_dual.group0.yzx * this.group3.zxy)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), 0.0)
         );
     }
 }
@@ -10478,17 +8011,13 @@ public Motor operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiFlector
 }
 public extension VersorEven {
     public Motor weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (this.group3.wwwx * float4(right_anti_dual.group0.xyz, right_anti_dual.e4235)) + float4(float3(0.0), (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321)) - (right_anti_dual.group0.wwwx * float4(this.group3.xyz, this.e423)), 
+            (this.group3.wwwx * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[0])) + float4(float3(0.0), (right_anti_dual_g1[1] * this.e2) + (right_anti_dual_g1[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)) - (right_anti_dual_g0.wwwx * float4(this.group3.xyz, this.e423)), 
             /* e235, e315, e125, e5 */
-            float4(((right_anti_dual.group0.zxy * this.group3.yzx) - (right_anti_dual.group0.yzx * this.group3.zxy)), 0.0)
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), 0.0)
         );
     }
 }
@@ -10498,15 +8027,11 @@ public Plane operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiLine rh
 }
 public extension VersorEven {
     public Plane weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) - (this.group3.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g0[1] * this.e3) + (right_anti_dual_g1[0] * this.e4), (right_anti_dual_g0[2] * this.e1) + (right_anti_dual_g1[1] * this.e4), (right_anti_dual_g0[0] * this.e2) + (right_anti_dual_g1[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (this.group3.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -10516,17 +8041,13 @@ public Flector operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiMotor
 }
 public extension VersorEven {
     public Flector weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(right_anti_dual.e5) * this.group3, 
+            float4(right_anti_dual_g1[3]) * this.group3, 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e235 * this.e4) + (right_anti_dual.e5 * this.e423), (right_anti_dual.e315 * this.e4) + (right_anti_dual.e5 * this.e431), (right_anti_dual.e125 * this.e4) + (right_anti_dual.e5 * this.e412), -(right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3)) + float4((right_anti_dual.group0.yzx * this.group3.zxy), right_anti_dual.e5 * this.e321) - (this.group3.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e235))
+            float4((right_anti_dual_g1[0] * this.e4) + (right_anti_dual_g1[3] * this.e423), (right_anti_dual_g1[1] * this.e4) + (right_anti_dual_g1[3] * this.e431), (right_anti_dual_g1[2] * this.e4) + (right_anti_dual_g1[3] * this.e412), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((right_anti_dual_g0.yzx * this.group3.zxy), right_anti_dual_g1[3] * this.e321) - (this.group3.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0]))
         );
     }
 }
@@ -10536,13 +8057,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiPl
 }
 public extension VersorEven {
     public AntiScalar weight_expansion(AntiPlane other) {
-        Plane right_anti_dual = Plane(
-            /* e4235, e4315, e4125, e3215 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4)
         );
     }
 }
@@ -10552,19 +8070,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorEven> lhs, AntiSc
 }
 public extension VersorEven {
     public VersorEven weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0) * this.group2, 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0) * this.group3
         );
     }
 }
@@ -10574,21 +8089,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorEven> lhs, Circl
 }
 public extension VersorEven {
     public CircleRotor weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) + (right_anti_dual.group0.xyz.yzx * this.group3.zxy) - (right_anti_dual.group0.xyz.zxy * this.group3.yzx), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) + (other.group0.yzx * this.group3.zxy) - (other.group0.zxy * this.group3.yzx), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e41 * this.e5) + (right_anti_dual.e15 * this.e4), (right_anti_dual.e42 * this.e5) + (right_anti_dual.e25 * this.e4), (right_anti_dual.e43 * this.e5) + (right_anti_dual.e35 * this.e4), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) - (right_anti_dual.group1.wwwx * this.group3.xyzx), 
+            float4((other.e423 * this.e5) + (other.e235 * this.e4), (other.e431 * this.e5) + (other.e315 * this.e4), (other.e412 * this.e5) + (other.e125 * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.e23 * this.e5) + (right_anti_dual.e35 * this.e2), (right_anti_dual.e31 * this.e5) + (right_anti_dual.e15 * this.e3), (right_anti_dual.e12 * this.e5) + (right_anti_dual.e25 * this.e1), -(right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) - float4((right_anti_dual.group2.xyz.yzx * this.group3.zxy), right_anti_dual.e41 * this.e235)
+            float4((right_anti_dual_g1[0] * this.e5) + (other.e125 * this.e2), (right_anti_dual_g1[1] * this.e5) + (other.e235 * this.e3), (right_anti_dual_g1[2] * this.e5) + (other.e315 * this.e1), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)) - float4((other.group2.yzx * this.group3.zxy), other.e423 * this.e235)
         );
     }
 }
@@ -10598,23 +8106,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorEven> lhs, Circle
 }
 public extension VersorEven {
     public VersorEven weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4((right_anti_dual.e23 * this.e4) + (right_anti_dual.scalar * this.e423), (right_anti_dual.e31 * this.e4) + (right_anti_dual.scalar * this.e431), (right_anti_dual.e12 * this.e4) + (right_anti_dual.scalar * this.e412), -(right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) + float4((right_anti_dual.group0.xyz.yzx * this.group3.zxy), right_anti_dual.scalar * this.e12345) - float4((right_anti_dual.group0.xyz.zxy * this.group3.yzx), right_anti_dual.e41 * this.e235), 
+            float4((right_anti_dual_g1[0] * this.e4) + (right_anti_dual_g2[3] * this.e423), (right_anti_dual_g1[1] * this.e4) + (right_anti_dual_g2[3] * this.e431), (right_anti_dual_g1[2] * this.e4) + (right_anti_dual_g2[3] * this.e412), -(right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (other.e431 * this.e315) - (other.e412 * this.e125)) + float4((other.group0.yzx * this.group3.zxy), right_anti_dual_g2[3] * this.e12345) - float4((other.group0.zxy * this.group3.yzx), other.e423 * this.e235), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e15 * this.e4) + (right_anti_dual.scalar * this.e415), (right_anti_dual.e25 * this.e4) + (right_anti_dual.scalar * this.e425), (right_anti_dual.e35 * this.e4) + (right_anti_dual.scalar * this.e435), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + float4((right_anti_dual.group0.xyz * this.group2.www), right_anti_dual.scalar * this.e321) - (right_anti_dual.group1.wwwx * this.group3.xyzx), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g2[3] * this.e415), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g2[3] * this.e425), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g2[3] * this.e435), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + float4((other.group0.xyz * this.group2.www), right_anti_dual_g2[3] * this.e321) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group2.xyz) + (float3(this.e5) * right_anti_dual.group1.xyz) + (right_anti_dual.group2.zxy * this.group3.yzx) - (right_anti_dual.group2.yzx * this.group3.zxy)), right_anti_dual.scalar * this.e5), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group3.yzx) - (right_anti_dual_g2.yzx * this.group3.zxy)), right_anti_dual_g2[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g2[3]) * this.group3
         );
     }
 }
@@ -10624,19 +8126,14 @@ public Sphere operator /(WeightExpansionInfixPartial<VersorEven> lhs, Dipole rhs
 }
 public extension VersorEven {
     public Sphere weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e425 * this.e3) + (right_anti_dual.e235 * this.e4), (right_anti_dual.e435 * this.e1) + (right_anti_dual.e315 * this.e4), (right_anti_dual.e415 * this.e2) + (right_anti_dual.e125 * this.e4), -(right_anti_dual.e321 * this.e5) - (right_anti_dual.e125 * this.e3)) - (this.group3.yzxy * float4(right_anti_dual.group1.zxy, right_anti_dual.e315)) - float4((right_anti_dual.group0.xyz * this.group2.www), right_anti_dual.e235 * this.e1), 
+            float4((right_anti_dual_g2[0] * this.e4) + (right_anti_dual_g1[1] * this.e3), (right_anti_dual_g2[1] * this.e4) + (right_anti_dual_g1[2] * this.e1), (right_anti_dual_g2[2] * this.e4) + (right_anti_dual_g1[0] * this.e2), -(right_anti_dual_g2[2] * this.e3) - (right_anti_dual_g1[3] * this.e5)) - (this.group3.yzxy * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[1])) - float4((right_anti_dual_g0 * this.group2.www), right_anti_dual_g2[0] * this.e1), 
             /* e1234 */
-            (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4)
         );
     }
 }
@@ -10646,25 +8143,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorEven> lhs, D
 }
 public extension VersorEven {
     public DipoleInversion weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g2[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            (right_anti_dual.group3.zxyw * this.group3.yzxw) - float4((right_anti_dual.group3.yzx * this.group3.zxy), right_anti_dual.e4 * this.e5), 
+            (right_anti_dual_g3.zxyw * this.group3.yzxw) - float4((right_anti_dual_g3.yzx * this.group3.zxy), right_anti_dual_g2[3] * this.e5), 
             /* e15, e25, e35, e1234 */
-            (this.group3.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e423)) + float4(float3(0.0), (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)) - float4((this.group2.www * right_anti_dual.group3.xyz), right_anti_dual.e4 * this.e321), 
+            (this.group3.xyzx * float4(right_anti_dual_g3.www, right_anti_dual_g0[0])) + float4(float3(0.0), (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g3[0] * this.e423) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412)) - float4((right_anti_dual_g3.xyz * this.group2.www), right_anti_dual_g2[3] * this.e321), 
             /* e4235, e4315, e4125, e3215 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group3.yzxz * float4(this.group1.zxy, this.e125)) + float4((right_anti_dual.group1.yzx * this.group3.zxy), right_anti_dual.e1 * this.e235) + float4((this.group3.www * right_anti_dual.group2.xyz), right_anti_dual.e2 * this.e315) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (right_anti_dual.group2.wwwy * float4(this.group2.xyz, this.e2)) - (this.group3.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)) - float4((right_anti_dual.group3.zxy * this.group1.yzx), right_anti_dual.e125 * this.e3)
+            (float4(right_anti_dual_g3[3]) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g3.yzxz * float4(this.group1.zxy, this.e125)) + float4((right_anti_dual_g1.yzx * this.group3.zxy), right_anti_dual_g3[0] * this.e235) + float4((right_anti_dual_g2.xyz * this.group3.www), right_anti_dual_g3[1] * this.e315) - (float4(this.e5) * float4(right_anti_dual_g0, right_anti_dual_g1[3])) - (right_anti_dual_g2.wwwy * float4(this.group2.xyz, this.e2)) - (this.group3.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])) - float4((right_anti_dual_g3.zxy * this.group1.yzx), right_anti_dual_g2[2] * this.e3)
         );
     }
 }
@@ -10674,19 +8165,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorEven> lhs, DualNu
 }
 public extension VersorEven {
     public VersorEven weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, (right_anti_dual.e3215 * this.e4) + (right_anti_dual.scalar * this.e12345)) * float4(this.group0.xyz, 1.0), 
+            float4(right_anti_dual_g0.yy, right_anti_dual_g0[1], (right_anti_dual_g0[0] * this.e4) + (right_anti_dual_g0[1] * this.e12345)) * float4(this.group0.xyz, 1.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0[1]) * this.group2, 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0[1]) * this.group3
         );
     }
 }
@@ -10696,15 +8184,12 @@ public Sphere operator /(WeightExpansionInfixPartial<VersorEven> lhs, FlatPoint 
 }
 public extension VersorEven {
     public Sphere weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((float3(this.e4) * right_anti_dual.group0.xyz), -(right_anti_dual.e235 * this.e1) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)), 
+            float4((float3(this.e4) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)), 
             /* e1234 */
-            right_anti_dual.e321 * this.e4
+            right_anti_dual_g0[3] * this.e4
         );
     }
 }
@@ -10714,21 +8199,17 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorEven> lhs, F
 }
 public extension VersorEven {
     public DipoleInversion weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group1.xyz, 
+            float3(this.e4) * right_anti_dual_g1.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group1.zxy * this.group3.yzx) - (right_anti_dual.group1.yzx * this.group3.zxy)), right_anti_dual.e5 * this.e4), 
+            float4(((right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy)), right_anti_dual_g1[3] * this.e4), 
             /* e15, e25, e35, e1234 */
-            (this.group3 * float4(right_anti_dual.group1.www, right_anti_dual.e321)) + float4(float3(0.0), -(right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)) - (right_anti_dual.group1.xyzx * float4(this.group2.www, this.e423)), 
+            (this.group3 * float4(right_anti_dual_g1.www, right_anti_dual_g0[3])) + float4(float3(0.0), -(right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)) - (right_anti_dual_g1.xyzx * float4(this.group2.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group1.yzxy * float4(this.group1.zxy, this.e315)) + (right_anti_dual.group1.wwwz * float4(this.group0.xyz, this.e125)) + float4(float3(0.0), (right_anti_dual.e5 * this.e321) - (right_anti_dual.e315 * this.e2) - (right_anti_dual.e125 * this.e3) - (right_anti_dual.e321 * this.e5)) + float4((this.group3.www * right_anti_dual.group0.xyz), right_anti_dual.e1 * this.e235) - float4((right_anti_dual.group1.zxy * this.group1.yzx), right_anti_dual.e235 * this.e1)
+            (right_anti_dual_g1.yzxy * float4(this.group1.zxy, this.e315)) + (right_anti_dual_g1.wwwz * float4(this.group0.xyz, this.e125)) + float4(float3(0.0), (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3) - (right_anti_dual_g0[3] * this.e5)) + float4((right_anti_dual_g0.xyz * this.group3.www), right_anti_dual_g1[0] * this.e235) - float4((right_anti_dual_g1.zxy * this.group1.yzx), right_anti_dual_g0[0] * this.e1)
         );
     }
 }
@@ -10738,19 +8219,13 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorEven> lhs, Line 
 }
 public extension VersorEven {
     public CircleRotor weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((float3(this.e4) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)), 
+            float4((float3(this.e4) * other.group1.xyz), -(other.e415 * this.e1) - (other.e425 * this.e2) - (other.e435 * this.e3)), 
             /* e235, e315, e125, e12345 */
-            float4((right_anti_dual.e23 * this.e5) + (right_anti_dual.e35 * this.e2), (right_anti_dual.e31 * this.e5) + (right_anti_dual.e15 * this.e3), (right_anti_dual.e12 * this.e5) + (right_anti_dual.e25 * this.e1), -(right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) - float4((right_anti_dual.group1.xyz.yzx * this.group3.zxy), right_anti_dual.e23 * this.e415)
+            float4((other.e415 * this.e5) + (other.e125 * this.e2), (other.e425 * this.e5) + (other.e235 * this.e3), (other.e435 * this.e5) + (other.e315 * this.e1), -(other.e425 * this.e425) - (other.e435 * this.e435) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)) - float4((other.group1.yzx * this.group3.zxy), other.e415 * this.e415)
         );
     }
 }
@@ -10760,21 +8235,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorEven> lhs, Motor 
 }
 public extension VersorEven {
     public VersorEven weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (right_anti_dual.group0 * float4(this.group3.www, this.e12345)) + float4(float3(0.0), -(right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412)) + float4((right_anti_dual.group0.www * this.group0.xyz), right_anti_dual.e3215 * this.e4), 
+            (right_anti_dual_g0 * float4(this.group3.www, this.e12345)) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e415) - (right_anti_dual_g0[1] * this.e425) - (right_anti_dual_g0[2] * this.e435) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412)) + float4((this.group0.xyz * right_anti_dual_g0.www), right_anti_dual_g1[3] * this.e4), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e15 * this.e4, right_anti_dual.e25 * this.e4, right_anti_dual.e35 * this.e4, -(right_anti_dual.e23 * this.e1) - (right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + (float4(right_anti_dual.scalar) * this.group1), 
+            (float4(right_anti_dual_g0[3]) * this.group1) + (float4(this.e4, this.e4, this.e4, 1.0) * float4(right_anti_dual_g1.xyz, -(right_anti_dual_g0[0] * this.e1) - (right_anti_dual_g0[1] * this.e2) - (right_anti_dual_g0[2] * this.e3))), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.scalar) * this.group2.xyz) + (float3(this.e5) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.zxy * this.group3.yzx) - (right_anti_dual.group1.yzx * this.group3.zxy)), right_anti_dual.scalar * this.e5), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0[3]) * this.group3
         );
     }
 }
@@ -10784,53 +8255,36 @@ public MultiVector operator /(WeightExpansionInfixPartial<VersorEven> lhs, Multi
 }
 public extension VersorEven {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float right_anti_dual_g3_w = other.e321 * -1.0;
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, (right_anti_dual.scalar * this.e12345) + (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) + (right_anti_dual.e1234 * this.e5) - (right_anti_dual.e15 * this.e423) - (right_anti_dual.e25 * this.e431) - (right_anti_dual.e35 * this.e412) - (right_anti_dual.e45 * this.e321) - (right_anti_dual.e41 * this.e235) - (right_anti_dual.e42 * this.e315) - (right_anti_dual.e43 * this.e125) - (right_anti_dual.e23 * this.e415) - (right_anti_dual.e31 * this.e425) - (right_anti_dual.e12 * this.e435)), 
+            float2(0.0, (right_anti_dual_g0[0] * this.e12345) + (right_anti_dual_g9[0] * this.e1) + (right_anti_dual_g9[1] * this.e2) + (right_anti_dual_g9[2] * this.e3) + (right_anti_dual_g9[3] * this.e4) - (right_anti_dual_g3_w * this.e321) - (other.e4 * this.e5) - (other.e415 * this.e415) - (other.e425 * this.e425) - (other.e435 * this.e435) - (other.e423 * this.e235) - (other.e431 * this.e315) - (other.e412 * this.e125) - (other.e235 * this.e423) - (other.e315 * this.e431) - (other.e125 * this.e412)), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3, 
+            float4(right_anti_dual_g0[0]) * this.group3, 
             /* e5 */
-            right_anti_dual.scalar * this.e5, 
+            right_anti_dual_g0[0] * this.e5, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.e5) * this.group3) - (float4(this.e5) * right_anti_dual.group1), 
+            (float4(other.e3215) * this.group3) - (right_anti_dual_g1 * float4(this.e5)), 
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group1.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g1.xyz) - (float3(right_anti_dual_g1[3]) * this.group3.xyz), 
             /* e23, e31, e12 */
-            (right_anti_dual.group1.zxy * this.group3.yzx) - (right_anti_dual.group1.yzx * this.group3.zxy), 
+            (right_anti_dual_g1.zxy * this.group3.yzx) - (right_anti_dual_g1.yzx * this.group3.zxy), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e15 * this.e4) + (right_anti_dual.e41 * this.e5), (right_anti_dual.e25 * this.e4) + (right_anti_dual.e42 * this.e5), (right_anti_dual.e35 * this.e4) + (right_anti_dual.e43 * this.e5), -(right_anti_dual.e31 * this.e2) - (right_anti_dual.e12 * this.e3)) + (float4(right_anti_dual.scalar) * this.group1) - (this.group3.xyzx * float4(right_anti_dual.group3.www, right_anti_dual.e23)), 
+            float4((other.e423 * this.e5) + (other.e235 * this.e4), (other.e431 * this.e5) + (other.e315 * this.e4), (other.e412 * this.e5) + (other.e125 * this.e4), -(other.e425 * this.e2) - (other.e435 * this.e3)) + (float4(right_anti_dual_g0[0]) * this.group1) - (this.group3.xyzx * float4(float3(right_anti_dual_g3_w), other.e415)), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.e4) * right_anti_dual.group5.xyz) + (right_anti_dual.group4.xyz.yzx * this.group3.zxy) - (right_anti_dual.group4.xyz.zxy * this.group3.yzx), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.e4) * other.group6.xyz) + (other.group7.yzx * this.group3.zxy) - (other.group7.zxy * this.group3.yzx), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.scalar) * this.group2.xyz) + (float3(this.e5) * right_anti_dual.group5.xyz) + (right_anti_dual.group3.zxy * this.group3.yzx) - (right_anti_dual.group3.yzx * this.group3.zxy), 
+            (float3(right_anti_dual_g0[0]) * this.group2.xyz) + (float3(this.e5) * other.group6.xyz) + (other.group8.zxy * this.group3.yzx) - (other.group8.yzx * this.group3.zxy), 
             /* e4235, e4315, e4125, e3215 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e321)) + (right_anti_dual.group1.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual.group8.xyz * this.group3.www), right_anti_dual.e1 * this.e235) + float4((right_anti_dual.group6.yzx * this.group3.zxy), right_anti_dual.e3 * this.e125) - (right_anti_dual.group6.zxyw * float4(this.group3.yzx, this.e5)) - float4((right_anti_dual.group7.xyz * this.group2.www), right_anti_dual.e235 * this.e1) - float4((right_anti_dual.group1.zxy * this.group1.yzx), right_anti_dual.e315 * this.e2) - float4((right_anti_dual.group1.www * this.group2.xyz), right_anti_dual.e125 * this.e3), 
+            (float4(other.e3215) * float4(this.group0.xyz, this.e321)) + (right_anti_dual_g1.yzxy * float4(this.group1.zxy, this.e315)) + float4((right_anti_dual_g8 * this.group3.www), right_anti_dual_g1[0] * this.e235) + float4((right_anti_dual_g6.yzx * this.group3.zxy), right_anti_dual_g1[2] * this.e125) - (right_anti_dual_g6.zxyw * float4(this.group3.yzx, this.e5)) - float4((right_anti_dual_g7 * this.group2.www), right_anti_dual_g8[0] * this.e1) - float4((right_anti_dual_g1.zxy * this.group1.yzx), right_anti_dual_g8[1] * this.e2) - float4((this.group2.xyz * right_anti_dual_g1.www), right_anti_dual_g8[2] * this.e3), 
             /* e1234 */
-            (right_anti_dual.e321 * this.e4) + (right_anti_dual.e423 * this.e1) + (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) - (right_anti_dual.e1 * this.e423) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412) - (right_anti_dual.e4 * this.e321)
+            (right_anti_dual_g7[0] * this.e1) + (right_anti_dual_g7[1] * this.e2) + (right_anti_dual_g7[2] * this.e3) + (right_anti_dual_g6[3] * this.e4) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321)
         );
     }
 }
@@ -10840,19 +8294,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorEven> lhs, P
 }
 public extension VersorEven {
     public DipoleInversion weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.e4) * right_anti_dual.group0.xyz, 
+            float3(this.e4) * right_anti_dual_g0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(((right_anti_dual.group0.zxy * this.group3.yzx) - (right_anti_dual.group0.yzx * this.group3.zxy)), right_anti_dual.e5 * this.e4), 
+            float4(((right_anti_dual_g0.zxy * this.group3.yzx) - (right_anti_dual_g0.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e4), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.e5 * this.e1, right_anti_dual.e5 * this.e2, right_anti_dual.e5 * this.e3, -(right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412)) - (right_anti_dual.group0.xyzx * float4(this.group2.www, this.e423)), 
+            float4((this.group3.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)) - (right_anti_dual_g0.xyzx * float4(this.group2.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e3 * this.e425 * -1.0, right_anti_dual.e1 * this.e435 * -1.0, right_anti_dual.e2 * this.e415 * -1.0, (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group0.yzxx * float4(this.group1.zxy, this.e235)) + (right_anti_dual.group0.wwwy * float4(this.group0.xyz, this.e315))
+            (right_anti_dual_g0.yzxx * float4(this.group1.zxy, this.e235)) + (right_anti_dual_g0.wwwy * float4(this.group0.xyz, this.e315)) + float4((right_anti_dual_g0.zxy * this.group1.yzx * float3(-1.0)), (right_anti_dual_g0[2] * this.e125) + (right_anti_dual_g0[3] * this.e321))
         );
     }
 }
@@ -10862,15 +8313,10 @@ public AntiScalar operator /(WeightExpansionInfixPartial<VersorEven> lhs, RoundP
 }
 public extension VersorEven {
     public AntiScalar weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return AntiScalar(
             /* e12345 */
-            (right_anti_dual.e4235 * this.e1) + (right_anti_dual.e4315 * this.e2) + (right_anti_dual.e4125 * this.e3) + (right_anti_dual.e3215 * this.e4) + (right_anti_dual.e1234 * this.e5)
+            (right_anti_dual_g0[0] * this.e1) + (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g0[3] * this.e4) - (other.e4 * this.e5)
         );
     }
 }
@@ -10880,21 +8326,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorEven> lhs, S
 }
 public extension VersorEven {
     public DipoleInversion weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group0.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g0.xyz) - (float3(right_anti_dual_g0[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            float4((right_anti_dual.group0.zxy * this.group3.yzx), right_anti_dual.e5 * this.e4) - (right_anti_dual.group0.yzxw * float4(this.group3.zxy, this.e5)), 
+            float4((right_anti_dual_g0.zxy * this.group3.yzx), other.e3215 * this.e4) - (right_anti_dual_g0.yzxw * float4(this.group3.zxy, this.e5)), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.e5 * this.e1, right_anti_dual.e5 * this.e2, right_anti_dual.e5 * this.e3, -(right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412) - (right_anti_dual.e4 * this.e321)) - (right_anti_dual.group0.xyzx * float4(this.group2.www, this.e423)), 
+            float4((float3(other.e3215) * this.group3.xyz), -(right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412) - (right_anti_dual_g0[3] * this.e321)) - (right_anti_dual_g0.xyzx * float4(this.group2.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            float4(-(right_anti_dual.e3 * this.e425) - (right_anti_dual.e4 * this.e235), -(right_anti_dual.e1 * this.e435) - (right_anti_dual.e4 * this.e315), -(right_anti_dual.e2 * this.e415) - (right_anti_dual.e4 * this.e125), (right_anti_dual.e3 * this.e125) + (right_anti_dual.e5 * this.e321)) + (right_anti_dual.group0.yzxx * float4(this.group1.zxy, this.e235)) + float4((float3(right_anti_dual.e5) * this.group0.xyz), right_anti_dual.e2 * this.e315)
+            float4(-(right_anti_dual_g0[2] * this.e425) - (right_anti_dual_g0[3] * this.e235), -(right_anti_dual_g0[0] * this.e435) - (right_anti_dual_g0[3] * this.e315), -(right_anti_dual_g0[1] * this.e415) - (right_anti_dual_g0[3] * this.e125), (right_anti_dual_g0[2] * this.e125) + (other.e3215 * this.e321)) + (right_anti_dual_g0.yzxx * float4(this.group1.zxy, this.e235)) + float4((float3(other.e3215) * this.group0.xyz), right_anti_dual_g0[1] * this.e315)
         );
     }
 }
@@ -10904,25 +8345,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorEven> lhs, Versor
 }
 public extension VersorEven {
     public VersorEven weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (float4(right_anti_dual.scalar) * this.group0) + (this.group3.wwwx * float4(right_anti_dual.group1.xyz, right_anti_dual.e4235)) + float4(float3(0.0), (this.e2 * right_anti_dual.e4315) + (this.e3 * right_anti_dual.e4125) + (this.e4 * right_anti_dual.e3215) - (this.e431 * right_anti_dual.e25) - (this.e412 * right_anti_dual.e35) - (this.e415 * right_anti_dual.e23) - (this.e425 * right_anti_dual.e31) - (this.e435 * right_anti_dual.e12) - (this.e321 * right_anti_dual.e45) - (this.e235 * right_anti_dual.e41) - (this.e315 * right_anti_dual.e42) - (this.e125 * right_anti_dual.e43)) + float4((this.group3.zxy * right_anti_dual.group0.yzx), this.e5 * right_anti_dual.e1234) - float4((this.group3.yzx * right_anti_dual.group0.zxy), this.e423 * right_anti_dual.e15), 
+            (float4(right_anti_dual_g0[3]) * this.group0) + (this.group3.wwwx * float4(right_anti_dual_g1.xyz, right_anti_dual_g3[0])) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e2) + (right_anti_dual_g3[2] * this.e3) + (right_anti_dual_g3[3] * this.e4) - (right_anti_dual_g0[0] * this.e235) - (right_anti_dual_g0[1] * this.e315) - (right_anti_dual_g0[2] * this.e125) - (right_anti_dual_g1[0] * this.e415) - (right_anti_dual_g1[1] * this.e425) - (right_anti_dual_g1[2] * this.e435) - (right_anti_dual_g1[3] * this.e321) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412)) + float4((right_anti_dual_g0.yzx * this.group3.zxy), right_anti_dual_g2[3] * this.e5) - float4((right_anti_dual_g0.zxy * this.group3.yzx), right_anti_dual_g2[0] * this.e423), 
             /* e415, e425, e435, e321 */
-            float4((this.e5 * right_anti_dual.e41) + (this.e4 * right_anti_dual.e15), (this.e5 * right_anti_dual.e42) + (this.e4 * right_anti_dual.e25), (this.e5 * right_anti_dual.e43) + (this.e4 * right_anti_dual.e35), -(this.e2 * right_anti_dual.e31) - (this.e3 * right_anti_dual.e12)) + (float4(right_anti_dual.scalar) * this.group1) - (this.group3.xyzx * right_anti_dual.group1.wwwx), 
+            float4((right_anti_dual_g0[0] * this.e5) + (right_anti_dual_g2[0] * this.e4), (right_anti_dual_g0[1] * this.e5) + (right_anti_dual_g2[1] * this.e4), (right_anti_dual_g0[2] * this.e5) + (right_anti_dual_g2[2] * this.e4), -(right_anti_dual_g1[1] * this.e2) - (right_anti_dual_g1[2] * this.e3)) + (float4(right_anti_dual_g0[3]) * this.group1) - (right_anti_dual_g1.wwwx * this.group3.xyzx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(this.e5) * right_anti_dual.group1.xyz) + (float3(right_anti_dual.scalar) * this.group2.xyz) + (this.group3.yzx * right_anti_dual.group2.zxy) - (this.group3.zxy * right_anti_dual.group2.yzx)), this.e5 * right_anti_dual.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group2.xyz) + (float3(this.e5) * right_anti_dual_g1.xyz) + (right_anti_dual_g2.zxy * this.group3.yzx) - (right_anti_dual_g2.yzx * this.group3.zxy)), right_anti_dual_g0[3] * this.e5), 
             /* e1, e2, e3, e4 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0[3]) * this.group3
         );
     }
 }
@@ -10932,25 +8367,19 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorEven> lhs, V
 }
 public extension VersorEven {
     public DipoleInversion weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float3(this.e4) * right_anti_dual.group3.xyz) - (float3(right_anti_dual.e4) * this.group3.xyz), 
+            (float3(this.e4) * right_anti_dual_g3.xyz) - (float3(right_anti_dual_g3[3]) * this.group3.xyz), 
             /* e23, e31, e12, e45 */
-            (this.group3.yzxw * float4(right_anti_dual.group3.zxy, right_anti_dual.e5)) - (right_anti_dual.group3.yzxw * float4(this.group3.zxy, this.e5)), 
+            (this.group3.yzxw * float4(right_anti_dual_g3.zxy, right_anti_dual_g2[3])) - (right_anti_dual_g3.yzxw * float4(this.group3.zxy, this.e5)), 
             /* e15, e25, e35, e1234 */
-            (this.group3.xyzx * float4(right_anti_dual.group2.www, right_anti_dual.e423)) + float4(float3(0.0), (right_anti_dual.e431 * this.e2) + (right_anti_dual.e412 * this.e3) + (right_anti_dual.e321 * this.e4) - (right_anti_dual.e2 * this.e431) - (right_anti_dual.e3 * this.e412) - (right_anti_dual.e4 * this.e321)) - (right_anti_dual.group3.xyzx * float4(this.group2.www, this.e423)), 
+            (this.group3.xyzx * float4(right_anti_dual_g2.www, right_anti_dual_g0[0])) + float4(float3(0.0), (right_anti_dual_g0[1] * this.e2) + (right_anti_dual_g0[2] * this.e3) + (right_anti_dual_g1[3] * this.e4) - (right_anti_dual_g3[1] * this.e431) - (right_anti_dual_g3[2] * this.e412) - (right_anti_dual_g3[3] * this.e321)) - (right_anti_dual_g3.xyzx * float4(this.group2.www, this.e423)), 
             /* e4235, e4315, e4125, e3215 */
-            (right_anti_dual.group3.yzxz * float4(this.group1.zxy, this.e125)) + float4((right_anti_dual.group1.yzx * this.group3.zxy), right_anti_dual.e5 * this.e321) + float4((right_anti_dual.group2.www * this.group0.xyz), right_anti_dual.e2 * this.e315) + float4((this.group3.www * right_anti_dual.group2.xyz), right_anti_dual.e1 * this.e235) - (float4(this.e5) * float4(right_anti_dual.group0.xyz, right_anti_dual.e321)) - (this.group3.yzxx * float4(right_anti_dual.group1.zxy, right_anti_dual.e235)) - float4((right_anti_dual.group3.zxy * this.group1.yzx), right_anti_dual.e315 * this.e2) - float4((right_anti_dual.group3.www * this.group2.xyz), right_anti_dual.e125 * this.e3)
+            (right_anti_dual_g3.yzxz * float4(this.group1.zxy, this.e125)) + float4((right_anti_dual_g1.yzx * this.group3.zxy), right_anti_dual_g2[3] * this.e321) + float4((right_anti_dual_g2.xyz * this.group3.www), right_anti_dual_g3[0] * this.e235) + float4((this.group0.xyz * right_anti_dual_g2.www), right_anti_dual_g3[1] * this.e315) - (float4(this.e5) * float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3])) - (this.group3.yzxx * float4(right_anti_dual_g1.zxy, right_anti_dual_g2[0])) - float4((right_anti_dual_g3.zxy * this.group1.yzx), right_anti_dual_g2[1] * this.e2) - float4((this.group2.xyz * right_anti_dual_g3.www), right_anti_dual_g2[2] * this.e3)
         );
     }
 }
@@ -10964,21 +8393,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiCi
 }
 public extension VersorOdd {
     public CircleRotor weight_expansion(AntiCircleRotor other) {
-        CircleRotor right_anti_dual = CircleRotor(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e12345 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), (right_anti_dual.e12345 * this.scalar) - (right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43))
+            float4((float3(this.scalar) * right_anti_dual_g2.xyz), (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43))
         );
     }
 }
@@ -10988,25 +8412,18 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorOdd> lhs, An
 }
 public extension VersorOdd {
     public DipoleInversion weight_expansion(AntiDipoleInversion other) {
-        DipoleInversion right_anti_dual = DipoleInversion(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group3 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), (right_anti_dual.e1234 * this.scalar) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((float3(this.scalar) * right_anti_dual_g2.xyz), (right_anti_dual_g2[3] * this.scalar) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42) + (right_anti_dual.e4235 * this.scalar), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43) + (right_anti_dual.e4315 * this.scalar), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41) + (right_anti_dual.e4125 * this.scalar), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + float4((right_anti_dual.group0.xyz.yzx * this.group2.zxy), right_anti_dual.e3215 * this.scalar) - (this.group2.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23)) - float4((right_anti_dual.group2.yzx * this.group0.zxy), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (right_anti_dual_g3[0] * this.scalar), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (right_anti_dual_g3[1] * this.scalar), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (right_anti_dual_g3[2] * this.scalar), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + float4((other.group0.yzx * this.group2.zxy), right_anti_dual_g3[3] * this.scalar) - (this.group2.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0])) - float4((right_anti_dual_g2.yzx * this.group0.zxy), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -11016,15 +8433,11 @@ public Motor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiDualNum 
 }
 public extension VersorOdd {
     public Motor weight_expansion(AntiDualNum other) {
-        DualNum right_anti_dual = DualNum(
-            /* e5, e12345 */
-            other.group0.xy
-        );
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(right_anti_dual.group0.xy.xx, right_anti_dual.e5, (right_anti_dual.e5 * this.e1234) + (right_anti_dual.e12345 * this.scalar)) * float4(this.group0.xyz, 1.0), 
+            float4(other.group0.xx, other.e3215, (other.e3215 * this.e1234) + (other.scalar * this.scalar)) * float4(this.group0.xyz, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(right_anti_dual.e5) * float4(this.group1.xyz, this.scalar)
+            float4(other.e3215) * float4(this.group1.xyz, this.scalar)
         );
     }
 }
@@ -11034,15 +8447,12 @@ public Flector operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiFlatPo
 }
 public extension VersorOdd {
     public Flector weight_expansion(AntiFlatPoint other) {
-        FlatPoint right_anti_dual = FlatPoint(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e35 * this.e42) + (right_anti_dual.e45 * this.e23), (right_anti_dual.e15 * this.e43) + (right_anti_dual.e45 * this.e31), (right_anti_dual.e25 * this.e41) + (right_anti_dual.e45 * this.e12), -(right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - (right_anti_dual.group0.yzxx * float4(this.group0.zxy, this.e23))
+            float4((right_anti_dual_g0[2] * this.e42) + (right_anti_dual_g0[3] * this.e23), (right_anti_dual_g0[0] * this.e43) + (right_anti_dual_g0[3] * this.e31), (right_anti_dual_g0[1] * this.e41) + (right_anti_dual_g0[3] * this.e12), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -11052,17 +8462,13 @@ public Flector operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiFlecto
 }
 public extension VersorOdd {
     public Flector weight_expansion(AntiFlector other) {
-        Flector right_anti_dual = Flector(
-            /* e15, e25, e35, e45 */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            right_anti_dual_g0 * float4(this.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e45 * this.e23) + (right_anti_dual.e4235 * this.scalar), (right_anti_dual.e45 * this.e31) + (right_anti_dual.e4315 * this.scalar), (right_anti_dual.e45 * this.e12) + (right_anti_dual.e4125 * this.scalar), -(right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (this.group0.yzxw * float4(right_anti_dual.group0.zxy, right_anti_dual.e3215)) - (right_anti_dual.group0.yzxx * float4(this.group0.zxy, this.e23))
+            float4((right_anti_dual_g0[3] * this.e23) + (right_anti_dual_g1[0] * this.scalar), (right_anti_dual_g0[3] * this.e31) + (right_anti_dual_g1[1] * this.scalar), (right_anti_dual_g0[3] * this.e12) + (right_anti_dual_g1[2] * this.scalar), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) + (this.group0.yzxw * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[3])) - (right_anti_dual_g0.yzxx * float4(this.group0.zxy, this.e23))
         );
     }
 }
@@ -11072,17 +8478,13 @@ public Motor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiLine rhs
 }
 public extension VersorOdd {
     public Motor weight_expansion(AntiLine other) {
-        Line right_anti_dual = Line(
-            /* e415, e425, e435 */
-            other.group0.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group1.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float3 right_anti_dual_g1 = other.group1.xyz * float3(-1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group0.xyz), -(right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float4((right_anti_dual_g0 * float3(this.scalar)), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e235, e315, e125, e5 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(this.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1 * this.group0.www), 0.0)
         );
     }
 }
@@ -11092,17 +8494,13 @@ public Motor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiMotor rh
 }
 public extension VersorOdd {
     public Motor weight_expansion(AntiMotor other) {
-        Motor right_anti_dual = Motor(
-            /* e415, e425, e435, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (float4(right_anti_dual.e5) * float4(this.group0.xyz, this.e1234)) + (float4(this.scalar) * right_anti_dual.group0) + float4(float3(0.0), -(right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            (right_anti_dual_g0 * float4(this.scalar)) + (float4(right_anti_dual_g1[3]) * float4(this.group0.xyz, this.e1234)) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group1.xyz)), right_anti_dual.e5 * this.scalar)
+            float4(((float3(right_anti_dual_g1[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g1.xyz)), right_anti_dual_g1[3] * this.scalar)
         );
     }
 }
@@ -11124,19 +8522,16 @@ public VersorOdd operator /(WeightExpansionInfixPartial<VersorOdd> lhs, AntiScal
 }
 public extension VersorOdd {
     public VersorOdd weight_expansion(AntiScalar other) {
-        Scalar right_anti_dual = Scalar(
-            /* scalar */
-            other.e12345 * -1.0
-        );
+        float right_anti_dual_g0 = other.e12345 * -1.0;
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0) * this.group0, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.scalar) * this.group3
+            float4(right_anti_dual_g0) * this.group3
         );
     }
 }
@@ -11146,23 +8541,16 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Ci
 }
 public extension VersorOdd {
     public DipoleInversion weight_expansion(Circle other) {
-        Dipole right_anti_dual = Dipole(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35 */
-            other.group2.xyz
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            float3(this.scalar) * other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((float3(this.scalar) * other.group2.xyz), -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e42 * this.e35) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e43 * this.e15) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e41 * this.e25) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e23 * this.e15) - (right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group0.xyz.zxy * this.group2.yzx), right_anti_dual.e15 * this.e23) - float4((right_anti_dual.group2.xyz.yzx * this.group0.zxy), right_anti_dual.e25 * this.e31)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (other.e431 * this.e35) + (other.e125 * this.e42), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (other.e412 * this.e15) + (other.e235 * this.e43), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (other.e423 * this.e25) + (other.e315 * this.e41), -(right_anti_dual_g1[0] * this.e15) - (right_anti_dual_g1[1] * this.e25) - (right_anti_dual_g1[2] * this.e35) - (other.e125 * this.e12)) - float4((other.group0.zxy * this.group2.yzx), other.e235 * this.e23) - float4((other.group2.yzx * this.group0.zxy), other.e315 * this.e31)
         );
     }
 }
@@ -11172,23 +8560,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<VersorOdd> lhs, CircleRo
 }
 public extension VersorOdd {
     public VersorOdd weight_expansion(CircleRotor other) {
-        AntiCircleRotor right_anti_dual = AntiCircleRotor(
-            /* e41, e42, e43 */
-            other.group0.xyz, 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, scalar */
-            other.group2 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.scalar), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group0.xyz) + (float3(this.scalar) * other.group0.xyz)), right_anti_dual_g2[3] * this.scalar), 
             /* e23, e31, e12, e45 */
-            (float4(right_anti_dual.scalar) * this.group1) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g2[3]) * this.group1), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.scalar * this.e15, right_anti_dual.scalar * this.e25, right_anti_dual.scalar * this.e35, -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)) + (right_anti_dual.group2 * float4(this.group0.www, this.e1234)), 
+            (right_anti_dual_g2 * float4(this.group0.www, this.e1234)) + float4((this.group2.xyz * right_anti_dual_g2.www), -(right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42) + (right_anti_dual.scalar * this.e4235), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43) + (right_anti_dual.scalar * this.e4315), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41) + (right_anti_dual.scalar * this.e4125), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + float4((right_anti_dual.group0.xyz.yzx * this.group2.zxy), right_anti_dual.scalar * this.e3215) - (this.group2.yzxx * float4(right_anti_dual.group0.xyz.zxy, right_anti_dual.e23)) - float4((right_anti_dual.group2.yzx * this.group0.zxy), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (right_anti_dual_g2[3] * this.e4235), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (right_anti_dual_g2[3] * this.e4315), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (right_anti_dual_g2[3] * this.e4125), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + float4((other.group0.yzx * this.group2.zxy), right_anti_dual_g2[3] * this.e3215) - (this.group2.yzxx * float4(other.group0.zxy, right_anti_dual_g1[0])) - float4((right_anti_dual_g2.yzx * this.group0.zxy), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -11198,21 +8580,16 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Dipole
 }
 public extension VersorOdd {
     public CircleRotor weight_expansion(Dipole other) {
-        Circle right_anti_dual = Circle(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125 */
-            other.group2.xyz * float3(-1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g2 = other.group2.xyz * float3(-1.0);
         return CircleRotor(
             /* e423, e431, e412 */
-            float3(this.scalar) * right_anti_dual.group0.xyz, 
+            right_anti_dual_g0 * float3(this.scalar), 
             /* e415, e425, e435, e321 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group2.xyz), -(right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43))
+            float4((right_anti_dual_g2 * float3(this.scalar)), -(right_anti_dual_g0[0] * this.e15) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45))
         );
     }
 }
@@ -11222,25 +8599,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorOdd> lhs, DipoleI
 }
 public extension VersorOdd {
     public VersorEven weight_expansion(DipoleInversion other) {
-        AntiDipoleInversion right_anti_dual = AntiDipoleInversion(
-            /* e423, e431, e412 */
-            other.group0.xyz * float3(-1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e4 */
-            other.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group3 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float3 right_anti_dual_g0 = other.group0.xyz * float3(-1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = other.group2 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = other.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (right_anti_dual.group3.zxyy * float4(this.group0.yzx, this.e4315)) + float4(float3(0.0), (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)) + float4((right_anti_dual.group0.xyz * this.group0.www), right_anti_dual.e4 * this.e3215) + float4((right_anti_dual.group2.www * this.group1.xyz), right_anti_dual.e1 * this.e4235) - float4((right_anti_dual.group3.yzx * this.group0.zxy), right_anti_dual.e423 * this.e15), 
+            (right_anti_dual_g3.zxyy * float4(this.group0.yzx, this.e4315)) + float4(float3(0.0), (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e1234) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) + float4((right_anti_dual_g0 * this.group0.www), right_anti_dual_g2[3] * this.e3215) + float4((this.group1.xyz * right_anti_dual_g2.www), right_anti_dual_g3[0] * this.e4235) - float4((right_anti_dual_g3.yzx * this.group0.zxy), right_anti_dual_g0[0] * this.e15), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + (float4(this.scalar) * right_anti_dual.group1) - (right_anti_dual.group3.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g2[3] * this.e15) + (right_anti_dual_g3[3] * this.e41), (right_anti_dual_g2[3] * this.e25) + (right_anti_dual_g3[3] * this.e42), (right_anti_dual_g2[3] * this.e35) + (right_anti_dual_g3[3] * this.e43), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + (right_anti_dual_g1 * float4(this.scalar)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group2.xyz) + (right_anti_dual.group3.yzx * this.group2.zxy) - (right_anti_dual.group3.zxy * this.group2.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(right_anti_dual_g3[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group2.zxy) - (right_anti_dual_g3.zxy * this.group2.yzx)), right_anti_dual_g3[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(right_anti_dual.group3.xyz, right_anti_dual.e4)
+            float4(this.scalar) * float4(right_anti_dual_g3.xyz, right_anti_dual_g2[3])
         );
     }
 }
@@ -11250,19 +8621,16 @@ public VersorOdd operator /(WeightExpansionInfixPartial<VersorOdd> lhs, DualNum 
 }
 public extension VersorOdd {
     public VersorOdd weight_expansion(DualNum other) {
-        AntiDualNum right_anti_dual = AntiDualNum(
-            /* e3215, scalar */
-            other.group0.xy * float2(-1.0)
-        );
+        float2 right_anti_dual_g0 = other.group0.xy * float2(-1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[1]) * this.group0, 
             /* e23, e31, e12, e45 */
-            float4(right_anti_dual.scalar) * this.group1, 
+            float4(right_anti_dual_g0[1]) * this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.scalar) * this.group2, 
+            float4(right_anti_dual_g0[1]) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.group0.xy.yy, right_anti_dual.scalar, (right_anti_dual.e3215 * this.scalar) + (right_anti_dual.scalar * this.e3215)) * float4(this.group3.xyz, 1.0)
+            float4(right_anti_dual_g0.yy, right_anti_dual_g0[1], (right_anti_dual_g0[0] * this.scalar) + (right_anti_dual_g0[1] * this.e3215)) * float4(this.group3.xyz, 1.0)
         );
     }
 }
@@ -11272,17 +8640,14 @@ public CircleRotor operator /(WeightExpansionInfixPartial<VersorOdd> lhs, FlatPo
 }
 public extension VersorOdd {
     public CircleRotor weight_expansion(FlatPoint other) {
-        AntiFlatPoint right_anti_dual = AntiFlatPoint(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return CircleRotor(
             /* e423, e431, e412 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), right_anti_dual.e321 * this.scalar), 
+            float4(float3(0.0), right_anti_dual_g0[3] * this.scalar), 
             /* e235, e315, e125, e12345 */
-            float4((float3(this.scalar) * right_anti_dual.group0.xyz), -(right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45))
+            float4((float3(this.scalar) * right_anti_dual_g0.xyz), -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45))
         );
     }
 }
@@ -11292,21 +8657,17 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Flector
 }
 public extension VersorOdd {
     public VersorEven weight_expansion(Flector other) {
-        AntiFlector right_anti_dual = AntiFlector(
-            /* e235, e315, e125, e321 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e5 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (right_anti_dual.group1.zxyx * float4(this.group0.yzx, this.e4235)) + float4(float3(0.0), (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43) - (right_anti_dual.e321 * this.e45)) - (this.group0.zxyx * float4(right_anti_dual.group1.yzx, right_anti_dual.e235)), 
+            (right_anti_dual_g1.zxyx * float4(this.group0.yzx, this.e4235)) + float4(float3(0.0), (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e1234) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43) - (right_anti_dual_g0[3] * this.e45)) - (this.group0.zxyx * float4(right_anti_dual_g1.yzx, right_anti_dual_g0[0])), 
             /* e415, e425, e435, e321 */
-            (this.group0 * float4(right_anti_dual.group1.www, right_anti_dual.e321)) + float4(float3(0.0), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group1.xyzx * this.group1.wwwx), 
+            (this.group0 * float4(right_anti_dual_g1.www, right_anti_dual_g0[3])) + float4(float3(0.0), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz) + (right_anti_dual.group1.yzx * this.group2.zxy) - (right_anti_dual.group1.zxy * this.group2.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(right_anti_dual_g1[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz) + (right_anti_dual_g1.yzx * this.group2.zxy) - (right_anti_dual_g1.zxy * this.group2.yzx)), right_anti_dual_g1[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(this.group0.www, 0.0) * float4(right_anti_dual.group1.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g1.xyz * this.group0.www), 0.0)
         );
     }
 }
@@ -11316,21 +8677,15 @@ public DipoleInversion operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Li
 }
 public extension VersorOdd {
     public DipoleInversion weight_expansion(Line other) {
-        AntiLine right_anti_dual = AntiLine(
-            /* e23, e31, e12 */
-            other.group0.xyz, 
-            /* e15, e25, e35 */
-            other.group1.xyz
-        );
         return DipoleInversion(
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(1.0), 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(this.group0.www, 0.0) * float4(1.0, 1.0, 1.0, 0.0), 
+            float4((other.group0.xyz * this.group0.www), 0.0), 
             /* e15, e25, e35, e1234 */
-            float4((float3(this.scalar) * right_anti_dual.group1.xyz), -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            float4((float3(this.scalar) * other.group1.xyz), -(other.e415 * this.e41) - (other.e425 * this.e42) - (other.e435 * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e35 * this.e42), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e15 * this.e43), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e25 * this.e41), -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) - float4((right_anti_dual.group1.xyz.yzx * this.group0.zxy), right_anti_dual.e23 * this.e15)
+            float4((other.e415 * this.e45) + (other.e125 * this.e42), (other.e425 * this.e45) + (other.e235 * this.e43), (other.e435 * this.e45) + (other.e315 * this.e41), -(other.e425 * this.e25) - (other.e435 * this.e35) - (other.e235 * this.e23) - (other.e315 * this.e31) - (other.e125 * this.e12)) - float4((other.group1.yzx * this.group0.zxy), other.e415 * this.e15)
         );
     }
 }
@@ -11340,21 +8695,17 @@ public VersorOdd operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Motor rh
 }
 public extension VersorOdd {
     public VersorOdd weight_expansion(Motor other) {
-        AntiMotor right_anti_dual = AntiMotor(
-            /* e23, e31, e12, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e3215 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(right_anti_dual.scalar) * this.group0, 
+            float4(right_anti_dual_g0[3]) * this.group0, 
             /* e23, e31, e12, e45 */
-            float4(((float3(right_anti_dual.scalar) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.e45), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.e45), 
             /* e15, e25, e35, e1234 */
-            float4(right_anti_dual.e15 * this.scalar, right_anti_dual.e25 * this.scalar, right_anti_dual.e35 * this.scalar, -(right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)) + (float4(right_anti_dual.scalar) * this.group2), 
+            (float4(right_anti_dual_g0[3]) * this.group2) + (float4(this.scalar, this.scalar, this.scalar, 1.0) * float4(right_anti_dual_g1.xyz, -(right_anti_dual_g0[0] * this.e41) - (right_anti_dual_g0[1] * this.e42) - (right_anti_dual_g0[2] * this.e43))), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual.e35 * this.e42, right_anti_dual.e15 * this.e43, right_anti_dual.e25 * this.e41, -(right_anti_dual.e31 * this.e25) - (right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (right_anti_dual.group0 * float4(this.group1.www, this.e3215)) + float4((right_anti_dual.group0.www * this.group3.xyz), right_anti_dual.e3215 * this.scalar) - float4((right_anti_dual.group1.yzx * this.group0.zxy), right_anti_dual.e23 * this.e15)
+            (right_anti_dual_g0 * float4(this.group1.www, this.e3215)) + float4((right_anti_dual_g1.zxy * this.group0.yzx), -(right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((this.group3.xyz * right_anti_dual_g0.www), right_anti_dual_g1[3] * this.scalar) - float4((right_anti_dual_g1.yzx * this.group0.zxy), right_anti_dual_g0[0] * this.e15)
         );
     }
 }
@@ -11364,53 +8715,36 @@ public MultiVector operator /(WeightExpansionInfixPartial<VersorOdd> lhs, MultiV
 }
 public extension VersorOdd {
     public MultiVector weight_expansion(MultiVector other) {
-        MultiVector right_anti_dual = MultiVector(
-            /* scalar, e12345 */
-            other.group0.xy.yx * float2(-1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215, 
-            /* e15, e25, e35, e45 */
-            float4(other.group8.xyz, other.e321 * -1.0), 
-            /* e41, e42, e43 */
-            other.group7.xyz, 
-            /* e23, e31, e12 */
-            other.group6.xyz, 
-            /* e415, e425, e435, e321 */
-            float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e423, e431, e412 */
-            other.group4.xyz * float3(-1.0), 
-            /* e235, e315, e125 */
-            other.group3.xyz * float3(-1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
+        float2 right_anti_dual_g0 = other.group0.yx * float2(-1.0, 1.0);
+        float4 right_anti_dual_g1 = float4(other.group9.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group8.xyz, other.e321 * -1.0);
+        float4 right_anti_dual_g6 = float4(other.group5.xyz, other.e45) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 right_anti_dual_g7 = other.group4.xyz * float3(-1.0);
+        float3 right_anti_dual_g8 = other.group3.xyz * float3(-1.0);
+        float4 right_anti_dual_g9 = float4(other.group1.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(right_anti_dual.scalar * this.scalar, (right_anti_dual.e12345 * this.scalar) + (right_anti_dual.e1 * this.e4235) + (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e5 * this.e1234) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e423 * this.e15) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)), 
+            float2(right_anti_dual_g0[0] * this.scalar, (right_anti_dual_g0[1] * this.scalar) + (right_anti_dual_g1[0] * this.e4235) + (right_anti_dual_g1[1] * this.e4315) + (right_anti_dual_g1[2] * this.e4125) + (right_anti_dual_g1[3] * this.e3215) + (other.e3215 * this.e1234) - (right_anti_dual_g7[0] * this.e15) - (right_anti_dual_g7[1] * this.e25) - (right_anti_dual_g7[2] * this.e35) - (right_anti_dual_g8[0] * this.e41) - (right_anti_dual_g8[1] * this.e42) - (right_anti_dual_g8[2] * this.e43) - (right_anti_dual_g6[0] * this.e23) - (right_anti_dual_g6[1] * this.e31) - (right_anti_dual_g6[2] * this.e12) - (right_anti_dual_g6[3] * this.e45)), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group1, 
+            right_anti_dual_g1 * float4(this.scalar), 
             /* e5 */
-            right_anti_dual.e5 * this.scalar, 
+            other.e3215 * this.scalar, 
             /* e15, e25, e35, e45 */
-            (float4(right_anti_dual.scalar) * float4(this.group2.xyz, this.e45)) + (float4(this.scalar) * right_anti_dual.group3), 
+            (right_anti_dual_g3 * float4(this.scalar)) + (float4(right_anti_dual_g0[0]) * float4(this.group2.xyz, this.e45)), 
             /* e41, e42, e43 */
-            (float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group4.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group0.xyz) + (float3(this.scalar) * other.group7.xyz), 
             /* e23, e31, e12 */
-            (float3(right_anti_dual.scalar) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group5.xyz), 
+            (float3(right_anti_dual_g0[0]) * this.group1.xyz) + (float3(this.scalar) * other.group6.xyz), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e5 * this.e41) + (right_anti_dual.e415 * this.scalar), (right_anti_dual.e5 * this.e42) + (right_anti_dual.e425 * this.scalar), (right_anti_dual.e5 * this.e43) + (right_anti_dual.e435 * this.scalar), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + float4((right_anti_dual.group1.www * this.group2.xyz), right_anti_dual.e321 * this.scalar) - (right_anti_dual.group1.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g6[0] * this.scalar) + (other.e3215 * this.e41), (right_anti_dual_g6[1] * this.scalar) + (other.e3215 * this.e42), (right_anti_dual_g6[2] * this.scalar) + (other.e3215 * this.e43), -(right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12)) + float4((this.group2.xyz * right_anti_dual_g1.www), right_anti_dual_g6[3] * this.scalar) - (right_anti_dual_g1.xyzx * this.group1.wwwx), 
             /* e423, e431, e412 */
-            (float3(right_anti_dual.e4) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group7.xyz) + (right_anti_dual.group1.zxy * this.group0.yzx) - (right_anti_dual.group1.yzx * this.group0.zxy), 
+            (right_anti_dual_g7 * float3(this.scalar)) + (float3(right_anti_dual_g1[3]) * this.group1.xyz) + (right_anti_dual_g1.zxy * this.group0.yzx) - (right_anti_dual_g1.yzx * this.group0.zxy), 
             /* e235, e315, e125 */
-            (float3(right_anti_dual.e5) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group8.xyz) + (right_anti_dual.group1.yzx * this.group2.zxy) - (right_anti_dual.group1.zxy * this.group2.yzx), 
+            (right_anti_dual_g8 * float3(this.scalar)) + (float3(other.e3215) * this.group1.xyz) + (right_anti_dual_g1.yzx * this.group2.zxy) - (right_anti_dual_g1.zxy * this.group2.yzx), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e35 * this.e42) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e23 * this.e45) + (right_anti_dual.e4235 * this.scalar), (right_anti_dual.e15 * this.e43) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e31 * this.e45) + (right_anti_dual.e4315 * this.scalar), (right_anti_dual.e25 * this.e41) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e12 * this.e45) + (right_anti_dual.e4125 * this.scalar), -(right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12) - (right_anti_dual.e12 * this.e35)) + (float4(right_anti_dual.scalar) * this.group3) + float4((right_anti_dual.group4.xyz.yzx * this.group2.zxy), right_anti_dual.e3215 * this.scalar) - (this.group2.yzxx * float4(right_anti_dual.group4.xyz.zxy, right_anti_dual.e23)) - float4((right_anti_dual.group3.yzx * this.group0.zxy), right_anti_dual.e31 * this.e25), 
+            float4((right_anti_dual_g3[2] * this.e42) + (right_anti_dual_g3[3] * this.e23) + (right_anti_dual_g9[0] * this.scalar) + (other.e415 * this.e45), (right_anti_dual_g3[0] * this.e43) + (right_anti_dual_g3[3] * this.e31) + (right_anti_dual_g9[1] * this.scalar) + (other.e425 * this.e45), (right_anti_dual_g3[1] * this.e41) + (right_anti_dual_g3[3] * this.e12) + (right_anti_dual_g9[2] * this.scalar) + (other.e435 * this.e45), -(right_anti_dual_g3[0] * this.e23) - (right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12) - (other.e435 * this.e35)) + (float4(right_anti_dual_g0[0]) * this.group3) + float4((other.group7.yzx * this.group2.zxy), right_anti_dual_g9[3] * this.scalar) - (this.group2.yzxx * float4(other.group7.zxy, other.e415)) - float4((right_anti_dual_g3.yzx * this.group0.zxy), other.e425 * this.e25), 
             /* e1234 */
-            (right_anti_dual.scalar * this.e1234) + (right_anti_dual.e1234 * this.scalar) - (right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)
+            (right_anti_dual_g0[0] * this.e1234) - (other.e4 * this.scalar) - (other.e415 * this.e41) - (other.e425 * this.e42) - (other.e435 * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)
         );
     }
 }
@@ -11420,19 +8754,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Plane r
 }
 public extension VersorOdd {
     public VersorEven weight_expansion(Plane other) {
-        AntiPlane right_anti_dual = AntiPlane(
-            /* e1, e2, e3, e5 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.e2 * this.e43 * -1.0, right_anti_dual.e3 * this.e41 * -1.0, right_anti_dual.e1 * this.e42 * -1.0, (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e5 * this.e1234)) + (right_anti_dual.group0.zxyx * float4(this.group0.yzx, this.e4235)), 
+            (right_anti_dual_g0.zxyx * float4(this.group0.yzx, this.e4235)) + float4((right_anti_dual_g0.yzx * this.group0.zxy * float3(-1.0)), (right_anti_dual_g0[1] * this.e4315) + (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e1234)), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual.e5 * this.e41, right_anti_dual.e5 * this.e42, right_anti_dual.e5 * this.e43, -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group0.xyzx * this.group1.wwwx), 
+            float4((this.group0.xyz * right_anti_dual_g0.www), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (right_anti_dual.group0.yzx * this.group2.zxy) - (right_anti_dual.group0.zxy * this.group2.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group1.xyz) + (right_anti_dual_g0.yzx * this.group2.zxy) - (right_anti_dual_g0.zxy * this.group2.yzx)), right_anti_dual_g0[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(float3(1.0), 0.0) * float4(this.group0.www, 0.0) * float4(right_anti_dual.group0.xyz, 0.0) * float4(1.0, 1.0, 1.0, 0.0)
+            float4((right_anti_dual_g0.xyz * this.group0.www), 0.0)
         );
     }
 }
@@ -11442,17 +8773,11 @@ public Sphere operator /(WeightExpansionInfixPartial<VersorOdd> lhs, RoundPoint 
 }
 public extension VersorOdd {
     public Sphere weight_expansion(RoundPoint other) {
-        Sphere right_anti_dual = Sphere(
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e1234 */
-            other.e4 * -1.0
-        );
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.scalar) * right_anti_dual.group0, 
+            float4(this.scalar) * float4(other.group0.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e1234 */
-            right_anti_dual.e1234 * this.scalar
+            other.e4 * this.scalar * -1.0
         );
     }
 }
@@ -11474,21 +8799,16 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorOdd> lhs, Sphere 
 }
 public extension VersorOdd {
     public VersorEven weight_expansion(Sphere other) {
-        RoundPoint right_anti_dual = RoundPoint(
-            /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e5 */
-            other.e3215
-        );
+        float4 right_anti_dual_g0 = float4(other.group0.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual.e2 * this.e43 * -1.0, right_anti_dual.e3 * this.e41 * -1.0, right_anti_dual.e1 * this.e42 * -1.0, (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) + (right_anti_dual.e5 * this.e1234)) + (right_anti_dual.group0.zxyx * float4(this.group0.yzx, this.e4235)) + (right_anti_dual.group0.wwwy * float4(this.group1.xyz, this.e4315)), 
+            (right_anti_dual_g0.zxyx * float4(this.group0.yzx, this.e4235)) + (right_anti_dual_g0.wwwy * float4(this.group1.xyz, this.e4315)) + float4((right_anti_dual_g0.yzx * this.group0.zxy * float3(-1.0)), (right_anti_dual_g0[2] * this.e4125) + (right_anti_dual_g0[3] * this.e3215) + (other.e3215 * this.e1234)), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e4 * this.e15) + (right_anti_dual.e5 * this.e41), (right_anti_dual.e4 * this.e25) + (right_anti_dual.e5 * this.e42), (right_anti_dual.e4 * this.e35) + (right_anti_dual.e5 * this.e43), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) - (right_anti_dual.group0.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g0[3] * this.e15) + (other.e3215 * this.e41), (right_anti_dual_g0[3] * this.e25) + (other.e3215 * this.e42), (right_anti_dual_g0[3] * this.e35) + (other.e3215 * this.e43), -(right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12)) - (right_anti_dual_g0.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (right_anti_dual.group0.yzx * this.group2.zxy) - (right_anti_dual.group0.zxy * this.group2.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(other.e3215) * this.group1.xyz) + (right_anti_dual_g0.yzx * this.group2.zxy) - (right_anti_dual_g0.zxy * this.group2.yzx)), other.e3215 * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group0
+            right_anti_dual_g0 * float4(this.scalar)
         );
     }
 }
@@ -11498,25 +8818,19 @@ public VersorOdd operator /(WeightExpansionInfixPartial<VersorOdd> lhs, VersorEv
 }
 public extension VersorOdd {
     public VersorOdd weight_expansion(VersorEven other) {
-        VersorOdd right_anti_dual = VersorOdd(
-            /* e41, e42, e43, scalar */
-            other.group0 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e23, e31, e12, e45 */
-            other.group1 * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e15, e25, e35, e1234 */
-            float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
-            /* e4235, e4315, e4125, e3215 */
-            float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e4) * float4(1.0, 1.0, 1.0, -1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(((float3(right_anti_dual.scalar) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual.group0.xyz)), right_anti_dual.scalar * this.scalar), 
+            float4(((float3(right_anti_dual_g0[3]) * this.group0.xyz) + (float3(this.scalar) * right_anti_dual_g0.xyz)), right_anti_dual_g0[3] * this.scalar), 
             /* e23, e31, e12, e45 */
-            (float4(right_anti_dual.scalar) * this.group1) + (float4(this.scalar) * right_anti_dual.group1), 
+            (right_anti_dual_g1 * float4(this.scalar)) + (float4(right_anti_dual_g0[3]) * this.group1), 
             /* e15, e25, e35, e1234 */
-            (float4(right_anti_dual.scalar) * this.group2) + (float4(this.scalar) * right_anti_dual.group2) + float4(float3(0.0), -(right_anti_dual.e41 * this.e23) - (right_anti_dual.e42 * this.e31) - (right_anti_dual.e43 * this.e12) - (right_anti_dual.e23 * this.e41) - (right_anti_dual.e31 * this.e42) - (right_anti_dual.e12 * this.e43)), 
+            (right_anti_dual_g2 * float4(this.scalar)) + (float4(right_anti_dual_g0[3]) * this.group2) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12) - (right_anti_dual_g1[0] * this.e41) - (right_anti_dual_g1[1] * this.e42) - (right_anti_dual_g1[2] * this.e43)), 
             /* e4235, e4315, e4125, e3215 */
-            float4((right_anti_dual.e23 * this.e45) + (right_anti_dual.e45 * this.e23) + (right_anti_dual.e35 * this.e42) + (right_anti_dual.e4235 * this.scalar), (right_anti_dual.e31 * this.e45) + (right_anti_dual.e45 * this.e31) + (right_anti_dual.e15 * this.e43) + (right_anti_dual.e4315 * this.scalar), (right_anti_dual.e12 * this.e45) + (right_anti_dual.e45 * this.e12) + (right_anti_dual.e25 * this.e41) + (right_anti_dual.e4125 * this.scalar), -(right_anti_dual.e12 * this.e35) - (right_anti_dual.e15 * this.e23) - (right_anti_dual.e25 * this.e31) - (right_anti_dual.e35 * this.e12)) + (right_anti_dual.group0.yzxw * float4(this.group2.zxy, this.e3215)) + float4((right_anti_dual.group0.www * this.group3.xyz), right_anti_dual.e3215 * this.scalar) - (this.group2.yzxx * float4(right_anti_dual.group0.zxy, right_anti_dual.e23)) - float4((right_anti_dual.group2.yzx * this.group0.zxy), right_anti_dual.e31 * this.e25)
+            float4((right_anti_dual_g1[0] * this.e45) + (right_anti_dual_g1[3] * this.e23) + (right_anti_dual_g2[2] * this.e42) + (right_anti_dual_g3[0] * this.scalar), (right_anti_dual_g1[1] * this.e45) + (right_anti_dual_g1[3] * this.e31) + (right_anti_dual_g2[0] * this.e43) + (right_anti_dual_g3[1] * this.scalar), (right_anti_dual_g1[2] * this.e45) + (right_anti_dual_g1[3] * this.e12) + (right_anti_dual_g2[1] * this.e41) + (right_anti_dual_g3[2] * this.scalar), -(right_anti_dual_g1[2] * this.e35) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12)) + (right_anti_dual_g0.yzxw * float4(this.group2.zxy, this.e3215)) + float4((this.group3.xyz * right_anti_dual_g0.www), right_anti_dual_g3[3] * this.scalar) - (this.group2.yzxx * float4(right_anti_dual_g0.zxy, right_anti_dual_g1[0])) - float4((right_anti_dual_g2.yzx * this.group0.zxy), right_anti_dual_g1[1] * this.e25)
         );
     }
 }
@@ -11526,25 +8840,19 @@ public VersorEven operator /(WeightExpansionInfixPartial<VersorOdd> lhs, VersorO
 }
 public extension VersorOdd {
     public VersorEven weight_expansion(VersorOdd other) {
-        VersorEven right_anti_dual = VersorEven(
-            /* e423, e431, e412, e12345 */
-            other.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e415, e425, e435, e321 */
-            other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
-        );
+        float4 right_anti_dual_g0 = other.group0 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g1 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g2 = float4(other.group2.xyz, other.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 right_anti_dual_g3 = float4(other.group3.xyz, other.e1234) * float4(-1.0, -1.0, -1.0, 1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (float4(this.scalar) * right_anti_dual.group0) + (right_anti_dual.group3.wwwx * float4(this.group1.xyz, this.e4235)) + float4(float3(0.0), (right_anti_dual.e2 * this.e4315) + (right_anti_dual.e3 * this.e4125) + (right_anti_dual.e4 * this.e3215) - (right_anti_dual.e431 * this.e25) - (right_anti_dual.e412 * this.e35) - (right_anti_dual.e415 * this.e23) - (right_anti_dual.e425 * this.e31) - (right_anti_dual.e435 * this.e12) - (right_anti_dual.e321 * this.e45) - (right_anti_dual.e235 * this.e41) - (right_anti_dual.e315 * this.e42) - (right_anti_dual.e125 * this.e43)) + float4((right_anti_dual.group3.zxy * this.group0.yzx), right_anti_dual.e5 * this.e1234) - float4((right_anti_dual.group3.yzx * this.group0.zxy), right_anti_dual.e423 * this.e15), 
+            (right_anti_dual_g0 * float4(this.scalar)) + (right_anti_dual_g3.wwwx * float4(this.group1.xyz, this.e4235)) + float4(float3(0.0), (right_anti_dual_g3[1] * this.e4315) + (right_anti_dual_g3[2] * this.e4125) + (right_anti_dual_g3[3] * this.e3215) - (right_anti_dual_g0[1] * this.e25) - (right_anti_dual_g0[2] * this.e35) - (right_anti_dual_g1[0] * this.e23) - (right_anti_dual_g1[1] * this.e31) - (right_anti_dual_g1[2] * this.e12) - (right_anti_dual_g1[3] * this.e45) - (right_anti_dual_g2[0] * this.e41) - (right_anti_dual_g2[1] * this.e42) - (right_anti_dual_g2[2] * this.e43)) + float4((right_anti_dual_g3.zxy * this.group0.yzx), right_anti_dual_g2[3] * this.e1234) - float4((right_anti_dual_g3.yzx * this.group0.zxy), right_anti_dual_g0[0] * this.e15), 
             /* e415, e425, e435, e321 */
-            float4((right_anti_dual.e5 * this.e41) + (right_anti_dual.e4 * this.e15), (right_anti_dual.e5 * this.e42) + (right_anti_dual.e4 * this.e25), (right_anti_dual.e5 * this.e43) + (right_anti_dual.e4 * this.e35), -(right_anti_dual.e2 * this.e31) - (right_anti_dual.e3 * this.e12)) + (float4(this.scalar) * right_anti_dual.group1) - (right_anti_dual.group3.xyzx * this.group1.wwwx), 
+            float4((right_anti_dual_g2[3] * this.e41) + (right_anti_dual_g3[3] * this.e15), (right_anti_dual_g2[3] * this.e42) + (right_anti_dual_g3[3] * this.e25), (right_anti_dual_g2[3] * this.e43) + (right_anti_dual_g3[3] * this.e35), -(right_anti_dual_g3[1] * this.e31) - (right_anti_dual_g3[2] * this.e12)) + (right_anti_dual_g1 * float4(this.scalar)) - (right_anti_dual_g3.xyzx * this.group1.wwwx), 
             /* e235, e315, e125, e5 */
-            float4(((float3(right_anti_dual.e5) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual.group2.xyz) + (right_anti_dual.group3.yzx * this.group2.zxy) - (right_anti_dual.group3.zxy * this.group2.yzx)), right_anti_dual.e5 * this.scalar), 
+            float4(((float3(right_anti_dual_g2[3]) * this.group1.xyz) + (float3(this.scalar) * right_anti_dual_g2.xyz) + (right_anti_dual_g3.yzx * this.group2.zxy) - (right_anti_dual_g3.zxy * this.group2.yzx)), right_anti_dual_g2[3] * this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * right_anti_dual.group3
+            right_anti_dual_g3 * float4(this.scalar)
         );
     }
 }

@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         2       3       0
+//  Average:         0       0       0
+//  Maximum:         2       1       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       4       0
-//  Average:         0       3       0
-//  Maximum:         2       9       0
+//  Average:         0       2       0
+//  Maximum:         2       4       1
 impl std::ops::Div<FixPrefixOrPostfix> for Horizon {
     type Output = Horizon;
     fn div(self, _rhs: FixPrefixOrPostfix) -> Self::Output {
@@ -48,17 +48,14 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Plane {
 impl Fix for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
+    //      f32        0        0        1
+    //    simd4        0        1        0
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    // yes simd        0        1        1
+    //  no simd        0        4        1
     fn fix(self) -> Self {
         use crate::elements::*;
-        return Plane::from_groups(
-            // e423, e431, e412, e321
-            Simd32x4::from(f32::powf((self.group0() * Simd32x4::from(-1.0))[3], -0.5) * f32::powf(self[e321], -0.5) * -1.0) * self.group0(),
-        );
+        return Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0());
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Point {
@@ -84,7 +81,7 @@ impl Fix for Point {
         use crate::elements::*;
         return Point::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)) * self.group0(),
+            Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
         );
     }
 }

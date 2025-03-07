@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0
 //   Median:         2       0       0
 //  Average:         2       0       0
-//  Maximum:        23      25       0
+//  Maximum:         8       2       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       0       0
 //  Average:         2       0       0
-//  Maximum:        23      33       0
+//  Maximum:         8       6       0
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleOnOrigin {
     type Output = AntiScalar;
     fn div(self, _rhs: RoundWeightNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -30,8 +30,7 @@ impl RoundWeightNormSquared for AntiCircleOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
@@ -46,8 +45,7 @@ impl RoundWeightNormSquared for AntiCircleRotor {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
@@ -62,8 +60,7 @@ impl RoundWeightNormSquared for AntiCircleRotorAligningOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleRotorOnOrigin {
@@ -78,8 +75,7 @@ impl RoundWeightNormSquared for AntiCircleRotorOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -94,10 +90,10 @@ impl RoundWeightNormSquared for AntiDipoleInversion {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().with_w(self[e4]).wxyz());
+        let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
+            wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3],
         );
     }
 }
@@ -113,11 +109,7 @@ impl RoundWeightNormSquared for AntiDipoleInversionOnOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -132,11 +124,7 @@ impl RoundWeightNormSquared for AntiDipoleInversionOrthogonalOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDipoleOnOrigin {
@@ -151,8 +139,7 @@ impl RoundWeightNormSquared for AntiDipoleOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDualNum {
@@ -164,7 +151,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDualNum {
 impl RoundWeightNormSquared for AntiDualNum {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e1234], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiSphereOnOrigin {
@@ -176,7 +163,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiSphereOnOrigin
 impl RoundWeightNormSquared for AntiSphereOnOrigin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -191,11 +178,7 @@ impl RoundWeightNormSquared for AntiVersorEvenOnOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Circle {
@@ -210,8 +193,7 @@ impl RoundWeightNormSquared for Circle {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleAligningOrigin {
@@ -226,8 +208,7 @@ impl RoundWeightNormSquared for CircleAligningOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleAtOrigin {
@@ -242,8 +223,7 @@ impl RoundWeightNormSquared for CircleAtOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleOnOrigin {
@@ -258,8 +238,7 @@ impl RoundWeightNormSquared for CircleOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -274,8 +253,7 @@ impl RoundWeightNormSquared for CircleOrthogonalOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -290,8 +268,7 @@ impl RoundWeightNormSquared for CircleRotor {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleRotorAligningOrigin {
@@ -306,8 +283,7 @@ impl RoundWeightNormSquared for CircleRotorAligningOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleRotorOnOrigin {
@@ -322,8 +298,7 @@ impl RoundWeightNormSquared for CircleRotorOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Dipole {
@@ -338,8 +313,7 @@ impl RoundWeightNormSquared for Dipole {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleAligningOrigin {
@@ -354,8 +328,7 @@ impl RoundWeightNormSquared for DipoleAligningOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleAtOrigin {
@@ -370,8 +343,7 @@ impl RoundWeightNormSquared for DipoleAtOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -386,11 +358,7 @@ impl RoundWeightNormSquared for DipoleInversion {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e1234]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversionAligningOrigin {
@@ -405,11 +373,7 @@ impl RoundWeightNormSquared for DipoleInversionAligningOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversionAtOrigin {
@@ -424,11 +388,7 @@ impl RoundWeightNormSquared for DipoleInversionAtOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversionOnOrigin {
@@ -443,11 +403,7 @@ impl RoundWeightNormSquared for DipoleInversionOnOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
@@ -462,11 +418,7 @@ impl RoundWeightNormSquared for DipoleInversionOrthogonalOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleOnOrigin {
@@ -481,8 +433,7 @@ impl RoundWeightNormSquared for DipoleOnOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleOrthogonalOrigin {
@@ -497,8 +448,7 @@ impl RoundWeightNormSquared for DipoleOrthogonalOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DualNum {
@@ -510,7 +460,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DualNum {
 impl RoundWeightNormSquared for DualNum {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for MultiVector {
@@ -522,90 +472,27 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for MultiVector {
 impl RoundWeightNormSquared for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       23       21        0
+    //      f32        8        0        0
     //    simd2        0        1        0
-    //    simd3        0        2        0
     //    simd4        0        1        0
     // Totals...
-    // yes simd       23       25        0
-    //  no simd       23       33        0
+    // yes simd        8        2        0
+    //  no simd        8        6        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let sub_type = MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from(0.0),
-            // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(self[e4]),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            self.group3().xyz().with_w(0.0),
-            // e15, e25, e35
-            Simd32x3::from(0.0),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            Simd32x4::from(0.0),
-            // e423, e431, e412
-            self.group7(),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-            // e3215
-            0.0,
-        );
-        let other = Infinity::from_groups(/* e5 */ 1.0);
-        let wedge = MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from([1.0, other[e5] * sub_type[e1234]]) * Simd32x2::from([0.0, 1.0]),
-            // e1, e2, e3, e4
-            Simd32x4::from(0.0),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            Simd32x3::from(0.0).with_w(other[e5] * sub_type[e4]),
-            // e15, e25, e35
-            Simd32x3::from(other[e5]) * sub_type.group1().xyz(),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            (Simd32x3::from(other[e5]) * sub_type.group3().xyz()).with_w(0.0),
-            // e423, e431, e412
-            Simd32x3::from(0.0),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from([0.0, other[e5] * sub_type[e423], other[e5] * sub_type[e431], other[e5] * sub_type[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]),
-            // e3215
-            0.0,
-        );
+        let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
+        let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
         return AntiScalar::from_groups(
             // e12345
-            2.0 * (wedge[e4] * wedge[e5])
-                + 2.0 * (wedge[e423] * wedge[e235])
-                + 2.0 * (wedge[e431] * wedge[e315])
-                + 2.0 * (wedge[e412] * wedge[e125])
-                + f32::powi(wedge[e12345], 2)
-                + f32::powi(wedge[e45], 2)
-                + f32::powi(wedge[e415], 2)
-                + f32::powi(wedge[e425], 2)
-                + f32::powi(wedge[e435], 2)
-                + f32::powi(wedge[e4235], 2)
-                + f32::powi(wedge[e4315], 2)
-                + f32::powi(wedge[e4125], 2)
-                - f32::powi(wedge[scalar], 2)
-                - f32::powi(wedge[e1], 2)
-                - f32::powi(wedge[e2], 2)
-                - f32::powi(wedge[e3], 2)
-                - f32::powi(wedge[e23], 2)
-                - f32::powi(wedge[e31], 2)
-                - f32::powi(wedge[e12], 2)
-                - f32::powi(wedge[e321], 2)
-                - 2.0 * (wedge[e41] * wedge[e15])
-                - 2.0 * (wedge[e42] * wedge[e25])
-                - 2.0 * (wedge[e43] * wedge[e35])
-                - 2.0 * (wedge[e1234] * wedge[e3215]),
+            wedge_g0[1] * wedge_g0[1]
+                + wedge_g9[1] * wedge_g9[1]
+                + wedge_g9[2] * wedge_g9[2]
+                + wedge_g9[3] * wedge_g9[3]
+                + self[e4] * self[e4]
+                + self[e41] * self[e41]
+                + self[e42] * self[e42]
+                + self[e43] * self[e43]
+                - wedge_g0[0] * wedge_g0[0],
         );
     }
 }
@@ -621,8 +508,7 @@ impl RoundWeightNormSquared for NullCircleAtOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for NullDipoleAtOrigin {
@@ -637,8 +523,7 @@ impl RoundWeightNormSquared for NullDipoleAtOrigin {
     // f32        2        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for NullDipoleInversionAtOrigin {
@@ -653,11 +538,7 @@ impl RoundWeightNormSquared for NullDipoleInversionAtOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0());
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for NullSphereAtOrigin {
@@ -669,7 +550,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for NullSphereAtOrigin
 impl RoundWeightNormSquared for NullSphereAtOrigin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e1234], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for NullVersorEvenAtOrigin {
@@ -683,11 +564,10 @@ impl RoundWeightNormSquared for NullVersorEvenAtOrigin {
     //      add/sub      mul      div
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
-        use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().wxyz());
+        let wedge_g0 = self.group0().wxyz();
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
+            wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3],
         );
     }
 }
@@ -700,7 +580,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Origin {
 impl RoundWeightNormSquared for Origin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for RoundPoint {
@@ -712,7 +592,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for RoundPoint {
 impl RoundWeightNormSquared for RoundPoint {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for RoundPointAtOrigin {
@@ -724,7 +604,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for RoundPointAtOrigin
 impl RoundWeightNormSquared for RoundPointAtOrigin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e4], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Sphere {
@@ -736,7 +616,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Sphere {
 impl RoundWeightNormSquared for Sphere {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e1234], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for SphereAtOrigin {
@@ -748,7 +628,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for SphereAtOrigin {
 impl RoundWeightNormSquared for SphereAtOrigin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e1234], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for SphereOnOrigin {
@@ -760,7 +640,7 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for SphereOnOrigin {
 impl RoundWeightNormSquared for SphereOnOrigin {
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        return AntiScalar::from_groups(/* e12345 */ f32::powi(self[e1234], 2));
+        return AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorEven {
@@ -775,11 +655,7 @@ impl RoundWeightNormSquared for VersorEven {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorEvenAligningOrigin {
@@ -794,11 +670,7 @@ impl RoundWeightNormSquared for VersorEvenAligningOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorEvenAtOrigin {
@@ -812,11 +684,10 @@ impl RoundWeightNormSquared for VersorEvenAtOrigin {
     //      add/sub      mul      div
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
-        use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().wxyz());
+        let wedge_g0 = self.group0().wxyz();
         return AntiScalar::from_groups(
             // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
+            wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3],
         );
     }
 }
@@ -832,11 +703,7 @@ impl RoundWeightNormSquared for VersorEvenOnOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
@@ -851,11 +718,7 @@ impl RoundWeightNormSquared for VersorEvenOrthogonalOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -870,11 +733,7 @@ impl RoundWeightNormSquared for VersorOdd {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorOddOrthogonalOrigin {
@@ -889,10 +748,6 @@ impl RoundWeightNormSquared for VersorOddOrthogonalOrigin {
     // f32        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        return AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        return AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]);
     }
 }

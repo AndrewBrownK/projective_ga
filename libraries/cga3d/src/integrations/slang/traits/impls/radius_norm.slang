@@ -12,7 +12,7 @@ public extension AntiCircleRotor {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.scalar, 2) - pow(this.e45, 2)
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.scalar * this.scalar - this.e45 * this.e45
         );
     }
 }
@@ -28,7 +28,7 @@ public extension AntiDipoleInversion {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e4 * this.e5)
+            this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e4 * this.e5)
         );
     }
 }
@@ -76,7 +76,7 @@ public extension AntiFlector {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2)
+            this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3
         );
     }
 }
@@ -92,7 +92,7 @@ public extension AntiLine {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2)
+            this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12
         );
     }
 }
@@ -108,7 +108,7 @@ public extension AntiMotor {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.scalar, 2)
+            this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.scalar * this.scalar
         );
     }
 }
@@ -124,7 +124,7 @@ public extension AntiPlane {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2)
+            this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3
         );
     }
 }
@@ -156,7 +156,7 @@ public extension Circle {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e321, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+            this.e321 * this.e321 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
         );
     }
 }
@@ -172,7 +172,7 @@ public extension CircleRotor {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e321, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e12345, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+            this.e321 * this.e321 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - this.e12345 * this.e12345 - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
         );
     }
 }
@@ -188,7 +188,7 @@ public extension Dipole {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2)
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45
         );
     }
 }
@@ -204,7 +204,7 @@ public extension DipoleInversion {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
         );
     }
 }
@@ -252,7 +252,7 @@ public extension Flector {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            -pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+            -this.e45 * this.e45 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
         );
     }
 }
@@ -268,7 +268,7 @@ public extension Line {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            -pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2)
+            -this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435
         );
     }
 }
@@ -284,7 +284,7 @@ public extension Motor {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            -pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e12345, 2)
+            -this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - this.e12345 * this.e12345
         );
     }
 }
@@ -300,7 +300,7 @@ public extension MultiVector {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e15 * this.e41) + 2.0 * (this.e25 * this.e42) + 2.0 * (this.e35 * this.e43) + 2.0 * (this.e3215 * this.e1234) + pow(this.scalar, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) + pow(this.e321, 2) - pow(this.e12345, 2) - pow(this.e45, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2) - 2.0 * (this.e4 * this.e5) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
+            2.0*(this.e15 * this.e41) + 2.0 * (this.e25 * this.e42) + 2.0 * (this.e35 * this.e43) + 2.0 * (this.e3215 * this.e1234) + this.scalar * this.scalar + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321 - this.e12345 * this.e12345 - this.e45 * this.e45 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125 - 2.0 * (this.e4 * this.e5) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125)
         );
     }
 }
@@ -316,7 +316,7 @@ public extension Plane {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            -pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+            -this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
         );
     }
 }
@@ -332,7 +332,7 @@ public extension RoundPoint {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - 2.0 * (this.e4 * this.e5)
+            this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - 2.0 * (this.e4 * this.e5)
         );
     }
 }
@@ -364,7 +364,7 @@ public extension Sphere {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e3215 * this.e1234) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+            2.0*(this.e3215 * this.e1234) - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
         );
     }
 }
@@ -380,7 +380,7 @@ public extension VersorEven {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            pow(this.e321, 2) + pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - pow(this.e12345, 2) - pow(this.e415, 2) - pow(this.e425, 2) - pow(this.e435, 2) - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e5 * this.e4)
+            this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - this.e12345 * this.e12345 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - 2.0 * (this.e423 * this.e235) - 2.0 * (this.e431 * this.e315) - 2.0 * (this.e412 * this.e125) - 2.0 * (this.e5 * this.e4)
         );
     }
 }
@@ -396,7 +396,7 @@ public extension VersorOdd {
     public Scalar radius_norm() {
         return Scalar(
             /* scalar */
-            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + pow(this.scalar, 2) + pow(this.e23, 2) + pow(this.e31, 2) + pow(this.e12, 2) - pow(this.e45, 2) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
+            2.0*(this.e41 * this.e15) + 2.0 * (this.e42 * this.e25) + 2.0 * (this.e43 * this.e35) + 2.0 * (this.e1234 * this.e3215) + this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
         );
     }
 }

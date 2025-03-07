@@ -17,8 +17,6 @@ pub mod arity_1 {
     pub use crate::traits::anti_support::AntiSupport;
     pub use crate::traits::auto_morphism::AutoMorphism;
     pub use crate::traits::bulk::Bulk;
-    pub use crate::traits::bulk_norm::BulkNorm;
-    pub use crate::traits::bulk_norm_squared::BulkNormSquared;
     pub use crate::traits::conjugation::Conjugation;
     pub use crate::traits::constraint_valid::ConstraintValid;
     pub use crate::traits::constraint_violation::ConstraintViolation;
@@ -77,8 +75,6 @@ pub mod infix {
     pub use crate::traits::anti_wedge::anti_wedge;
     pub use crate::traits::auto_morphism::auto_morphism;
     pub use crate::traits::bulk::bulk;
-    pub use crate::traits::bulk_norm::bulk_norm;
-    pub use crate::traits::bulk_norm_squared::bulk_norm_squared;
     pub use crate::traits::conjugation::conjugation;
     pub use crate::traits::constraint_valid::constraint_valid;
     pub use crate::traits::constraint_violation::constraint_violation;
@@ -148,10 +144,6 @@ mod auto_morphism;
 pub use auto_morphism::AutoMorphism;
 mod bulk;
 pub use bulk::Bulk;
-mod bulk_norm;
-pub use bulk_norm::BulkNorm;
-mod bulk_norm_squared;
-pub use bulk_norm_squared::BulkNormSquared;
 mod conjugation;
 pub use conjugation::Conjugation;
 mod constraint_valid;

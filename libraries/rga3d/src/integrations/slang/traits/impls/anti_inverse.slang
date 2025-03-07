@@ -42,21 +42,12 @@ public Flector operator /(AntiInversePrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Flector anti_inverse() {
-        Flector anti_reverse = Flector(
-            /* e1, e2, e3, e4 */
-            this.group0 * float4(-1.0), 
-            /* e423, e431, e412, e321 */
-            this.group1
-        );
-        AntiScalar other = AntiScalar(
-            /* e1234 */
-            pow(this.e4, 2) + pow(this.e423, 2) + pow(this.e431, 2) + pow(this.e412, 2)
-        );
+        float other_g0 = this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(other.e1234) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0), 
             /* e423, e431, e412, e321 */
-            float4(other.e1234) * anti_reverse.group1
+            float4(other_g0) * this.group1
         );
     }
 }
@@ -70,21 +61,12 @@ public Line operator /(AntiInversePrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public Line anti_inverse() {
-        Line anti_reverse = Line(
-            /* e41, e42, e43 */
-            this.group0.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            this.group1.xyz * float3(-1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e1234 */
-            pow(this.e41, 2) + pow(this.e42, 2) + pow(this.e43, 2)
-        );
+        float other_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43;
         return Line(
             /* e41, e42, e43 */
-            float3(other.e1234) * anti_reverse.group0.xyz, 
+            float3(other_g0) * this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */
-            float3(other.e1234) * anti_reverse.group1.xyz
+            float3(other_g0) * this.group1.xyz * float3(-1.0)
         );
     }
 }
@@ -98,21 +80,12 @@ public Motor operator /(AntiInversePrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Motor anti_inverse() {
-        Motor anti_reverse = Motor(
-            /* e41, e42, e43, e1234 */
-            this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e23, e31, e12, scalar */
-            this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
-        );
-        AntiScalar other = AntiScalar(
-            /* e1234 */
-            pow(this.e41, 2) + pow(this.e42, 2) + pow(this.e43, 2) + pow(this.e1234, 2)
-        );
+        float other_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234;
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.e1234) * anti_reverse.group0, 
+            float4(other_g0) * this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e23, e31, e12, scalar */
-            float4(other.e1234) * anti_reverse.group1
+            float4(other_g0) * this.group1 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }
@@ -126,33 +99,18 @@ public MultiVector operator /(AntiInversePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector anti_inverse() {
-        MultiVector anti_reverse = MultiVector(
-            /* scalar, e1234 */
-            this.group0.xy, 
-            /* e1, e2, e3, e4 */
-            this.group1 * float4(-1.0), 
-            /* e41, e42, e43 */
-            this.group2.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            this.group3.xyz * float3(-1.0), 
-            /* e423, e431, e412, e321 */
-            this.group4
-        );
-        AntiScalar other = AntiScalar(
-            /* e1234 */
-            pow(this.e1234, 2) + pow(this.e4, 2) + pow(this.e41, 2) + pow(this.e42, 2) + pow(this.e43, 2) + pow(this.e423, 2) + pow(this.e431, 2) + pow(this.e412, 2)
-        );
+        float other_g0 = this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return MultiVector(
             /* scalar, e1234 */
-            float2(other.e1234) * anti_reverse.group0.xy, 
+            float2(other_g0) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(other.e1234) * anti_reverse.group1, 
+            float4(other_g0) * this.group1 * float4(-1.0), 
             /* e41, e42, e43 */
-            float3(other.e1234) * anti_reverse.group2.xyz, 
+            float3(other_g0) * this.group2.xyz * float3(-1.0), 
             /* e23, e31, e12 */
-            float3(other.e1234) * anti_reverse.group3.xyz, 
+            float3(other_g0) * this.group3.xyz * float3(-1.0), 
             /* e423, e431, e412, e321 */
-            float4(other.e1234) * anti_reverse.group4
+            float4(other_g0) * this.group4
         );
     }
 }
@@ -184,7 +142,7 @@ public extension Plane {
     public Plane anti_inverse() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(pow(this.e423, 2) + pow(this.e431, 2) + pow(this.e412, 2)) * this.group0
+            float4(this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412) * this.group0
         );
     }
 }

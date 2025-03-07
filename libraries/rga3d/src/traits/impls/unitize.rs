@@ -79,21 +79,12 @@ impl Unitize for Flector {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = Flector::from_groups(
-            // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(self[e4]),
-            // e423, e431, e412, e321
-            self.group1().xyz().with_w(0.0),
-        );
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e1234
-            f32::powi(sub_type[e4], 2) + f32::powi(sub_type[e423], 2) + f32::powi(sub_type[e431], 2) + f32::powi(sub_type[e412], 2),
-        );
+        let geometric_anti_product_g0 = self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e423, e431, e412, e321
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -118,13 +109,12 @@ impl Unitize for Line {
     //  no simd        2        6        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = Line::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ Simd32x3::from(0.0));
-        let geometric_anti_product = AntiScalar::from_groups(/* e1234 */ f32::powi(sub_type[e41], 2) + f32::powi(sub_type[e42], 2) + f32::powi(sub_type[e43], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return Line::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e1234]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e1234]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -149,16 +139,12 @@ impl Unitize for Motor {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = Motor::from_groups(/* e41, e42, e43, e1234 */ self.group0(), /* e23, e31, e12, scalar */ Simd32x4::from(0.0));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e1234
-            f32::powi(sub_type[e41], 2) + f32::powi(sub_type[e42], 2) + f32::powi(sub_type[e43], 2) + f32::powi(sub_type[e1234], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, scalar
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -185,40 +171,25 @@ impl Unitize for MultiVector {
     //  no simd        7       16        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = MultiVector::from_groups(
-            // scalar, e1234
-            Simd32x2::from([0.0, self[e1234]]),
-            // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(self[e4]),
-            // e41, e42, e43
-            self.group2(),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e423, e431, e412, e321
-            self.group4().xyz().with_w(0.0),
-        );
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e1234
-            f32::powi(sub_type[e1234], 2)
-                + f32::powi(sub_type[e4], 2)
-                + f32::powi(sub_type[e41], 2)
-                + f32::powi(sub_type[e42], 2)
-                + f32::powi(sub_type[e43], 2)
-                + f32::powi(sub_type[e423], 2)
-                + f32::powi(sub_type[e431], 2)
-                + f32::powi(sub_type[e412], 2),
-        );
+        let geometric_anti_product_g0 = self[e1234] * self[e1234]
+            + self[e4] * self[e4]
+            + self[e41] * self[e41]
+            + self[e42] * self[e42]
+            + self[e43] * self[e43]
+            + self[e423] * self[e423]
+            + self[e431] * self[e431]
+            + self[e412] * self[e412];
         return MultiVector::from_groups(
             // scalar, e1234
-            Simd32x2::from(geometric_anti_product[e1234]) * self.group0(),
+            Simd32x2::from(geometric_anti_product_g0) * self.group0(),
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e1234]) * self.group2(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group2(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e1234]) * self.group3(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group3(),
             // e423, e431, e412, e321
-            Simd32x4::from(geometric_anti_product[e1234]) * self.group4(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group4(),
         );
     }
 }
@@ -259,10 +230,9 @@ impl Unitize for Plane {
     //  no simd        2        4        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(0.0));
         return Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(f32::powi(sub_type[e423], 2) + f32::powi(sub_type[e431], 2) + f32::powi(sub_type[e412], 2)) * self.group0(),
+            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
         );
     }
 }

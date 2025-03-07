@@ -714,7 +714,7 @@ public extension Dipole {
             /* e15, e25, e35, e1234 */
             float4(this.group2.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0)
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }
@@ -734,7 +734,7 @@ public extension Dipole {
             /* e23, e31, e12 */
             this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -762,7 +762,7 @@ public extension Dipole {
             /* e23, e31, e12 */
             this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -796,7 +796,7 @@ public extension Dipole {
             /* e15, e25, e35, e1234 */
             float4((this.group2.xyz - other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0)
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }

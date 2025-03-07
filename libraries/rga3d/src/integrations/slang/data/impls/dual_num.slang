@@ -252,7 +252,7 @@ public extension DualNum {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), other.e321 * -1.0)
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }
@@ -298,7 +298,7 @@ public extension DualNum {
             /* scalar, e1234 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), other.e4 * -1.0), 
+            float4(float3(0.0), other.e4) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */

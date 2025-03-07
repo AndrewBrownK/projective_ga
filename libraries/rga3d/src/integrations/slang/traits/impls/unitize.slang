@@ -42,21 +42,12 @@ public Flector operator /(UnitizePrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Flector unitize() {
-        Flector sub_type = Flector(
-            /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e4), 
-            /* e423, e431, e412, e321 */
-            float4(this.group1.xyz, 0.0)
-        );
-        AntiScalar geometric_anti_product = AntiScalar(
-            /* e1234 */
-            pow(sub_type.e4, 2) + pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)
-        );
+        float geometric_anti_product_g0 = this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(geometric_anti_product.e1234) * this.group0, 
+            float4(geometric_anti_product_g0) * this.group0, 
             /* e423, e431, e412, e321 */
-            float4(geometric_anti_product.e1234) * this.group1
+            float4(geometric_anti_product_g0) * this.group1
         );
     }
 }
@@ -70,21 +61,12 @@ public Line operator /(UnitizePrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public Line unitize() {
-        Line sub_type = Line(
-            /* e41, e42, e43 */
-            this.group0.xyz, 
-            /* e23, e31, e12 */
-            float3(0.0)
-        );
-        AntiScalar geometric_anti_product = AntiScalar(
-            /* e1234 */
-            pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2)
-        );
+        float geometric_anti_product_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43;
         return Line(
             /* e41, e42, e43 */
-            float3(geometric_anti_product.e1234) * this.group0.xyz, 
+            float3(geometric_anti_product_g0) * this.group0.xyz, 
             /* e23, e31, e12 */
-            float3(geometric_anti_product.e1234) * this.group1.xyz
+            float3(geometric_anti_product_g0) * this.group1.xyz
         );
     }
 }
@@ -98,21 +80,12 @@ public Motor operator /(UnitizePrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Motor unitize() {
-        Motor sub_type = Motor(
-            /* e41, e42, e43, e1234 */
-            this.group0, 
-            /* e23, e31, e12, scalar */
-            float4(0.0)
-        );
-        AntiScalar geometric_anti_product = AntiScalar(
-            /* e1234 */
-            pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2) + pow(sub_type.e1234, 2)
-        );
+        float geometric_anti_product_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234;
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(geometric_anti_product.e1234) * this.group0, 
+            float4(geometric_anti_product_g0) * this.group0, 
             /* e23, e31, e12, scalar */
-            float4(geometric_anti_product.e1234) * this.group1
+            float4(geometric_anti_product_g0) * this.group1
         );
     }
 }
@@ -126,33 +99,18 @@ public MultiVector operator /(UnitizePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector unitize() {
-        MultiVector sub_type = MultiVector(
-            /* scalar, e1234 */
-            float2(0.0, this.e1234), 
-            /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e4), 
-            /* e41, e42, e43 */
-            this.group2.xyz, 
-            /* e23, e31, e12 */
-            float3(0.0), 
-            /* e423, e431, e412, e321 */
-            float4(this.group4.xyz, 0.0)
-        );
-        AntiScalar geometric_anti_product = AntiScalar(
-            /* e1234 */
-            pow(sub_type.e1234, 2) + pow(sub_type.e4, 2) + pow(sub_type.e41, 2) + pow(sub_type.e42, 2) + pow(sub_type.e43, 2) + pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)
-        );
+        float geometric_anti_product_g0 = this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return MultiVector(
             /* scalar, e1234 */
-            float2(geometric_anti_product.e1234) * this.group0.xy, 
+            float2(geometric_anti_product_g0) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(geometric_anti_product.e1234) * this.group1, 
+            float4(geometric_anti_product_g0) * this.group1, 
             /* e41, e42, e43 */
-            float3(geometric_anti_product.e1234) * this.group2.xyz, 
+            float3(geometric_anti_product_g0) * this.group2.xyz, 
             /* e23, e31, e12 */
-            float3(geometric_anti_product.e1234) * this.group3.xyz, 
+            float3(geometric_anti_product_g0) * this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            float4(geometric_anti_product.e1234) * this.group4
+            float4(geometric_anti_product_g0) * this.group4
         );
     }
 }
@@ -182,13 +140,9 @@ public Plane operator /(UnitizePrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public Plane unitize() {
-        Plane sub_type = Plane(
-            /* e423, e431, e412, e321 */
-            float4(this.group0.xyz, 0.0)
-        );
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(pow(sub_type.e423, 2) + pow(sub_type.e431, 2) + pow(sub_type.e412, 2)) * this.group0
+            float4(this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412) * this.group0
         );
     }
 }

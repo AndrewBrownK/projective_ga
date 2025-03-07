@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0
 //   Median:         0       0       0
 //  Average:         0       0       0
-//  Maximum:         2       3       0
+//  Maximum:         0       0       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       0       0
 //  Average:         0       0       0
-//  Maximum:         2       3       0
+//  Maximum:         0       0       0
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Flector {
     type Output = f32;
     fn div(self, _rhs: UnitizedNormPrefixOrPostfix) -> Self::Output {
@@ -36,14 +36,8 @@ impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Line {
     }
 }
 impl UnitizedNorm for Line {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        3        0
     fn unitized_norm(self) -> f32 {
-        use crate::elements::*;
-        let wedge = Plane::from_groups(/* e423, e431, e412, e321 */ self.group1().with_w(0.0));
-        let sub_type_2 = Line::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ Simd32x3::from(0.0));
-        return (f32::powi(sub_type_2[e41], 2) * wedge[e321]) + (f32::powi(sub_type_2[e42], 2) * wedge[e321]) + (f32::powi(sub_type_2[e43], 2) * wedge[e321]);
+        return 0.0;
     }
 }
 impl std::ops::Div<UnitizedNormPrefixOrPostfix> for Motor {

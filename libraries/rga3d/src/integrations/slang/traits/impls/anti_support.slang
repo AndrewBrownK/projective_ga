@@ -26,17 +26,11 @@ public Motor operator /(AntiSupportPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Motor anti_support() {
-        Flector right_dual = Flector(
-            /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e321 * -1.0), 
-            /* e423, e431, e412, e321 */
-            float4(this.group0.xyz, 0.0)
-        );
         return Motor(
             /* e41, e42, e43, e1234 */
             float4(0.0), 
             /* e23, e31, e12, scalar */
-            float4(right_dual.group1.xyz, right_dual.e4) * float4(-1.0)
+            float4(this.group0.xyz, this.e321 * -1.0) * float4(-1.0)
         );
     }
 }
@@ -82,21 +76,12 @@ public Flector operator /(AntiSupportPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Flector anti_support() {
-        Horizon right_complement = Horizon(
-            /* e321 */
-            1.0
-        );
-        Motor right_dual = Motor(
-            /* e41, e42, e43, e1234 */
-            this.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
-            /* e23, e31, e12, scalar */
-            float4(0.0)
-        );
+        float4 right_dual_g0 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4((float3(right_complement.e321) * right_dual.group0.xyz), 0.0), 
+            float4(right_dual_g0.xyz, 0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), right_complement.e321 * right_dual.e1234)
+            float4(float3(0.0), right_dual_g0[3])
         );
     }
 }
@@ -110,33 +95,17 @@ public MultiVector operator /(AntiSupportPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector anti_support() {
-        Horizon right_complement = Horizon(
-            /* e321 */
-            1.0
-        );
-        MultiVector right_dual = MultiVector(
-            /* scalar, e1234 */
-            float2(0.0, this.scalar), 
-            /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e321 * -1.0), 
-            /* e41, e42, e43 */
-            this.group3.xyz * float3(-1.0), 
-            /* e23, e31, e12 */
-            float3(0.0), 
-            /* e423, e431, e412, e321 */
-            float4(this.group1.xyz, 0.0)
-        );
         return MultiVector(
             /* scalar, e1234 */
-            float2(right_complement.e321 * right_dual.e4, 1.0) * float2(-1.0, 0.0), 
+            float2(this.e321 * -1.0, 1.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
-            float4((float3(right_complement.e321) * right_dual.group2.xyz), 0.0), 
+            float4((this.group3.xyz * float3(-1.0)), 0.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
-            float3(right_complement.e321) * right_dual.group4.xyz * float3(-1.0), 
+            this.group1.xyz * float3(-1.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), right_complement.e321 * right_dual.e1234)
+            float4(float3(0.0), this.scalar)
         );
     }
 }

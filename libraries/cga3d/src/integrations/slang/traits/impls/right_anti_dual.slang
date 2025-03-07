@@ -340,7 +340,7 @@ public extension MultiVector {
     public MultiVector right_anti_dual() {
         return MultiVector(
             /* scalar, e12345 */
-            this.group0.xy.yx * float2(-1.0, 1.0), 
+            this.group0.yx * float2(-1.0, 1.0), 
             /* e1, e2, e3, e4 */
             float4(this.group9.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e5 */

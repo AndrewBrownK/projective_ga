@@ -312,7 +312,7 @@ public extension Horizon {
     public Flector operator -(Origin other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), other.e4 * -1.0), 
+            float4(float3(0.0), other.e4) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412, e321 */
             float4(float3(0.0), this.e321)
         );

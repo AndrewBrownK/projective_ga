@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0
 //   Median:         2       2       0
 //  Average:         2       2       0
-//  Maximum:        23      36       1
+//  Maximum:         8      13       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       8       0
 //  Average:         2       8       0
-//  Maximum:        23      65       1
+//  Maximum:         8      38       1
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleOnOrigin {
     type Output = AntiCircleOnOrigin;
     fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
@@ -39,13 +39,12 @@ impl Unitize for AntiCircleOnOrigin {
     //  no simd        2        6        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return AntiCircleOnOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -71,15 +70,14 @@ impl Unitize for AntiCircleRotor {
     //  no simd        2       11        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return AntiCircleRotor::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -105,15 +103,14 @@ impl Unitize for AntiCircleRotorAligningOrigin {
     //  no simd        2       10        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return AntiCircleRotorAligningOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -139,13 +136,12 @@ impl Unitize for AntiCircleRotorOnOrigin {
     //  no simd        2        7        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return AntiCircleRotorOnOrigin::from_groups(
             // e41, e42, e43, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -171,20 +167,17 @@ impl Unitize for AntiDipoleInversion {
     //  no simd        3       15        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().with_w(self[e4]).wxyz());
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3];
         return AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e1, e2, e3, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group3(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group3(),
         );
     }
 }
@@ -209,16 +202,12 @@ impl Unitize for AntiDipoleInversionOnOrigin {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return AntiDipoleInversionOnOrigin::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e4, e1, e2, e3
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -244,18 +233,14 @@ impl Unitize for AntiDipoleInversionOrthogonalOrigin {
     //  no simd        3       11        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return AntiDipoleInversionOrthogonalOrigin::from_groups(
             // e423, e431, e412, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -280,10 +265,9 @@ impl Unitize for AntiDipoleOnOrigin {
     //  no simd        2        4        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
         return AntiDipoleOnOrigin::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2)) * self.group0(),
+            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
         );
     }
 }
@@ -356,16 +340,12 @@ impl Unitize for AntiVersorEvenOnOrigin {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -391,15 +371,14 @@ impl Unitize for Circle {
     //  no simd        2       10        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return Circle::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -424,15 +403,14 @@ impl Unitize for CircleAligningOrigin {
     //  no simd        2        9        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleAligningOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -457,13 +435,12 @@ impl Unitize for CircleAtOrigin {
     //  no simd        2        6        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleAtOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e235, e315, e125
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -488,13 +465,12 @@ impl Unitize for CircleOnOrigin {
     //  no simd        2        6        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleOnOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -520,13 +496,12 @@ impl Unitize for CircleOrthogonalOrigin {
     //  no simd        2        7        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e235, e315, e125
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -552,15 +527,14 @@ impl Unitize for CircleRotor {
     //  no simd        2       11        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleRotor::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -586,15 +560,14 @@ impl Unitize for CircleRotorAligningOrigin {
     //  no simd        2       10        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleRotorAligningOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -620,13 +593,12 @@ impl Unitize for CircleRotorOnOrigin {
     //  no simd        2        7        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0().xyz());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2));
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         return CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -652,15 +624,14 @@ impl Unitize for Dipole {
     //  no simd        2       10        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return Dipole::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -686,13 +657,12 @@ impl Unitize for DipoleAligningOrigin {
     //  no simd        2        7        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return DipoleAligningOrigin::from_groups(
             // e41, e42, e43, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e15, e25, e35
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -717,13 +687,12 @@ impl Unitize for DipoleAtOrigin {
     //  no simd        2        6        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return DipoleAtOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e15, e25, e35
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -749,20 +718,16 @@ impl Unitize for DipoleInversion {
     //  no simd        3       15        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0().with_w(self[e1234]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return DipoleInversion::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group3(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group3(),
         );
     }
 }
@@ -787,18 +752,14 @@ impl Unitize for DipoleInversionAligningOrigin {
     //  no simd        3       12        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -823,16 +784,12 @@ impl Unitize for DipoleInversionAtOrigin {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -857,16 +814,12 @@ impl Unitize for DipoleInversionOnOrigin {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e1234, e4235, e4315, e4125
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -892,18 +845,14 @@ impl Unitize for DipoleInversionOrthogonalOrigin {
     //  no simd        3       11        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -928,10 +877,9 @@ impl Unitize for DipoleOnOrigin {
     //  no simd        2        4        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0().xyz());
         return DipoleOnOrigin::from_groups(
             // e41, e42, e43, e45
-            Simd32x4::from(f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2)) * self.group0(),
+            Simd32x4::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]) * self.group0(),
         );
     }
 }
@@ -956,15 +904,14 @@ impl Unitize for DipoleOrthogonalOrigin {
     //  no simd        2        9        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2));
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         return DipoleOrthogonalOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -1006,114 +953,49 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for MultiVector {
 impl Unitize for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       23       23        0
+    //      f32        8        2        0
     //    simd2        0        2        0
-    //    simd3        0        6        0
+    //    simd3        0        4        0
     //    simd4        0        5        0
     // Totals...
-    // yes simd       23       36        0
-    //  no simd       23       65        0
+    // yes simd        8       13        0
+    //  no simd        8       38        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let sub_type = MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from(0.0),
-            // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(self[e4]),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            self.group3().xyz().with_w(0.0),
-            // e15, e25, e35
-            Simd32x3::from(0.0),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            Simd32x4::from(0.0),
-            // e423, e431, e412
-            self.group7(),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from([self[e1234], 0.0, 0.0, 0.0]),
-            // e3215
-            0.0,
-        );
-        let other = Infinity::from_groups(/* e5 */ 1.0);
-        let wedge = MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from([1.0, other[e5] * sub_type[e1234]]) * Simd32x2::from([0.0, 1.0]),
-            // e1, e2, e3, e4
-            Simd32x4::from(0.0),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            Simd32x3::from(0.0).with_w(other[e5] * sub_type[e4]),
-            // e15, e25, e35
-            Simd32x3::from(other[e5]) * sub_type.group1().xyz(),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            (Simd32x3::from(other[e5]) * sub_type.group3().xyz()).with_w(0.0),
-            // e423, e431, e412
-            Simd32x3::from(0.0),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from([0.0, other[e5] * sub_type[e423], other[e5] * sub_type[e431], other[e5] * sub_type[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]),
-            // e3215
-            0.0,
-        );
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            2.0 * (wedge[e4] * wedge[e5])
-                + 2.0 * (wedge[e423] * wedge[e235])
-                + 2.0 * (wedge[e431] * wedge[e315])
-                + 2.0 * (wedge[e412] * wedge[e125])
-                + f32::powi(wedge[e12345], 2)
-                + f32::powi(wedge[e45], 2)
-                + f32::powi(wedge[e415], 2)
-                + f32::powi(wedge[e425], 2)
-                + f32::powi(wedge[e435], 2)
-                + f32::powi(wedge[e4235], 2)
-                + f32::powi(wedge[e4315], 2)
-                + f32::powi(wedge[e4125], 2)
-                - f32::powi(wedge[scalar], 2)
-                - f32::powi(wedge[e1], 2)
-                - f32::powi(wedge[e2], 2)
-                - f32::powi(wedge[e3], 2)
-                - f32::powi(wedge[e23], 2)
-                - f32::powi(wedge[e31], 2)
-                - f32::powi(wedge[e12], 2)
-                - f32::powi(wedge[e321], 2)
-                - 2.0 * (wedge[e41] * wedge[e15])
-                - 2.0 * (wedge[e42] * wedge[e25])
-                - 2.0 * (wedge[e43] * wedge[e35])
-                - 2.0 * (wedge[e1234] * wedge[e3215]),
-        );
+        let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
+        let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
+        let geometric_anti_product_g0 = wedge_g0[1] * wedge_g0[1]
+            + wedge_g9[1] * wedge_g9[1]
+            + wedge_g9[2] * wedge_g9[2]
+            + wedge_g9[3] * wedge_g9[3]
+            + self[e4] * self[e4]
+            + self[e41] * self[e41]
+            + self[e42] * self[e42]
+            + self[e43] * self[e43]
+            - wedge_g0[0] * wedge_g0[0];
         return MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x2::from(geometric_anti_product_g0) * self.group0(),
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e5
-            geometric_anti_product[e12345] * self[e5],
+            geometric_anti_product_g0 * self[e5],
             // e41, e42, e43, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group3(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group3(),
             // e15, e25, e35
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group4(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group4(),
             // e23, e31, e12
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group5(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group5(),
             // e415, e425, e435, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group6(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group6(),
             // e423, e431, e412
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group7(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group7(),
             // e235, e315, e125
-            Simd32x3::from(geometric_anti_product[e12345]) * self.group8(),
+            Simd32x3::from(geometric_anti_product_g0) * self.group8(),
             // e1234, e4235, e4315, e4125
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group9(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group9(),
             // e3215
-            geometric_anti_product[e12345] * self[e3215],
+            geometric_anti_product_g0 * self[e3215],
         );
     }
 }
@@ -1138,10 +1020,9 @@ impl Unitize for NullCircleAtOrigin {
     //  no simd        2        3        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0());
         return NullCircleAtOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2)) * self.group0(),
+            Simd32x3::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
         );
     }
 }
@@ -1166,10 +1047,9 @@ impl Unitize for NullDipoleAtOrigin {
     //  no simd        2        3        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0());
         return NullDipoleAtOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2)) * self.group0(),
+            Simd32x3::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]) * self.group0(),
         );
     }
 }
@@ -1194,10 +1074,9 @@ impl Unitize for NullDipoleInversionAtOrigin {
     //  no simd        3        4        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0());
         return NullDipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from(f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2)) * self.group0(),
+            Simd32x4::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]) * self.group0(),
         );
     }
 }
@@ -1237,11 +1116,10 @@ impl Unitize for NullVersorEvenAtOrigin {
     // yes simd        3        1        0
     //  no simd        3        4        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().wxyz());
+        let wedge_g0 = self.group0().wxyz();
         return NullVersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
-            Simd32x4::from(f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2)) * self.group0(),
+            Simd32x4::from(wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3]) * self.group0(),
         );
     }
 }
@@ -1282,12 +1160,12 @@ impl Unitize for RoundPoint {
     //  no simd        0        5        1
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ 1.0 / self[e4]);
+        let geometric_anti_product_g0 = 1.0 / self[e4];
         return RoundPoint::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e5
-            geometric_anti_product[e12345] * self[e5],
+            geometric_anti_product_g0 * self[e5],
         );
     }
 }
@@ -1336,12 +1214,12 @@ impl Unitize for Sphere {
     //  no simd        0        5        1
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product = AntiScalar::from_groups(/* e12345 */ 1.0 / self[e1234]);
+        let geometric_anti_product_g0 = 1.0 / self[e1234];
         return Sphere::from_groups(
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e1234
-            geometric_anti_product[e12345] * self[e1234],
+            geometric_anti_product_g0 * self[e1234],
         );
     }
 }
@@ -1414,20 +1292,16 @@ impl Unitize for VersorEven {
     //  no simd        3       16        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group3(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group3(),
         );
     }
 }
@@ -1452,18 +1326,14 @@ impl Unitize for VersorEvenAligningOrigin {
     //  no simd        3       12        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e235, e315, e125, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -1487,17 +1357,13 @@ impl Unitize for VersorEvenAtOrigin {
     // yes simd        3        2        0
     //  no simd        3        8        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0().wxyz());
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let wedge_g0 = self.group0().wxyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3];
         return VersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e235, e315, e125, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -1522,16 +1388,12 @@ impl Unitize for VersorEvenOnOrigin {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return VersorEvenOnOrigin::from_groups(
             // e423, e431, e412, e12345
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e415, e425, e435, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
         );
     }
 }
@@ -1556,18 +1418,14 @@ impl Unitize for VersorEvenOrthogonalOrigin {
     //  no simd        3       12        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ Simd32x4::from([self[e4], self[e423], self[e431], self[e412]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e45], 2) + f32::powi(wedge[e4235], 2) + f32::powi(wedge[e4315], 2) + f32::powi(wedge[e4125], 2),
-        );
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         return VersorEvenOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e235, e315, e125, e5
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }
@@ -1592,20 +1450,16 @@ impl Unitize for VersorOdd {
     //  no simd        3       16        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e45
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group3(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group3(),
         );
     }
 }
@@ -1630,18 +1484,14 @@ impl Unitize for VersorOddOrthogonalOrigin {
     //  no simd        3       12        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge = MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ Simd32x4::from([self[e41], self[e42], self[e43], self[e1234]]));
-        let geometric_anti_product = AntiScalar::from_groups(
-            // e12345
-            f32::powi(wedge[e415], 2) + f32::powi(wedge[e425], 2) + f32::powi(wedge[e435], 2) + f32::powi(wedge[e12345], 2),
-        );
+        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
         return VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e23, e31, e12, e3215
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group1(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group1(),
             // e15, e25, e35, e1234
-            Simd32x4::from(geometric_anti_product[e12345]) * self.group2(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group2(),
         );
     }
 }

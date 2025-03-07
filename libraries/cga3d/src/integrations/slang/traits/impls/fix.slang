@@ -12,7 +12,7 @@ public extension AntiFlatPoint {
     public AntiFlatPoint fix() {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(pow((this.group0 * float4(-1.0))[3], -0.5) * pow(this.e321, -0.5) * -1.0) * this.group0
+            float4(1.0/this.e321) * this.group0
         );
     }
 }
@@ -28,7 +28,7 @@ public extension AntiPlane {
     public AntiPlane fix() {
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2)) * this.group0
+            float4(this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3) * this.group0
         );
     }
 }
@@ -60,7 +60,7 @@ public extension FlatPoint {
     public FlatPoint fix() {
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(pow((this.group0 * float4(-1.0))[3], -0.5) * pow(this.e45, -0.5)) * this.group0
+            float4(1.0/this.e45 * -1.0) * this.group0
         );
     }
 }
@@ -76,7 +76,7 @@ public extension Plane {
     public Plane fix() {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(-pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)) * this.group0
+            float4(-this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125) * this.group0
         );
     }
 }
@@ -90,15 +90,12 @@ public RoundPoint operator /(FixPrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public RoundPoint fix() {
-        Scalar geometric_product_2 = Scalar(
-            /* scalar */
-            pow(this.e1, 2) + pow(this.e2, 2) + pow(this.e3, 2) - 2.0 * (this.e4 * this.e5)
-        );
+        float geometric_product_g0 = this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - 2.0 * (this.e4 * this.e5);
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(geometric_product_2.scalar) * this.group0, 
+            float4(geometric_product_g0) * this.group0, 
             /* e5 */
-            this.e5 * geometric_product_2.scalar
+            geometric_product_g0 * this.e5
         );
     }
 }
@@ -128,15 +125,12 @@ public Sphere operator /(FixPrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public Sphere fix() {
-        Scalar geometric_product_2 = Scalar(
-            /* scalar */
-            2.0*(this.e3215 * this.e1234) - pow(this.e4235, 2) - pow(this.e4315, 2) - pow(this.e4125, 2)
-        );
+        float geometric_product_g0 = 2.0*(this.e3215 * this.e1234) - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125;
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(geometric_product_2.scalar) * this.group0, 
+            float4(geometric_product_g0) * this.group0, 
             /* e1234 */
-            geometric_product_2.scalar * this.e1234
+            geometric_product_g0 * this.e1234
         );
     }
 }

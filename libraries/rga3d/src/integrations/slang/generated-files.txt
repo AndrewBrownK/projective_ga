@@ -42,8 +42,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/anti_wedge.slang
 ./libraries/rga3d/src/integrations/slang/traits/auto_morphism.slang
 ./libraries/rga3d/src/integrations/slang/traits/bulk.slang
-./libraries/rga3d/src/integrations/slang/traits/bulk_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/bulk_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/conjugation.slang
 ./libraries/rga3d/src/integrations/slang/traits/constraint_valid.slang
 ./libraries/rga3d/src/integrations/slang/traits/constraint_violation.slang
@@ -74,8 +72,6 @@
 ./libraries/rga3d/src/integrations/slang/traits/impls/anti_wedge.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/auto_morphism.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/bulk.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/bulk_norm.slang
-./libraries/rga3d/src/integrations/slang/traits/impls/bulk_norm_squared.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/conjugation.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/constraint_valid.slang
 ./libraries/rga3d/src/integrations/slang/traits/impls/constraint_violation.slang

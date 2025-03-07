@@ -60,13 +60,12 @@ impl Inverse for Flector {
     //  no simd        3       12        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        let reverse = Flector::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e423, e431, e412, e321 */ self.group1() * Simd32x4::from(-1.0));
-        let other = Scalar::from_groups(/* scalar */ f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2) + f32::powi(self[e321], 2));
+        let other_g0 = self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321];
         return Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(other[scalar]) * reverse.group0(),
+            Simd32x4::from(other_g0) * self.group0(),
             // e423, e431, e412, e321
-            Simd32x4::from(other[scalar]) * reverse.group1(),
+            Simd32x4::from(other_g0) * self.group1() * Simd32x4::from(-1.0),
         );
     }
 }
@@ -111,18 +110,12 @@ impl Inverse for Line {
     //  no simd        2       12        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        let reverse = Line::from_groups(
-            // e41, e42, e43
-            self.group0() * Simd32x3::from(-1.0),
-            // e23, e31, e12
-            self.group1() * Simd32x3::from(-1.0),
-        );
-        let other = Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2));
+        let other_g0 = self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12];
         return Line::from_groups(
             // e41, e42, e43
-            Simd32x3::from(other[scalar]) * reverse.group0(),
+            Simd32x3::from(other_g0) * self.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
-            Simd32x3::from(other[scalar]) * reverse.group1(),
+            Simd32x3::from(other_g0) * self.group1() * Simd32x3::from(-1.0),
         );
     }
 }
@@ -147,21 +140,12 @@ impl Inverse for Motor {
     //  no simd        3       16        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        let reverse = Motor::from_groups(
-            // e41, e42, e43, e1234
-            self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-            // e23, e31, e12, scalar
-            self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-        );
-        let other = Scalar::from_groups(
-            // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2),
-        );
+        let other_g0 = self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar];
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from(other[scalar]) * reverse.group0(),
+            Simd32x4::from(other_g0) * self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
-            Simd32x4::from(other[scalar]) * reverse.group1(),
+            Simd32x4::from(other_g0) * self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
         );
     }
 }
@@ -188,40 +172,25 @@ impl Inverse for MultiVector {
     //  no simd        7       26        0
     fn inverse(self) -> Self {
         use crate::elements::*;
-        let reverse = MultiVector::from_groups(
-            // scalar, e1234
-            self.group0(),
-            // e1, e2, e3, e4
-            self.group1(),
-            // e41, e42, e43
-            self.group2() * Simd32x3::from(-1.0),
-            // e23, e31, e12
-            self.group3() * Simd32x3::from(-1.0),
-            // e423, e431, e412, e321
-            self.group4() * Simd32x4::from(-1.0),
-        );
-        let other = Scalar::from_groups(
-            // scalar
-            f32::powi(self[scalar], 2)
-                + f32::powi(self[e1], 2)
-                + f32::powi(self[e2], 2)
-                + f32::powi(self[e3], 2)
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                + f32::powi(self[e321], 2),
-        );
+        let other_g0 = self[scalar] * self[scalar]
+            + self[e1] * self[e1]
+            + self[e2] * self[e2]
+            + self[e3] * self[e3]
+            + self[e23] * self[e23]
+            + self[e31] * self[e31]
+            + self[e12] * self[e12]
+            + self[e321] * self[e321];
         return MultiVector::from_groups(
             // scalar, e1234
-            Simd32x2::from(other[scalar]) * reverse.group0(),
+            Simd32x2::from(other_g0) * self.group0(),
             // e1, e2, e3, e4
-            Simd32x4::from(other[scalar]) * reverse.group1(),
+            Simd32x4::from(other_g0) * self.group1(),
             // e41, e42, e43
-            Simd32x3::from(other[scalar]) * reverse.group2(),
+            Simd32x3::from(other_g0) * self.group2() * Simd32x3::from(-1.0),
             // e23, e31, e12
-            Simd32x3::from(other[scalar]) * reverse.group3(),
+            Simd32x3::from(other_g0) * self.group3() * Simd32x3::from(-1.0),
             // e423, e431, e412, e321
-            Simd32x4::from(other[scalar]) * reverse.group4(),
+            Simd32x4::from(other_g0) * self.group4() * Simd32x4::from(-1.0),
         );
     }
 }
@@ -275,7 +244,7 @@ impl Inverse for Point {
         use crate::elements::*;
         return Point::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)) * self.group0(),
+            Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
         );
     }
 }

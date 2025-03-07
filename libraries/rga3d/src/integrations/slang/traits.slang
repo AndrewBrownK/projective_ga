@@ -18,8 +18,6 @@ __include "traits/anti_support";
 __include "traits/anti_wedge";
 __include "traits/auto_morphism";
 __include "traits/bulk";
-__include "traits/bulk_norm";
-__include "traits/bulk_norm_squared";
 __include "traits/conjugation";
 __include "traits/constraint_valid";
 __include "traits/constraint_violation";

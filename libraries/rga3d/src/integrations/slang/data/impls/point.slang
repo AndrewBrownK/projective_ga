@@ -258,7 +258,7 @@ public extension Point {
             /* e1, e2, e3, e4 */
             this.group0, 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), other.e321 * -1.0)
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }

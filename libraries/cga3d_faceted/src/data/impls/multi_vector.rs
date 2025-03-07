@@ -1024,7 +1024,7 @@ impl std::ops::Add<AntiFlectorOnOrigin> for MultiVector {
             // scalar, e12345
             self.group0(),
             // e1, e2, e3, e4
-            (other.group0().yzw() + self.group1().xyz()).with_w(self[e4]),
+            (self.group1().xyz() + other.group0().yzw()).with_w(self[e4]),
             // e5
             self[e5],
             // e41, e42, e43, e45
@@ -1053,7 +1053,7 @@ impl std::ops::AddAssign<AntiFlectorOnOrigin> for MultiVector {
             // scalar, e12345
             self.group0(),
             // e1, e2, e3, e4
-            (other.group0().yzw() + self.group1().xyz()).with_w(self[e4]),
+            (self.group1().xyz() + other.group0().yzw()).with_w(self[e4]),
             // e5
             self[e5],
             // e41, e42, e43, e45
@@ -10180,13 +10180,13 @@ impl std::ops::Mul<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        9        0
+    //      f32        2        8        0
     //    simd2        0        1        0
     //    simd3        2        6        0
-    //    simd4        0        2        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        4       18        0
-    //  no simd        8       37        0
+    //  no simd        8       40        0
     fn mul(self, other: Horizon) -> Self::Output {
         return self.geometric_product(other);
     }

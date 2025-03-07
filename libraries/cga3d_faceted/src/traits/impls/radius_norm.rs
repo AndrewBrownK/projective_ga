@@ -30,7 +30,7 @@ impl RadiusNorm for AntiCircleOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2));
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiCircleRotor {
@@ -50,11 +50,11 @@ impl RadiusNorm for AntiCircleRotor {
             2.0 * (self[e41] * self[e15])
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                + f32::powi(self[scalar], 2)
-                - f32::powi(self[e45], 2),
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12]
+                + self[scalar] * self[scalar]
+                - self[e45] * self[e45],
         );
     }
 }
@@ -75,10 +75,10 @@ impl RadiusNorm for AntiCircleRotorAligningOrigin {
             2.0 * (self[e41] * self[e15])
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                + f32::powi(self[scalar], 2),
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12]
+                + self[scalar] * self[scalar],
         );
     }
 }
@@ -94,10 +94,7 @@ impl RadiusNorm for AntiCircleRotorAligningOriginAtInfinity {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiCircleRotorAtInfinity {
@@ -114,7 +111,7 @@ impl RadiusNorm for AntiCircleRotorAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2) - f32::powi(self[e45], 2),
+            self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar] - self[e45] * self[e45],
         );
     }
 }
@@ -130,10 +127,7 @@ impl RadiusNorm for AntiCircleRotorOnOrigin {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[scalar], 2) + f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -150,10 +144,10 @@ impl RadiusNorm for AntiDipoleInversion {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125])
@@ -175,10 +169,7 @@ impl RadiusNorm for AntiDipoleInversionAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2),
+            self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435],
         );
     }
 }
@@ -194,7 +185,7 @@ impl RadiusNorm for AntiDipoleInversionOnOrigin {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
@@ -211,9 +202,9 @@ impl RadiusNorm for AntiDipoleInversionOrthogonalOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            -self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125])
@@ -281,7 +272,7 @@ impl RadiusNorm for AntiFlector {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiFlectorOnOrigin {
@@ -296,7 +287,7 @@ impl RadiusNorm for AntiFlectorOnOrigin {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiLine {
@@ -311,7 +302,7 @@ impl RadiusNorm for AntiLine {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2));
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiLineOnOrigin {
@@ -326,7 +317,7 @@ impl RadiusNorm for AntiLineOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2));
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiMotor {
@@ -341,10 +332,7 @@ impl RadiusNorm for AntiMotor {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiMotorOnOrigin {
@@ -359,10 +347,7 @@ impl RadiusNorm for AntiMotorOnOrigin {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiMysteryCircleRotor {
@@ -379,7 +364,7 @@ impl RadiusNorm for AntiMysteryCircleRotor {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) + f32::powi(self[scalar], 2) - f32::powi(self[e45], 2),
+            self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar] - self[e45] * self[e45],
         );
     }
 }
@@ -397,10 +382,7 @@ impl RadiusNorm for AntiMysteryDipoleInversion {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2),
+            self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435],
         );
     }
 }
@@ -416,7 +398,7 @@ impl RadiusNorm for AntiPlane {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiPlaneOnOrigin {
@@ -431,7 +413,7 @@ impl RadiusNorm for AntiPlaneOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiScalar {
@@ -461,7 +443,7 @@ impl RadiusNorm for AntiSphereOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2));
+        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for AntiVersorEvenOnOrigin {
@@ -476,10 +458,7 @@ impl RadiusNorm for AntiVersorEvenOnOrigin {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[scalar], 2) + f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for Circle {
@@ -496,10 +475,10 @@ impl RadiusNorm for Circle {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            self[e321] * self[e321]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125]),
@@ -520,9 +499,9 @@ impl RadiusNorm for CircleAligningOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            -self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125]),
@@ -541,10 +520,7 @@ impl RadiusNorm for CircleAtInfinity {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[e321], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for CircleAtOrigin {
@@ -574,7 +550,7 @@ impl RadiusNorm for CircleOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2));
+        return Scalar::from_groups(/* scalar */ -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for CircleOrthogonalOrigin {
@@ -591,7 +567,7 @@ impl RadiusNorm for CircleOrthogonalOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) - 2.0 * (self[e423] * self[e235]) - 2.0 * (self[e431] * self[e315]) - 2.0 * (self[e412] * self[e125]),
+            self[e321] * self[e321] - 2.0 * (self[e423] * self[e235]) - 2.0 * (self[e431] * self[e315]) - 2.0 * (self[e412] * self[e125]),
         );
     }
 }
@@ -609,11 +585,11 @@ impl RadiusNorm for CircleRotor {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
-                - f32::powi(self[e12345], 2)
+            self[e321] * self[e321]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
+                - self[e12345] * self[e12345]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125]),
@@ -634,10 +610,10 @@ impl RadiusNorm for CircleRotorAligningOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
-                - f32::powi(self[e12345], 2)
+            -self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
+                - self[e12345] * self[e12345]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125]),
@@ -658,7 +634,7 @@ impl RadiusNorm for CircleRotorAligningOriginAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2) - f32::powi(self[e12345], 2),
+            -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
         );
     }
 }
@@ -676,7 +652,7 @@ impl RadiusNorm for CircleRotorAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2) - f32::powi(self[e12345], 2),
+            self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
         );
     }
 }
@@ -694,7 +670,7 @@ impl RadiusNorm for CircleRotorOnOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e12345], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2),
+            -self[e12345] * self[e12345] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435],
         );
     }
 }
@@ -712,13 +688,8 @@ impl RadiusNorm for Dipole {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            2.0 * (self[e41] * self[e15])
-                + 2.0 * (self[e42] * self[e25])
-                + 2.0 * (self[e43] * self[e35])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2),
+            2.0 * (self[e41] * self[e15]) + 2.0 * (self[e42] * self[e25]) + 2.0 * (self[e43] * self[e35]) + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+                - self[e45] * self[e45],
         );
     }
 }
@@ -736,7 +707,7 @@ impl RadiusNorm for DipoleAligningOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            2.0 * (self[e41] * self[e15]) + 2.0 * (self[e42] * self[e25]) + 2.0 * (self[e43] * self[e35]) - f32::powi(self[e45], 2),
+            2.0 * (self[e41] * self[e15]) + 2.0 * (self[e42] * self[e25]) + 2.0 * (self[e43] * self[e35]) - self[e45] * self[e45],
         );
     }
 }
@@ -752,7 +723,7 @@ impl RadiusNorm for DipoleAtInfinity {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) - f32::powi(self[e45], 2));
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] - self[e45] * self[e45]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for DipoleAtOrigin {
@@ -788,13 +759,13 @@ impl RadiusNorm for DipoleInversion {
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e1234] * self[e3215])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12]
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -813,10 +784,10 @@ impl RadiusNorm for DipoleInversionAligningOrigin {
         return Scalar::from_groups(
             // scalar
             2.0 * (self[e41] * self[e15]) + 2.0 * (self[e42] * self[e25]) + 2.0 * (self[e43] * self[e35]) + 2.0 * (self[e1234] * self[e3215])
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -834,11 +805,11 @@ impl RadiusNorm for DipoleInversionAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+            self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -874,7 +845,7 @@ impl RadiusNorm for DipoleInversionOnOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e45], 2) - f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2),
+            -self[e45] * self[e45] - self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125],
         );
     }
 }
@@ -896,9 +867,9 @@ impl RadiusNorm for DipoleInversionOrthogonalOrigin {
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e3215] * self[e1234])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2),
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12],
         );
     }
 }
@@ -931,12 +902,7 @@ impl RadiusNorm for DipoleOrthogonalOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            2.0 * (self[e41] * self[e15])
-                + 2.0 * (self[e42] * self[e25])
-                + 2.0 * (self[e43] * self[e35])
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2),
+            2.0 * (self[e41] * self[e15]) + 2.0 * (self[e42] * self[e25]) + 2.0 * (self[e43] * self[e35]) + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
         );
     }
 }
@@ -999,7 +965,7 @@ impl RadiusNorm for Flector {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e45], 2) - f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2),
+            -self[e45] * self[e45] - self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125],
         );
     }
 }
@@ -1017,7 +983,7 @@ impl RadiusNorm for FlectorOnOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e45], 2) - f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2),
+            -self[e45] * self[e45] - self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125],
         );
     }
 }
@@ -1033,7 +999,7 @@ impl RadiusNorm for Line {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2));
+        return Scalar::from_groups(/* scalar */ -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for LineOnOrigin {
@@ -1048,7 +1014,7 @@ impl RadiusNorm for LineOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2));
+        return Scalar::from_groups(/* scalar */ -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for Motor {
@@ -1065,7 +1031,7 @@ impl RadiusNorm for Motor {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2) - f32::powi(self[e12345], 2),
+            -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
         );
     }
 }
@@ -1083,7 +1049,7 @@ impl RadiusNorm for MotorOnOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2) - f32::powi(self[e12345], 2),
+            -self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
         );
     }
 }
@@ -1105,22 +1071,22 @@ impl RadiusNorm for MultiVector {
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e1234] * self[e3215])
-                + f32::powi(self[scalar], 2)
-                + f32::powi(self[e1], 2)
-                + f32::powi(self[e2], 2)
-                + f32::powi(self[e3], 2)
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                + f32::powi(self[e321], 2)
-                - f32::powi(self[e12345], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2)
+                + self[scalar] * self[scalar]
+                + self[e1] * self[e1]
+                + self[e2] * self[e2]
+                + self[e3] * self[e3]
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12]
+                + self[e321] * self[e321]
+                - self[e12345] * self[e12345]
+                - self[e45] * self[e45]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125]
                 - 2.0 * (self[e4] * self[e5])
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
@@ -1140,10 +1106,7 @@ impl RadiusNorm for MysteryCircle {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(
-            // scalar
-            f32::powi(self[e321], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2),
-        );
+        return Scalar::from_groups(/* scalar */ self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for MysteryCircleRotor {
@@ -1160,7 +1123,7 @@ impl RadiusNorm for MysteryCircleRotor {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2) - f32::powi(self[e12345], 2),
+            self[e321] * self[e321] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435] - self[e12345] * self[e12345],
         );
     }
 }
@@ -1176,7 +1139,7 @@ impl RadiusNorm for MysteryDipole {
     // f32        3        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2) - f32::powi(self[e45], 2));
+        return Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] - self[e45] * self[e45]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for MysteryDipoleInversion {
@@ -1193,11 +1156,11 @@ impl RadiusNorm for MysteryDipoleInversion {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+            self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -1215,11 +1178,11 @@ impl RadiusNorm for MysteryVersorEven {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2) + f32::powi(self[e321], 2)
-                - f32::powi(self[e12345], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2),
+            self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321]
+                - self[e12345] * self[e12345]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435],
         );
     }
 }
@@ -1237,11 +1200,11 @@ impl RadiusNorm for MysteryVersorOdd {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[scalar], 2) + f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2)
-                - f32::powi(self[e45], 2),
+            self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125]
+                - self[e45] * self[e45],
         );
     }
 }
@@ -1257,7 +1220,7 @@ impl RadiusNorm for Plane {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2));
+        return Scalar::from_groups(/* scalar */ -self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for PlaneOnOrigin {
@@ -1272,7 +1235,7 @@ impl RadiusNorm for PlaneOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2));
+        return Scalar::from_groups(/* scalar */ -self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for RoundPoint {
@@ -1287,7 +1250,7 @@ impl RadiusNorm for RoundPoint {
     // f32        3        2        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2) - 2.0 * (self[e4] * self[e5]));
+        return Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] - 2.0 * (self[e4] * self[e5]));
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for RoundPointAtOrigin {
@@ -1336,7 +1299,7 @@ impl RadiusNorm for Sphere {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            2.0 * (self[e3215] * self[e1234]) - f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2),
+            2.0 * (self[e3215] * self[e1234]) - self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125],
         );
     }
 }
@@ -1367,7 +1330,7 @@ impl RadiusNorm for SphereOnOrigin {
     // f32        2        0        0
     fn radius_norm(self) -> Scalar {
         use crate::elements::*;
-        return Scalar::from_groups(/* scalar */ -f32::powi(self[e4235], 2) - f32::powi(self[e4315], 2) - f32::powi(self[e4125], 2));
+        return Scalar::from_groups(/* scalar */ -self[e4235] * self[e4235] - self[e4315] * self[e4315] - self[e4125] * self[e4125]);
     }
 }
 impl std::ops::Div<RadiusNormPrefixOrPostfix> for VersorEven {
@@ -1384,11 +1347,11 @@ impl RadiusNorm for VersorEven {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)
-                - f32::powi(self[e12345], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]
+                - self[e12345] * self[e12345]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125])
@@ -1410,10 +1373,10 @@ impl RadiusNorm for VersorEvenAligningOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e12345], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2)
+            -self[e12345] * self[e12345]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125])
@@ -1435,11 +1398,11 @@ impl RadiusNorm for VersorEvenAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2) + f32::powi(self[e321], 2)
-                - f32::powi(self[e12345], 2)
-                - f32::powi(self[e415], 2)
-                - f32::powi(self[e425], 2)
-                - f32::powi(self[e435], 2),
+            self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321]
+                - self[e12345] * self[e12345]
+                - self[e415] * self[e415]
+                - self[e425] * self[e425]
+                - self[e435] * self[e435],
         );
     }
 }
@@ -1475,7 +1438,7 @@ impl RadiusNorm for VersorEvenOnOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            -f32::powi(self[e12345], 2) - f32::powi(self[e415], 2) - f32::powi(self[e425], 2) - f32::powi(self[e435], 2),
+            -self[e12345] * self[e12345] - self[e415] * self[e415] - self[e425] * self[e425] - self[e435] * self[e435],
         );
     }
 }
@@ -1493,7 +1456,7 @@ impl RadiusNorm for VersorEvenOrthogonalOrigin {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[e321], 2) + f32::powi(self[e1], 2) + f32::powi(self[e2], 2) + f32::powi(self[e3], 2)
+            self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
                 - 2.0 * (self[e412] * self[e125])
@@ -1519,14 +1482,14 @@ impl RadiusNorm for VersorOdd {
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e1234] * self[e3215])
-                + f32::powi(self[scalar], 2)
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+                + self[scalar] * self[scalar]
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12]
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -1544,11 +1507,11 @@ impl RadiusNorm for VersorOddAtInfinity {
         use crate::elements::*;
         return Scalar::from_groups(
             // scalar
-            f32::powi(self[scalar], 2) + f32::powi(self[e23], 2) + f32::powi(self[e31], 2) + f32::powi(self[e12], 2)
-                - f32::powi(self[e45], 2)
-                - f32::powi(self[e4235], 2)
-                - f32::powi(self[e4315], 2)
-                - f32::powi(self[e4125], 2),
+            self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+                - self[e45] * self[e45]
+                - self[e4235] * self[e4235]
+                - self[e4315] * self[e4315]
+                - self[e4125] * self[e4125],
         );
     }
 }
@@ -1570,10 +1533,10 @@ impl RadiusNorm for VersorOddOrthogonalOrigin {
                 + 2.0 * (self[e42] * self[e25])
                 + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e3215] * self[e1234])
-                + f32::powi(self[scalar], 2)
-                + f32::powi(self[e23], 2)
-                + f32::powi(self[e31], 2)
-                + f32::powi(self[e12], 2),
+                + self[scalar] * self[scalar]
+                + self[e23] * self[e23]
+                + self[e31] * self[e31]
+                + self[e12] * self[e12],
         );
     }
 }

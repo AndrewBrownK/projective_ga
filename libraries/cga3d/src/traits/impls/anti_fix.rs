@@ -9,15 +9,15 @@
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         2       2       0
+//   Median:         2       1       0
 //  Average:         1       1       0
-//  Maximum:         3       4       0
+//  Maximum:         3       4       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         2       7       0
-//  Average:         1       4       0
-//  Maximum:         3       9       0
+//   Median:         2       4       0
+//  Average:         1       3       0
+//  Maximum:         3       7       1
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiFlatPoint {
     type Output = AntiFlatPoint;
     fn div(self, _rhs: AntiFixPrefixOrPostfix) -> Self::Output {
@@ -31,15 +31,15 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for AntiFlatPoint {
 }
 impl AntiFix for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        1
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        1
+    //  no simd        0        5        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return AntiFlatPoint::from_groups(
-            // e235, e315, e125, e321
-            Simd32x4::from(f32::powf((self.group0() * Simd32x4::from(-1.0))[3], -0.5) * f32::powf(self[e321], -0.5)) * self.group0(),
-        );
+        return AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(1.0 / self[e321] * -1.0) * self.group0());
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiPlane {
@@ -65,7 +65,7 @@ impl AntiFix for AntiPlane {
         use crate::elements::*;
         return AntiPlane::from_groups(
             // e1, e2, e3, e5
-            Simd32x4::from(-f32::powi(self[e1], 2) - f32::powi(self[e2], 2) - f32::powi(self[e3], 2)) * self.group0(),
+            Simd32x4::from(-self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3]) * self.group0(),
         );
     }
 }
@@ -99,17 +99,14 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for FlatPoint {
 impl AntiFix for FlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
+    //      f32        0        0        1
+    //    simd4        0        1        0
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    // yes simd        0        1        1
+    //  no simd        0        4        1
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        return FlatPoint::from_groups(
-            // e15, e25, e35, e45
-            Simd32x4::from(f32::powf((self.group0() * Simd32x4::from(-1.0))[3], -0.5) * f32::powf(self[e45], -0.5) * -1.0) * self.group0(),
-        );
+        return FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from(1.0 / self[e45]) * self.group0());
     }
 }
 impl std::ops::Div<AntiFixPrefixOrPostfix> for Plane {
@@ -135,7 +132,7 @@ impl AntiFix for Plane {
         use crate::elements::*;
         return Plane::from_groups(
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2)) * self.group0(),
+            Simd32x4::from(self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125]) * self.group0(),
         );
     }
 }
@@ -160,13 +157,12 @@ impl AntiFix for RoundPoint {
     //  no simd        3        7        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_2 =
-            AntiScalar::from_groups(/* e12345 */ 2.0 * (self[e4] * self[e5]) - f32::powi(self[e1], 2) - f32::powi(self[e2], 2) - f32::powi(self[e3], 2));
+        let geometric_anti_product_g0 = 2.0 * (self[e4] * self[e5]) - self[e1] * self[e1] - self[e2] * self[e2] - self[e3] * self[e3];
         return RoundPoint::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(geometric_anti_product_2[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e5
-            geometric_anti_product_2[e12345] * self[e5],
+            geometric_anti_product_g0 * self[e5],
         );
     }
 }
@@ -207,15 +203,12 @@ impl AntiFix for Sphere {
     //  no simd        3        7        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_2 = AntiScalar::from_groups(
-            // e12345
-            f32::powi(self[e4235], 2) + f32::powi(self[e4315], 2) + f32::powi(self[e4125], 2) - 2.0 * (self[e3215] * self[e1234]),
-        );
+        let geometric_anti_product_g0 = self[e4235] * self[e4235] + self[e4315] * self[e4315] + self[e4125] * self[e4125] - 2.0 * (self[e3215] * self[e1234]);
         return Sphere::from_groups(
             // e4235, e4315, e4125, e3215
-            Simd32x4::from(geometric_anti_product_2[e12345]) * self.group0(),
+            Simd32x4::from(geometric_anti_product_g0) * self.group0(),
             // e1234
-            geometric_anti_product_2[e12345] * self[e1234],
+            geometric_anti_product_g0 * self[e1234],
         );
     }
 }

@@ -78,7 +78,7 @@ public extension AntiFlatPoint {
             /* e41, e42, e43 */
             this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), this.e321 * -1.0), 
+            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e15, e25, e35 */
             float3(0.0)
         );
@@ -98,7 +98,7 @@ public extension AntiFlector {
             /* e41, e42, e43 */
             this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), this.e321 * -1.0), 
+            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e15, e25, e35, e1234 */
             float4(float3(0.0), this.e5), 
             /* e4235, e4315, e4125, e3215 */
@@ -300,7 +300,7 @@ public extension FlatPoint {
             /* e423, e431, e412 */
             this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e45 * -1.0), 
+            float4(float3(0.0), this.e45) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125 */
             float3(0.0)
         );
@@ -320,7 +320,7 @@ public extension Flector {
             /* e423, e431, e412 */
             this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e45 * -1.0), 
+            float4(float3(0.0), this.e45) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e235, e315, e125, e4 */
             float4(float3(0.0), this.e3215), 
             /* e1, e2, e3, e5 */
@@ -382,7 +382,7 @@ public extension MultiVector {
     public MultiVector complement() {
         return MultiVector(
             /* scalar, e12345 */
-            this.group0.xy.yx, 
+            this.group0.yx, 
             /* e1, e2, e3, e4 */
             this.group9, 
             /* e5 */

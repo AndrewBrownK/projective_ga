@@ -692,13 +692,13 @@ public extension FlatPoint {
     public VersorOdd operator -(AntiDualNum other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar * -1.0), 
+            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e23, e31, e12, e45 */
             float4(float3(0.0), this.e45), 
             /* e15, e25, e35, e1234 */
             float4(this.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0)
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }
@@ -718,7 +718,7 @@ public extension FlatPoint {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -746,7 +746,7 @@ public extension FlatPoint {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321 * -1.0), 
+            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -774,13 +774,13 @@ public extension FlatPoint {
     public VersorOdd operator -(AntiMotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar * -1.0), 
+            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
             /* e23, e31, e12, e45 */
             float4(other.group0.xyz, this.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e15, e25, e35, e1234 */
             float4((this.group0.xyz - other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215 * -1.0)
+            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
         );
     }
 }

@@ -11,13 +11,13 @@ use crate::traits::GeometricAntiProduct;
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       2       0
-//   Median:        10      23       0
+//   Median:        10      22       0
 //  Average:        21      32       0
 //  Maximum:       162     187       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       2       0
-//   Median:        19      42       0
+//   Median:        19      39       0
 //  Average:        45      64       0
 //  Maximum:       362     394       0
 impl std::ops::Div<AntiSandwichInfix> for AntiScalar {
@@ -329,16 +329,16 @@ impl AntiSandwich<Plane> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        3        0
-    //    simd3        1        2        0
-    //    simd4        0        5        0
+    //    simd3        1        3        0
+    //    simd4        0        2        0
     // Totals...
-    // yes simd        2       10        0
-    //  no simd        4       29        0
+    // yes simd        2        8        0
+    //  no simd        4       20        0
     fn anti_sandwich(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e1, e2, e3, e4
-            self.group0().xx().with_zw(self[scalar], 0.0) * Simd32x3::from(1.0).with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]),
+            (other.group0().xyz() * self.group0().xx().with_z(self[scalar])).with_w(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(self[e1234]) * other.group0(),
         )
@@ -529,12 +529,12 @@ impl AntiSandwich<Motor> for Flector {
             ]) + (self.group0().xyxw() * other.group0().wwyw())
                 - (self.group1().xyxz() * other.group1().wwy().with_w(other[e43]))
                 - (other.group0().yzxx() * self.group0().zxy().with_w(self[e423]))
-                - (self.group0().www() * other.group1().xyz()).with_w(self[e431] * other[e42]),
+                - (other.group1().xyz() * self.group0().www()).with_w(self[e431] * other[e42]),
             // e423, e431, e412, e321
             (self.group1().xyxy() * other.group0().wwy().with_w(other[e31]))
                 + (self.group1().yzzz() * other.group0().zxw().with_w(other[e12]))
                 + Simd32x3::from(0.0).with_w((self[e321] * other[e1234]) - (self[e2] * other[e42]) - (self[e3] * other[e43]) - (self[e4] * other[scalar]))
-                + (self.group0().www() * other.group0().xyz()).with_w(self[e423] * other[e23])
+                + (other.group0().xyz() * self.group0().www()).with_w(self[e423] * other[e23])
                 - (other.group0().yzxx() * self.group1().zxy().with_w(self[e1])),
         )
         .geometric_anti_product(self.anti_reverse());
@@ -675,19 +675,19 @@ impl AntiSandwich<Scalar> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
+    //      f32        4        9        0
     //    simd3        0        2        0
-    //    simd4        9       11        0
+    //    simd4        9       12        0
     // Totals...
     // yes simd       13       23        0
-    //  no simd       40       60        0
+    //  no simd       40       63        0
     fn anti_sandwich(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e1, e2, e3, e4
             (Simd32x3::from(other[scalar]) * self.group1().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e423, e431, e412, e321
-            Simd32x3::from(0.0).with_w(self[e4] * other[scalar] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e4] * other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         )
         .geometric_anti_product(self.anti_reverse());
     }
@@ -1887,13 +1887,13 @@ impl AntiSandwich<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       35       47        0
+    //      f32       35       46        0
     //    simd2        8        9        0
     //    simd3       22       33        0
-    //    simd4       16       13        0
+    //    simd4       16       14        0
     // Totals...
     // yes simd       81      102        0
-    //  no simd      181      216        0
+    //  no simd      181      219        0
     fn anti_sandwich(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         return MultiVector::from_groups(
@@ -1906,7 +1906,7 @@ impl AntiSandwich<Scalar> for MultiVector {
             // e23, e31, e12
             Simd32x3::from(other[scalar]) * self.group2(),
             // e423, e431, e412, e321
-            Simd32x3::from(0.0).with_w(self[e4] * other[scalar] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e4] * other[scalar]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         )
         .geometric_anti_product(self.anti_reverse());
     }
@@ -1931,18 +1931,18 @@ impl AntiSandwich<DualNum> for Origin {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd4        0        4        0
+    //      f32        0        3        0
+    //    simd4        0        5        0
     // Totals...
     // yes simd        0        8        0
-    //  no simd        0       20        0
+    //  no simd        0       23        0
     fn anti_sandwich(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(other[e1234] * self[e4]),
             // e423, e431, e412, e321
-            Simd32x3::from(0.0).with_w(other[scalar] * self[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(other[scalar] * self[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         )
         .geometric_anti_product(self.anti_reverse());
     }
@@ -2081,17 +2081,17 @@ impl AntiSandwich<Point> for Origin {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
+    //      f32        0        2        0
     //    simd3        0        1        0
-    //    simd4        0        2        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        0        6        0
-    //  no simd        0       14        0
+    //  no simd        0       17        0
     fn anti_sandwich(self, other: Point) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x3::from(0.0).with_w(self[e4] * other[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(self[e4] * other[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, scalar
             (Simd32x3::from(self[e4]) * other.group0().xyz()).with_w(0.0),
         )
@@ -2134,15 +2134,16 @@ impl AntiSandwich<DualNum> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        8       16        0
-    //    simd4        3        7        0
+    //    simd3        0        2        0
+    //    simd4        3        4        0
     // Totals...
-    // yes simd       11       23        0
-    //  no simd       20       44        0
+    // yes simd       11       22        0
+    //  no simd       20       38        0
     fn anti_sandwich(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e1, e2, e3, e4
-            other.group0().xx().with_zw(other[scalar], 0.0) * Simd32x3::from(1.0).with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().xx().with_z(other[scalar]) * Simd32x3::from(-1.0)).with_w(0.0),
             // e423, e431, e412, e321
             Simd32x4::from(other[e1234]) * self.group0(),
         )
@@ -2307,19 +2308,19 @@ impl AntiSandwich<Origin> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        8       18        0
+    //      f32        8       17        0
     //    simd3        0        2        0
-    //    simd4        3        3        0
+    //    simd4        3        4        0
     // Totals...
     // yes simd       11       23        0
-    //  no simd       20       36        0
+    //  no simd       20       39        0
     fn anti_sandwich(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x3::from(other[e4]) * self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12, scalar
-            Simd32x3::from(0.0).with_w(other[e4] * self[e321] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e4] * self[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         )
         .geometric_anti_product(self.anti_reverse());
     }
@@ -2355,15 +2356,16 @@ impl AntiSandwich<Point> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       22        0
-    //    simd4        4        7        0
+    //    simd3        0        2        0
+    //    simd4        4        4        0
     // Totals...
-    // yes simd       14       29        0
-    //  no simd       26       50        0
+    // yes simd       14       28        0
+    //  no simd       26       44        0
     fn anti_sandwich(self, other: Point) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x3::from(1.0).with_w(0.0) * other.group0().www().with_w(0.0) * self.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (self.group0().xyz() * other.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12, scalar
             Simd32x4::from([
                 self[e431] * other[e3],
@@ -2380,11 +2382,11 @@ impl AntiSandwich<Scalar> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        9        0
-    //    simd3        0        2        0
-    //    simd4        1        4        0
+    //    simd3        0        4        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        3       15        0
-    //  no simd        6       31        0
+    // yes simd        3       14        0
+    //  no simd        6       25        0
     fn anti_sandwich(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         return Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(other[scalar]) * self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0))
@@ -2401,12 +2403,12 @@ impl AntiSandwich<AntiScalar> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
+    //      f32        0        1        0
     //    simd3        1        2        0
-    //    simd4        0        2        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        1        6        0
-    //  no simd        3       16        0
+    //  no simd        3       19        0
     fn anti_sandwich(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         return Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[e1234]) * self.group0()).geometric_anti_product(self.anti_reverse());
@@ -2416,18 +2418,18 @@ impl AntiSandwich<DualNum> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd4        2        6        0
+    //      f32        4        9        0
+    //    simd4        2        7        0
     // Totals...
     // yes simd        6       16        0
-    //  no simd       12       34        0
+    //  no simd       12       37        0
     fn anti_sandwich(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(other[e1234]) * self.group0(),
             // e423, e431, e412, e321
-            Simd32x3::from(0.0).with_w(other[scalar] * self[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(other[scalar] * self[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
         )
         .geometric_anti_product(self.anti_reverse());
     }
@@ -2560,17 +2562,17 @@ impl AntiSandwich<Origin> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        7        0
+    //      f32        3        6        0
     //    simd3        3        7        0
-    //    simd4        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        6       15        0
-    //  no simd       12       32        0
+    //  no simd       12       35        0
     fn anti_sandwich(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x3::from(0.0).with_w(other[e4] * self[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e4] * self[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, scalar
             (Simd32x3::from(other[e4]) * self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
         )
@@ -2582,16 +2584,16 @@ impl AntiSandwich<Plane> for Point {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5       14        0
-    //    simd3        3        5        0
-    //    simd4        1        5        0
+    //    simd3        3        7        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        9       24        0
-    //  no simd       18       49        0
+    // yes simd        9       23        0
+    //  no simd       18       43        0
     fn anti_sandwich(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x3::from(1.0).with_w(0.0) * self.group0().www().with_w(0.0) * other.group0().xyz().with_w(0.0) * Simd32x4::from([-1.0, -1.0, -1.0, 0.0]),
+            (other.group0().xyz() * self.group0().www() * Simd32x3::from(-1.0)).with_w(0.0),
             // e23, e31, e12, scalar
             Simd32x4::from([
                 other[e412] * self[e2] * -1.0,
@@ -2607,17 +2609,17 @@ impl AntiSandwich<Point> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        7        0
+    //      f32        3        6        0
     //    simd3        4        7        0
-    //    simd4        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        7       15        0
-    //  no simd       15       32        0
+    //  no simd       15       35        0
     fn anti_sandwich(self, other: Point) -> Self::Output {
         use crate::elements::*;
         return Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x3::from(0.0).with_w(other[e4] * self[e4] * -1.0),
+            Simd32x3::from(0.0).with_w(other[e4] * self[e4]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
             // e23, e31, e12, scalar
             ((Simd32x3::from(self[e4]) * other.group0().xyz()) - (Simd32x3::from(other[e4]) * self.group0().xyz())).with_w(0.0),
         )
@@ -2648,11 +2650,12 @@ impl AntiSandwich<Flector> for Scalar {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        3        0
+    //      f32        0        2        0
     //    simd3        0        3        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        0        6        0
-    //  no simd        0       12        0
+    //  no simd        0       15        0
     fn anti_sandwich(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         return Flector::from_groups(
@@ -2697,12 +2700,13 @@ impl AntiSandwich<MultiVector> for Scalar {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        5        0
+    //      f32        0        4        0
     //    simd2        0        2        0
     //    simd3        0        5        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        0       12        0
-    //  no simd        0       24        0
+    //  no simd        0       27        0
     fn anti_sandwich(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         return MultiVector::from_groups(
