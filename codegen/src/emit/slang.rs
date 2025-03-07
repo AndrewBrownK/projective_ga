@@ -178,7 +178,6 @@ impl Slang {
                 let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
                 let mut file = BufWriter::new(file);
                 writeln!(&mut file, "implementing {algebra_name};")?;
-                writeln!(&mut file, "using data;")?;
                 self.declare_multi_vector(&mut file, multi_vec, doc)?;
                 writeln!(&mut file, "__include \"impls/{lsc}\";")?;
                 // tx3.send(file_path)?;
@@ -218,8 +217,6 @@ impl Slang {
                 let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
                 let mut file = BufWriter::new(file);
                 writeln!(&mut file, "implementing {algebra_name};")?;
-                // TODO remove these imports when they are unused
-                writeln!(&mut file, "using data;")?;
                 self.declare_trait_def(&mut file, td)?;
                 writeln!(&mut file, "__include \"./impls/{lsc}\";")?;
                 // tx3.send(file_path)?;
@@ -291,7 +288,6 @@ impl Slang {
                 let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
                 let mut file = BufWriter::new(file);
                 writeln!(&mut file, "implementing {algebra_name};")?;
-                writeln!(&mut file, "using traits;")?;
                 let mut deps_set = HashSet::new();
                 for dep in deps {
                     if let Some(pb) = &pb {
@@ -299,13 +295,6 @@ impl Slang {
                     }
                     deps_set.insert(dep);
                     if skip_dependencies { continue }
-                    // if self.prefer_fancy_infix {
-                    //     let lsc = dep.as_lower_snake();
-                    //     writeln!(&mut file, "using traits;")?;
-                    // } else {
-                    //     let ucc = dep.as_upper_camel();
-                    //     writeln!(&mut file, "using traits;")?;
-                    // }
                 }
                 sort_trait_impls(&mut impls, deps_set)?;
                 if let Some(pb) = &pb {
@@ -406,12 +395,17 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
             tx2.send(file_path.clone())?;
             let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
             let mut file = BufWriter::new(file);
-            writeln!(&mut file, "namespace data {{")?;
-            writeln!(&mut file, "    __include data;")?;
+            writeln!(&mut file, "float2 float2_pow(float2 v, float p) {{")?;
+            writeln!(&mut file, "    return float2(pow(v.x, p), pow(v.y, p));")?;
             writeln!(&mut file, "}}")?;
-            writeln!(&mut file, "namespace traits {{")?;
-            writeln!(&mut file, "    __include traits;")?;
+            writeln!(&mut file, "float3 float3_pow(float3 v, float p) {{")?;
+            writeln!(&mut file, "    return float3(pow(v.x, p), pow(v.y, p), pow(v.z, p));")?;
             writeln!(&mut file, "}}")?;
+            writeln!(&mut file, "float4 float4_pow(float4 v, float p) {{")?;
+            writeln!(&mut file, "    return float4(pow(v.x, p), pow(v.y, p), pow(v.z, p), pow(v.w, p));")?;
+            writeln!(&mut file, "}}")?;
+            writeln!(&mut file, "__include data;")?;
+            writeln!(&mut file, "__include traits;")?;
             Ok(())
         });
 
@@ -775,11 +769,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, "Simd32x2::pow(")?;
+                                write!(w, "float2_pow(")?;
                                 self.write_vec2(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, "Simd32x2::pow(")?;
+                                write!(w, "float2_pow(")?;
                                 self.write_vec2(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
@@ -797,11 +791,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, " * Simd32x2::pow(")?;
+                                write!(w, " * float2_pow(")?;
                                 self.write_vec2(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, " * Simd32x2::pow(")?;
+                                write!(w, " * float2_pow(")?;
                                 self.write_vec2(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
@@ -999,11 +993,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, "pow(")?;
+                                write!(w, "float3_pow(")?;
                                 self.write_vec3(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, "pow(")?;
+                                write!(w, "float3_pow(")?;
                                 self.write_vec3(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
@@ -1021,11 +1015,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, " * pow(")?;
+                                write!(w, " * float3_pow(")?;
                                 self.write_vec3(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, " * pow(")?;
+                                write!(w, " * float3_pow(")?;
                                 self.write_vec3(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
@@ -1231,11 +1225,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, "pow(")?;
+                                write!(w, "float4_pow(")?;
                                 self.write_vec4(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, "pow(")?;
+                                write!(w, "float4_pow(")?;
                                 self.write_vec4(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
@@ -1253,11 +1247,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                write!(w, " * pow(")?;
+                                write!(w, " * float4_pow(")?;
                                 self.write_vec4(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             } else {
-                                write!(w, " * pow(")?;
+                                write!(w, " * float4_pow(")?;
                                 self.write_vec4(w, factor, true)?;
                                 write!(w, ", {e})")?;
                             }
