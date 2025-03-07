@@ -583,7 +583,7 @@ pub mod impls {
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let ucns = unitized_center_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(ucns.into(), 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(ucns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -602,7 +602,7 @@ pub mod impls {
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
             let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
-            let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
+            let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
     }
@@ -618,7 +618,7 @@ pub mod impls {
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let ufns = unitized_flat_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(ufns.into(), 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(ufns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -637,7 +637,7 @@ pub mod impls {
             let denominator = flat_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
             let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
-            let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
+            let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
     }
@@ -653,7 +653,7 @@ pub mod impls {
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let urns = unitized_radius_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(urns.into(), 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(urns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -672,7 +672,7 @@ pub mod impls {
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
             let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
-            let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
+            let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
     }
@@ -688,7 +688,7 @@ pub mod impls {
             slf: Variable<MultiVector>,
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let urns = unitized_round_norm_squared(self.origin, self.infinity).inline(&mut builder, slf).await?;
-            let sqrt = FloatExpr::Product(vec![(urns.into(), 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(urns.into(), 0.5)], 1.0);
             builder.return_expr(sqrt)
         }
     }
@@ -707,7 +707,7 @@ pub mod impls {
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
             let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
-            let divide = FloatExpr::Product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
+            let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
     }

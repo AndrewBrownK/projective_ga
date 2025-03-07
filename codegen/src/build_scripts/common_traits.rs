@@ -1034,7 +1034,7 @@ pub mod impls {
         let scalar_mv = MultiVector::from(builder.mvs.scalar());
         let dot = DotProduct.inline(&mut builder, slf.clone(), slf.clone()).await?;
         let raw_dot = FloatExpr::AccessMultiVecFlat(dot.into(), 0);
-        let inverse_squared = scalar_mv.construct_direct([(scalar, FloatExpr::Product(vec![(raw_dot, -1.0)], 1.0))]);
+        let inverse_squared = scalar_mv.construct_direct([(scalar, FloatExpr::product(vec![(raw_dot, -1.0)], 1.0))]);
         let reverse = Reverse.inline(&mut builder, slf).await?;
         let result = GeometricProduct.inline(&mut builder, reverse, inverse_squared).await?;
         builder.return_expr(result)
@@ -1045,7 +1045,7 @@ pub mod impls {
         let anti_scalar = builder.ga.anti_scalar();
         let dot = AntiDotProduct.inline(&mut builder, slf.clone(), slf.clone()).await?;
         let raw_dot = FloatExpr::AccessMultiVecFlat(dot.into(), 0);
-        let inverse_squared = anti_scalar_mv.construct_direct([(anti_scalar, FloatExpr::Product(vec![(raw_dot, -1.0)], 1.0))]);
+        let inverse_squared = anti_scalar_mv.construct_direct([(anti_scalar, FloatExpr::product(vec![(raw_dot, -1.0)], 1.0))]);
         let anti_reverse = AntiReverse.inline(&mut builder, slf).await?;
         let result = GeometricAntiProduct.inline(&mut builder, anti_reverse, inverse_squared).await?;
         builder.return_expr(result)
@@ -1073,7 +1073,7 @@ pub mod impls {
         let scalar_mv = MultiVector::from(builder.mvs.scalar());
         if slf.expr_type == scalar_mv {
             let raw = FloatExpr::AccessMultiVecFlat(slf.into(), 0);
-            let sqrt = FloatExpr::Product(vec![(raw, 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(raw, 0.5)], 1.0);
             let result = scalar_mv.construct_direct([(scalar, sqrt)]);
             return builder.return_expr(result)
         }
@@ -1120,7 +1120,7 @@ pub mod impls {
         let anti_scalar = builder.ga.anti_scalar();
         if slf.expr_type == anti_scalar_mv {
             let raw = FloatExpr::AccessMultiVecFlat(slf.into(), 0);
-            let sqrt = FloatExpr::Product(vec![(raw, 0.5)], 1.0);
+            let sqrt = FloatExpr::product(vec![(raw, 0.5)], 1.0);
             let result = anti_scalar_mv.construct_direct([(anti_scalar, sqrt)]);
             return builder.return_expr(result)
         }

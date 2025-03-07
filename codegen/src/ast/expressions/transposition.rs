@@ -37,19 +37,19 @@ fn advanced_transpose_vec2_product(
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_0.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_0.take_as_owned(), 1.0)
     };
     let p1 = if float_product_1.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_1.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_1.take_as_owned(), 1.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive, if not already
         vec2_product.push((Vec2Expr::Gather2(p0, p1), 1.0));
     }
-    let mut result = Vec2Expr::Product(vec2_product, coalesce_product_literal);
+    let mut result = Vec2Expr::product(vec2_product, coalesce_product_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -97,21 +97,21 @@ fn vec2_product_extract(
             AccessVec2(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
             // The swizzle will later be simplified, if applicable
-            vec2_product.push((Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), *f0));
+            vec2_product.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), *f0));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
-            vec2_product.push((Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), *f0));
+            vec2_product.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), *f0));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
-            vec2_product.push((Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate4to2(Box::new(v0.clone()))), *i0, *i1), *f0));
+            vec2_product.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, 2, 3))), *f0));
             true
         }
         (
@@ -164,19 +164,19 @@ fn advanced_transpose_vec2_sum(
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_0.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_0.take_as_owned(), 0.0)
     };
     let p1 = if float_sum_1.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_1.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_1.take_as_owned(), 0.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive, if not already
         vec2_sum.push((Vec2Expr::Gather2(p0, p1), 1.0));
     }
-    let mut result = Vec2Expr::Sum(vec2_sum, coalesce_sum_literal);
+    let mut result = Vec2Expr::sum(vec2_sum, coalesce_sum_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -224,21 +224,21 @@ fn vec2_sum_extract(
             AccessVec2(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
             // The swizzle will later be simplified, if applicable
-            vec2_sum.push((Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), *f0));
+            vec2_sum.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), *f0));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
-            vec2_sum.push((Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), *f0));
+            vec2_sum.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), *f0));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
         ) if v0 == v1 && f0 == f1 => {
-            vec2_sum.push((Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate4to2(Box::new(v0.clone()))), *i0, *i1), *f0));
+            vec2_sum.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, 2, 3))), *f0));
             true
         }
         (
@@ -301,25 +301,25 @@ fn advanced_transpose_vec3_product(
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_0.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_0.take_as_owned(), 1.0)
     };
     let p1 = if float_product_1.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_1.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_1.take_as_owned(), 1.0)
     };
     let p2 = if float_product_2.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_2.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_2.take_as_owned(), 1.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive, if not already
         vec3_product.push((Vec3Expr::Gather3(p0, p1, p2), 1.0));
     }
-    let mut result = Vec3Expr::Product(vec3_product, coalesce_product_literal);
+    let mut result = Vec3Expr::product(vec3_product, coalesce_product_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -383,7 +383,7 @@ fn vec3_product_extract(
             AccessVec3(box v2, i2)
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
             // The swizzle will later be simplified, if applicable
-            vec3_product.push((Vec3Expr::SwizzleVec3(Box::new(v0.clone()), *i0, *i1, *i2), *f0));
+            vec3_product.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize), *f0));
             true
         }
         (
@@ -391,7 +391,7 @@ fn vec3_product_extract(
             AccessVec3(box v1, i1),
             z
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), z.clone()), *f0));
+            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), z.clone()), *f0));
             true
         }
         (
@@ -399,7 +399,7 @@ fn vec3_product_extract(
             AccessVec2(box v1, i1),
             z
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), z.clone()), *f0));
+            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), z.clone()), *f0));
             true
         }
         (
@@ -407,7 +407,7 @@ fn vec3_product_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2)
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
-            vec3_product.push((Vec3Expr::SwizzleVec3(Box::new(Vec3Expr::Truncate4to3(Box::new(v0.clone()))), *i0, *i1, *i2), *f0));
+            vec3_product.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, 3))), *f0));
             true
         }
         (
@@ -479,25 +479,25 @@ fn advanced_transpose_vec3_sum(
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_0.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_0.take_as_owned(), 0.0)
     };
     let p1 = if float_sum_1.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_1.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_1.take_as_owned(), 0.0)
     };
     let p2 = if float_sum_2.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_2.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_2.take_as_owned(), 0.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive, if not already
         vec3_sum.push((Vec3Expr::Gather3(p0, p1, p2), 1.0));
     }
-    let mut result = Vec3Expr::Sum(vec3_sum, coalesce_sum_literal);
+    let mut result = Vec3Expr::sum(vec3_sum, coalesce_sum_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -553,7 +553,7 @@ fn vec3_sum_extract(
             AccessVec3(box v2, i2)
         ) if v0 == v1 && v1 == v2 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
             // The swizzle will later be simplified, if applicable
-            vec3_sum.push((Vec3Expr::SwizzleVec3(Box::new(v0.clone()), *i0, *i1, *i2), *f0));
+            vec3_sum.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize), *f0));
             true
         }
         (
@@ -561,7 +561,7 @@ fn vec3_sum_extract(
             AccessVec3(box v1, i1),
             z
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), z.clone()), *f0));
+            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), z.clone()), *f0));
             true
         }
         (
@@ -569,7 +569,7 @@ fn vec3_sum_extract(
             AccessVec2(box v1, i1),
             z
         ) if v0 == v1 && f0 == f1 && f1 == f2 => {
-            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), z.clone()), *f0));
+            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), z.clone()), *f0));
             true
         }
         (
@@ -577,7 +577,7 @@ fn vec3_sum_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2)
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
-            vec3_sum.push((Vec3Expr::SwizzleVec3(Box::new(Vec3Expr::Truncate4to3(Box::new(v0.clone()))), *i0, *i1, *i2), *f0));
+            vec3_sum.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, 3))), *f0));
             true
         }
         (
@@ -658,31 +658,31 @@ fn advanced_transpose_vec4_product(
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_0.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_0.take_as_owned(), 1.0)
     };
     let p1 = if float_product_1.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_1.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_1.take_as_owned(), 1.0)
     };
     let p2 = if float_product_2.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_2.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_2.take_as_owned(), 1.0)
     };
     let p3 = if float_product_3.is_empty() {
         Literal(1.0)
     } else {
         keep_remaining = true;
-        Product(float_product_3.take_as_owned(), 1.0)
+        FloatExpr::product(float_product_3.take_as_owned(), 1.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive, if not already
         vec4_product.push((Vec4Expr::Gather4(p0, p1, p2, p3), 1.0));
     }
-    let mut result = Vec4Expr::Product(vec4_product, coalesce_product_literal);
+    let mut result = Vec4Expr::product(vec4_product, coalesce_product_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -762,7 +762,7 @@ fn vec4_product_extract(
             AccessVec4(box v3, i3)
         ) if v0 == v1 && v1 == v2 && v2 == v3 && f0 == f1 && f1 == f2 && f2 == f3 => {
             // The swizzle will later be simplified, if applicable
-            vec4_product.push((Vec4Expr::SwizzleVec4(Box::new(v0.clone()), *i0, *i1, *i2, *i3), *f0));
+            vec4_product.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, *i3 as usize), *f0));
             true
         }
         (
@@ -771,7 +771,7 @@ fn vec4_product_extract(
             AccessVec4(box v2, i2),
             w
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::SwizzleVec3(Box::new(Vec3Expr::Truncate4to3(Box::new(v0.clone()))), *i0, *i1, *i2), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, 3))), w.clone()), *f0));
             true
         }
         (
@@ -780,7 +780,7 @@ fn vec4_product_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate4to2(Box::new(v0.clone()))), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, 2, 3))), z.clone(), w.clone()), *f0));
             true
         }
         (
@@ -789,7 +789,7 @@ fn vec4_product_extract(
             AccessVec3(box v2, i2),
             w
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit)  => {
-            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::SwizzleVec3(Box::new(v0.clone()), *i0, *i1, *i2), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize), w.clone()), *f0));
             true
         }
         (
@@ -798,7 +798,7 @@ fn vec4_product_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), z.clone(), w.clone()), *f0));
             true
         }
         (
@@ -807,7 +807,7 @@ fn vec4_product_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && f1 == f2 && f2 == f3 => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), z.clone(), w.clone()), *f0));
             true
         }
         (
@@ -900,31 +900,31 @@ fn advanced_transpose_vec4_sum(
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_0.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_0.take_as_owned(), 0.0)
     };
     let p1 = if float_sum_1.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_1.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_1.take_as_owned(), 0.0)
     };
     let p2 = if float_sum_2.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_2.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_2.take_as_owned(), 0.0)
     };
     let p3 = if float_sum_3.is_empty() {
         Literal(0.0)
     } else {
         keep_remaining = true;
-        Sum(float_sum_3.take_as_owned(), 0.0)
+        FloatExpr::sum(float_sum_3.take_as_owned(), 0.0)
     };
     if keep_remaining {
         // TODO reattempt but aggressive?
         vec4_sum.push((Vec4Expr::Gather4(p0, p1, p2, p3), 1.0));
     }
-    let mut result = Vec4Expr::Sum(vec4_sum, coalesce_sum_literal);
+    let mut result = Vec4Expr::sum(vec4_sum, coalesce_sum_literal);
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
@@ -994,7 +994,7 @@ fn vec4_sum_extract(
             AccessVec4(box v3, i3)
         ) if v0 == v1 && v1 == v2 && v2 == v3 && f0 == f1 && f1 == f2 && f2 == f3 => {
             // The swizzle will later be simplified, if applicable
-            vec4_sum.push((Vec4Expr::SwizzleVec4(Box::new(v0.clone()), *i0, *i1, *i2, *i3), *f0));
+            vec4_sum.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, *i3 as usize), *f0));
             true
         }
         (
@@ -1003,7 +1003,7 @@ fn vec4_sum_extract(
             AccessVec4(box v2, i2),
             w
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::SwizzleVec3(Box::new(Vec3Expr::Truncate4to3(Box::new(v0.clone()))), *i0, *i1, *i2), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize, 3))), w.clone()), *f0));
             true
         }
         (
@@ -1012,7 +1012,7 @@ fn vec4_sum_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate4to2(Box::new(v0.clone()))), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0 as usize, *i1 as usize, 2, 3))), z.clone(), w.clone()), *f0));
             true
         }
         (
@@ -1021,7 +1021,7 @@ fn vec4_sum_extract(
             AccessVec3(box v2, i2),
             w
         ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::SwizzleVec3(Box::new(v0.clone()), *i0, *i1, *i2), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, *i2 as usize), w.clone()), *f0));
             true
         }
         (
@@ -1030,7 +1030,7 @@ fn vec4_sum_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(v0.clone()))), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0 as usize, *i1 as usize, 2))), z.clone(), w.clone()), *f0));
             true
         }
         (
@@ -1039,7 +1039,7 @@ fn vec4_sum_extract(
             z,
             w
         ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(v0.clone()), *i0, *i1), z.clone(), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0 as usize, *i1 as usize), z.clone(), w.clone()), *f0));
             true
         }
         (

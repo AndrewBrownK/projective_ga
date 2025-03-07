@@ -31,24 +31,24 @@ impl AnyExpression {
         match self {
             AnyExpression::Int(_) => {}
             AnyExpression::Float(e) => {
-                e.simplify_nuanced(false, true, true, false, true);
-                e.simplify_nuanced(false, false, true, true, true);
+                e.simplify_nuanced(false, true, false);
+                e.simplify_nuanced(false, false, true);
             },
             AnyExpression::Vec2(e) => {
-                e.simplify_nuanced(false, true, false, true);
-                e.simplify_nuanced(false, false, true, true);
+                e.simplify_nuanced(false, true, false);
+                e.simplify_nuanced(false, false, true);
             },
             AnyExpression::Vec3(e) => {
-                e.simplify_nuanced(false, true, false, true);
-                e.simplify_nuanced(false, false, true, true);
+                e.simplify_nuanced(false, true, false);
+                e.simplify_nuanced(false, false, true);
             },
             AnyExpression::Vec4(e) => {
-                e.simplify_nuanced(false, true, false, true);
-                e.simplify_nuanced(false, false, true, true);
+                e.simplify_nuanced(false, true, false);
+                e.simplify_nuanced(false, false, true);
             },
             AnyExpression::Class(e) => {
-                e.simplify_nuanced(false, true, false, true);
-                e.simplify_nuanced(false, false, true, true);
+                e.simplify_nuanced(false, true, false);
+                e.simplify_nuanced(false, false, true);
             },
         }
     }
@@ -57,11 +57,11 @@ impl AnyExpression {
 impl IntExpr {
     #[allow(unused)]
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, false, false);
+        self.simplify_nuanced(false, false, false);
     }
     // TODO clean up unused parameters
     #[allow(unused)]
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             IntExpr::Variable(v) => {
                 let decl = &v.decl;
@@ -71,7 +71,7 @@ impl IntExpr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Int(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -82,7 +82,7 @@ impl IntExpr {
             IntExpr::TraitInvoke10ToInt(_t, owner) => {
                 // Owner is a type, not an expression
                 // if !insides_already_done {
-                //     owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                //     owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 // }
             }
         }
@@ -94,11 +94,10 @@ impl IntExpr {
 
 impl FloatExpr {
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, true, false, false);
+        self.simplify_nuanced(false, false, false);
     }
 
-    // TODO get rid of param 'distribute_and_flatten_arithmetic' because it seems to always be set true
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, distribute_and_flatten_arithmetic: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             FloatExpr::Variable(v) => {
                 let decl = &v.decl;
@@ -108,7 +107,7 @@ impl FloatExpr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Float(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -118,7 +117,7 @@ impl FloatExpr {
             FloatExpr::Literal(_) => {}
             FloatExpr::FromInt(a) => {
                 if !insides_already_done {
-                    a.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    a.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match a {
                     IntExpr::Variable(_) => {}
@@ -131,7 +130,7 @@ impl FloatExpr {
             },
             FloatExpr::AccessVec2(av2, idx_in_vec) => {
                 if !insides_already_done {
-                    av2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    av2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match av2.as_mut() {
                     Vec2Expr::Gather1(fe) => {
@@ -139,6 +138,16 @@ impl FloatExpr {
                     }
                     Vec2Expr::Gather2(fe0, fe1) => {
                         *self = [fe0, fe1][*idx_in_vec as usize].take_as_owned();
+                    }
+                    Vec2Expr::Truncate3to2(box v) => {
+                        *self = FloatExpr::access_vec_3(v.take_as_owned(), *idx_in_vec as usize);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    Vec2Expr::Truncate4to2(box v) => {
+                        *self = FloatExpr::access_vec_4(v.take_as_owned(), *idx_in_vec as usize);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
                     }
                     Vec2Expr::AccessMultiVecGroup(mve, target_group_idx) if prefer_flat_access => {
                         let mut flat_idx = 0u16;
@@ -150,12 +159,30 @@ impl FloatExpr {
                             flat_idx = flat_idx + (g.simd_width() as u16);
                         }
                     }
+                    Vec2Expr::Product(factors, literal) => {
+                        let mut new_factors = vec![];
+                        for (factor, exponent) in factors {
+                            new_factors.push((FloatExpr::access_vec_2(factor.take_as_owned(), *idx_in_vec as usize), *exponent));
+                        }
+                        *self = FloatExpr::product(new_factors, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    Vec2Expr::Sum(addends, literal) => {
+                        let mut new_addends = vec![];
+                        for (addend, factor) in addends {
+                            new_addends.push((FloatExpr::access_vec_2(addend.take_as_owned(), *idx_in_vec as usize), *factor));
+                        }
+                        *self = FloatExpr::sum(new_addends, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
                     _ => {}
                 }
             }
             FloatExpr::AccessVec3(av3, idx_in_vec) => {
                 if !insides_already_done {
-                    av3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    av3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match av3.as_mut() {
                     Vec3Expr::Gather1(fe) => {
@@ -163,6 +190,26 @@ impl FloatExpr {
                     }
                     Vec3Expr::Gather3(fe0, fe1, fe2) => {
                         *self = [fe0, fe1, fe2][*idx_in_vec as usize].take_as_owned();
+                    }
+                    Vec3Expr::Truncate4to3(box v) => {
+                        *self = FloatExpr::access_vec_4(v.take_as_owned(), *idx_in_vec as usize);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    Vec3Expr::Extend2to3(xy, z) => {
+                        match *idx_in_vec {
+                            0 | 1 => {
+                                *self = FloatExpr::access_vec_2(xy.take_as_owned(), *idx_in_vec as usize);
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            2 => {
+                                *self = z.take_as_owned();
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            _ => {}
+                        }
                     }
                     Vec3Expr::AccessMultiVecGroup(mve, target_group_idx) if prefer_flat_access => {
                         let mut flat_idx = 0u16;
@@ -174,12 +221,30 @@ impl FloatExpr {
                             flat_idx = flat_idx + (g.simd_width() as u16);
                         }
                     }
+                    Vec3Expr::Product(factors, literal) => {
+                        let mut new_factors = vec![];
+                        for (factor, exponent) in factors {
+                            new_factors.push((FloatExpr::access_vec_3(factor.take_as_owned(), *idx_in_vec as usize), *exponent));
+                        }
+                        *self = FloatExpr::product(new_factors, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    Vec3Expr::Sum(addends, literal) => {
+                        let mut new_addends = vec![];
+                        for (addend, factor) in addends {
+                            new_addends.push((FloatExpr::access_vec_3(addend.take_as_owned(), *idx_in_vec as usize), *factor));
+                        }
+                        *self = FloatExpr::sum(new_addends, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
                     _ => {}
                 }
             }
             FloatExpr::AccessVec4(av4, idx_in_vec) => {
                 if !insides_already_done {
-                    av4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    av4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match av4.as_mut() {
                     Vec4Expr::Gather1(fe) => {
@@ -187,6 +252,41 @@ impl FloatExpr {
                     }
                     Vec4Expr::Gather4(fe0, fe1, fe2, fe3) => {
                         *self = [fe0, fe1, fe2, fe3][*idx_in_vec as usize].take_as_owned();
+                    }
+                    Vec4Expr::Extend2to4(xy, z, w) => {
+                        match *idx_in_vec {
+                            0 | 1 => {
+                                *self = FloatExpr::access_vec_2(xy.take_as_owned(), *idx_in_vec as usize);
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            2 => {
+                                *self = z.take_as_owned();
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            3 => {
+                                *self = w.take_as_owned();
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            _ => {}
+                        }
+                    }
+                    Vec4Expr::Extend3to4(xyz, w) => {
+                        match *idx_in_vec {
+                            0 | 1 | 2 => {
+                                *self = FloatExpr::access_vec_3(xyz.take_as_owned(), *idx_in_vec as usize);
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            3 => {
+                                *self = w.take_as_owned();
+                                self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                                return
+                            }
+                            _ => {}
+                        }
                     }
                     Vec4Expr::AccessMultiVecGroup(mve, target_group_idx) if prefer_flat_access => {
                         let mut flat_idx = 0u16;
@@ -198,12 +298,30 @@ impl FloatExpr {
                             flat_idx = flat_idx + (g.simd_width() as u16);
                         }
                     }
+                    Vec4Expr::Product(factors, literal) => {
+                        let mut new_factors = vec![];
+                        for (factor, exponent) in factors {
+                            new_factors.push((FloatExpr::access_vec_4(factor.take_as_owned(), *idx_in_vec as usize), *exponent));
+                        }
+                        *self = FloatExpr::product(new_factors, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    Vec4Expr::Sum(addends, literal) => {
+                        let mut new_addends = vec![];
+                        for (addend, factor) in addends {
+                            new_addends.push((FloatExpr::access_vec_4(addend.take_as_owned(), *idx_in_vec as usize), *factor));
+                        }
+                        *self = FloatExpr::sum(new_addends, literal[*idx_in_vec as usize]);
+                        self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                        return
+                    }
                     _ => {}
                 }
             }
             FloatExpr::AccessMultiVecGroup(mve, idx) => {
                 if !insides_already_done {
-                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 let idx = *idx;
                 let mv = mve.mv_class;
@@ -239,7 +357,7 @@ impl FloatExpr {
             }
             FloatExpr::AccessMultiVecFlat(mve, idx) => {
                 if !insides_already_done {
-                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let MultiVectorVia::Construct(groups) = mve.expr.as_mut() {
                     let mut scan_idx = 0;
@@ -286,7 +404,7 @@ impl FloatExpr {
             }
             FloatExpr::TraitInvoke11ToFloat(_t, owner) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
             FloatExpr::Product(product, last_factor) => {
@@ -295,7 +413,7 @@ impl FloatExpr {
                 }
                 if !insides_already_done {
                     for (factor, _exponent) in product.iter_mut() {
-                        factor.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if product.len() == 1 && *last_factor == 1.0 {
@@ -320,7 +438,7 @@ impl FloatExpr {
                         *last_factor *= *another_factor;
                         false
                     }
-                    FloatExpr::Sum(ref mut s, another_addend) if distribute_and_flatten_arithmetic => {
+                    FloatExpr::Sum(ref mut s, another_addend) => {
                         sums_to_distribute.push((s.take_as_owned(), *another_addend));
                         false
                     }
@@ -361,17 +479,17 @@ impl FloatExpr {
                 }
                 product.retain(|(_, e)| *e != 0.0);
 
-                if distribute_and_flatten_arithmetic && !sums_to_distribute.is_empty() {
+                if !sums_to_distribute.is_empty() {
                     // Start the sum/product transposition by distributing non-sum factors to the first sum factor
                     let (first_sum, first_sum_lits) = &mut sums_to_distribute[0];
                     if product.is_empty() {
                         product.push((FloatExpr::Literal(1.0), 1.0));
                     }
                     for (addend, factor) in first_sum.iter_mut() {
-                        addend.mul_assign(FloatExpr::Product(product.clone(), *factor * *last_factor));
+                        addend.mul_assign(FloatExpr::product(product.clone(), *factor * *last_factor));
                         *factor = 1.0;
                     }
-                    first_sum.push((FloatExpr::Product(product.take_as_owned(), *last_factor), *first_sum_lits));
+                    first_sum.push((FloatExpr::product(product.take_as_owned(), *last_factor), *first_sum_lits));
                     *first_sum_lits = 0.0;
 
                     // Then finish the sum/product transposition by distributing sum factors on one another
@@ -391,9 +509,9 @@ impl FloatExpr {
                         }
                         result_sum = result_replacer;
                     }
-                    *self = FloatExpr::Sum(result_sum, 0.0);
+                    *self = FloatExpr::sum(result_sum, 0.0);
                     // Transposition is a non-trivial structural change, so we need to re-simplify
-                    self.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                    self.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     return
                 }
 
@@ -422,7 +540,7 @@ impl FloatExpr {
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
-                        addend.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if sum.len() == 1 && *last_addend == 0.0 {
@@ -430,8 +548,8 @@ impl FloatExpr {
                     return if factor == 1.0 {
                         *self = addend;
                     } else {
-                        let mut new_self = FloatExpr::Product(vec![(addend, 1.0)], factor);
-                        new_self.simplify_nuanced(true, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                        let mut new_self = FloatExpr::product(vec![(addend, 1.0)], factor);
+                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         *self = new_self;
                     };
                 }
@@ -493,7 +611,7 @@ impl FloatExpr {
                     return if factor == 1.0 {
                         *self = addend;
                     } else {
-                        *self = FloatExpr::Product(vec![(addend, 1.0)], factor);
+                        *self = FloatExpr::product(vec![(addend, 1.0)], factor);
                     };
                 }
                 if sum.is_empty() {
@@ -502,11 +620,11 @@ impl FloatExpr {
             }
             FloatExpr::Exp(base_expression, exponent_expression, exponent_literal) => {
                 if !insides_already_done {
-                    base_expression.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                    base_expression.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let Some(d) = exponent_expression {
                     if !insides_already_done {
-                        d.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                        d.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                     if let box FloatExpr::Literal(l) = d {
                         *exponent_literal *= *l;
@@ -540,8 +658,8 @@ impl FloatExpr {
                         let (factor, factor_exponent) = &mut factors[0];
                         let new_factor_exponent = *factor_exponent * *exponent_literal;
                         let new_factor_literal = f32::powf(*factor_literal, *exponent_literal);
-                        *self = FloatExpr::Product(vec![(factor.take_as_owned(), new_factor_exponent)], new_factor_literal);
-                        self.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                        *self = FloatExpr::product(vec![(factor.take_as_owned(), new_factor_exponent)], new_factor_literal);
+                        self.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                         return
                     }
                     _ => {}
@@ -555,8 +673,8 @@ impl FloatExpr {
                         *self = FloatExpr::Literal(1.0);
                         return
                     }
-                    *self = FloatExpr::Product(vec![(base_expression.take_as_owned(), *exponent_literal)], 1.0);
-                    self.simplify_nuanced(insides_already_done, transpose_simd, distribute_and_flatten_arithmetic, prefer_flat_access, inline_single_use_vars);
+                    *self = FloatExpr::product(vec![(base_expression.take_as_owned(), *exponent_literal)], 1.0);
+                    self.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     return
                 }
             }
@@ -568,9 +686,9 @@ impl FloatExpr {
 
 impl Vec2Expr {
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, false, false);
+        self.simplify_nuanced(false, false, false);
     }
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             Vec2Expr::Variable(v) => {
                 let decl = &v.decl;
@@ -580,7 +698,7 @@ impl Vec2Expr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec2(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -589,15 +707,15 @@ impl Vec2Expr {
             }
             Vec2Expr::Gather1(ref mut f) => {
                 if !insides_already_done {
-                    f.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 // Do I really want to do more here?
             }
             Vec2Expr::Gather2(ref mut f0, ref mut f1) => {
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
-                    f0.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f0.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if f0 == f1 {
                     *self = Vec2Expr::Gather1(f0.take_as_owned());
@@ -606,22 +724,24 @@ impl Vec2Expr {
                 match (f0, f1) {
                     (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y)) => {
                         if v4_a == v4_b {
-                            let trunc = Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned()));
                             *self = if *x == 0 && *y == 1 {
-                                trunc
+                                Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned()))
+                            } else if *x < 2 && *y < 2 {
+                                Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned())), *x as usize, *y as usize)
                             } else {
-                                Vec2Expr::SwizzleVec2(Box::new(trunc), *x, *y)
+                                Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x as usize, *y as usize, 2, 3)))
                             };
                             return;
                         }
                     }
                     (AccessVec3(box ref mut v3_a, x), AccessVec3(box ref mut v3_b, y)) => {
                         if v3_a == v3_b {
-                            let trunc = Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned()));
                             *self = if *x == 0 && *y == 1 {
-                                trunc
+                                Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned()))
+                            } else if *x < 2 && *y < 2 {
+                                Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned())), *x as usize, *y as usize)
                             } else {
-                                Vec2Expr::SwizzleVec2(Box::new(trunc), *x, *y)
+                                Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x as usize, *y as usize, 2)))
                             };
                             return;
                         }
@@ -630,7 +750,7 @@ impl Vec2Expr {
                         *self = if *x == 0 && *y == 1 {
                             v2_a.take_as_owned()
                         } else {
-                            Vec2Expr::SwizzleVec2(Box::new(v2_a.take_as_owned()), *x, *y)
+                            Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x as usize, *y as usize)
                         };
                         return;
                     }
@@ -664,7 +784,7 @@ impl Vec2Expr {
                                 } else {
                                     let x = (*x_idx - min_idx) as u8;
                                     let y = (*y_idx - min_idx) as u8;
-                                    Vec2Expr::SwizzleVec2(Box::new(mv_group), x, y)
+                                    Vec2Expr::swizzle_vec_2(mv_group, x as usize, y as usize)
                                 };
                                 return
                             }
@@ -717,7 +837,7 @@ impl Vec2Expr {
             }
             Vec2Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
                 if !insides_already_done {
-                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 let idx = *idx;
 
@@ -750,7 +870,7 @@ impl Vec2Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 2] {
@@ -841,7 +961,7 @@ impl Vec2Expr {
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
-                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 2] {
@@ -849,8 +969,8 @@ impl Vec2Expr {
                     return if factor == 1.0 {
                         *self = addend;
                     } else {
-                        let mut new_self = Vec2Expr::Product(vec![(addend, 1.0)], [factor, factor]);
-                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        let mut new_self = Vec2Expr::product(vec![(addend, 1.0)], [factor, factor]);
+                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         *self = new_self;
                     };
                 }
@@ -926,7 +1046,7 @@ impl Vec2Expr {
                         *self = addend;
                     } else {
                         let gather = [factor, factor];
-                        *self = Vec2Expr::Product(vec![(addend, 1.0)], gather);
+                        *self = Vec2Expr::product(vec![(addend, 1.0)], gather);
                     };
                 }
                 if sum.is_empty() {
@@ -936,8 +1056,11 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::SwizzleVec2(v2, i0, i1) => {
+                if *i0 > 1 || *i1 > 1 {
+                    panic!("Problem!");
+                }
                 if !insides_already_done {
-                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if *i0 == 0 && *i1 == 1 {
                     *self = v2.take_as_owned();
@@ -956,11 +1079,21 @@ impl Vec2Expr {
             }
             Vec2Expr::Truncate3to2(box v3) => {
                 if !insides_already_done {
-                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match v3 {
+                    Vec3Expr::Gather1(x) => {
+                        *self = Vec2Expr::Gather1(x.take_as_owned());
+                    }
+                    Vec3Expr::Gather3(x,y, _) => {
+                        *self = Vec2Expr::Gather2(x.take_as_owned(), y.take_as_owned());
+                    }
+                    Vec3Expr::SwizzleVec3(box Vec3Expr::Extend2to3(_xy, z), i0, i1, _i2)
+                    if *i0 == 2 && *i1 == 2 => {
+                        *self = Vec2Expr::Gather1(z.take_as_owned());
+                    }
                     Vec3Expr::SwizzleVec3(box inner_v3, i0, i1, _) if *i0 < 2 && *i1 < 2 => {
-                        *self = Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate3to2(Box::new(inner_v3.take_as_owned()))), *i0, *i1);
+                        *self = Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate3to2(Box::new(inner_v3.take_as_owned())), *i0 as usize, *i1 as usize);
                     }
                     Vec3Expr::Extend2to3(v2, _) => {
                         *self = v2.take_as_owned();
@@ -971,11 +1104,28 @@ impl Vec2Expr {
             }
             Vec2Expr::Truncate4to2(box v4) => {
                 if !insides_already_done {
-                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match v4 {
+                    Vec4Expr::Gather1(x) => {
+                        *self = Vec2Expr::Gather1(x.take_as_owned());
+                    }
+                    Vec4Expr::Gather4(x,y, z, _) => {
+                        *self = Vec2Expr::Gather2(x.take_as_owned(), y.take_as_owned());
+                    }
+                    Vec4Expr::SwizzleVec4(box Vec4Expr::Extend2to4(_xy, z, w), i0, i1, i2, _i3)
+                    if *i0 >= 2 && *i1 >= 2 && *i2 >= 2 => {
+                        *self = Vec2Expr::Gather2(
+                            if *i0 == 2 { z.clone() } else { w.clone() },
+                            if *i1 == 2 { z.clone() } else { w.clone() },
+                        );
+                    }
+                    Vec4Expr::SwizzleVec4(box Vec4Expr::Extend3to4(_xyz, w), i0, i1, i2, _i3)
+                    if *i0 == 3 && *i1 == 3 && *i2 == 3 => {
+                        *self = Vec2Expr::Gather1(w.take_as_owned());
+                    }
                     Vec4Expr::SwizzleVec4(box inner_v4, i0, i1, _, _) if *i0 < 2 && *i1 < 2 => {
-                        *self = Vec2Expr::SwizzleVec2(Box::new(Vec2Expr::Truncate4to2(Box::new(inner_v4.take_as_owned()))), *i0, *i1);
+                        *self = Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate4to2(Box::new(inner_v4.take_as_owned())), *i0 as usize, *i1 as usize);
                     }
                     Vec4Expr::Extend2to4(v2, _, _) => {
                         *self = v2.take_as_owned();
@@ -989,9 +1139,9 @@ impl Vec2Expr {
 }
 impl Vec3Expr {
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, false, false);
+        self.simplify_nuanced(false, false, false);
     }
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             Vec3Expr::Variable(v) => {
                 let decl = &v.decl;
@@ -1001,7 +1151,7 @@ impl Vec3Expr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec3(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -1010,16 +1160,16 @@ impl Vec3Expr {
             }
             Vec3Expr::Gather1(ref mut f) => {
                 if !insides_already_done {
-                    f.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 // Do I really want to do more here?
             }
             Vec3Expr::Gather3(ref mut f0, ref mut f1, ref mut f2) => {
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
-                    f0.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f2.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f0.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if f0 == f1 && f0 == f2 {
                     *self = Vec3Expr::Gather1(f0.take_as_owned());
@@ -1028,11 +1178,12 @@ impl Vec3Expr {
                 match (f0, f1, f2) {
                     (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y), AccessVec4(box ref mut v4_c, z)) => {
                         if v4_a == v4_b && v4_a == v4_c {
-                            let trunc = Vec3Expr::Truncate4to3(Box::new(v4_a.take_as_owned()));
                             *self = if *x == 0 && *y == 1 && *z == 2 {
-                                trunc
+                                Vec3Expr::Truncate4to3(Box::new(v4_a.take_as_owned()))
+                            } else if *x < 3 && *y < 3 && *z < 3 {
+                                Vec3Expr::swizzle_vec_3(Vec3Expr::Truncate4to3(Box::new(v4_a.take_as_owned())), *x as usize, *y as usize, *z as usize)
                             } else {
-                                Vec3Expr::SwizzleVec3(Box::new(trunc), *x, *y, *z)
+                                Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x as usize, *y as usize, *z as usize, 3)))
                             };
                             return;
                         }
@@ -1042,15 +1193,15 @@ impl Vec3Expr {
                             *self = if *x == 0 && *y == 1 && *z == 2 {
                                 v3_a.take_as_owned()
                             } else {
-                                Vec3Expr::SwizzleVec3(Box::new(v3_a.take_as_owned()), *x, *y, *z)
+                                Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x as usize, *y as usize, *z as usize)
                             };
                             return;
                         }
                     }
                     (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z) => {
                         if v2_a == v2_b {
-                            let mut v3 = Vec2Expr::SwizzleVec2(Box::new(v2_a.take_as_owned()), *x, *y);
-                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x as usize, *y as usize);
+                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                             *self = Vec3Expr::Extend2to3(v3, z.take_as_owned());
                             return;
                         }
@@ -1085,7 +1236,7 @@ impl Vec3Expr {
                                     let x = (*x_idx - min_idx) as u8;
                                     let y = (*y_idx - min_idx) as u8;
                                     let z = (*z_idx - min_idx) as u8;
-                                    Vec3Expr::SwizzleVec3(Box::new(mv_group), x, y, z)
+                                    Vec3Expr::swizzle_vec_3(mv_group, x as usize, y as usize, z as usize)
                                 };
                                 return
                             }
@@ -1273,7 +1424,7 @@ impl Vec3Expr {
                                     let x = (*x_idx - min_idx) as u8;
                                     let y = (*y_idx - min_idx) as u8;
                                     Vec3Expr::Extend2to3(
-                                        Vec2Expr::SwizzleVec2(Box::new(mv_group), x, y),
+                                        Vec2Expr::swizzle_vec_2(mv_group, x as usize, y as usize),
                                         z.take_as_owned(),
                                     )
                                 };
@@ -1295,18 +1446,18 @@ impl Vec3Expr {
             }
             Vec3Expr::Extend2to3(v2, f1) => {
                 if !insides_already_done {
-                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match (v2, f1) {
-                    (Vec2Expr::Gather2(
-                        FloatExpr::AccessVec3(box a, x),
-                        FloatExpr::AccessVec3(box b, y),
-                    ),
-                        FloatExpr::AccessVec3(box c, z),
-                    ) if a == b && a == c => {
-                        *self = Vec3Expr::SwizzleVec3(Box::new(a.take_as_owned()), *x, *y, *z);
-                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    (Vec2Expr::Gather1(x), z) if x.is_memory_read_and_not_compute() => {
+                        *self = Vec3Expr::Gather3(x.clone(), x.take_as_owned(), z.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    (Vec2Expr::Gather2(x, y), z) => {
+                        *self = Vec3Expr::Gather3(x.take_as_owned(), y.take_as_owned(), z.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         return
                     }
                     _ => {}
@@ -1314,7 +1465,7 @@ impl Vec3Expr {
             }
             Vec3Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
                 if !insides_already_done {
-                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 let idx = *idx;
 
@@ -1347,7 +1498,7 @@ impl Vec3Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 3] {
@@ -1431,6 +1582,25 @@ impl Vec3Expr {
                         return;
                     }
                 }
+                if product.len() == 1 && *last_factor == [0.0, 0.0, 1.0] {
+                    let (factor, exp) = &mut product[0];
+                    if *exp == 1.0 {
+                        if let Vec3Expr::Extend2to3(_xy, z) = factor {
+                            *self = Vec3Expr::Extend2to3(Vec2Expr::Gather1(FloatExpr::Literal(0.0)), z.take_as_owned());
+                            return
+                        }
+                    }
+                }
+
+                if !product.is_empty() && last_factor[2] == 0.0 {
+                    let mut new_factors = vec![];
+                    for (existing_factor, existing_exponent) in product {
+                        new_factors.push((Vec2Expr::Truncate3to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
+                    }
+                    *self = Vec3Expr::Extend2to3(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0));
+                    self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                    return
+                }
 
                 // Vec extensions get pulled to the outside of arithmetic
                 // TODO support more general cases if necessary?
@@ -1439,11 +1609,11 @@ impl Vec3Expr {
                     match (&mut a[0], &mut b[0]) {
                         ((Vec3Expr::Extend2to3(va, za), a), (Vec3Expr::Extend2to3(vb, zb), b)) => {
                             *self = Vec3Expr::Extend2to3(
-                                Vec2Expr::Product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
-                                FloatExpr::Product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
+                                Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
+                                FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         _ => {}
@@ -1462,7 +1632,7 @@ impl Vec3Expr {
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
-                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 3] {
@@ -1470,8 +1640,8 @@ impl Vec3Expr {
                     return if factor == 1.0 {
                         *self = addend;
                     } else {
-                        let mut new_self = Vec3Expr::Product(vec![(addend, 1.0)], [factor, factor, factor]);
-                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        let mut new_self = Vec3Expr::product(vec![(addend, 1.0)], [factor, factor, factor]);
+                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         *self = new_self;
                     };
                 }
@@ -1552,7 +1722,7 @@ impl Vec3Expr {
                         *self = addend;
                     } else {
                         let gather = [factor, factor, factor];
-                        *self = Vec3Expr::Product(vec![(addend, 1.0)], gather);
+                        *self = Vec3Expr::product(vec![(addend, 1.0)], gather);
                     };
                 }
 
@@ -1563,11 +1733,11 @@ impl Vec3Expr {
                     match (&mut a[0], &mut b[0]) {
                         ((Vec3Expr::Extend2to3(va, za), a), (Vec3Expr::Extend2to3(vb, zb), b)) => {
                             *self = Vec3Expr::Extend2to3(
-                                Vec2Expr::Sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
-                                FloatExpr::Sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
+                                Vec2Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
+                                FloatExpr::sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         _ => {}
@@ -1581,8 +1751,11 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::SwizzleVec3(v3, i0, i1, i2) => {
+                if *i0 > 2 || *i1 > 2 || *i2 > 2 {
+                    panic!("Problem!");
+                }
                 if !insides_already_done {
-                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if *i0 == 0 && *i1 == 1 && *i2 == 2 {
                     *self = v3.take_as_owned();
@@ -1600,18 +1773,43 @@ impl Vec3Expr {
                         *self = Vec3Expr::Extend2to3(v.take_as_owned(), z.take_as_owned());
                     }
                     box Vec3Expr::Extend2to3(v, z) if *i0 < 2 && *i1 < 2 => {
-                        *self = Vec3Expr::Extend2to3(Vec2Expr::SwizzleVec2(Box::new(v.take_as_owned()), *i0, *i1), z.take_as_owned());
+                        *self = Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v.take_as_owned(), *i0 as usize, *i1 as usize), z.take_as_owned());
                     }
                     _ => {}
                 }
             }
             Vec3Expr::Truncate4to3(box v4) => {
                 if !insides_already_done {
-                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match v4 {
+                    Vec4Expr::Gather1(x) => {
+                        *self = Vec3Expr::Gather1(x.take_as_owned());
+                    }
+                    Vec4Expr::Gather4(x, y, z, _) => {
+                        *self = Vec3Expr::Gather3(x.take_as_owned(), y.take_as_owned(), z.take_as_owned());
+                    }
+                    Vec4Expr::SwizzleVec4(box Vec4Expr::Extend2to4(_xy, z, w), i0, i1, i2, _i3)
+                    if *i0 >= 2 && *i1 >= 2 && *i2 >= 2 => {
+                        *self = Vec3Expr::Gather3(
+                            if *i0 == 2 { z.clone() } else { w.clone() },
+                            if *i1 == 2 { z.clone() } else { w.clone() },
+                            if *i2 == 2 { z.clone() } else { w.clone() },
+                        );
+                    }
+                    Vec4Expr::SwizzleVec4(box Vec4Expr::Extend3to4(_xyz, w), i0, i1, i2, _i3)
+                    if *i0 == 3 && *i1 == 3 && *i2 == 3 => {
+                        // Cases like this may seem really weird or unlikely and you ask yourself "Does that really even happen?"
+                        // and the answer is almost always yes, most simplification patterns are based on actual code output, in
+                        // this case impl AntiProjectOrthogonallyOnto<AntiMotor> for AntiDipoleInversion
+                        *self = Vec3Expr::Gather1(w.take_as_owned());
+                    }
                     Vec4Expr::SwizzleVec4(box inner_v4, i0, i1, i2, _) if *i0 < 3 && *i1 < 3 && *i2 < 3 => {
-                        *self = Vec3Expr::SwizzleVec3(Box::new(Vec3Expr::Truncate4to3(Box::new(inner_v4.take_as_owned()))), *i0, *i1, *i2);
+                        *self = Vec3Expr::swizzle_vec_3(Vec3Expr::Truncate4to3(Box::new(inner_v4.take_as_owned())), *i0 as usize, *i1 as usize, *i2 as usize);
+                    }
+                    Vec4Expr::Extend2to4(xy, z, _w) => {
+                        *self = Vec3Expr::Extend2to3(xy.take_as_owned(), z.take_as_owned());
+                        return
                     }
                     Vec4Expr::Extend3to4(v3, _) => {
                         *self = v3.take_as_owned();
@@ -1625,10 +1823,10 @@ impl Vec3Expr {
 }
 impl Vec4Expr {
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, false, false);
+        self.simplify_nuanced(false, false, false);
     }
 
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             Vec4Expr::Variable(v) => {
                 let decl = &v.decl;
@@ -1638,7 +1836,7 @@ impl Vec4Expr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec4(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -1647,17 +1845,17 @@ impl Vec4Expr {
             }
             Vec4Expr::Gather1(f) => {
                 if !insides_already_done {
-                    f.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 // Do I really want to do more here?
             }
             Vec4Expr::Gather4(f0, f1, f2, f3) => {
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
-                    f0.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f2.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f3.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f0.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if f0 == f1 && f0 == f2 && f0 == f3 {
                     *self = Vec4Expr::Gather1(f0.take_as_owned());
@@ -1670,23 +1868,23 @@ impl Vec4Expr {
                             *self = if *x == 0 && *y == 1 && *z == 2 && *w == 3 {
                                 v4_a.take_as_owned()
                             } else {
-                                Vec4Expr::SwizzleVec4(Box::new(v4_a.take_as_owned()), *x, *y, *z, *w)
+                                Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x as usize, *y as usize, *z as usize, *w as usize)
                             };
                             return;
                         }
                     }
                     (AccessVec3(box v3_a, x), AccessVec3(box v3_b, y), AccessVec3(box v3_c, z), w) => {
                         if v3_a == v3_b && v3_a == v3_c {
-                            let mut v3 = Vec3Expr::SwizzleVec3(Box::new(v3_a.take_as_owned()), *x, *y, *z);
-                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            let mut v3 = Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x as usize, *y as usize, *z as usize);
+                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                             *self = Vec4Expr::Extend3to4(v3, w.take_as_owned());
                             return;
                         }
                     }
                     (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z, w) => {
                         if v2_a == v2_b {
-                            let mut v3 = Vec2Expr::SwizzleVec2(Box::new(v2_a.take_as_owned()), *x, *y);
-                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x as usize, *y as usize);
+                            v3.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                             *self = Vec4Expr::Extend2to4(v3, z.take_as_owned(), w.take_as_owned());
                             return;
                         }
@@ -1719,7 +1917,7 @@ impl Vec4Expr {
                                     let y = (*y_idx - min_idx) as u8;
                                     let z = (*z_idx - min_idx) as u8;
                                     let w = (*w_idx - min_idx) as u8;
-                                    Vec4Expr::SwizzleVec4(Box::new(mv_group), x, y, z, w)
+                                    Vec4Expr::swizzle_vec_4(mv_group, x as usize, y as usize, z as usize, w as usize)
                                 };
                                 return
                             }
@@ -2135,7 +2333,7 @@ impl Vec4Expr {
                                     let y = (*y_idx - min_idx) as u8;
                                     let z = (*z_idx - min_idx) as u8;
                                     Vec4Expr::Extend3to4(
-                                        Vec3Expr::SwizzleVec3(Box::new(mv_group), x, y, z),
+                                        Vec3Expr::swizzle_vec_3(mv_group, x as usize, y as usize, z as usize),
                                         w.take_as_owned()
                                     )
                                 };
@@ -2177,7 +2375,7 @@ impl Vec4Expr {
                                     let x = (*x_idx - min_idx) as u8;
                                     let y = (*y_idx - min_idx) as u8;
                                     Vec4Expr::Extend2to4(
-                                        Vec2Expr::SwizzleVec2(Box::new(mv_group), x, y),
+                                        Vec2Expr::swizzle_vec_2(mv_group, x as usize, y as usize),
                                         z.take_as_owned(),
                                         w.take_as_owned(),
                                     )
@@ -2208,20 +2406,19 @@ impl Vec4Expr {
             }
             Vec4Expr::Extend2to4(v2, f1, f2) => {
                 if !insides_already_done {
-                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
-                    f2.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 match (v2, f1, f2) {
-                    (Vec2Expr::Gather2(
-                        FloatExpr::AccessVec4(box a, x),
-                        FloatExpr::AccessVec4(box b, y),
-                    ),
-                        FloatExpr::AccessVec4(box c, z),
-                        FloatExpr::AccessVec4(box d, w),
-                    ) if a == b && a == c && a == d => {
-                        *self = Vec4Expr::SwizzleVec4(Box::new(a.take_as_owned()), *x, *y, *z, *w);
-                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    (Vec2Expr::Gather1(x), z, w) if x.is_memory_read_and_not_compute() => {
+                        *self = Vec4Expr::Gather4(x.clone(), x.take_as_owned(), z.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    (Vec2Expr::Gather2(x, y), z, w) => {
+                        *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         return
                     }
                     _ => {}
@@ -2229,22 +2426,31 @@ impl Vec4Expr {
             }
             Vec4Expr::Extend3to4(v3, f1) => {
                 if !insides_already_done {
-                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    f1.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
 
                 // TODO see impl Wedge<AntiFlector> for RoundPoint {
                 //  need to simplify truncate inside extend
                 match (v3, f1) {
-                    (Vec3Expr::Gather3(
-                        FloatExpr::AccessVec4(box a, x),
-                        FloatExpr::AccessVec4(box b, y),
-                        FloatExpr::AccessVec4(box c, z),
-                    ),
-                        FloatExpr::AccessVec4(box d, w),
-                    ) if a == b && a == c && a == d => {
-                        *self = Vec4Expr::SwizzleVec4(Box::new(a.take_as_owned()), *x, *y, *z, *w);
-                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    (Vec3Expr::Gather1(x), w) if x.is_memory_read_and_not_compute() => {
+                        *self = Vec4Expr::Gather4(x.clone(), x.clone(), x.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    (Vec3Expr::Gather3(x, y, z), w) => {
+                        *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    (Vec3Expr::Extend2to3(Vec2Expr::Gather2(x, y), z), w) => {
+                        *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
+                        return
+                    }
+                    (Vec3Expr::Extend2to3(Vec2Expr::Gather1(x), z), w) if x.is_memory_read_and_not_compute() => {
+                        *self = Vec4Expr::Gather4(x.clone(), x.take_as_owned(), z.take_as_owned(), w.take_as_owned());
+                        self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         return
                     }
                     _ => {}
@@ -2252,7 +2458,7 @@ impl Vec4Expr {
             }
             Vec4Expr::AccessMultiVecGroup(mve, idx) => {
                 if !insides_already_done {
-                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    mve.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 let idx = *idx;
 
@@ -2285,7 +2491,7 @@ impl Vec4Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        factor.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 4] {
@@ -2374,6 +2580,43 @@ impl Vec4Expr {
                         return;
                     }
                 }
+                if product.len() == 1 && *last_factor == [0.0, 0.0, 1.0, 1.0] {
+                    let (factor, exp) = &mut product[0];
+                    if *exp == 1.0 {
+                        if let Vec4Expr::Extend2to4(_xy, z, w) = factor {
+                            *self = Vec4Expr::Extend2to4(Vec2Expr::Gather1(FloatExpr::Literal(0.0)), z.take_as_owned(), w.take_as_owned());
+                            return
+                        }
+                    }
+                }
+                if product.len() == 1 && *last_factor == [0.0, 0.0, 0.0, 1.0] {
+                    let (factor, exp) = &mut product[0];
+                    if *exp == 1.0 {
+                        if let Vec4Expr::Extend3to4(_xyz, w) = factor {
+                            *self = Vec4Expr::Extend3to4(Vec3Expr::Gather1(FloatExpr::Literal(0.0)), w.take_as_owned());
+                            return
+                        }
+                    }
+                }
+
+                if !product.is_empty() && last_factor[2] == 0.0 && last_factor[3] == 0.0 {
+                    let mut new_factors = vec![];
+                    for (existing_factor, existing_exponent) in product {
+                        new_factors.push((Vec2Expr::Truncate4to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
+                    }
+                    *self = Vec4Expr::Extend2to4(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0), FloatExpr::Literal(0.0));
+                    self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                    return
+                }
+                if !product.is_empty() && last_factor[3] == 0.0 {
+                    let mut new_factors = vec![];
+                    for (existing_factor, existing_exponent) in product {
+                        new_factors.push((Vec3Expr::Truncate4to3(Box::new(existing_factor.take_as_owned())), *existing_exponent));
+                    }
+                    *self = Vec4Expr::Extend3to4(Vec3Expr::product(new_factors, [last_factor[0], last_factor[1], last_factor[2]]), FloatExpr::Literal(0.0));
+                    self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
+                    return
+                }
 
                 // Vec extensions get pulled to the outside of arithmetic
                 // TODO support more general cases if necessary?
@@ -2382,21 +2625,21 @@ impl Vec4Expr {
                     match (&mut a[0], &mut b[0]) {
                         ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
                             *self = Vec4Expr::Extend3to4(
-                                Vec3Expr::Product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1], last_factor[2]]),
-                                FloatExpr::Product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
+                                Vec3Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1], last_factor[2]]),
+                                FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
                             *self = Vec4Expr::Extend2to4(
-                                Vec2Expr::Product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
-                                FloatExpr::Product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
-                                FloatExpr::Product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
+                                Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
+                                FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
+                                FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         _ => {}
@@ -2420,7 +2663,7 @@ impl Vec4Expr {
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
-                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        addend.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 4] {
@@ -2428,8 +2671,8 @@ impl Vec4Expr {
                     return if factor == 1.0 {
                         *self = addend;
                     } else {
-                        let mut new_self = Vec4Expr::Product(vec![(addend, 1.0)], [factor, factor, factor, factor]);
-                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        let mut new_self = Vec4Expr::product(vec![(addend, 1.0)], [factor, factor, factor, factor]);
+                        new_self.simplify_nuanced(true, transpose_simd, prefer_flat_access);
                         *self = new_self;
                     };
                 }
@@ -2515,7 +2758,7 @@ impl Vec4Expr {
                         *self = addend;
                     } else {
                         let gather = [factor, factor, factor, factor];
-                        *self = Vec4Expr::Product(vec![(addend, 1.0)], gather);
+                        *self = Vec4Expr::product(vec![(addend, 1.0)], gather);
                     };
                 }
 
@@ -2526,21 +2769,21 @@ impl Vec4Expr {
                     match (&mut a[0], &mut b[0]) {
                         ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
                             *self = Vec4Expr::Extend3to4(
-                                Vec3Expr::Sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1], last_addend[2]]),
-                                FloatExpr::Sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
+                                Vec3Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1], last_addend[2]]),
+                                FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
                             *self = Vec4Expr::Extend2to4(
-                                Vec2Expr::Sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
-                                FloatExpr::Sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
-                                FloatExpr::Sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
+                                Vec2Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
+                                FloatExpr::sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
+                                FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             return
                         }
                         _ => {}
@@ -2559,8 +2802,11 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::SwizzleVec4(v4, i0, i1, i2, i3) => {
+                if *i0 > 3 || *i1 > 3 || *i2 > 3 {
+                    panic!("Problem!");
+                }
                 if !insides_already_done {
-                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if *i0 == 0 && *i1 == 1 && *i2 == 2 && *i3 == 3 {
                     *self = v4.take_as_owned();
@@ -2578,13 +2824,13 @@ impl Vec4Expr {
                         *self = Vec4Expr::Extend2to4(v.take_as_owned(), z.take_as_owned(), w.take_as_owned());
                     }
                     box Vec4Expr::Extend2to4(v, z, w) if *i0 < 2 && *i1 < 2 => {
-                        *self = Vec4Expr::Extend2to4(Vec2Expr::SwizzleVec2(Box::new(v.take_as_owned()), *i0, *i1), z.take_as_owned(), w.take_as_owned());
+                        *self = Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v.take_as_owned(), *i0 as usize, *i1 as usize), z.take_as_owned(), w.take_as_owned());
                     }
                     box Vec4Expr::Extend3to4(v, w) if *i0 == 0 && *i1 == 1 && *i2 == 2 => {
                         *self = Vec4Expr::Extend3to4(v.take_as_owned(), w.take_as_owned());
                     }
                     box Vec4Expr::Extend3to4(v, w) if *i0 < 3 && *i1 < 3 && *i2 < 3 => {
-                        *self = Vec4Expr::Extend3to4(Vec3Expr::SwizzleVec3(Box::new(v.take_as_owned()), *i0, *i1, *i2), w.take_as_owned());
+                        *self = Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v.take_as_owned(), *i0 as usize, *i1 as usize, *i2 as usize), w.take_as_owned());
                     }
                     _ => {}
                 }
@@ -2593,11 +2839,11 @@ impl Vec4Expr {
     }
 }
 impl MultiVectorGroupExpr {
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
             MultiVectorGroupExpr::JustFloat(f) => {
                 if !insides_already_done {
-                    f.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    f.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let FloatExpr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = f {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -2642,7 +2888,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec2(v2) => {
                 if !insides_already_done {
-                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v2.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v2 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -2652,7 +2898,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec3(v3) => {
                 if !insides_already_done {
-                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v3 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -2662,7 +2908,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec4(v4) => {
                 if !insides_already_done {
-                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    v4.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
                 if let Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v4 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -2675,9 +2921,9 @@ impl MultiVectorGroupExpr {
 }
 impl MultiVectorExpr {
     pub(crate) fn simplify(&mut self) {
-        self.simplify_nuanced(false, false, false, false);
+        self.simplify_nuanced(false, false, false);
     }
-    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool, inline_single_use_vars: bool) {
+    fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
                 let decl = &v.decl;
@@ -2687,7 +2933,7 @@ impl MultiVectorExpr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Class(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                            new_self.simplify_nuanced(false, transpose_simd, prefer_flat_access);
                             *self = new_self;
                             return
                         }
@@ -2697,7 +2943,7 @@ impl MultiVectorExpr {
             MultiVectorVia::Construct(groups) => {
                 if !insides_already_done {
                     for group in groups.iter_mut() {
-                        group.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                        group.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     }
                 }
                 let result = groups.iter_mut().enumerate().fold(None, |a, (b_idx, b)| {
@@ -2730,30 +2976,30 @@ impl MultiVectorExpr {
             }
             MultiVectorVia::TraitInvoke11ToClass(_t, owner) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
             MultiVectorVia::TraitInvoke21ToClass(_t, owner, _other) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
             MultiVectorVia::TraitInvoke22ToClass(_t, owner, other) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    other.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    other.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
             MultiVectorVia::TraitInvoke12iToClass(_t, owner, other) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    other.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, prefer_flat_access);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    other.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
             MultiVectorVia::TraitInvoke12fToClass(_t, owner, other) => {
                 if !insides_already_done {
-                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access, inline_single_use_vars);
-                    other.simplify_nuanced(insides_already_done, transpose_simd, true, prefer_flat_access, inline_single_use_vars);
+                    owner.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
+                    other.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
             }
         }

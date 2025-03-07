@@ -35,6 +35,8 @@ impl DestructurableVariables {
         if self.partial_variable_use.contains(&rvd.clone().into()) { return }
         if self.whole_variable_is_used.contains(&rvd.clone().into()) { return }
 
+        // TODO maybe we should allow destructuring Products if they are just one term with coefficients
+        //  impl AntiConstraintViolation for AntiMotor
         let ae = vd.read();
         let result = match *ae {
             AnyExpression::Vec2(Vec2Expr::Gather1(_)) => true,

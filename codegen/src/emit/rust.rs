@@ -1018,6 +1018,7 @@ postgres-types = "0.2.7""#
                             if !grouping_provided {
                                 write!(w, "(")?;
                             }
+                            // TODO impl AntiFix for AntiFlatPoint
                             write!(w, "1.0/")?;
                             self.write_float(w, factor, false)?;
                             if !grouping_provided {
@@ -1027,13 +1028,11 @@ postgres-types = "0.2.7""#
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
                                 let e = e as i32;
-                                // TODO we should only do this if we can assure the FloatExpr is "simple" as in it is just a variable, or a property access on a variable, and not some complicated calculation
-                                // if e == 2 {
-                                //     self.write_float(w, factor, false)?;
-                                //     write!(w, " * ")?;
-                                //     self.write_float(w, factor, false)?;
-                                // } else
-                                {
+                                if e == 2 && factor.is_memory_read_and_not_compute() {
+                                    self.write_float(w, factor, false)?;
+                                    write!(w, " * ")?;
+                                    self.write_float(w, factor, false)?;
+                                } else {
                                     write!(w, "f32::powi(")?;
                                     self.write_float(w, factor, true)?;
                                     write!(w, ", {e})")?;
@@ -1218,6 +1217,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, "Simd32x2::powi(")?;
                                 self.write_vec2(w, factor, true)?;
@@ -1240,6 +1240,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, " * Simd32x2::powi(")?;
                                 self.write_vec2(w, factor, true)?;
@@ -1349,9 +1350,21 @@ postgres-types = "0.2.7""#
                 let y = swizzle_term(i1)?;
                 write!(w, ".{x}{y}()")?;
             },
+            Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box v3, i0, i1, _)) => {
+                self.write_vec3(w, v3, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                write!(w, ".{x}{y}()")?;
+            }
             Vec2Expr::Truncate3to2(box v3) => {
                 self.write_vec3(w, v3, false)?;
                 write!(w, ".xy()")?;
+            }
+            Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box v4, i0, i1, _, _)) => {
+                self.write_vec4(w, v4, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                write!(w, ".{x}{y}()")?;
             }
             Vec2Expr::Truncate4to2(box v4) => {
                 self.write_vec4(w, v4, false)?;
@@ -1423,6 +1436,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, "Simd32x3::powi(")?;
                                 self.write_vec3(w, factor, true)?;
@@ -1445,6 +1459,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, " * Simd32x3::powi(")?;
                                 self.write_vec3(w, factor, true)?;
@@ -1560,6 +1575,13 @@ postgres-types = "0.2.7""#
                 let z = swizzle_term(i2)?;
                 write!(w, ".{x}{y}{z}()")?;
             },
+            Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box v4, i0, i1, i2, _)) => {
+                self.write_vec4(w, v4, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                let z = swizzle_term(i2)?;
+                write!(w, ".{x}{y}{z}()")?;
+            }
             Vec3Expr::Truncate4to3(box v4) => {
                 self.write_vec4(w, v4, false)?;
                 write!(w, ".xyz()")?;
@@ -1640,6 +1662,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, false) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, "Simd32x4::powi(")?;
                                 self.write_vec4(w, factor, true)?;
@@ -1662,6 +1685,7 @@ postgres-types = "0.2.7""#
                         }
                         (e, true) => {
                             if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
+                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
                                 let e = e as i32;
                                 write!(w, " * Simd32x4::powi(")?;
                                 self.write_vec4(w, factor, true)?;
@@ -2897,6 +2921,7 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
         if let Some(c) = &impls.return_comment {
             self.emit_comment(w, false, c.to_string())?;
         }
+        // TODO can use implicit return instead of explicit return
         write!(w, "        return ")?;
         self.write_expression(w, &impls.return_expr, true)?;
         writeln!(w, ";")?;

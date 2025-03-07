@@ -122,19 +122,19 @@ impl Variable<MultiVector> {
                         v.push((FloatExpr::AccessMultiVecGroup(mv_expr.clone(), g), a));
                     }
                     BasisElementGroup::G2(a, b) => {
-                        v.push((FloatExpr::AccessVec2(Box::new(Vec2Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec2(Box::new(Vec2Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 1), b));
+                        v.push((FloatExpr::access_vec_2(Vec2Expr::AccessMultiVecGroup(mv_expr.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_2(Vec2Expr::AccessMultiVecGroup(mv_expr.clone(), g), 1), b));
                     }
                     BasisElementGroup::G3(a, b, c) => {
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 1), b));
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 2), c));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g), 1), b));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(mv_expr.clone(), g), 2), c));
                     }
                     BasisElementGroup::G4(a, b, c, d) => {
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 1), b));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 2), c));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g)), 3), d));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g), 1), b));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g), 2), c));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(mv_expr.clone(), g), 3), d));
                     }
                 }
                 for (f, _el) in v.iter_mut() {
@@ -179,19 +179,19 @@ impl MultiVectorExpr {
                         v.push((FloatExpr::AccessMultiVecGroup(self.clone(), g), a));
                     }
                     BasisElementGroup::G2(a, b) => {
-                        v.push((FloatExpr::AccessVec2(Box::new(Vec2Expr::AccessMultiVecGroup(self.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec2(Box::new(Vec2Expr::AccessMultiVecGroup(self.clone(), g)), 1), b));
+                        v.push((FloatExpr::access_vec_2(Vec2Expr::AccessMultiVecGroup(self.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_2(Vec2Expr::AccessMultiVecGroup(self.clone(), g), 1), b));
                     }
                     BasisElementGroup::G3(a, b, c) => {
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(self.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(self.clone(), g)), 1), b));
-                        v.push((FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(self.clone(), g)), 2), c));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(self.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(self.clone(), g), 1), b));
+                        v.push((FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(self.clone(), g), 2), c));
                     }
                     BasisElementGroup::G4(a, b, c, d) => {
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(self.clone(), g)), 0), a));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(self.clone(), g)), 1), b));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(self.clone(), g)), 2), c));
-                        v.push((FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(self.clone(), g)), 3), d));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(self.clone(), g), 0), a));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(self.clone(), g), 1), b));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(self.clone(), g), 2), c));
+                        v.push((FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(self.clone(), g), 3), d));
                     }
                 }
                 for (f, _el) in v.iter_mut() {
@@ -221,7 +221,7 @@ impl IntExpr {
             IntExpr::TraitInvoke10ToInt(_, _) => false,
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -240,6 +240,14 @@ impl IntExpr {
     //         _ => false,
     //     }
     // }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            IntExpr::Variable(_) => true,
+            IntExpr::Literal(_) => true,
+            IntExpr::TraitInvoke10ToInt(_, _) => false,
+        }
+    }
 }
 
 impl FloatExpr {
@@ -286,7 +294,7 @@ impl FloatExpr {
             FloatExpr::FromInt(a) => a.deep_inline_variables(),
         };
         if result {
-            self.simplify_nuanced(true, false, true, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -302,6 +310,23 @@ impl FloatExpr {
         match self {
             FloatExpr::Literal(0.0) => true,
             _ => false,
+        }
+    }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            FloatExpr::Variable(_) => true,
+            FloatExpr::Literal(_) => true,
+            FloatExpr::FromInt(e) => e.is_memory_read_and_not_compute(),
+            FloatExpr::AccessVec2(v, _i) => v.is_memory_read_and_not_compute(),
+            FloatExpr::AccessVec3(v, _i) => v.is_memory_read_and_not_compute(),
+            FloatExpr::AccessVec4(v, _i) => v.is_memory_read_and_not_compute(),
+            FloatExpr::AccessMultiVecGroup(mve, _i) => mve.is_memory_read_and_not_compute(),
+            FloatExpr::AccessMultiVecFlat(mve, _i) => mve.is_memory_read_and_not_compute(),
+            FloatExpr::TraitInvoke11ToFloat(_, _) => false,
+            FloatExpr::Product(_, _) => false,
+            FloatExpr::Sum(_, _) => false,
+            FloatExpr::Exp(_, _, _) => false,
         }
     }
 }
@@ -345,7 +370,7 @@ impl Vec2Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -360,7 +385,7 @@ impl Vec2Expr {
         let mut x = Vec2Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         return match x {
-            Vec2Expr::Variable(_) => FloatExpr::AccessVec2(Box::new(x), idx),
+            Vec2Expr::Variable(_) => FloatExpr::access_vec_2(x, idx as usize),
             Vec2Expr::Gather1(f) => f,
             Vec2Expr::Gather2(f0, f1) => match idx {
                 0 => f0, 1 => f1, _ => panic!("{idx} does not fit in Vec2 for take_part_as_owned")
@@ -385,7 +410,7 @@ impl Vec2Expr {
                     f_factors.push((v_factor.0.take_part_as_owned(idx), v_factor.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Product(f_factors, f_lit)
+                FloatExpr::product(f_factors, f_lit)
             }
             Vec2Expr::Sum(v_addends, v_lits) => {
                 let mut f_addends = vec![];
@@ -393,7 +418,7 @@ impl Vec2Expr {
                     f_addends.push((v_addend.0.take_part_as_owned(idx), v_addend.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Sum(f_addends, f_lit)
+                FloatExpr::sum(f_addends, f_lit)
             }
             Vec2Expr::SwizzleVec2(box mut v, x, y) => v.take_part_as_owned([x, y][idx as usize]),
             Vec2Expr::Truncate3to2(box mut v3) => v3.take_part_as_owned(idx),
@@ -406,6 +431,22 @@ impl Vec2Expr {
         match self {
             Vec2Expr::Gather1(f) => f.is_zero(),
             _ => false,
+        }
+    }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            Vec2Expr::Variable(_) => true,
+            Vec2Expr::Gather1(x) => x.is_memory_read_and_not_compute(),
+            Vec2Expr::Gather2(x, y) => {
+                x.is_memory_read_and_not_compute() && y.is_memory_read_and_not_compute()
+            }
+            Vec2Expr::AccessMultiVecGroup(mve, _i) => mve.is_memory_read_and_not_compute(),
+            Vec2Expr::Product(_, _) => false,
+            Vec2Expr::Sum(_, _) => false,
+            Vec2Expr::SwizzleVec2(_, _, _) => false,
+            Vec2Expr::Truncate3to2(v) => v.is_memory_read_and_not_compute(),
+            Vec2Expr::Truncate4to2(v) => v.is_memory_read_and_not_compute(),
         }
     }
 }
@@ -455,7 +496,7 @@ impl Vec3Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -469,7 +510,7 @@ impl Vec3Expr {
         let mut x = Vec3Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         return match x {
-            Vec3Expr::Variable(_) => FloatExpr::AccessVec3(Box::new(x), idx),
+            Vec3Expr::Variable(_) => FloatExpr::access_vec_3(x, idx as usize),
             Vec3Expr::Gather1(f) => f,
             Vec3Expr::Gather3(f0, f1, f2) => match idx {
                 0 => f0, 1 => f1, 2 => f2, _ => panic!("{idx} does not fit in Vec3 for take_part_as_owned")
@@ -494,7 +535,7 @@ impl Vec3Expr {
                     f_factors.push((v_factor.0.take_part_as_owned(idx), v_factor.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Product(f_factors, f_lit)
+                FloatExpr::product(f_factors, f_lit)
             }
             Vec3Expr::Sum(v_addends, v_lits) => {
                 let mut f_addends = vec![];
@@ -502,7 +543,7 @@ impl Vec3Expr {
                     f_addends.push((v_addend.0.take_part_as_owned(idx), v_addend.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Sum(f_addends, f_lit)
+                FloatExpr::sum(f_addends, f_lit)
             }
             Vec3Expr::SwizzleVec3(box mut v, x, y, z) => v.take_part_as_owned([x, y, z][idx as usize]),
             Vec3Expr::Truncate4to3(box mut v4) => v4.take_part_as_owned(idx),
@@ -519,6 +560,23 @@ impl Vec3Expr {
         match self {
             Vec3Expr::Gather1(f) => f.is_zero(),
             _ => false,
+        }
+    }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            Vec3Expr::Variable(_) => true,
+            Vec3Expr::Gather1(x) => x.is_memory_read_and_not_compute(),
+            Vec3Expr::Gather3(x, y, z) => {
+                x.is_memory_read_and_not_compute() && y.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute()
+            }
+            Vec3Expr::AccessMultiVecGroup(mve, _) => mve.is_memory_read_and_not_compute(),
+            Vec3Expr::Product(_, _) => false,
+            Vec3Expr::Sum(_, _) => false,
+            Vec3Expr::SwizzleVec3(_, _, _, _) => false,
+            Vec3Expr::Truncate4to3(v) => v.is_memory_read_and_not_compute(),
+            // could go one way or the other on this one, I'll allow it for now
+            Vec3Expr::Extend2to3(v, z) => v.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute(),
         }
     }
 }
@@ -575,7 +633,7 @@ impl Vec4Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -589,7 +647,7 @@ impl Vec4Expr {
         let mut x = Vec4Expr::Gather1(FloatExpr::Literal(0.0));
         mem::swap(&mut x, self);
         return match x {
-            Vec4Expr::Variable(_) => FloatExpr::AccessVec4(Box::new(x), idx),
+            Vec4Expr::Variable(_) => FloatExpr::access_vec_4(x, idx as usize),
             Vec4Expr::Gather1(f) => f,
             Vec4Expr::Gather4(f0, f1, f2, f3) => match idx {
                 0 => f0, 1 => f1, 2 => f2, 3 => f3, _ => panic!("{idx} does not fit in Vec4 for take_part_as_owned")
@@ -614,7 +672,7 @@ impl Vec4Expr {
                     f_factors.push((v_factor.0.take_part_as_owned(idx), v_factor.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Product(f_factors, f_lit)
+                FloatExpr::product(f_factors, f_lit)
             }
             Vec4Expr::Sum(v_addends, v_lits) => {
                 let mut f_addends = vec![];
@@ -622,7 +680,7 @@ impl Vec4Expr {
                     f_addends.push((v_addend.0.take_part_as_owned(idx), v_addend.1));
                 }
                 let f_lit = v_lits[idx as usize];
-                FloatExpr::Sum(f_addends, f_lit)
+                FloatExpr::sum(f_addends, f_lit)
             }
             Vec4Expr::SwizzleVec4(box mut v, x, y, z, w) => v.take_part_as_owned([x, y, z, w][idx as usize]),
             Vec4Expr::Extend2to4(mut v2, z, w) => match idx {
@@ -646,6 +704,25 @@ impl Vec4Expr {
             _ => false,
         }
     }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            Vec4Expr::Variable(_) => true,
+            Vec4Expr::Gather1(x) => x.is_memory_read_and_not_compute(),
+            Vec4Expr::Gather4(x, y, z, w) => {
+                x.is_memory_read_and_not_compute() && y.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute() && w.is_memory_read_and_not_compute()
+            }
+            Vec4Expr::AccessMultiVecGroup(mve, _) => mve.is_memory_read_and_not_compute(),
+            // TODO maybe should count negation of one simple term as simple
+            //  see impl AntiConstraintViolation for AntiFlector
+            Vec4Expr::Product(_, _) => false,
+            Vec4Expr::Sum(_, _) => false,
+            Vec4Expr::SwizzleVec4(_, _, _, _, _) => false,
+            // could go one way or the other on these, I'll allow it for now
+            Vec4Expr::Extend2to4(v, z, w) => v.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute() && w.is_memory_read_and_not_compute(),
+            Vec4Expr::Extend3to4(v, w) => v.is_memory_read_and_not_compute() && w.is_memory_read_and_not_compute(),
+        }
+    }
 }
 impl MultiVectorGroupExpr {
     fn deep_inline_variables(&mut self) -> bool {
@@ -656,7 +733,7 @@ impl MultiVectorGroupExpr {
             MultiVectorGroupExpr::Vec4(v) => v.deep_inline_variables(),
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -714,7 +791,7 @@ impl MultiVectorExpr {
             MultiVectorVia::TraitInvoke12fToClass(_, _, _) => false,
         };
         if result {
-            self.simplify_nuanced(true, false, false, false);
+            self.simplify_nuanced(true, false, false);
         }
         result
     }
@@ -733,6 +810,36 @@ impl MultiVectorExpr {
         match self.expr.as_ref() {
             MultiVectorVia::Construct(gs) => gs.iter().all(|it| it.is_zero()),
             _ => false,
+        }
+    }
+
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match &*self.expr {
+            MultiVectorVia::Variable(_) => true,
+            MultiVectorVia::Construct(v) => v.iter().all(|it| match it {
+                MultiVectorGroupExpr::JustFloat(f) => f.is_memory_read_and_not_compute(),
+                MultiVectorGroupExpr::Vec2(v) => v.is_memory_read_and_not_compute(),
+                MultiVectorGroupExpr::Vec3(v) => v.is_memory_read_and_not_compute(),
+                MultiVectorGroupExpr::Vec4(v) => v.is_memory_read_and_not_compute(),
+            }),
+            MultiVectorVia::TraitInvoke11ToClass(_, _) => false,
+            MultiVectorVia::TraitInvoke12iToClass(_, _, _) => false,
+            MultiVectorVia::TraitInvoke12fToClass(_, _, _) => false,
+            MultiVectorVia::TraitInvoke21ToClass(_, _, _) => false,
+            MultiVectorVia::TraitInvoke22ToClass(_, _, _) => false,
+        }
+    }
+}
+
+impl AnyExpression {
+    pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
+        match self {
+            AnyExpression::Int(e) => e.is_memory_read_and_not_compute(),
+            AnyExpression::Float(e) => e.is_memory_read_and_not_compute(),
+            AnyExpression::Vec2(e) => e.is_memory_read_and_not_compute(),
+            AnyExpression::Vec3(e) => e.is_memory_read_and_not_compute(),
+            AnyExpression::Vec4(e) => e.is_memory_read_and_not_compute(),
+            AnyExpression::Class(e) => e.is_memory_read_and_not_compute(),
         }
     }
 }

@@ -2691,6 +2691,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                         let expr = e.read();
                         expr.scan_for_destructurable_variables(&mut dv);
                         should_destructure = dv.needs_destructuring();
+                        if expr.is_memory_read_and_not_compute() {
+                            new_var.force_inline.store(true, Release);
+                        }
                     }
 
                     let new_line = CommentOrVariableDeclaration::VarDec(Arc::downgrade(&new_var));
@@ -2717,6 +2720,19 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 break 'outer;
             }
         }
+
+        // TODO so.... now we've done a lot of fancy simplification...
+        //  but dare we go even further? First distribute down... then factor out? Ugh.
+        //  See impl UnitizedRadiusNormSquared for MultiVector
+        //  The reason this is difficult/annoying is because simplification requires
+        //  distributing things out, so that terms can cancel. But this means performing
+        //  factorization to reduce the number of operations will go against the grain
+        //  of simplification.
+        // TODO then after pulling out major factors, it might be possible to convert
+        //  lots of product into a "machine level dot product" of the whole groups
+        //  instead of individually multiplying and adding floats. This would also be
+        //  difficult and complicated.
+
 
         if self.trait_def.names.trait_key.final_name != "Zero" {
             // We do not implement traits that are statically guaranteed to return zero.
@@ -2784,6 +2800,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             make_a_var(expr, suffix.as_str())
         };
 
+        // TODO maybe we should allow destructuring Products if they are just one term with coefficients
+        //  impl AntiConstraintViolation for AntiMotor
         let mut ae = vd.write();
         match &mut *ae {
             AnyExpression::Vec2(Vec2Expr::Gather1(x)) => {
