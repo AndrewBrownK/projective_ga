@@ -82,6 +82,7 @@ fn main() {
         Conjugation ConformalConjugate
 
         Complement DoubleComplement
+        Carrier CoCarrier
 
         RoundBulk
         RoundWeight
@@ -194,6 +195,8 @@ pub mod custom_traits {
     const infinity: BasisElement = codegen::elements::e5;
     const option_infinity: Option<BasisElement> = Some(codegen::elements::e5);
 
+    pub static Carrier: Elaborated<CarrierImpl> = carrier(infinity);
+    pub static CoCarrier: Elaborated<CoCarrierImpl> = co_carrier(infinity);
     pub static ConformalConjugate: Elaborated<ConformalConjugateImpl> = conformal_conjugate(infinity);
     pub static RoundBulk: Elaborated<RoundBulkImpl> = round_bulk(origin, infinity);
     pub static RoundWeight: Elaborated<RoundWeightImpl> = round_weight(origin, infinity);

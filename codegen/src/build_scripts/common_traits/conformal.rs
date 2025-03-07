@@ -3,7 +3,19 @@ use crate::ast::impls::Elaborated;
 use crate::ast::traits::{NameTrait};
 use impls::*;
 
-// TODO carrier, cocarrier
+pub const fn carrier(infinity: BasisElement) -> Elaborated<CarrierImpl> {
+    CarrierImpl { infinity }
+        .new_trait_named("Carrier")
+        .blurb("The Carrier of a round object is the lowest dimensional flat object \
+        that contains it.")
+}
+
+pub const fn co_carrier(infinity: BasisElement) -> Elaborated<CoCarrierImpl> {
+    CoCarrierImpl { infinity }
+        .new_trait_named("CoCarrier")
+        .blurb("The CoCarrier of a round object is a flat object that intersects \
+        the center of the round object, and is perpendicular to the Carrier.")
+}
 
 pub const fn conformal_conjugate(infinity: BasisElement) -> Elaborated<ConformalConjugateImpl> {
     ConformalConjugateImpl { infinity }
@@ -193,6 +205,49 @@ pub mod impls {
     use crate::build_scripts::common_traits::{Addition, AntiDotProduct, AntiSquareRoot, DotProduct, RightAntiDual, SquareRoot, SubType, Wedge};
     use crate::build_scripts::common_traits::conformal::{center_norm_squared, flat_bulk, flat_bulk_norm, flat_bulk_norm_squared, flat_weight, flat_weight_norm, flat_weight_norm_squared, RadiusNormSquared, round_bulk, round_bulk_norm, round_bulk_norm_squared, round_weight, round_weight_norm, round_weight_norm_squared, unitized_center_norm_squared, unitized_flat_norm_squared, unitized_radius_norm_squared, unitized_round_norm_squared};
     use crate::trait_impl_1_type_1_arg;
+
+    #[derive(Clone, Copy)]
+    pub struct CarrierImpl {
+        pub infinity: BasisElement,
+    }
+    #[async_trait]
+    impl TraitImpl_11 for CarrierImpl {
+        type Output = MultiVector;
+        async fn general_implementation<const AntiScalar: BasisElement>(
+            self,
+            mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
+            slf: Variable<MultiVector>,
+        ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
+            let mut an_infinity = DynamicMultiVector::zero();
+            an_infinity += (1.0, self.infinity);
+            let an_infinity = an_infinity.construct(&builder)?;
+            let an_infinity = builder.variable("an_infinity", an_infinity);
+            let result = Wedge.inline(&mut builder, slf, an_infinity).await?;
+            builder.return_expr(result)
+        }
+    }
+
+    #[derive(Clone, Copy)]
+    pub struct CoCarrierImpl {
+        pub infinity: BasisElement,
+    }
+    #[async_trait]
+    impl TraitImpl_11 for CoCarrierImpl {
+        type Output = MultiVector;
+        async fn general_implementation<const AntiScalar: BasisElement>(
+            self,
+            mut builder: TraitImplBuilder<AntiScalar, HasNotReturned>,
+            slf: Variable<MultiVector>,
+        ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
+            let mut an_infinity = DynamicMultiVector::zero();
+            an_infinity += (1.0, self.infinity);
+            let an_infinity = an_infinity.construct(&builder)?;
+            let an_infinity = builder.variable("an_infinity", an_infinity);
+            let slf_anti_dual = RightAntiDual.inline(&mut builder, slf).await?;
+            let result = Wedge.inline(&mut builder, slf_anti_dual, an_infinity).await?;
+            builder.return_expr(result)
+        }
+    }
 
     #[derive(Clone, Copy)]
     pub struct ConformalConjugateImpl {

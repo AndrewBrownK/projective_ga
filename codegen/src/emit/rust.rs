@@ -223,22 +223,14 @@ postgres-types = "0.2.7""#
         crate_folder: P,
         algebra_name: &'static str,
     ) -> anyhow::Result<()> {
-        let crate_folder = crate_folder.as_ref().to_path_buf();
-        let file_path = crate_folder.join(Path::new("build.rs"));
-        let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
-        let mut file = BufWriter::new(file);
-        write!(&mut file, r#"fn main() {{
-    // Create a symlink in the build output to the integration source files
-
-//    let src_dir = "src/integrations";
-//    let Ok(out_dir) = std::env::var("OUT_DIR") else {{ return }};
-//    let dest_dir = std::path::Path::new(&out_dir).join("{algebra_name}");
-//    #[cfg(unix)]
-//    std::os::unix::fs::symlink(src_dir, &dest_dir).unwrap();
-//    #[cfg(windows)]
-//    std::os::windows::fs::symlink_dir(src_dir, &dest_dir).unwrap();
-}}
-"#)?;
+//         let crate_folder = crate_folder.as_ref().to_path_buf();
+//         let file_path = crate_folder.join(Path::new("build.rs"));
+//         let file = fs::OpenOptions::new().write(true).create(true).truncate(true).open(&file_path)?;
+//         let mut file = BufWriter::new(file);
+//         write!(&mut file, r#"fn main() {{
+//     // Do we really need a build.rs here or no?
+// }}
+// "#)?;
         Ok(())
     }
 

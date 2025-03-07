@@ -18,10 +18,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="568a08b2-daf1-4dfa-875a-0d472ff40ac9" name="Changes" comment="Improve progress bar responsiveness and reduce hanging by using more single threading">
+    <list default="true" id="568a08b2-daf1-4dfa-875a-0d472ff40ac9" name="Changes" comment="Add some parallelism back">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codegen/src/ast/traits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/codegen/src/ast/traits.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/codegen/src/emit/rust.rs" beforeDir="false" afterPath="$PROJECT_DIR$/codegen/src/emit/rust.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/codegen/src/build_scripts/common_traits/conformal.rs" beforeDir="false" afterPath="$PROJECT_DIR$/codegen/src/build_scripts/common_traits/conformal.rs" afterDir="false" />
     </list>
     <list id="35177190-b082-424f-bd39-b0e7c24c52b8" name="large files" comment="">
       <change afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang-module/cga3d.slang-module" afterDir="false" />
@@ -36,7 +35,7 @@
       <option value="directory" />
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:dev" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:release" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -640,7 +639,7 @@
       <workItem from="1741330367393" duration="1291000" />
       <workItem from="1741331696686" duration="467000" />
       <workItem from="1741332175496" duration="2258000" />
-      <workItem from="1741334562890" duration="18986000" />
+      <workItem from="1741334562890" duration="20385000" />
     </task>
     <task id="LOCAL-00001" summary="Use build.rs instead of actions.yaml">
       <created>1683707245742</created>
@@ -704,14 +703,6 @@
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
       <updated>1696521968485</updated>
-    </task>
-    <task id="LOCAL-00499" summary="Tidy up slang data">
-      <option name="closed" value="true" />
-      <created>1735200188167</created>
-      <option name="number" value="00499" />
-      <option name="presentableId" value="LOCAL-00499" />
-      <option name="project" value="LOCAL" />
-      <updated>1735200188167</updated>
     </task>
     <task id="LOCAL-00500" summary="Continuing slang generation">
       <option name="closed" value="true" />
@@ -1025,7 +1016,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741381021782</updated>
     </task>
-    <option name="localTasksCounter" value="539" />
+    <task id="LOCAL-00539" summary="Add some parallelism back">
+      <option name="closed" value="true" />
+      <created>1741385595839</created>
+      <option name="number" value="00539" />
+      <option name="presentableId" value="LOCAL-00539" />
+      <option name="project" value="LOCAL" />
+      <updated>1741385595839</updated>
+    </task>
+    <option name="localTasksCounter" value="540" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1059,7 +1058,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix some annoying warnings" />
     <MESSAGE value="Initial rough slang code gen" />
     <MESSAGE value="Tidy up slang data" />
     <MESSAGE value="Product of zero simplification" />
@@ -1084,7 +1082,8 @@
     <MESSAGE value="Latest Library Generation" />
     <MESSAGE value="Committing RustRover IDE files because run configurations that help reliably specify release profile" />
     <MESSAGE value="Improve progress bar responsiveness and reduce hanging by using more single threading" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve progress bar responsiveness and reduce hanging by using more single threading" />
+    <MESSAGE value="Add some parallelism back" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add some parallelism back" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

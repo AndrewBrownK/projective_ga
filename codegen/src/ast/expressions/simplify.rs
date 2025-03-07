@@ -937,7 +937,8 @@ impl Vec2Expr {
                     partition += 1;
                 }
                 product.retain(|(_, e)| *e != 0.0);
-
+                // TODO impl Carrier for AntiDualNum
+                //  DualNum::from_groups(Simd32x2::from([self[scalar], 1.0]) * Simd32x2::from([1.0, 0.0]))
                 if product.len() == 1 && *last_factor == [1.0; 2] {
                     if product[0].1 == 1.0 {
                         let (factor, _exponent) = product.remove(0);
