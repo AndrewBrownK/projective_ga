@@ -328,7 +328,7 @@ impl<const AntiScalar: BasisElement> MultiVec<AntiScalar> {
     }
 }
 
-// TODO at the time of this comment, the compiler can ICE on MultiVec::new_by_groups in const eval.
+// At the time of this comment, the compiler can ICE on MultiVec::new_by_groups in const eval.
 //  It's really hard to understand why, but this wrapper function seems to mitigate it.
 pub const fn multivec_by_groups<const AntiScalar: BasisElement>(name: &'static str, element_groups: ConstVec<BasisElementGroup, QTY_GROUPS>) -> MultiVec<AntiScalar> {
     MultiVec::new_by_groups(name, element_groups)

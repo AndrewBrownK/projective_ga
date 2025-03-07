@@ -51,6 +51,9 @@ fn lazy_compile_button() {
 
 /// Lengyel styled CGA of 5 dimensions representing 3 dimensions
 fn main() {
+    // TODO test a manually specified allocator configured to retrieve more memory from OS at a time
+    //  In particular jemallocator might work, along with env var MALLOC_CONF
+
     let cga3d = codegen::ga! { e12345;
         1 => e1, e2, e3, eP;
         -1 => eM;

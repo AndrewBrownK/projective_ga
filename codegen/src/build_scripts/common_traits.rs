@@ -211,7 +211,7 @@ pub static AntiSandwich: Elaborated<AntiSandwichImpl> = AntiSandwichImpl
 // and change the documentation as you see fit! 😀
 // However, for the pre-built traits provided by this module, and a limited namespace, we find
 // the arguments in this blog post to be compelling. https://terathon.com/blog/poor-foundations-ga.html
-pub static DotProduct: Elaborated<DotProductImpl> = DotProductImpl
+pub static DotProduct: Elaborated<InnerProductImpl> = InnerProductImpl
     .new_trait_named("DotProduct")
     .blurb("This dot product is almost exactly what you would expect from regular \
     vector algebra. It always returns a scalar result. It is determined by the metric of the \
@@ -220,7 +220,7 @@ pub static DotProduct: Elaborated<DotProductImpl> = DotProductImpl
     community you discuss with, so if someone or something refers to the \"dot product\" then \
     use care and double check the definition that is intended.");
 
-pub static AntiDotProduct: Elaborated<AntiDotProductImpl> = AntiDotProductImpl
+pub static AntiDotProduct: Elaborated<InnerAntiProductImpl> = InnerAntiProductImpl
     .new_trait_named("AntiDotProduct")
     .blurb("This is the dual to the dot product, and always returns an AntiScalar.");
 
@@ -661,9 +661,6 @@ pub mod impls {
         builder.return_expr(IntExpr::Literal(ag))
     });
 
-    // TODO left duals, because https://terathon.com/blog/poor-foundations-ga.html
-    //  Also rename scalar product to inner product, also for technical reasons in that blog post
-
     trait_impl_1_type_1_arg!(RightDualImpl(builder, slf) -> MultiVector {
         let mut result = DynamicMultiVector::zero();
         for (fe, el) in slf.elements() {
@@ -908,9 +905,7 @@ pub mod impls {
         builder.return_expr(result)
     });
 
-    // TODO this is giving incorrect results, which is kind of a big deal
-    //  see impl DotProduct<Plane> for Plane and compare it to page 73
-    trait_impl_2_types_2_args!(DotProductImpl(builder, slf, other) -> MultiVector {
+    trait_impl_2_types_2_args!(InnerProductImpl(builder, slf, other) -> MultiVector {
         let mut dyn_mv = DynamicMultiVector::zero();
         for (a, a_el) in slf.elements() {
             for (b, b_el) in other.elements() {
@@ -927,7 +922,7 @@ pub mod impls {
         builder.return_expr(mv)
     });
 
-    trait_impl_2_types_2_args!(AntiDotProductImpl(builder, slf, other) -> MultiVector {
+    trait_impl_2_types_2_args!(InnerAntiProductImpl(builder, slf, other) -> MultiVector {
         let mut dyn_mv = DynamicMultiVector::zero();
         for (a, a_el) in slf.elements() {
             for (b, b_el) in other.elements() {
@@ -1007,7 +1002,6 @@ pub mod impls {
     });
 
     // See section 3.4.3 and 3.6.2 of the book
-    // TODO we absolutely need advanced inlining and factorization for Fix and AntiFix
     trait_impl_1_type_1_arg!(FixImpl(builder, slf) -> MultiVector {
         let r = Reverse.inline(&mut builder, slf.clone()).await?;
         let p = GeometricProduct.inline(&mut builder, slf.clone(), r).await?;

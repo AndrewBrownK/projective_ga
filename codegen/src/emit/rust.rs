@@ -1974,9 +1974,9 @@ impl From<{other}> for {owner} {{
             force_inline: Arc::new(AtomicBool::new(false)),
         });
         ret.substitute_variable(old_var, new_var);
-        writeln!(w, "        return ")?;
+        write!(w, "        ")?;
         self.write_expression(w, &ret, true)?;
-        writeln!(w, "    }}\n}}")?;
+        writeln!(w, "\n    }}\n}}")?;
         Ok(())
     }
 
@@ -2040,7 +2040,7 @@ impl TryFrom<{other}> for {owner} {{
             error.push('}}');
             return Err(error);
         }}
-        return Ok("#
+        Ok("#
         )?;
         self.write_expression(w, &ret, true)?;
         writeln!(w, ")\n    }}\n}}")?;
@@ -2272,7 +2272,6 @@ impl {ucc} {{
 }}"#
         )?;
         if self.nearly_eq_ord {
-            // todo simplify return expression on comparison traits
             writeln!(
                 w,
                 r#"
@@ -2287,7 +2286,7 @@ impl nearly::NearlyEqEps<{ucc}, f32, f32> for {ucc} {{
             }}
             i += 1;
         }}
-        return true;
+        true
     }}
 }}
 impl nearly::NearlyEqUlps<{ucc}, f32, f32> for {ucc} {{
@@ -2301,7 +2300,7 @@ impl nearly::NearlyEqUlps<{ucc}, f32, f32> for {ucc} {{
             }}
             i += 1;
         }}
-        return true;
+        true
     }}
 }}
 impl nearly::NearlyEqTol<{ucc}, f32, f32> for {ucc} {{}}
@@ -2326,7 +2325,7 @@ impl nearly::NearlyOrdUlps<{ucc}, f32, f32> for {ucc} {{
             }}
         }}
         // Nearly equal the whole way
-        return false;
+        false
     }}
 
     fn nearly_gt_ulps(&self, other: &{ucc}, ulps: &nearly::UlpsToleranceType<f32, f32>) -> bool {{
@@ -2348,7 +2347,7 @@ impl nearly::NearlyOrdUlps<{ucc}, f32, f32> for {ucc} {{
             }}
         }}
         // Nearly equal the whole way
-        return false;
+        false
     }}
 }}
 impl nearly::NearlyOrdEps<{ucc}, f32, f32> for {ucc} {{
@@ -2371,7 +2370,7 @@ impl nearly::NearlyOrdEps<{ucc}, f32, f32> for {ucc} {{
             }}
         }}
         // Nearly equal the whole way
-        return false;
+        false
     }}
 
     fn nearly_gt_eps(&self, other: &{ucc}, eps: &nearly::EpsToleranceType<f32, f32>) -> bool {{
@@ -2393,7 +2392,7 @@ impl nearly::NearlyOrdEps<{ucc}, f32, f32> for {ucc} {{
             }}
         }}
         // Nearly equal the whole way
-        return false;
+        false
     }}
 }}
 impl nearly::NearlyOrdTol<{ucc}, f32, f32> for {ucc} {{}}
@@ -2473,10 +2472,10 @@ unsafe impl bytemuck::Pod for {ucc} {{}}
 impl encase::ShaderType for {ucc} {{
     type ExtraMetadata = <{ucc}Groups as encase::ShaderType>::ExtraMetadata;
     const METADATA: encase::private::Metadata<Self::ExtraMetadata> = <{ucc}Groups as encase::ShaderType>::METADATA;
-    fn min_size() -> std::num::NonZeroU64 {{ return <{ucc}Groups as encase::ShaderType>::min_size(); }}
-    fn size(&self) -> std::num::NonZeroU64 {{ return encase::ShaderType::size(unsafe {{ &self.groups }}); }}
+    fn min_size() -> std::num::NonZeroU64 {{ <{ucc}Groups as encase::ShaderType>::min_size() }}
+    fn size(&self) -> std::num::NonZeroU64 {{ encase::ShaderType::size(unsafe {{ &self.groups }}) }}
     const UNIFORM_COMPAT_ASSERT: fn() = <{ucc}Groups as encase::ShaderType>::UNIFORM_COMPAT_ASSERT;
-    fn assert_uniform_compat() {{ return <{ucc}Groups as encase::ShaderType>::assert_uniform_compat(); }}
+    fn assert_uniform_compat() {{ <{ucc}Groups as encase::ShaderType>::assert_uniform_compat() }}
 }}"#)?;
         }
         if self.serde {
@@ -2921,11 +2920,9 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
         if let Some(c) = &impls.return_comment {
             self.emit_comment(w, false, c.to_string())?;
         }
-        // TODO can use implicit return instead of explicit return
-        write!(w, "        return ")?;
+        write!(w, "        ")?;
         self.write_expression(w, &impls.return_expr, true)?;
-        writeln!(w, ";")?;
-        writeln!(w, "    }}\n}}")?;
+        writeln!(w, "\n    }}\n}}")?;
 
         if !do_assign_impl {
             return Ok(());

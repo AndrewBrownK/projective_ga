@@ -46,7 +46,6 @@ fn advanced_transpose_vec2_product(
         FloatExpr::product(float_product_1.take_as_owned(), 1.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive, if not already
         vec2_product.push((Vec2Expr::Gather2(p0, p1), 1.0));
     }
     let mut result = Vec2Expr::product(vec2_product, coalesce_product_literal);
@@ -173,7 +172,6 @@ fn advanced_transpose_vec2_sum(
         FloatExpr::sum(float_sum_1.take_as_owned(), 0.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive, if not already
         vec2_sum.push((Vec2Expr::Gather2(p0, p1), 1.0));
     }
     let mut result = Vec2Expr::sum(vec2_sum, coalesce_sum_literal);
@@ -316,7 +314,6 @@ fn advanced_transpose_vec3_product(
         FloatExpr::product(float_product_2.take_as_owned(), 1.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive, if not already
         vec3_product.push((Vec3Expr::Gather3(p0, p1, p2), 1.0));
     }
     let mut result = Vec3Expr::product(vec3_product, coalesce_product_literal);
@@ -494,7 +491,6 @@ fn advanced_transpose_vec3_sum(
         FloatExpr::sum(float_sum_2.take_as_owned(), 0.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive, if not already
         vec3_sum.push((Vec3Expr::Gather3(p0, p1, p2), 1.0));
     }
     let mut result = Vec3Expr::sum(vec3_sum, coalesce_sum_literal);
@@ -679,7 +675,6 @@ fn advanced_transpose_vec4_product(
         FloatExpr::product(float_product_3.take_as_owned(), 1.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive, if not already
         vec4_product.push((Vec4Expr::Gather4(p0, p1, p2, p3), 1.0));
     }
     let mut result = Vec4Expr::product(vec4_product, coalesce_product_literal);
@@ -921,7 +916,6 @@ fn advanced_transpose_vec4_sum(
         FloatExpr::sum(float_sum_3.take_as_owned(), 0.0)
     };
     if keep_remaining {
-        // TODO reattempt but aggressive?
         vec4_sum.push((Vec4Expr::Gather4(p0, p1, p2, p3), 1.0));
     }
     let mut result = Vec4Expr::sum(vec4_sum, coalesce_sum_literal);

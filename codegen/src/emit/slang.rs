@@ -1,9 +1,3 @@
-// TODO integrate with "slang" shader language
-//  hypothetically should be nice to avoid monolith file
-
-// I could emit to slang directly,
-// but might also want to check out rust-slang integrations like https://github.com/tangmi/slang-rs/
-
 use std::{fs, thread};
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::io::{BufRead, BufReader, BufWriter, ErrorKind, Write};
@@ -1612,8 +1606,6 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
         let docs = docs.unwrap_or(ucc.clone());
         self.emit_comment(w, true, docs)?;
 
-        // TODO hybrid rust/wgsl - only one struct, based on vecs, but with properties
-
         let name = TraitKey::new(multi_vec.name);
         let ucc = name.as_upper_camel();
         // let lcc = name.as_lower_camel();
@@ -1903,9 +1895,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
         let mut is_op = false;
         if let Some(op) = op {
             if op.rust_trait_name() == ucc.as_str() {
-                is_op = true;
-                lsc = op.slang_trait_method().to_string();
-                do_assign_impl = def.arity == TraitArity::Two && *owner_ty == output_ty;
+                if let Some(op_method_name) = op.slang_trait_method() {
+                    is_op = true;
+                    lsc = op_method_name.to_string();
+                    do_assign_impl = def.arity == TraitArity::Two && *owner_ty == output_ty;
+                }
             }
         }
         let is_op = is_op;
@@ -1933,7 +1927,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 TraitArity::One => Some("PrefixOrPostfix"),
                 TraitArity::Two => Some("Infix"),
             };
-            if let Some(infix_term) = infix_term {
+            if let (Some(infix_term), Some(operator_method)) = (infix_term, operator_method) {
                 if let TraitParam::Class(mv) = &owner_ty {
                     let n = mv.name();
                     if !is_op {

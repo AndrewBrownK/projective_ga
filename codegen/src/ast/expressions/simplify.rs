@@ -59,7 +59,6 @@ impl IntExpr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false, false, false);
     }
-    // TODO clean up unused parameters
     #[allow(unused)]
     fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool, prefer_flat_access: bool) {
         match self {
@@ -88,9 +87,6 @@ impl IntExpr {
         }
     }
 }
-
-
-// TODO looks like lots of glaring simplification opportunities in AntiProjectOrthogonallyOnto
 
 impl FloatExpr {
     pub(crate) fn simplify(&mut self) {
@@ -1603,7 +1599,6 @@ impl Vec3Expr {
                 }
 
                 // Vec extensions get pulled to the outside of arithmetic
-                // TODO support more general cases if necessary?
                 if product.len() == 2 {
                     let (a, b) = product.split_at_mut(1);
                     match (&mut a[0], &mut b[0]) {
@@ -1727,7 +1722,6 @@ impl Vec3Expr {
                 }
 
                 // Vec extensions get pulled to the outside of arithmetic
-                // TODO support more general cases if necessary?
                 if sum.len() == 2 {
                     let (a, b) = sum.split_at_mut(1);
                     match (&mut a[0], &mut b[0]) {
@@ -1861,7 +1855,6 @@ impl Vec4Expr {
                     *self = Vec4Expr::Gather1(f0.take_as_owned());
                     return;
                 }
-                // TODO impl AntiWedge<CircleRotorAligningOrigin> for AntiCircleOnOrigin {
                 match (f0, f1, f2, f3) {
                     (AccessVec4(box v4_a, x), AccessVec4(box v4_b, y), AccessVec4(box v4_c, z), AccessVec4(box v4_d, w)) => {
                         if v4_a == v4_b && v4_a == v4_c && v4_a == v4_d {
@@ -2429,9 +2422,6 @@ impl Vec4Expr {
                     v3.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                     f1.simplify_nuanced(insides_already_done, transpose_simd, prefer_flat_access);
                 }
-
-                // TODO see impl Wedge<AntiFlector> for RoundPoint {
-                //  need to simplify truncate inside extend
                 match (v3, f1) {
                     (Vec3Expr::Gather1(x), w) if x.is_memory_read_and_not_compute() => {
                         *self = Vec4Expr::Gather4(x.clone(), x.clone(), x.take_as_owned(), w.take_as_owned());
@@ -2619,7 +2609,6 @@ impl Vec4Expr {
                 }
 
                 // Vec extensions get pulled to the outside of arithmetic
-                // TODO support more general cases if necessary?
                 if product.len() == 2 {
                     let (a, b) = product.split_at_mut(1);
                     match (&mut a[0], &mut b[0]) {
@@ -2763,7 +2752,6 @@ impl Vec4Expr {
                 }
 
                 // Vec extensions get pulled to the outside of arithmetic
-                // TODO support more general cases if necessary?
                 if sum.len() == 2 {
                     let (a, b) = sum.split_at_mut(1);
                     match (&mut a[0], &mut b[0]) {

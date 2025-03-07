@@ -118,8 +118,6 @@ pub trait TraitDef_1_Type_0_Args: TraitImpl_10 + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> Self::Owner;
-
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
             documentation: self.general_documentation(),
@@ -267,7 +265,6 @@ pub trait TraitDef_1_Type_1_Arg: TraitImpl_11 + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> Self::Owner;
 
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
@@ -432,7 +429,6 @@ pub trait TraitDef_2_Types_1_Arg: TraitImpl_21 + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> (Self::Owner, Self::Other);
 
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
@@ -603,7 +599,6 @@ pub trait TraitDef_2_Types_2_Args: TraitImpl_22 + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> (Self::Owner, Self::Other);
 
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
@@ -794,7 +789,6 @@ pub trait TraitDef_1_Type_2_Args_f32: TraitImpl_12f + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> Self::Owner;
 
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
@@ -965,7 +959,6 @@ pub trait TraitDef_1_Type_2_Args_i32: TraitImpl_12i + ProvideTraitNames {
     fn general_documentation(&self) -> String {
         String::new()
     }
-    fn domain(&self) -> Self::Owner;
 
     fn def(&self) -> Arc<RawTraitDefinition> {
         Arc::new(RawTraitDefinition {
@@ -1399,18 +1392,18 @@ impl BinaryOps {
         }
     }
 
-    // TODO return a result type here, the panics are terrible
-    pub fn slang_trait_method(self) -> &'static str {
+    /// If None is returned, then slang does not support overloading of that operator
+    pub fn slang_trait_method(self) -> Option<&'static str> {
         match self {
-            BinaryOps::Add => "operator +",
-            BinaryOps::Sub => "operator -",
-            BinaryOps::Mul => "operator *",
-            BinaryOps::Div => "operator /",
-            BinaryOps::Shl => panic!("Shl operator not supported in slang"),
-            BinaryOps::Shr => panic!("Shr operator not supported in slang"),
-            BinaryOps::BitAnd => "operator &",
-            BinaryOps::BitOr => "operator |",
-            BinaryOps::BitXor => panic!("bitxor operator not supported in slang"),
+            BinaryOps::Add => Some("operator +"),
+            BinaryOps::Sub => Some("operator -"),
+            BinaryOps::Mul => Some("operator *"),
+            BinaryOps::Div => Some("operator /"),
+            BinaryOps::Shl => None,
+            BinaryOps::Shr => None,
+            BinaryOps::BitAnd => Some("operator &"),
+            BinaryOps::BitOr => Some("operator |"),
+            BinaryOps::BitXor => None,
         }
     }
 
@@ -1478,9 +1471,9 @@ impl Ops {
             Ops::Binary(op) => op.rust_operator(),
         }
     }
-    pub fn slang_trait_method(self) -> &'static str {
+    pub fn slang_trait_method(self) -> Option<&'static str> {
         match self {
-            Ops::Unary(op) => op.rust_trait_method(),
+            Ops::Unary(op) => Some(op.rust_trait_method()),
             Ops::Binary(op) => op.slang_trait_method(),
         }
     }
@@ -1979,7 +1972,6 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
         pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
-        // TODO actually restrict by the domain on the TraitDefs
         for mv_a in mv_repo.all_classes() {
             for mv_b in mv_repo.all_classes() {
                 let tir_2 = tir.clone();
@@ -2065,7 +2057,6 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
         pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
-        // TODO actually restrict by the domain on the TraitDefs
         for mv_a in mv_repo.all_classes() {
             let tir_2 = tir.clone();
             let ga_2 = ga.clone();
@@ -2148,7 +2139,6 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
         pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
-        // TODO actually restrict by the domain on the TraitDefs
         for mv_a in mv_repo.all_classes() {
             let tir_2 = tir.clone();
             let ga_2 = ga.clone();
@@ -2685,10 +2675,6 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         self.into_trait_xx(owner, vec![], vec![])
     }
 
-    // TODO some interesting implementations have variables with more than one invocation,
-    //  but the value behind the variable only has its whole destructured once. It would
-    //  be interesting to inline these.
-    //  - impl AntiSupport for Flector
     fn into_trait11(self, owner: MultiVector) -> Option<Arc<RawTraitImplementation>> {
         self.into_trait_xx(owner, vec![], vec![])
     }
