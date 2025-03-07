@@ -3011,6 +3011,8 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
         Ok(())
     }
 
+    // TODO use a semaphore to format multiple files at a time (just not too many at once,
+    //  we've seen how that results in errors)
     async fn format_file<P: AsRef<Path>>(p: P) -> anyhow::Result<()> {
         let mut cmd = Command::new("rustfmt");
         let file_name = p.as_ref().to_string_lossy().to_string();

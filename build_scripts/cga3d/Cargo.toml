@@ -7,7 +7,6 @@ publish = false
 
 [dependencies]
 codegen = { path = "../../codegen" }
-async-trait = "0.1.80"
 
 # for testing
 tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "io-std", "io-util", "sync", "signal", "fs", "parking_lot", "time"] }

@@ -1746,42 +1746,38 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
 
-        let mut js = JoinSet::new();
+        let mut qty_done = 0;
+        let update_period = 50;
         for mv_a in mv_repo.all_classes() {
+            let mv_a = MultiVector::from(mv_a);
             let tir_2 = tir.clone();
+            let def_2 = def.clone();
             let ga_2 = ga.clone();
             let mv_repo_2 = mv_repo.clone();
-            let def_2 = def.clone();
-            let pb = pb.clone();
-            let overall_progress = overall_progress.clone();
-            js.spawn(async move {
-                let mv_a = MultiVector::from(mv_a);
-                let tir_3 = tir_2.clone();
-                let def_3 = def_2.clone();
-                let the_impl = tir_2
-                    .traits10
-                    .get_or_create_or_panic((trait_key, mv_a), async move {
-                        let variables = Arc::new(Mutex::new(HashMap::new()));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, variables, vec![]);
-                        let result = self.general_implementation(b, mv_a.clone()).await;
-                        match result {
-                            None => None,
-                            Some(result) => result.into_trait10(mv_a),
-                        }
-                    })
-                    .await;
-                pb.inc(1);
-                overall_progress.inc(1);
-                let Some(the_impl) = the_impl else { return };
-                let owner_type = ExpressionType::Class(mv_a.clone());
-                let return_type = the_impl.return_expr.expression_type();
-                TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-            });
+            let the_impl = tir
+                .traits10
+                .get_or_create_or_panic((trait_key, mv_a), async move {
+                    let variables = Arc::new(Mutex::new(HashMap::new()));
+                    let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_2, false, variables, vec![]);
+                    let result = self.general_implementation(b, mv_a.clone()).await;
+                    match result {
+                        None => None,
+                        Some(result) => result.into_trait10(mv_a),
+                    }
+                })
+                .await;
+            qty_done += 1;
+            pb.inc(1);
+            if qty_done % update_period == 0 {
+                overall_progress.inc(update_period);
+            }
+            let Some(the_impl) = the_impl else { continue };
+            let owner_type = ExpressionType::Class(mv_a.clone());
+            let return_type = the_impl.return_expr.expression_type();
+            TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+            TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }
@@ -1815,48 +1811,44 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
 
-        let mut js = JoinSet::new();
+        let mut qty_done = 0;
+        let update_period = 50;
         for mv_a in mv_repo.all_classes() {
+            let mv_a = MultiVector::from(mv_a);
             let tir_2 = tir.clone();
+            let def_2 = def.clone();
             let ga_2 = ga.clone();
             let mv_repo_2 = mv_repo.clone();
-            let def_2 = def.clone();
-            let pb = pb.clone();
-            let overall_progress = overall_progress.clone();
-            js.spawn(async move {
-                let mv_a = MultiVector::from(mv_a);
-                let tir_3 = tir_2.clone();
-                let def_3 = def_2.clone();
-                let the_impl = tir_2
-                    .traits11
-                    .get_or_create_or_panic((trait_key, mv_a), async move {
-                        let mut variables = HashMap::new();
-                        let declare_self = param_self();
-                        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
-                        let var_self: Variable<MultiVector> = Variable {
-                            expr_type: mv_a.clone(),
-                            decl: declare_self,
-                        };
-                        let result = self.general_implementation(b, var_self).await;
-                        match result {
-                            None => None,
-                            Some(result) => result.into_trait11(mv_a),
-                        }
-                    })
-                    .await;
-                pb.inc(1);
-                overall_progress.inc(1);
-                let Some(the_impl) = the_impl else { return };
-                let owner_type = ExpressionType::Class(mv_a.clone());
-                let return_type = the_impl.return_expr.expression_type();
-                TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-            });
+            let the_impl = tir
+                .traits11
+                .get_or_create_or_panic((trait_key, mv_a), async move {
+                    let mut variables = HashMap::new();
+                    let declare_self = param_self();
+                    variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
+                    let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_2, false, Arc::new(Mutex::new(variables)), vec![]);
+                    let var_self: Variable<MultiVector> = Variable {
+                        expr_type: mv_a.clone(),
+                        decl: declare_self,
+                    };
+                    let result = self.general_implementation(b, var_self).await;
+                    match result {
+                        None => None,
+                        Some(result) => result.into_trait11(mv_a),
+                    }
+                })
+                .await;
+            qty_done += 1;
+            pb.inc(1);
+            if qty_done % update_period == 0 {
+                overall_progress.inc(update_period);
+            }
+            let Some(the_impl) = the_impl else { continue };
+            let owner_type = ExpressionType::Class(mv_a.clone());
+            let return_type = the_impl.return_expr.expression_type();
+            TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+            TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }
@@ -1890,53 +1882,49 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
-        pb.tick();
 
-        let mut js = JoinSet::new();
+        let mut qty_done = 0;
+        let update_period = 50;
         for mv_a in mv_repo.all_classes() {
             for mv_b in mv_repo.all_classes() {
+                let mv_a = MultiVector::from(mv_a);
+                let mv_b = MultiVector::from(mv_b);
                 let tir_2 = tir.clone();
+                let tir_3 = tir.clone();
+                let def_2 = def.clone();
                 let ga_2 = ga.clone();
                 let mv_repo_2 = mv_repo.clone();
-                let def_2 = def.clone();
-                let pb = pb.clone();
-                let overall_progress = overall_progress.clone();
-                js.spawn(async move {
-                    let mv_a = MultiVector::from(mv_a);
-                    let mv_b = MultiVector::from(mv_b);
-                    let tir_3 = tir_2.clone();
-                    let def_3 = def_2.clone();
-                    let the_impl = tir_2
-                        .traits21
-                        .get_or_create_or_panic((trait_key, mv_a, mv_b), async move {
-                            let mut variables = HashMap::new();
-                            let declare_self = param_self();
-                            variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
-                            let var_self: Variable<MultiVector> = Variable {
-                                expr_type: mv_a.clone(),
-                                decl: declare_self,
-                            };
-                            let result = self.general_implementation(b, var_self, mv_b.clone()).await;
-                            match result {
-                                None => None,
-                                Some(result) => result.into_trait21(mv_a, mv_b),
-                            }
-                        })
-                        .await;
-                    pb.inc(1);
-                    overall_progress.inc(1);
-                    let Some(the_impl) = the_impl else { return };
-                    let owner_type = ExpressionType::Class(mv_a.clone());
-                    let return_type = the_impl.return_expr.expression_type();
-                    TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                    TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-                });
+                let the_impl = tir_2
+                    .traits21
+                    .get_or_create_or_panic((trait_key, mv_a, mv_b), async move {
+                        let mut variables = HashMap::new();
+                        let declare_self = param_self();
+                        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
+                        let var_self: Variable<MultiVector> = Variable {
+                            expr_type: mv_a.clone(),
+                            decl: declare_self,
+                        };
+                        let result = self.general_implementation(b, var_self, mv_b.clone()).await;
+                        match result {
+                            None => None,
+                            Some(result) => result.into_trait21(mv_a, mv_b),
+                        }
+                    })
+                    .await;
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 {
+                    overall_progress.inc(update_period);
+                }
+                let Some(the_impl) = the_impl else { continue };
+                let owner_type = ExpressionType::Class(mv_a.clone());
+                let return_type = the_impl.return_expr.expression_type();
+                TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+                TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
             }
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }
@@ -1971,57 +1959,53 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
 
-        let mut js = JoinSet::new();
+        let mut qty_done = 0;
+        let update_period = 50;
         for mv_a in mv_repo.all_classes() {
             for mv_b in mv_repo.all_classes() {
+                let mv_a = MultiVector::from(mv_a);
+                let mv_b = MultiVector::from(mv_b);
                 let tir_2 = tir.clone();
+                let def_2 = def.clone();
                 let ga_2 = ga.clone();
                 let mv_repo_2 = mv_repo.clone();
-                let def_2 = def.clone();
-                let pb = pb.clone();
-                let overall_progress = overall_progress.clone();
-                js.spawn(async move {
-                    let mv_a = MultiVector::from(mv_a);
-                    let mv_b = MultiVector::from(mv_b);
-                    let tir_3 = tir_2.clone();
-                    let def_3 = def_2.clone();
-                    let the_impl = tir_2
-                        .traits22
-                        .get_or_create_or_panic((trait_key, mv_a, mv_b), async move {
-                            let mut variables = HashMap::new();
-                            let declare_self = param_self();
-                            variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                            let declare_other = param_other();
-                            variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
-                            let var_self: Variable<MultiVector> = Variable {
-                                expr_type: mv_a.clone(),
-                                decl: declare_self,
-                            };
-                            let var_other: Variable<MultiVector> = Variable {
-                                expr_type: mv_b.clone(),
-                                decl: declare_other,
-                            };
-                            let result = self.general_implementation(b, var_self, var_other).await;
-                            match result {
-                                None => None,
-                                Some(result) => result.into_trait22(mv_a, mv_b),
-                            }
-                        })
-                        .await;
-                    pb.inc(1);
-                    overall_progress.inc(1);
-                    let Some(the_impl) = the_impl else { return };
-                    let owner_type = ExpressionType::Class(mv_a.clone());
-                    let return_type = the_impl.return_expr.expression_type();
-                    TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                    TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-                });
+                let the_impl = tir
+                    .traits22
+                    .get_or_create_or_panic((trait_key, mv_a, mv_b), async move {
+                        let mut variables = HashMap::new();
+                        let declare_self = param_self();
+                        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
+                        let declare_other = param_other();
+                        variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_2, false, Arc::new(Mutex::new(variables)), vec![]);
+                        let var_self: Variable<MultiVector> = Variable {
+                            expr_type: mv_a.clone(),
+                            decl: declare_self,
+                        };
+                        let var_other: Variable<MultiVector> = Variable {
+                            expr_type: mv_b.clone(),
+                            decl: declare_other,
+                        };
+                        let result = self.general_implementation(b, var_self, var_other).await;
+                        match result {
+                            None => None,
+                            Some(result) => result.into_trait22(mv_a, mv_b),
+                        }
+                    })
+                    .await;
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 {
+                    overall_progress.inc(update_period);
+                }
+                let Some(the_impl) = the_impl else { continue };
+                let owner_type = ExpressionType::Class(mv_a.clone());
+                let return_type = the_impl.return_expr.expression_type();
+                TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+                TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
             }
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }
@@ -2055,55 +2039,52 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
+        let mut qty_done = 0;
+        let update_period = 50;
 
-        let mut js = JoinSet::new();
         for mv_a in mv_repo.all_classes() {
+            let mv_a = MultiVector::from(mv_a);
             let tir_2 = tir.clone();
+            let tir_3 = tir.clone();
+            let def_2 = def.clone();
             let ga_2 = ga.clone();
             let mv_repo_2 = mv_repo.clone();
-            let def_2 = def.clone();
-            let pb = pb.clone();
-            let overall_progress = overall_progress.clone();
-            js.spawn(async move {
-                let mv_a = MultiVector::from(mv_a);
-                let tir_3 = tir_2.clone();
-                let def_3 = def_2.clone();
-                let the_impl = tir_2
-                    .traits12f
-                    .get_or_create_or_panic((trait_key, mv_a), async move {
-                        let mut variables = HashMap::new();
-                        let declare_self = param_self();
-                        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                        let declare_other = param_other();
-                        variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
-                        let var_self: Variable<MultiVector> = Variable {
-                            expr_type: mv_a.clone(),
-                            decl: declare_self,
-                        };
-                        let var_other: Variable<Float> = Variable {
-                            expr_type: Float,
-                            decl: declare_other,
-                        };
-                        let result = self.general_implementation(b, var_self, var_other).await;
-                        match result {
-                            None => None,
-                            Some(result) => result.into_trait12f(mv_a),
-                        }
-                    })
-                    .await;
-                pb.inc(1);
-                overall_progress.inc(1);
-                let Some(the_impl) = the_impl else { return };
-                let owner_type = ExpressionType::Class(mv_a.clone());
-                let return_type = the_impl.return_expr.expression_type();
-                TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-            });
+            let the_impl = tir_2
+                .traits12f
+                .get_or_create_or_panic((trait_key, mv_a), async move {
+                    let mut variables = HashMap::new();
+                    let declare_self = param_self();
+                    variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
+                    let declare_other = param_other();
+                    variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
+                    let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
+                    let var_self: Variable<MultiVector> = Variable {
+                        expr_type: mv_a.clone(),
+                        decl: declare_self,
+                    };
+                    let var_other: Variable<Float> = Variable {
+                        expr_type: Float,
+                        decl: declare_other,
+                    };
+                    let result = self.general_implementation(b, var_self, var_other).await;
+                    match result {
+                        None => None,
+                        Some(result) => result.into_trait12f(mv_a),
+                    }
+                })
+                .await;
+            qty_done += 1;
+            pb.inc(1);
+            if qty_done % update_period == 0 {
+                overall_progress.inc(update_period);
+            }
+            let Some(the_impl) = the_impl else { continue };
+            let owner_type = ExpressionType::Class(mv_a.clone());
+            let return_type = the_impl.return_expr.expression_type();
+            TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+            TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }
@@ -2138,54 +2119,51 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
         let n = trait_key.as_upper_camel();
         pb.set_message(format!("AST: {n}"));
 
-        let mut js = JoinSet::new();
+        let mut qty_done = 0;
+        let update_period = 50;
         for mv_a in mv_repo.all_classes() {
+            let mv_a = MultiVector::from(mv_a);
             let tir_2 = tir.clone();
+            let tir_3 = tir.clone();
+            let def_2 = def.clone();
             let ga_2 = ga.clone();
             let mv_repo_2 = mv_repo.clone();
-            let def_2 = def.clone();
-            let pb = pb.clone();
-            let overall_progress = overall_progress.clone();
-            js.spawn(async move {
-                let mv_a = MultiVector::from(mv_a);
-                let tir_3 = tir_2.clone();
-                let def_3 = def_2.clone();
-                let the_impl = tir_2
-                    .traits12i
-                    .get_or_create_or_panic((trait_key, mv_a), async move {
-                        let mut variables = HashMap::new();
-                        let declare_self = param_self();
-                        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                        let declare_other = param_other();
-                        variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
-                        let var_self: Variable<MultiVector> = Variable {
-                            expr_type: mv_a.clone(),
-                            decl: declare_self,
-                        };
-                        let var_other: Variable<Integer> = Variable {
-                            expr_type: Integer,
-                            decl: declare_other,
-                        };
-                        let result = self.general_implementation(b, var_self, var_other).await;
-                        match result {
-                            None => None,
-                            Some(result) => result.into_trait12i(mv_a),
-                        }
-                    })
-                    .await;
-                pb.inc(1);
-                overall_progress.inc(1);
-                let Some(the_impl) = the_impl else { return };
-                let owner_type = ExpressionType::Class(mv_a.clone());
-                let return_type = the_impl.return_expr.expression_type();
-                TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
-                TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
-            });
+            let the_impl = tir_2
+                .traits12i
+                .get_or_create_or_panic((trait_key, mv_a), async move {
+                    let mut variables = HashMap::new();
+                    let declare_self = param_self();
+                    variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
+                    let declare_other = param_other();
+                    variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
+                    let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
+                    let var_self: Variable<MultiVector> = Variable {
+                        expr_type: mv_a.clone(),
+                        decl: declare_self,
+                    };
+                    let var_other: Variable<Integer> = Variable {
+                        expr_type: Integer,
+                        decl: declare_other,
+                    };
+                    let result = self.general_implementation(b, var_self, var_other).await;
+                    match result {
+                        None => None,
+                        Some(result) => result.into_trait12i(mv_a),
+                    }
+                })
+                .await;
+            qty_done += 1;
+            pb.inc(1);
+            if qty_done % update_period == 0 {
+                overall_progress.inc(update_period);
+            }
+            let Some(the_impl) = the_impl else { continue };
+            let owner_type = ExpressionType::Class(mv_a.clone());
+            let return_type = the_impl.return_expr.expression_type();
+            TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
+            TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        while let Some(result) = js.join_next().await {
-            let _: () = result.expect("async machinery should work");
-        }
+        overall_progress.inc(qty % update_period);
         pb.finish_and_clear();
     }
 }

@@ -15,6 +15,8 @@ use codegen::build_scripts::common_traits::GeometricAntiProduct;
 use codegen::elements::e12345;
 use custom_traits::*;
 
+// PRO-TIP: Run with the release profile
+
 codegen::multi_vecs! { e12345;
 
     // Special Objects
@@ -81,12 +83,11 @@ fn main() {
 
         Complement DoubleComplement
 
-        |
         RoundBulk
         RoundWeight
         FlatBulk
         FlatWeight
-        |
+
         RoundNormSquared
             RoundBulkNormSquared
             RoundWeightNormSquared
@@ -95,7 +96,7 @@ fn main() {
             FlatBulkNormSquared
             FlatWeightNormSquared
             UnitizedFlatNormSquared
-        |
+
         RoundNorm
             RoundBulkNorm
             RoundWeightNorm
@@ -104,17 +105,17 @@ fn main() {
             FlatBulkNorm
             FlatWeightNorm
             UnitizedFlatNorm
-        |
+
         RadiusNormSquared
         UnitizedRadiusNormSquared
         CenterNormSquared
         UnitizedCenterNormSquared
-        |
+
         RadiusNorm
         UnitizedRadiusNorm
         CenterNorm
         UnitizedCenterNorm
-        |
+
         ProjectOrthogonallyOnto AntiProjectOrthogonallyOnto
         ProjectViaOriginOnto AntiProjectViaHorizonOnto
         RejectOrthogonallyFrom AntiRejectOrthogonallyFrom

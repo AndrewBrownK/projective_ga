@@ -8,6 +8,8 @@ use codegen::build_scripts::common_traits::conformal::{RadiusNorm, RadiusNormSqu
 use codegen::elements::e12345;
 use custom_traits::*;
 
+// PRO-TIP: Run with the release profile
+
 codegen::multi_vecs! { e12345;
 
     // Special Objects
@@ -51,9 +53,6 @@ fn lazy_compile_button() {
 
 /// Lengyel styled CGA of 5 dimensions representing 3 dimensions
 fn main() {
-    // TODO test a manually specified allocator configured to retrieve more memory from OS at a time
-    //  In particular jemallocator might work, along with env var MALLOC_CONF
-
     let cga3d = codegen::ga! { e12345;
         1 => e1, e2, e3, eP;
         -1 => eM;
@@ -81,12 +80,12 @@ fn main() {
         Conjugation ConformalConjugate
 
         Complement DoubleComplement
-        |
+
         RoundBulk
         RoundWeight
         FlatBulk
         FlatWeight
-        |
+
         RoundNormSquared
             RoundBulkNormSquared
             RoundWeightNormSquared
@@ -95,7 +94,7 @@ fn main() {
             FlatBulkNormSquared
             FlatWeightNormSquared
             UnitizedFlatNormSquared
-        |
+
         RoundNorm
             RoundBulkNorm
             RoundWeightNorm
@@ -104,17 +103,17 @@ fn main() {
             FlatBulkNorm
             FlatWeightNorm
             UnitizedFlatNorm
-        |
+
         RadiusNormSquared
         UnitizedRadiusNormSquared
         CenterNormSquared
         UnitizedCenterNormSquared
-        |
+
         RadiusNorm
         UnitizedRadiusNorm
         CenterNorm
         UnitizedCenterNorm
-        |
+
         ProjectOrthogonallyOnto AntiProjectOrthogonallyOnto
         ProjectViaOriginOnto AntiProjectViaHorizonOnto
         RejectOrthogonallyFrom AntiRejectOrthogonallyFrom

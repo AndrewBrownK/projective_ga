@@ -5,6 +5,8 @@ use codegen::algebra::multivector::DeclareMultiVecs;
 use codegen::elements::e1234;
 use custom_traits::*;
 
+// PRO-TIP: Run with the release profile
+
 codegen::multi_vecs! { e1234;
 
     // Special Objects

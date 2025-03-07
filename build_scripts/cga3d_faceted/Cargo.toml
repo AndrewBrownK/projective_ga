@@ -7,4 +7,3 @@ publish = false
 
 [dependencies]
 codegen = { path = "../../codegen" }
-async-trait = "0.1.80"
