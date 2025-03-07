@@ -70,8 +70,10 @@
 ./libraries/cga3d/src/integrations/slang/traits/auto_morphism.slang
 ./libraries/cga3d/src/integrations/slang/traits/bulk_contraction.slang
 ./libraries/cga3d/src/integrations/slang/traits/bulk_expansion.slang
+./libraries/cga3d/src/integrations/slang/traits/carrier.slang
 ./libraries/cga3d/src/integrations/slang/traits/center_norm.slang
 ./libraries/cga3d/src/integrations/slang/traits/center_norm_squared.slang
+./libraries/cga3d/src/integrations/slang/traits/co_carrier.slang
 ./libraries/cga3d/src/integrations/slang/traits/complement.slang
 ./libraries/cga3d/src/integrations/slang/traits/conformal_conjugate.slang
 ./libraries/cga3d/src/integrations/slang/traits/conjugation.slang
@@ -112,8 +114,10 @@
 ./libraries/cga3d/src/integrations/slang/traits/impls/auto_morphism.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/bulk_contraction.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/bulk_expansion.slang
+./libraries/cga3d/src/integrations/slang/traits/impls/carrier.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/center_norm.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/center_norm_squared.slang
+./libraries/cga3d/src/integrations/slang/traits/impls/co_carrier.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/complement.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/conformal_conjugate.slang
 ./libraries/cga3d/src/integrations/slang/traits/impls/conjugation.slang

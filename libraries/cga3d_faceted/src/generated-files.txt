@@ -212,8 +212,10 @@
 ./libraries/cga3d_faceted/src/traits/auto_morphism.rs
 ./libraries/cga3d_faceted/src/traits/bulk_contraction.rs
 ./libraries/cga3d_faceted/src/traits/bulk_expansion.rs
+./libraries/cga3d_faceted/src/traits/carrier.rs
 ./libraries/cga3d_faceted/src/traits/center_norm.rs
 ./libraries/cga3d_faceted/src/traits/center_norm_squared.rs
+./libraries/cga3d_faceted/src/traits/co_carrier.rs
 ./libraries/cga3d_faceted/src/traits/complement.rs
 ./libraries/cga3d_faceted/src/traits/conformal_conjugate.rs
 ./libraries/cga3d_faceted/src/traits/conjugation.rs
@@ -254,8 +256,10 @@
 ./libraries/cga3d_faceted/src/traits/impls/auto_morphism.rs
 ./libraries/cga3d_faceted/src/traits/impls/bulk_contraction.rs
 ./libraries/cga3d_faceted/src/traits/impls/bulk_expansion.rs
+./libraries/cga3d_faceted/src/traits/impls/carrier.rs
 ./libraries/cga3d_faceted/src/traits/impls/center_norm.rs
 ./libraries/cga3d_faceted/src/traits/impls/center_norm_squared.rs
+./libraries/cga3d_faceted/src/traits/impls/co_carrier.rs
 ./libraries/cga3d_faceted/src/traits/impls/complement.rs
 ./libraries/cga3d_faceted/src/traits/impls/conformal_conjugate.rs
 ./libraries/cga3d_faceted/src/traits/impls/conjugation.rs
