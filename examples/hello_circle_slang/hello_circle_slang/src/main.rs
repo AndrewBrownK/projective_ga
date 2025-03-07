@@ -119,9 +119,7 @@ impl App {
                 buffers: &[],
             },
             fragment: Some(wgpu::FragmentState {
-                // TODO spv is causing an NVVM error for some reason... frustrating
                 module: &device.create_shader_module(include_spirv!("../res/shader.fs.spv")),
-                // module: &device.create_shader_module(include_wgsl!("../res/shader.fs.wgsl")),
                 entry_point: Some("fs_main"),
                 compilation_options: PipelineCompilationOptions::default(),
                 targets: &[Some(swapchain_format.into())],
