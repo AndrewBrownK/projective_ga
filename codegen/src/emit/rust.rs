@@ -341,22 +341,22 @@ postgres-types = "0.2.7""#
         let qty_mvs = mvs.len() as u64;
         let data_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_mvs).with_finish(ProgressFinish::AndLeave)));
         data_pb.set_style(progress_style());
-        data_pb.set_message("Rust - Data Definitions");
+        data_pb.set_message("Rust: Data Definitions");
 
         let qty_defs = defs.len() as u64;
         let trait_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_defs).with_finish(ProgressFinish::AndLeave)));
         trait_pb.set_style(progress_style());
-        trait_pb.set_message("Rust - Trait Definitions");
+        trait_pb.set_message("Rust: Trait Definitions");
 
         let qty_impls = impls.len() as u64;
         let impls_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_impls)));
         impls_pb.set_style(progress_style());
-        impls_pb.set_message("Rust - Distributing Trait Implementations");
+        impls_pb.set_message("Rust: Distributing Trait Implementations");
 
         let qty_files = qty_mvs + qty_defs + 4; // traits.rs, data.rs, lib.rs, simd.rs
         let fmt_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_files).with_finish(ProgressFinish::AndLeave)));
         fmt_pb.set_style(progress_style());
-        fmt_pb.set_message("Rust - rustfmt");
+        fmt_pb.set_message("Rust: rustfmt");
 
         let (finished_file, mut rx) = tokio::sync::mpsc::unbounded_channel::<PathBuf>();
         let fmt_pb2 = fmt_pb.clone();
@@ -540,7 +540,7 @@ postgres-types = "0.2.7""#
                 if let Some(pb) = &pb {
                     pb.set_style(progress_style());
                     let fpd = file_path.display();
-                    pb.set_message(format!("Rust - {fpd}"));
+                    pb.set_message(format!("Rust: {fpd}"));
                 }
 
                 tx2.send(file_path.clone())?;

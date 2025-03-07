@@ -7,7 +7,7 @@ use std::sync::{Arc, Weak};
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering::Release;
 use async_trait::async_trait;
-use indicatif::MultiProgress;
+use indicatif::ProgressFinish;
 use lazy_static::lazy_static;
 use parking_lot::{Mutex, RwLock};
 use regex::Regex;
@@ -140,10 +140,10 @@ pub trait TraitDef_1_Type_0_Args: TraitImpl_10 + ProvideTraitNames {
         let trait_key = self.trait_names().trait_key;
         let cycle_detector_key = (trait_key.clone(), owner.clone(), None);
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner).await?;
@@ -158,6 +158,7 @@ pub trait TraitDef_1_Type_0_Args: TraitImpl_10 + ProvideTraitNames {
         let owner_clone = owner.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -290,10 +291,10 @@ pub trait TraitDef_1_Type_1_Arg: TraitImpl_11 + ProvideTraitNames {
         let owner_param = owner;
         let cycle_detector_key = (trait_key.clone(), owner_class.clone(), None);
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner_param).await?;
@@ -308,6 +309,7 @@ pub trait TraitDef_1_Type_1_Arg: TraitImpl_11 + ProvideTraitNames {
         let owner_class_clone = owner_class.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -456,10 +458,10 @@ pub trait TraitDef_2_Types_1_Arg: TraitImpl_21 + ProvideTraitNames {
         let other_class = other;
         let cycle_detector_key = (trait_key.clone(), owner_class.clone(), Some(other_class.clone()));
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner_param, other_class.clone()).await?;
@@ -475,6 +477,7 @@ pub trait TraitDef_2_Types_1_Arg: TraitImpl_21 + ProvideTraitNames {
         let other_class_clone = other_class.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -627,10 +630,10 @@ pub trait TraitDef_2_Types_2_Args: TraitImpl_22 + ProvideTraitNames {
         let other_param = other;
         let cycle_detector_key = (trait_key.clone(), owner_class.clone(), Some(other_class.clone()));
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner_param, other_param).await?;
@@ -646,6 +649,7 @@ pub trait TraitDef_2_Types_2_Args: TraitImpl_22 + ProvideTraitNames {
         let other_class_clone = other_class.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -816,10 +820,10 @@ pub trait TraitDef_1_Type_2_Args_f32: TraitImpl_12f + ProvideTraitNames {
         let other_param = other;
         let cycle_detector_key = (trait_key.clone(), owner_class.clone(), None);
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner_param, other_param).await?;
@@ -834,6 +838,7 @@ pub trait TraitDef_1_Type_2_Args_f32: TraitImpl_12f + ProvideTraitNames {
         let owner_class_clone = owner_class.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -986,10 +991,10 @@ pub trait TraitDef_1_Type_2_Args_i32: TraitImpl_12i + ProvideTraitNames {
         let other_param = other;
         let cycle_detector_key = (trait_key.clone(), owner_class.clone(), None);
         if builder.cycle_detector.contains(&cycle_detector_key) {
-            let all_in_cycle = builder.cycle_detector.iter().collect::<Vec<_>>();
+            let all_in_cycle = &builder.cycle_detector;
             panic!("Cycle detected at trait {trait_key:?}: {all_in_cycle:?}")
         } else {
-            builder.cycle_detector.insert(cycle_detector_key);
+            builder.cycle_detector.push(cycle_detector_key);
         }
         if builder.inline_dependencies {
             let return_as_var = self.inline(builder, owner_param, other_param).await?;
@@ -1004,6 +1009,7 @@ pub trait TraitDef_1_Type_2_Args_i32: TraitImpl_12i + ProvideTraitNames {
         let owner_class_clone = owner_class.clone();
         let registry = builder.registry.clone();
         let cycle_detector_clone = builder.cycle_detector.clone();
+        builder.cycle_detector.pop();
         let ga = builder.ga.clone();
         let mvs = builder.mvs.clone();
         let t_self = self.clone();
@@ -1555,8 +1561,12 @@ impl TraitImplRegistry {
         let rt = tokio::runtime::Runtime::new().expect("Tokio must work");
         let tdr = self.defs.clone();
         let slf = self.clone();
-        let multi_progress = Arc::new(MultiProgress::new());
+        let multi_progress = Arc::new(indicatif::MultiProgress::new());
         rt.block_on(async move {
+            let overall_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(0).with_finish(ProgressFinish::AndLeave)));
+            overall_pb.set_style(progress_style());
+            overall_pb.set_message(format!("Operator Overloading: {}", op.rust_operator()));
+
             // Check if the trait has already been registered.
             // If it has, then the operator will overtly delegate to it.
             // If it hasn't, then we will inline the trait, so that it doesn't have to be declared separately.
@@ -1564,11 +1574,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits22.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register(slf, repo, multi_progress).await;
+                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register(slf, repo, multi_progress).await;
+                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits22.get(&key).await.expect("Created during registration");
@@ -1581,6 +1591,7 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
+            overall_pb.finish_and_clear();
         });
     }
 
@@ -1597,8 +1608,12 @@ impl TraitImplRegistry {
         let rt = tokio::runtime::Runtime::new().expect("Tokio must work");
         let tdr = self.defs.clone();
         let slf = self.clone();
-        let multi_progress = Arc::new(MultiProgress::new());
+        let multi_progress = Arc::new(indicatif::MultiProgress::new());
         rt.block_on(async move {
+            let overall_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(0).with_finish(ProgressFinish::AndLeave)));
+            overall_pb.set_style(progress_style());
+            overall_pb.set_message(format!("Operator Overloading: {}", op.rust_operator()));
+
             // Check if the trait has already been registered.
             // If it has, then the operator will overtly delegate to it.
             // If it hasn't, then we will inline the trait, so that it doesn't have to be declared separately.
@@ -1606,11 +1621,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits11.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register(slf, repo, multi_progress).await;
+                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register(slf, repo, multi_progress).await;
+                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits11.get(&key).await.expect("Created during registration");
@@ -1623,6 +1638,7 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
+            overall_pb.finish_and_clear();
         });
     }
 
@@ -1700,7 +1716,7 @@ impl TraitImplRegistry {
     }
 }
 
-pub(crate) fn progress_style() -> indicatif::ProgressStyle {
+pub fn progress_style() -> indicatif::ProgressStyle {
     indicatif::ProgressStyle::default_bar()
         .template("{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {pos:>7}/{len:7} {msg}")
         .expect("Template should be good or you gotta fix it")
@@ -1709,20 +1725,33 @@ pub(crate) fn progress_style() -> indicatif::ProgressStyle {
 
 #[async_trait]
 pub trait Register10: TraitDef_1_Type_0_Args {
-    async fn register<const AntiScalar: BasisElement>(self, tr: TraitImplRegistry, mvs: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tr: TraitImplRegistry,
+        mvs: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_0_Args> Register10 for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits10.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
         for mv_a in mv_repo.all_classes() {
@@ -1731,6 +1760,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
             let mv_repo_2 = mv_repo.clone();
             let def_2 = def.clone();
             let pb = pb.clone();
+            let overall_progress = overall_progress.clone();
             js.spawn(async move {
                 let mv_a = MultiVector::from(mv_a);
                 let tir_3 = tir_2.clone();
@@ -1739,7 +1769,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
                     .traits10
                     .get_or_create_or_panic((trait_key, mv_a), async move {
                         let variables = Arc::new(Mutex::new(HashMap::new()));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, variables, im::HashSet::new());
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, variables, vec![]);
                         let result = self.general_implementation(b, mv_a.clone()).await;
                         match result {
                             None => None,
@@ -1748,6 +1778,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
                     })
                     .await;
                 pb.inc(1);
+                overall_progress.inc(1);
                 let Some(the_impl) = the_impl else { return };
                 let owner_type = ExpressionType::Class(mv_a.clone());
                 let return_type = the_impl.return_expr.expression_type();
@@ -1758,25 +1789,38 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 #[async_trait]
 pub trait Register11: TraitDef_1_Type_1_Arg {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits11.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
         for mv_a in mv_repo.all_classes() {
@@ -1785,6 +1829,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
             let mv_repo_2 = mv_repo.clone();
             let def_2 = def.clone();
             let pb = pb.clone();
+            let overall_progress = overall_progress.clone();
             js.spawn(async move {
                 let mv_a = MultiVector::from(mv_a);
                 let tir_3 = tir_2.clone();
@@ -1795,7 +1840,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
                         let mut variables = HashMap::new();
                         let declare_self = param_self();
                         variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), im::HashSet::new());
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
                         let var_self: Variable<MultiVector> = Variable {
                             expr_type: mv_a.clone(),
                             decl: declare_self,
@@ -1808,6 +1853,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
                     })
                     .await;
                 pb.inc(1);
+                overall_progress.inc(1);
                 let Some(the_impl) = the_impl else { return };
                 let owner_type = ExpressionType::Class(mv_a.clone());
                 let return_type = the_impl.return_expr.expression_type();
@@ -1818,26 +1864,39 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 #[async_trait]
 pub trait Register21: TraitDef_2_Types_1_Arg {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits21.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
         pb.tick();
 
         let mut js = JoinSet::new();
@@ -1848,6 +1907,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                 let mv_repo_2 = mv_repo.clone();
                 let def_2 = def.clone();
                 let pb = pb.clone();
+                let overall_progress = overall_progress.clone();
                 js.spawn(async move {
                     let mv_a = MultiVector::from(mv_a);
                     let mv_b = MultiVector::from(mv_b);
@@ -1859,7 +1919,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                             let mut variables = HashMap::new();
                             let declare_self = param_self();
                             variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), im::HashSet::new());
+                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
                             let var_self: Variable<MultiVector> = Variable {
                                 expr_type: mv_a.clone(),
                                 decl: declare_self,
@@ -1872,6 +1932,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                         })
                         .await;
                     pb.inc(1);
+                    overall_progress.inc(1);
                     let Some(the_impl) = the_impl else { return };
                     let owner_type = ExpressionType::Class(mv_a.clone());
                     let return_type = the_impl.return_expr.expression_type();
@@ -1883,26 +1944,39 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 #[async_trait]
 pub trait Register22: TraitDef_2_Types_2_Args {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_2_Args> Register22 for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits22.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
         // TODO actually restrict by the domain on the TraitDefs
@@ -1913,6 +1987,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                 let mv_repo_2 = mv_repo.clone();
                 let def_2 = def.clone();
                 let pb = pb.clone();
+                let overall_progress = overall_progress.clone();
                 js.spawn(async move {
                     let mv_a = MultiVector::from(mv_a);
                     let mv_b = MultiVector::from(mv_b);
@@ -1926,7 +2001,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                             variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
                             let declare_other = param_other();
                             variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), im::HashSet::new());
+                            let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
                             let var_self: Variable<MultiVector> = Variable {
                                 expr_type: mv_a.clone(),
                                 decl: declare_self,
@@ -1943,6 +2018,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                         })
                         .await;
                     pb.inc(1);
+                    overall_progress.inc(1);
                     let Some(the_impl) = the_impl else { return };
                     let owner_type = ExpressionType::Class(mv_a.clone());
                     let return_type = the_impl.return_expr.expression_type();
@@ -1954,26 +2030,39 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 #[async_trait]
 pub trait Register12f: TraitDef_1_Type_2_Args_f32 {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits12f.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
         // TODO actually restrict by the domain on the TraitDefs
@@ -1983,6 +2072,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
             let mv_repo_2 = mv_repo.clone();
             let def_2 = def.clone();
             let pb = pb.clone();
+            let overall_progress = overall_progress.clone();
             js.spawn(async move {
                 let mv_a = MultiVector::from(mv_a);
                 let tir_3 = tir_2.clone();
@@ -1995,7 +2085,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
                         variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
                         let declare_other = param_other();
                         variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), im::HashSet::new());
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
                         let var_self: Variable<MultiVector> = Variable {
                             expr_type: mv_a.clone(),
                             decl: declare_self,
@@ -2012,6 +2102,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
                     })
                     .await;
                 pb.inc(1);
+                overall_progress.inc(1);
                 let Some(the_impl) = the_impl else { return };
                 let owner_type = ExpressionType::Class(mv_a.clone());
                 let return_type = the_impl.return_expr.expression_type();
@@ -2022,26 +2113,39 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 #[async_trait]
 pub trait Register12i: TraitDef_1_Type_2_Args_i32 {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>);
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
-    async fn register<const AntiScalar: BasisElement>(self, tir: TraitImplRegistry, mv_repo: Arc<MultiVecRepository<AntiScalar>>, progress: Arc<indicatif::MultiProgress>) {
+    async fn register<const AntiScalar: BasisElement>(
+        self,
+        tir: TraitImplRegistry,
+        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
+        progress: Arc<indicatif::MultiProgress>,
+        overall_progress: Arc<indicatif::ProgressBar>,
+    ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits12i.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
+        overall_progress.inc_length(qty);
         let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
         pb.set_style(progress_style());
         let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST - {n}"));
+        pb.set_message(format!("AST: {n}"));
 
         let mut js = JoinSet::new();
         // TODO actually restrict by the domain on the TraitDefs
@@ -2051,6 +2155,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
             let mv_repo_2 = mv_repo.clone();
             let def_2 = def.clone();
             let pb = pb.clone();
+            let overall_progress = overall_progress.clone();
             js.spawn(async move {
                 let mv_a = MultiVector::from(mv_a);
                 let tir_3 = tir_2.clone();
@@ -2063,7 +2168,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
                         variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
                         let declare_other = param_other();
                         variables.entry(declare_other.name.clone()).or_insert(Arc::downgrade(&declare_other));
-                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), im::HashSet::new());
+                        let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_3, tir_3, false, Arc::new(Mutex::new(variables)), vec![]);
                         let var_self: Variable<MultiVector> = Variable {
                             expr_type: mv_a.clone(),
                             decl: declare_self,
@@ -2080,6 +2185,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
                     })
                     .await;
                 pb.inc(1);
+                overall_progress.inc(1);
                 let Some(the_impl) = the_impl else { return };
                 let owner_type = ExpressionType::Class(mv_a.clone());
                 let return_type = the_impl.return_expr.expression_type();
@@ -2090,7 +2196,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish();
+        pb.finish_and_clear();
     }
 }
 
@@ -2102,6 +2208,12 @@ pub fn tokio_joinset<T>() -> JoinSet<T> {
 }
 pub fn indicatif_multi_progress() -> Arc<indicatif::MultiProgress> {
     Arc::new(indicatif::MultiProgress::new())
+}
+pub fn indicatif_progress_bar(s: u64) -> indicatif::ProgressBar {
+    indicatif::ProgressBar::new(s)
+}
+pub fn indicatif_and_leave() -> ProgressFinish {
+    ProgressFinish::AndLeave
 }
 
 #[macro_export]
@@ -2115,14 +2227,18 @@ macro_rules! register_all {
 
             let multi_progress = $crate::ast::traits::indicatif_multi_progress();
             let _: () = rt.block_on(async {
+                let overall_pb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
+                overall_pb.set_style($crate::ast::traits::progress_style());
+                overall_pb.set_message("AST: Trait Implementations");
 
                 let mut js = $crate::ast::traits::tokio_joinset();
                 $(
                 let tir_c = tir.clone();
                 let mv_repo_c = $mv_repo.clone();
                 let mp = multi_progress.clone();
+                let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t.register(tir_c, mv_repo_c, mp).await;
+                    $t.register(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
@@ -2133,12 +2249,14 @@ macro_rules! register_all {
                 let tir_c = tir.clone();
                 let mv_repo_c = $mv_repo.clone();
                 let mp = multi_progress.clone();
+                let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t2.register(tir_c, mv_repo_c, mp).await;
+                    $t2.register(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
                 )*
+                overall_pb.finish();
             });
             tir
         }
@@ -2204,7 +2322,7 @@ pub struct TraitImplBuilder<const AntiScalar: BasisElement, ReturnType> {
     pub(crate) is_deep_inlining: bool,
     specialized: bool,
 
-    cycle_detector: im::HashSet<(TraitKey, MultiVector, Option<MultiVector>)>,
+    cycle_detector: Vec<(TraitKey, MultiVector, Option<MultiVector>)>,
     pub(crate) multivector_dependencies: Mutex<HashSet<MultiVector>>,
     traits10_dependencies: HashMap<(TraitKey, MultiVector), Arc<RawTraitImplementation>>,
     traits11_dependencies: HashMap<(TraitKey, MultiVector), Arc<RawTraitImplementation>>,
@@ -2238,7 +2356,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
         registry: TraitImplRegistry,
         inline_dependencies: bool,
         variables: Arc<Mutex<HashMap<(String, usize), Weak<RawVariableDeclaration>>>>,
-        cycle_detector: im::HashSet<(TraitKey, MultiVector, Option<MultiVector>)>,
+        cycle_detector: Vec<(TraitKey, MultiVector, Option<MultiVector>)>,
     ) -> Self {
         // `self` vs `this` compatibility across rust and slang.
         let mut vars = variables.lock();
@@ -2285,19 +2403,15 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
             op: Arc::new(Default::default()),
             dependencies: Arc::new(Default::default()),
         });
-        let inline_dependencies = true;
-        let variables = Arc::new(Mutex::new(HashMap::new()));
-        let cycle_detector = im::HashSet::new();
-        let registry = TraitImplRegistry::new();
         TraitImplBuilder {
             ga,
             mvs,
-            registry,
+            registry: TraitImplRegistry::new(),
             trait_def,
-            inline_dependencies,
+            inline_dependencies: true,
             is_deep_inlining: true,
             specialized: false,
-            cycle_detector,
+            cycle_detector: vec![],
             multivector_dependencies: Default::default(),
             traits10_dependencies: Default::default(),
             traits11_dependencies: Default::default(),
@@ -2306,7 +2420,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
             traits21_dependencies: Default::default(),
             traits22_dependencies: Default::default(),
             wanted_multi_vecs: Default::default(),
-            variables,
+            variables: Arc::new(Mutex::new(HashMap::new())),
             lines: Mutex::new(vec![]),
             return_comment: None,
             return_expr: None,
@@ -2667,7 +2781,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     continue 'inner
                 }
 
-                let mut new_vars = Self::destructure_variable_if_applicable(self.variables.clone(), vd.clone());
+                let new_vars = Self::destructure_variable_if_applicable(self.variables.clone(), vd.clone());
 
                 if new_vars.is_empty() {
                     if let Some(e) = &vd.expr {

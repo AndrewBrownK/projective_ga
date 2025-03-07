@@ -62,8 +62,6 @@ fn main() {
     };
     let repo = base_documentation(register_multi_vecs(cga3d)).finished();
     let traits = codegen::register_all! { repo;
-        // specialized::Plane_BulkExpansion_Plane
-        // |
         Zero One AntiOne Unit
         Grade AntiGrade Into TryInto
         RightDual RightAntiDual Reverse AntiReverse
@@ -83,19 +81,6 @@ fn main() {
 
         Complement DoubleComplement
 
-        // TODO the way dependencies are handled, the following traits SHOULDN'T need to be
-        //  broken into so many serial steps. It should all be able to work in parallel. The
-        //  serial registration partition is just intended to ensure specialized trait
-        //  implementations get registered first, before the non-specialized definitions have any
-        //  chance to get inlined. Despite the intention that registration should work in parallel,
-        //  it seems there is some kind of dead lock happening here. So I'm partitioning to serial
-        //  registration to debug it. It seems related to UnitizedRadiusNorm.
-        //  ..
-        //  I didn't get to prove it in debugging, but it seemed to unclog when I put a
-        //  separator between UnitizedRadiusNorm and UnitizedRadiusNormSquared. The former
-        //  invokes the latter, and so it spawns the creation of the squared function quickly
-        //  in succession. Rearranging so all 'squared' traits MUST complete before their
-        //  non-squared dependents can start unclogged it.
         |
         RoundBulk
         RoundWeight
@@ -159,9 +144,6 @@ fn main() {
         repo.clone(),
         traits.clone()
     );
-    // cd .\IdeaProjects\projective_ga\libraries\cga3d\src\integrations
-    // Measure-Command { slangc slang\cga3d.slang -o slang-module\cga3d.slang-module }
-    // Previous run took 15 minutes and 23 seconds
 
     let mut rust = codegen::Rust::new(true).all_features();
     rust.sql = false;

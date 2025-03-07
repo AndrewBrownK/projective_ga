@@ -132,22 +132,22 @@ impl Slang {
         let qty_mvs = mvs.len() as u64;
         let data_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_mvs).with_finish(ProgressFinish::AndLeave)));
         data_pb.set_style(progress_style());
-        data_pb.set_message("Slang - Data Definitions");
+        data_pb.set_message("Slang: Data Definitions");
 
         let qty_defs = defs.len() as u64;
         let trait_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_defs).with_finish(ProgressFinish::AndLeave)));
         trait_pb.set_style(progress_style());
-        trait_pb.set_message("Slang - Trait Definitions");
+        trait_pb.set_message("Slang: Trait Definitions");
 
         let qty_impls = impls.len() as u64;
         let impls_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_impls)));
         impls_pb.set_style(progress_style());
-        impls_pb.set_message("Slang - Distributing Trait Implementations");
+        impls_pb.set_message("Slang: Distributing Trait Implementations");
 
         // let qty_files = qty_mvs + qty_defs + 4; // traits.slang, data.slang, lib.slang, simd.slang
         // let fmt_pb = Arc::new(multi_progress.add(indicatif::ProgressBar::new(qty_files).with_finish(ProgressFinish::AndLeave)));
         // fmt_pb.set_style(progress_style());
-        // fmt_pb.set_message("Slang - rustfmt");
+        // fmt_pb.set_message("Slang: rustfmt");
 
         // let (finished_file, mut rx) = tokio::sync::mpsc::unbounded_channel::<PathBuf>();
         // let fmt_pb2 = fmt_pb.clone();
@@ -281,7 +281,7 @@ impl Slang {
                 if let Some(pb) = &pb {
                     pb.set_style(progress_style());
                     let fpd = file_path.display();
-                    pb.set_message(format!("Slang - {fpd}"));
+                    pb.set_message(format!("Slang: {fpd}"));
                 }
 
                 tx2.send(file_path.clone())?;

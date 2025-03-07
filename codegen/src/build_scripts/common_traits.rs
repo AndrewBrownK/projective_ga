@@ -895,18 +895,16 @@ pub mod impls {
     });
 
     trait_impl_2_types_2_args!(SandwichImpl(builder, slf, other) -> MultiVector {
-        // TODO incorrect cycle detection if use all invoke
         let c = GeometricProduct.inline(&mut builder, slf.clone(), other).await?;
-        let r = Reverse.invoke(&mut builder, slf).await?;
-        let result = GeometricProduct.invoke(&mut builder, c, r).await?;
+        let r = Reverse.inline(&mut builder, slf).await?;
+        let result = GeometricProduct.inline(&mut builder, c, r).await?;
         builder.return_expr(result)
     });
 
     trait_impl_2_types_2_args!(AntiSandwichImpl(builder, slf, other) -> MultiVector {
-        // TODO incorrect cycle detection if use all invoke
         let c = GeometricAntiProduct.inline(&mut builder, slf.clone(), other).await?;
-        let r = AntiReverse.invoke(&mut builder, slf).await?;
-        let result = GeometricAntiProduct.invoke(&mut builder, c, r).await?;
+        let r = AntiReverse.inline(&mut builder, slf).await?;
+        let result = GeometricAntiProduct.inline(&mut builder, c, r).await?;
         builder.return_expr(result)
     });
 
@@ -947,24 +945,24 @@ pub mod impls {
     });
 
     trait_impl_1_type_1_arg!(ScalarNormSquaredImpl(builder, slf) -> MultiVector {
-        let result = DotProduct.invoke(&mut builder, slf.clone(), slf).await?;
+        let result = DotProduct.inline(&mut builder, slf.clone(), slf).await?;
         builder.return_expr(result)
     });
 
     trait_impl_1_type_1_arg!(AntiScalarNormSquaredImpl(builder, slf) -> MultiVector {
-        let result = AntiDotProduct.invoke(&mut builder, slf.clone(), slf).await?;
+        let result = AntiDotProduct.inline(&mut builder, slf.clone(), slf).await?;
         builder.return_expr(result)
     });
 
     trait_impl_1_type_1_arg!(ScalarNormImpl(builder, slf) -> MultiVector {
-        let dot = DotProduct.invoke(&mut builder, slf.clone(), slf).await?;
-        let result = SquareRoot.invoke(&mut builder, dot).await?;
+        let dot = DotProduct.inline(&mut builder, slf.clone(), slf).await?;
+        let result = SquareRoot.inline(&mut builder, dot).await?;
         builder.return_expr(result)
     });
 
     trait_impl_1_type_1_arg!(AntiScalarNormImpl(builder, slf) -> MultiVector {
-        let dot = AntiDotProduct.invoke(&mut builder, slf.clone(), slf).await?;
-        let result = AntiSquareRoot.invoke(&mut builder, dot).await?;
+        let dot = AntiDotProduct.inline(&mut builder, slf.clone(), slf).await?;
+        let result = AntiSquareRoot.inline(&mut builder, dot).await?;
         builder.return_expr(result)
     });
 
@@ -996,13 +994,13 @@ pub mod impls {
     });
 
     trait_impl_1_type_1_arg!(ConstraintValidImpl(builder, slf) -> MultiVector {
-        return match ConstraintViolation.invoke(&mut builder, slf.clone()).await {
+        match ConstraintViolation.invoke(&mut builder, slf.clone()).await {
             None => builder.return_expr(slf),
             Some(_) => None,
         }
     });
     trait_impl_1_type_1_arg!(AntiConstraintValidImpl(builder, slf) -> MultiVector {
-        return match AntiConstraintViolation.invoke(&mut builder, slf.clone()).await {
+        match AntiConstraintViolation.invoke(&mut builder, slf.clone()).await {
             None => builder.return_expr(slf),
             Some(_) => None,
         }
