@@ -361,9 +361,26 @@ postgres-types = "0.2.7""#
         let (finished_file, mut rx) = tokio::sync::mpsc::unbounded_channel::<PathBuf>();
         let fmt_pb2 = fmt_pb.clone();
         join_set.spawn(async move {
+            // Running rustfmt too many times at once causes it to choke or
+            // otherwise error out (last I remember anyway).
+            // but doing a FEW in parallel shouldn't be too bad... right?
+            let sem = Arc::new(tokio::sync::Semaphore::new(5));
+            let mut js = JoinSet::<anyhow::Result<()>>::new();
             while let Some(p) = rx.recv().await {
-                Self::format_file(p).await?;
-                fmt_pb2.inc(1);
+                let fmt_pb3 = fmt_pb2.clone();
+                let sem2 = sem.clone();
+                js.spawn(async move {
+                    let s = sem2.acquire().await?;
+                    Self::format_file(p).await?;
+                    fmt_pb3.inc(1);
+                    drop(s);
+                    Ok(())
+                });
+            }
+            while let Some(result) = js.join_next().await {
+                let _: () = result
+                    .expect("async machinery should work")
+                    .expect("rustfmt should work (or maybe we need to reduce the number of permits");
             }
             fmt_pb2.finish();
             Ok(())
@@ -3011,8 +3028,6 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
         Ok(())
     }
 
-    // TODO use a semaphore to format multiple files at a time (just not too many at once,
-    //  we've seen how that results in errors)
     async fn format_file<P: AsRef<Path>>(p: P) -> anyhow::Result<()> {
         let mut cmd = Command::new("rustfmt");
         let file_name = p.as_ref().to_string_lossy().to_string();

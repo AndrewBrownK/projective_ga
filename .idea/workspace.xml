@@ -18,225 +18,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="568a08b2-daf1-4dfa-875a-0d472ff40ac9" name="Changes" comment="Committing RustRover IDE files because run configurations that help reliably specify release profile">
-      <change afterPath="$PROJECT_DIR$/codegen/Contributing.md" afterDir="false" />
+    <list default="true" id="568a08b2-daf1-4dfa-875a-0d472ff40ac9" name="Changes" comment="Improve progress bar responsiveness and reduce hanging by using more single threading">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build_scripts/cga3d/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/build_scripts/cga3d/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build_scripts/cga3d/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/build_scripts/cga3d/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build_scripts/cga3d_faceted/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/build_scripts/cga3d_faceted/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build_scripts/cga3d_faceted/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/build_scripts/cga3d_faceted/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build_scripts/rga3d/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/build_scripts/rga3d/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codegen/src/ast/traits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/codegen/src/ast/traits.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/codegen/src/emit/rust.rs" beforeDir="false" afterPath="$PROJECT_DIR$/codegen/src/emit/rust.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_circle_rotor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_circle_rotor.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_dipole_inversion.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_dipole_inversion.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_dual_num.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_dual_num.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_flat_point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_flat_point.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_flector.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_flector.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_line.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_line.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_motor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_motor.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_plane.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_plane.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_scalar.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/anti_scalar.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/circle.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/circle.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/circle_rotor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/circle_rotor.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dipole.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dipole.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dipole_inversion.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dipole_inversion.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dual_num.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/dual_num.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/flat_point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/flat_point.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/flector.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/flector.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/line.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/line.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/motor.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/motor.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/multi_vector.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/multi_vector.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/plane.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/plane.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/round_point.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/round_point.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/scalar.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/scalar.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/sphere.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/sphere.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/versor_even.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/versor_even.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/versor_odd.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/data/impls/versor_odd.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/generated-files.txt" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/generated-files.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/generated-files.txt" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/generated-files.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/anti_one.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/anti_wedge.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/center_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/center_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_bulk.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_bulk_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_bulk_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_weight.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_weight_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/flat_weight_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_constraint_valid.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_constraint_valid.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_constraint_violation.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_constraint_violation.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_dot_product.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_dot_product.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_fix.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_fix.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_grade.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_grade.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_one.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_project_orthogonally_onto.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_project_orthogonally_onto.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_project_via_horizon_onto.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_project_via_horizon_onto.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_reject_orthogonally_from.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_reject_orthogonally_from.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_reject_via_horizon_from.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_reject_via_horizon_from.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_support.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_support.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/anti_wedge.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/bulk_contraction.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/bulk_contraction.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/bulk_expansion.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/bulk_expansion.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/center_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/center_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/constraint_valid.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/constraint_valid.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/constraint_violation.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/constraint_violation.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/dot_product.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/dot_product.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/fix.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/fix.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_bulk.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_bulk_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_bulk_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_weight.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_weight_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/flat_weight_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/grade.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/grade.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/into.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/one.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/one.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/project_orthogonally_onto.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/project_orthogonally_onto.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/project_via_origin_onto.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/project_via_origin_onto.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/reject_orthogonally_from.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/reject_via_origin_from.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk_norm.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk_norm.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk_norm_squared.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_bulk_norm_squared.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_weight.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_weight_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/round_weight_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/support.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/try_into.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitize.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_center_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_center_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_flat_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_flat_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_radius_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_radius_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_round_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/unitized_round_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/wedge.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/wedge.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/weight_contraction.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/weight_contraction.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/weight_expansion.slang" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/impls/weight_expansion.slang" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/into.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/reject_orthogonally_from.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/reject_via_origin_from.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/round_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/round_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/round_weight.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/round_weight_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/round_weight_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/support.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/try_into.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitize.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_center_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_center_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_flat_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_flat_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_radius_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_radius_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_round_norm.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang/traits/unitized_round_norm_squared.slang" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_constraint_violation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_constraint_violation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_one.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_project_orthogonally_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_project_orthogonally_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_project_via_horizon_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_project_via_horizon_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/anti_wedge.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/bulk_contraction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/bulk_contraction.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/center_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/center_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/constraint_violation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/constraint_violation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_bulk.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_bulk_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_bulk_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_weight.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_weight_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/flat_weight_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_constraint_valid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_constraint_valid.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_constraint_violation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_constraint_violation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_dot_product.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_dot_product.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_fix.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_fix.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_grade.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_grade.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_one.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_project_orthogonally_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_project_orthogonally_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_project_via_horizon_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_project_via_horizon_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_reject_orthogonally_from.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_reject_orthogonally_from.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_reject_via_horizon_from.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_reject_via_horizon_from.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_support.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_support.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/anti_wedge.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/bulk_contraction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/bulk_contraction.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/bulk_expansion.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/bulk_expansion.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/center_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/center_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/constraint_valid.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/constraint_valid.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/constraint_violation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/constraint_violation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/dot_product.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/dot_product.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/fix.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/fix.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_bulk.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_bulk_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_bulk_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_weight.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_weight_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/flat_weight_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/grade.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/grade.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/one.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/one.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/project_orthogonally_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/project_orthogonally_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/project_via_origin_onto.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/project_via_origin_onto.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/reject_orthogonally_from.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/reject_via_origin_from.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk_norm.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk_norm.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk_norm_squared.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_bulk_norm_squared.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_weight.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_weight_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/round_weight_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/support.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitize.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_center_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_center_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_flat_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_flat_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_radius_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_radius_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_round_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/unitized_round_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/wedge.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/wedge.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/weight_contraction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/weight_contraction.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/weight_expansion.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/impls/weight_expansion.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/one.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/one.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/reject_orthogonally_from.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/reject_via_origin_from.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/round_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/round_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/round_weight.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/round_weight_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/round_weight_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/support.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitize.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_center_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_center_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_flat_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_flat_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_radius_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_radius_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_round_norm.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/unitized_round_norm_squared.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/libraries/cga3d/src/traits/weight_contraction.rs" beforeDir="false" afterPath="$PROJECT_DIR$/libraries/cga3d/src/traits/weight_contraction.rs" afterDir="false" />
     </list>
     <list id="35177190-b082-424f-bd39-b0e7c24c52b8" name="large files" comment="">
       <change afterPath="$PROJECT_DIR$/libraries/cga3d/src/integrations/slang-module/cga3d.slang-module" afterDir="false" />
@@ -251,7 +36,7 @@
       <option value="directory" />
     </option>
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="RsBuildProfile:dev" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -513,7 +298,7 @@
       <command value="cargo clean" />
     </option>
   </component>
-  <component name="RunManager" selected="Cargo.Run build_cga3d">
+  <component name="RunManager" selected="Cargo.Run build_rga3d">
     <configuration name="Run build_cga3d" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="buildProfileId" value="release" />
       <option name="command" value="run --package build_cga3d --bin build_cga3d" />
@@ -550,10 +335,28 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Run build_rga3d" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="buildProfileId" value="release" />
+      <option name="command" value="run --package build_rga3d --bin build_rga3d" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <option name="emulateTerminal" value="true" />
+      <option name="channel" value="DEFAULT" />
+      <option name="requiredFeatures" value="true" />
+      <option name="allFeatures" value="false" />
+      <option name="withSudo" value="false" />
+      <option name="buildTarget" value="REMOTE" />
+      <option name="backtrace" value="SHORT" />
+      <option name="isRedirectInput" value="false" />
+      <option name="redirectInputPath" value="" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo.Run build_cga3d" />
         <item itemvalue="Cargo.Run build_cga3d_faceted" />
+        <item itemvalue="Cargo.Run build_cga3d" />
       </list>
     </recent_temporary>
   </component>
@@ -837,7 +640,7 @@
       <workItem from="1741330367393" duration="1291000" />
       <workItem from="1741331696686" duration="467000" />
       <workItem from="1741332175496" duration="2258000" />
-      <workItem from="1741334562890" duration="14508000" />
+      <workItem from="1741334562890" duration="18986000" />
     </task>
     <task id="LOCAL-00001" summary="Use build.rs instead of actions.yaml">
       <created>1683707245742</created>
@@ -901,14 +704,6 @@
       <option name="presentableId" value="LOCAL-00009" />
       <option name="project" value="LOCAL" />
       <updated>1696521968485</updated>
-    </task>
-    <task id="LOCAL-00498" summary="Initial rough slang code gen">
-      <option name="closed" value="true" />
-      <created>1735170939710</created>
-      <option name="number" value="00498" />
-      <option name="presentableId" value="LOCAL-00498" />
-      <option name="project" value="LOCAL" />
-      <updated>1735170939710</updated>
     </task>
     <task id="LOCAL-00499" summary="Tidy up slang data">
       <option name="closed" value="true" />
@@ -1222,7 +1017,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741329587753</updated>
     </task>
-    <option name="localTasksCounter" value="538" />
+    <task id="LOCAL-00538" summary="Improve progress bar responsiveness and reduce hanging by using more single threading">
+      <option name="closed" value="true" />
+      <created>1741381021782</created>
+      <option name="number" value="00538" />
+      <option name="presentableId" value="LOCAL-00538" />
+      <option name="project" value="LOCAL" />
+      <updated>1741381021782</updated>
+    </task>
+    <option name="localTasksCounter" value="539" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1256,7 +1059,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="finish more documentation todos" />
     <MESSAGE value="Fix some annoying warnings" />
     <MESSAGE value="Initial rough slang code gen" />
     <MESSAGE value="Tidy up slang data" />
@@ -1281,7 +1083,8 @@
     <MESSAGE value="Clean up some todos" />
     <MESSAGE value="Latest Library Generation" />
     <MESSAGE value="Committing RustRover IDE files because run configurations that help reliably specify release profile" />
-    <option name="LAST_COMMIT_MESSAGE" value="Committing RustRover IDE files because run configurations that help reliably specify release profile" />
+    <MESSAGE value="Improve progress bar responsiveness and reduce hanging by using more single threading" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve progress bar responsiveness and reduce hanging by using more single threading" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
