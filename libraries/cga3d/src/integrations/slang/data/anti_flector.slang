@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiFlector
 public struct AntiFlector {

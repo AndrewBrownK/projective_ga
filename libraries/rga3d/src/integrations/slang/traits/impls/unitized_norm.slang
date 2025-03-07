@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public float operator /(Flector lhs, UnitizedNormPrefixOrPostfix rhs)  {
     return lhs.unitized_norm();

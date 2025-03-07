@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public Sphere operator /(AntiCircleRotor lhs, ConstraintViolationPrefixOrPostfix rhs)  {
     return lhs.constraint_violation();

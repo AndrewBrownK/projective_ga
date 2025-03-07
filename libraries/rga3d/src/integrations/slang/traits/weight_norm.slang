@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// WeightNorm
 /// Weight Norm for flat aspect.

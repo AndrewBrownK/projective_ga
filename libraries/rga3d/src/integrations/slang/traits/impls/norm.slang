@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public AntiScalar operator /(Flector lhs, NormPrefixOrPostfix rhs)  {
     return lhs.norm();

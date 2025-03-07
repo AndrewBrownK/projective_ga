@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public AntiRejectViaHorizonFromInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, AntiRejectViaHorizonFromInfix rhs) {
     return AntiRejectViaHorizonFromInfixPartial<AntiCircleRotor>(lhs);
@@ -68,7 +67,7 @@ public extension AntiCircleRotor {
             /* e41, e42, e43, scalar */
             float4(other.group0.yy, other.scalar, wedge_g0[3] * other.scalar) * float4(wedge_g0.xyz, 1.0), 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, e1234 */
             float4((this.group2.xyz * float3(other.group0.yy, other.scalar) * float3(other.group0.yy, other.scalar)), 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -466,11 +465,11 @@ public extension AntiCircleRotor {
     public AntiCircleRotor anti_reject_via_horizon_from(Scalar other) {
         return AntiCircleRotor(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, scalar */
-            pow(float4(other.scalar), 2) * this.group2
+            float4_pow(float4(other.scalar), 2) * this.group2
         );
     }
 }
@@ -606,11 +605,11 @@ public extension AntiDipoleInversion {
             /* e423, e431, e412, e12345 */
             wedge_g0 * float4(other.scalar), 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e5 */
             float4(other.group0.yy, other.scalar, (wedge_g0[3] * other.e3215) + (wedge_g2[3] * other.scalar)) * float4(wedge_g2.xyz, 1.0), 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * float4(this.group3.xyz, this.e4)
+            float4_pow(float4(other.scalar), 2) * float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -982,13 +981,13 @@ public extension AntiDipoleInversion {
     public AntiDipoleInversion anti_reject_via_horizon_from(Scalar other) {
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e4 */
-            pow(float4(other.scalar), 2) * this.group2, 
+            float4_pow(float4(other.scalar), 2) * this.group2, 
             /* e1, e2, e3, e5 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }
@@ -1886,9 +1885,9 @@ public extension AntiFlector {
     public AntiFlector anti_reject_via_horizon_from(AntiDualNum other) {
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e1, e2, e3, e5 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -2214,9 +2213,9 @@ public extension AntiFlector {
     public AntiFlector anti_reject_via_horizon_from(Scalar other) {
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e1, e2, e3, e5 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -2349,9 +2348,9 @@ public extension AntiLine {
     public AntiLine anti_reject_via_horizon_from(AntiDualNum other) {
         return AntiLine(
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e15, e25, e35 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -2635,9 +2634,9 @@ public extension AntiLine {
     public AntiLine anti_reject_via_horizon_from(Scalar other) {
         return AntiLine(
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e15, e25, e35 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -2760,7 +2759,7 @@ public extension AntiMotor {
     public AntiMotor anti_reject_via_horizon_from(AntiDualNum other) {
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e15, e25, e35, e3215 */
             float4(other.scalar) * float4(other.group0.yy, other.scalar, (other.e3215 * this.scalar) + (other.scalar * this.e3215)) * float4(this.group1.xyz, 1.0)
         );
@@ -3125,9 +3124,9 @@ public extension AntiMotor {
     public AntiMotor anti_reject_via_horizon_from(Scalar other) {
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e15, e25, e35, e3215 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -3815,11 +3814,11 @@ public extension Circle {
     public Circle anti_reject_via_horizon_from(AntiDualNum other) {
         return Circle(
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group2.xyz
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz
         );
     }
 }
@@ -4069,11 +4068,11 @@ public extension Circle {
     public Circle anti_reject_via_horizon_from(Scalar other) {
         return Circle(
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group2.xyz
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz
         );
     }
 }
@@ -4189,7 +4188,7 @@ public extension CircleRotor {
             /* e423, e431, e412, e12345 */
             float4(other.scalar) * float4((float3(other.scalar) * this.group0.xyz), wedge_g2[3]), 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e5 */
             wedge_g2 * float4(other.group0.yy, other.scalar, other.e3215), 
             /* e1, e2, e3, e4 */
@@ -4443,11 +4442,11 @@ public extension CircleRotor {
     public CircleRotor anti_reject_via_horizon_from(Scalar other) {
         return CircleRotor(
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e12345 */
-            pow(float4(other.scalar), 2) * this.group2
+            float4_pow(float4(other.scalar), 2) * this.group2
         );
     }
 }
@@ -4562,11 +4561,11 @@ public extension Dipole {
     public Dipole anti_reject_via_horizon_from(AntiDualNum other) {
         return Dipole(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35 */
-            pow(float3(other.scalar), 2) * this.group2.xyz
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz
         );
     }
 }
@@ -4903,11 +4902,11 @@ public extension Dipole {
     public Dipole anti_reject_via_horizon_from(Scalar other) {
         return Dipole(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35 */
-            pow(float3(other.scalar), 2) * this.group2.xyz
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz
         );
     }
 }
@@ -5028,11 +5027,11 @@ public extension DipoleInversion {
             /* e41, e42, e43, scalar */
             float4(other.group0.yy, other.scalar, other.e3215) * float4((float3(other.scalar) * this.group0.xyz), wedge_g2[3]), 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, e1234 */
             wedge_g2 * float4(other.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }
@@ -5376,13 +5375,13 @@ public extension DipoleInversion {
     public DipoleInversion anti_reject_via_horizon_from(Scalar other) {
         return DipoleInversion(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, e1234 */
-            pow(float4(other.scalar), 2) * this.group2, 
+            float4_pow(float4(other.scalar), 2) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }
@@ -6186,9 +6185,9 @@ public extension Flector {
     public Flector anti_reject_via_horizon_from(AntiDualNum other) {
         return Flector(
             /* e15, e25, e35, e45 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -6422,9 +6421,9 @@ public extension Flector {
     public Flector anti_reject_via_horizon_from(Scalar other) {
         return Flector(
             /* e15, e25, e35, e45 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -6534,9 +6533,9 @@ public extension Line {
     public Line anti_reject_via_horizon_from(AntiDualNum other) {
         return Line(
             /* e415, e425, e435 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -6714,9 +6713,9 @@ public extension Line {
     public Line anti_reject_via_horizon_from(Scalar other) {
         return Line(
             /* e415, e425, e435 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -7075,9 +7074,9 @@ public extension Motor {
     public Motor anti_reject_via_horizon_from(Scalar other) {
         return Motor(
             /* e415, e425, e435, e12345 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e235, e315, e125, e5 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -7250,21 +7249,21 @@ public extension MultiVector {
             /* scalar, e12345 */
             float2((wedge_g10 * other.e3215) + (other.scalar * other.scalar * this.scalar), wedge_g0_y * other.scalar), 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e5 */
             (wedge_g0_y * other.e3215) + (other.scalar * other.scalar * this.e5), 
             /* e15, e25, e35, e45 */
-            pow(float4(other.scalar), 2) * this.group3, 
+            float4_pow(float4(other.scalar), 2) * this.group3, 
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group4.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group4.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group5.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group6, 
+            float4_pow(float4(other.scalar), 2) * this.group6, 
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group7.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group7.xyz, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group8.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             float4(other.scalar) * float4(other.group0.yy, other.scalar, (other.e3215 * this.scalar) + (other.scalar * this.e3215)) * float4(this.group9.xyz, 1.0), 
             /* e1234 */
@@ -7975,25 +7974,25 @@ public extension MultiVector {
     public MultiVector anti_reject_via_horizon_from(Scalar other) {
         return MultiVector(
             /* scalar, e12345 */
-            Simd32x2::pow(float2(other.scalar), 2) * this.group0.xy, 
+            float2_pow(float2(other.scalar), 2) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e5 */
             this.e5 * pow(other.scalar, 2), 
             /* e15, e25, e35, e45 */
-            pow(float4(other.scalar), 2) * this.group3, 
+            float4_pow(float4(other.scalar), 2) * this.group3, 
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group4.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group4.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group5.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group6, 
+            float4_pow(float4(other.scalar), 2) * this.group6, 
             /* e423, e431, e412 */
-            pow(float3(other.scalar), 2) * this.group7.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group7.xyz, 
             /* e235, e315, e125 */
-            pow(float3(other.scalar), 2) * this.group8.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group9, 
+            float4_pow(float4(other.scalar), 2) * this.group9, 
             /* e1234 */
             this.e1234 * pow(other.scalar, 2)
         );
@@ -8407,7 +8406,7 @@ public extension RoundPoint {
             /* e235, e315, e125, e5 */
             float4(float3(0.0), (wedge_g0_w * other.e3215) + (other.scalar * other.scalar * this.e5)), 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group0
+            float4_pow(float4(other.scalar), 2) * this.group0
         );
     }
 }
@@ -8759,7 +8758,7 @@ public extension RoundPoint {
     public RoundPoint anti_reject_via_horizon_from(Scalar other) {
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e5 */
             this.e5 * pow(other.scalar, 2)
         );
@@ -9347,7 +9346,7 @@ public extension Sphere {
             /* e15, e25, e35, e1234 */
             float4(float3(0.0), wedge_g1 * other.scalar), 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group0
+            float4_pow(float4(other.scalar), 2) * this.group0
         );
     }
 }
@@ -9493,7 +9492,7 @@ public extension Sphere {
     public Sphere anti_reject_via_horizon_from(Scalar other) {
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e1234 */
             other.scalar * other.scalar * this.e1234
         );
@@ -9608,11 +9607,11 @@ public extension VersorEven {
             /* e423, e431, e412, e12345 */
             wedge_g0 * float4(other.scalar), 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e5 */
             float4(other.group0.yy, other.scalar, (wedge_g0[3] * other.e3215) + (wedge_g2[3] * other.scalar)) * float4(wedge_g2.xyz, 1.0), 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }
@@ -9984,13 +9983,13 @@ public extension VersorEven {
     public VersorEven anti_reject_via_horizon_from(Scalar other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e415, e425, e435, e321 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e235, e315, e125, e5 */
-            pow(float4(other.scalar), 2) * this.group2, 
+            float4_pow(float4(other.scalar), 2) * this.group2, 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }
@@ -10127,7 +10126,7 @@ public extension VersorOdd {
             /* e41, e42, e43, scalar */
             float4(other.group0.yy, other.scalar, (wedge_g0[3] * other.scalar) + (wedge_g2[3] * other.e3215)) * float4(wedge_g0.xyz, 1.0), 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, e1234 */
             wedge_g2 * float4(other.scalar), 
             /* e4235, e4315, e4125, e3215 */
@@ -10528,13 +10527,13 @@ public extension VersorOdd {
     public VersorOdd anti_reject_via_horizon_from(Scalar other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e23, e31, e12, e45 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e15, e25, e35, e1234 */
-            pow(float4(other.scalar), 2) * this.group2, 
+            float4_pow(float4(other.scalar), 2) * this.group2, 
             /* e4235, e4315, e4125, e3215 */
-            pow(float4(other.scalar), 2) * this.group3
+            float4_pow(float4(other.scalar), 2) * this.group3
         );
     }
 }

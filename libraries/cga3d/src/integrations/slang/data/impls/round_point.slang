@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension RoundPoint {
     public MultiVector operator +(AntiCircleRotor other) {
         return MultiVector(

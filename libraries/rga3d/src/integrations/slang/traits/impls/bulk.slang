@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public Scalar operator /(DualNum lhs, BulkPrefixOrPostfix rhs)  {
     return lhs.bulk();

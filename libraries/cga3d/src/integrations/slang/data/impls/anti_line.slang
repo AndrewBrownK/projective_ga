@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiLine {
     public AntiCircleRotor operator +(AntiCircleRotor other) {
         return AntiCircleRotor(

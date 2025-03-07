@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiFlatPoint {
     public uint grade() {
         return 3;

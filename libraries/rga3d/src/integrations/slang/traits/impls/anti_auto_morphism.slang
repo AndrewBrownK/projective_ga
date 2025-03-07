@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public AntiScalar operator /(AntiScalar lhs, AntiAutoMorphismPrefixOrPostfix rhs)  {
     return lhs.anti_auto_morphism();

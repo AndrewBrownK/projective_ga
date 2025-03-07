@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RoundNorm
 /// Norm for Round aspect.

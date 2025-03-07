@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RadiusNorm
 /// Distance radius of a round object (not yet unitized, still requires division by round weight).

@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public RejectViaOriginFromInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, RejectViaOriginFromInfix rhs) {
     return RejectViaOriginFromInfixPartial<AntiCircleRotor>(lhs);
@@ -7346,7 +7345,7 @@ public extension MultiVector {
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
-            pow(float3(other.e3215), 2) * this.group7.xyz, 
+            float3_pow(float3(other.e3215), 2) * this.group7.xyz, 
             /* e4235, e4315, e4125, e3215 */
             float4(float3(0.0), other.e3215 * other.e3215 * this.e1234), 
             /* e1234 */

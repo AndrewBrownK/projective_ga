@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension Origin {
     public MultiVector operator +(AntiScalar other) {
         return MultiVector(

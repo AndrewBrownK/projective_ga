@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// TryInto
 /// Fallibly convert one type into another.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// ConstraintValid
 /// Implementors of this trait cannot violate the geometric constraint. They always represent valid geometry. This trait does not exist to perform any calculation, it just exists to serve as contrasting information side-by-side with ConstraintViolation. See also ConstraintViolation and Fix.

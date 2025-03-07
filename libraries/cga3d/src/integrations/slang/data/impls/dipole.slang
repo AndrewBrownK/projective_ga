@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension Dipole {
     public AntiCircleRotor operator +(AntiCircleRotor other) {
         return AntiCircleRotor(

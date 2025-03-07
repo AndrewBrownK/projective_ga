@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// AntiFix
 /// Automatically fix the anti geometric constraint by adjusting the bulk to comply with the weight, and then weight normalize the result.

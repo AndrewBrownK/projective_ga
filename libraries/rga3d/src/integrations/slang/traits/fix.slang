@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// Fix
 /// Automatically fix the geometric constraint by adjusting the weight to comply with the bulk, and then bulk normalize the result.

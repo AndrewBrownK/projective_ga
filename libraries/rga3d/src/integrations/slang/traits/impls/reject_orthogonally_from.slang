@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public RejectOrthogonallyFromInfixPartial<AntiScalar> operator /(AntiScalar lhs, RejectOrthogonallyFromInfix rhs) {
     return RejectOrthogonallyFromInfixPartial<AntiScalar>(lhs);

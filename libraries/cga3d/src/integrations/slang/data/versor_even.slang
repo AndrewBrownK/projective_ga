@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// VersorEven
 public struct VersorEven {

@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// ProjectOrthogonallyOnto
 /// Typically involves bringing a lower dimensional object to a higher dimensional object.

@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension DualNum {
     public static DualNum from(AntiScalar from_anti_scalar) {
         return DualNum(

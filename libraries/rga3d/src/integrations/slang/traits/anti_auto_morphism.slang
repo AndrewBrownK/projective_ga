@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// AntiAutoMorphism
 /// Negate every BasisElement with an odd AntiGrade.

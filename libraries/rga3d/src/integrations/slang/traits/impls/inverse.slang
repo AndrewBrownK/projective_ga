@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public DualNum operator /(DualNum lhs, InversePrefixOrPostfix rhs)  {
     return lhs.inverse();

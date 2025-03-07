@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public AntiFlatPoint operator /(AntiFlatPoint lhs, AntiConstraintValidPrefixOrPostfix rhs)  {
     return lhs.anti_constraint_valid();

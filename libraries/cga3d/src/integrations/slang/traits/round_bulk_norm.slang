@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RoundBulkNorm
 /// Bulk Norm for round aspect.

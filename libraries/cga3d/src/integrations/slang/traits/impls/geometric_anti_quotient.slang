@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public GeometricAntiQuotientInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, GeometricAntiQuotientInfix rhs) {
     return GeometricAntiQuotientInfixPartial<AntiCircleRotor>(lhs);

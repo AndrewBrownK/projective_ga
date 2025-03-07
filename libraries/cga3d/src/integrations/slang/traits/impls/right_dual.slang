@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public CircleRotor operator /(AntiCircleRotor lhs, RightDualPrefixOrPostfix rhs)  {
     return lhs.right_dual();

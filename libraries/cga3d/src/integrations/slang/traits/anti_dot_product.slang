@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiDotProduct
 /// This is the dual to the dot product, and always returns an AntiScalar.

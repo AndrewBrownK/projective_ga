@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public RoundPoint operator /(AntiCircleRotor lhs, AntiConstraintViolationPrefixOrPostfix rhs)  {
     return lhs.anti_constraint_violation();

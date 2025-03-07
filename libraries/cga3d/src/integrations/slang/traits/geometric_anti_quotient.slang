@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// GeometricAntiQuotient
 /// AntiProduct of A with AntiInverse of B.

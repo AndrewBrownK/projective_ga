@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public AntiScalar operator /(DualNum lhs, RightAntiDualPrefixOrPostfix rhs)  {
     return lhs.right_anti_dual();

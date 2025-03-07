@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public SandwichInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, SandwichInfix rhs) {
     return SandwichInfixPartial<AntiCircleRotor>(lhs);

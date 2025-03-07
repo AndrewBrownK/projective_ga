@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension MultiVector {
     public static MultiVector from(AntiCircleRotor from_anti_circle_rotor) {
         return MultiVector(

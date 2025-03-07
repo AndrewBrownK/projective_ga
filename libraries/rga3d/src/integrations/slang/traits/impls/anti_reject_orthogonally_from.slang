@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public AntiRejectOrthogonallyFromInfixPartial<AntiScalar> operator /(AntiScalar lhs, AntiRejectOrthogonallyFromInfix rhs) {
     return AntiRejectOrthogonallyFromInfixPartial<AntiScalar>(lhs);
@@ -215,9 +214,9 @@ public extension Flector {
     public Flector anti_reject_orthogonally_from(DualNum other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e423, e431, e412, e321 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -342,9 +341,9 @@ public extension Flector {
     public Flector anti_reject_orthogonally_from(Scalar other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e423, e431, e412, e321 */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -455,9 +454,9 @@ public extension Line {
     public Line anti_reject_orthogonally_from(DualNum other) {
         return Line(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -557,9 +556,9 @@ public extension Line {
     public Line anti_reject_orthogonally_from(Scalar other) {
         return Line(
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group0.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group0.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group1.xyz
+            float3_pow(float3(other.scalar), 2) * this.group1.xyz
         );
     }
 }
@@ -577,7 +576,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(other.scalar) * float4(other.group0.xx, other.scalar, (other.scalar * this.e1234) + (other.e1234 * this.scalar)) * float4(this.group0.xyz, 1.0), 
             /* e23, e31, e12, scalar */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -706,9 +705,9 @@ public extension Motor {
     public Motor anti_reject_orthogonally_from(Scalar other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            pow(float4(other.scalar), 2) * this.group0, 
+            float4_pow(float4(other.scalar), 2) * this.group0, 
             /* e23, e31, e12, scalar */
-            pow(float4(other.scalar), 2) * this.group1
+            float4_pow(float4(other.scalar), 2) * this.group1
         );
     }
 }
@@ -726,13 +725,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(other.scalar) * float2(other.scalar * this.scalar, (other.scalar * this.e1234) + (other.e1234 * this.scalar)), 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group2.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group3.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            pow(float4(other.scalar), 2) * this.group4
+            float4_pow(float4(other.scalar), 2) * this.group4
         );
     }
 }
@@ -911,15 +910,15 @@ public extension MultiVector {
     public MultiVector anti_reject_orthogonally_from(Scalar other) {
         return MultiVector(
             /* scalar, e1234 */
-            Simd32x2::pow(float2(other.scalar), 2) * this.group0.xy, 
+            float2_pow(float2(other.scalar), 2) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            pow(float4(other.scalar), 2) * this.group1, 
+            float4_pow(float4(other.scalar), 2) * this.group1, 
             /* e41, e42, e43 */
-            pow(float3(other.scalar), 2) * this.group2.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group2.xyz, 
             /* e23, e31, e12 */
-            pow(float3(other.scalar), 2) * this.group3.xyz, 
+            float3_pow(float3(other.scalar), 2) * this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            pow(float4(other.scalar), 2) * this.group4
+            float4_pow(float4(other.scalar), 2) * this.group4
         );
     }
 }

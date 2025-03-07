@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiDualNum {
     public static Optional<AntiDualNum> try_from(AntiCircleRotor anti_circle_rotor) {
 

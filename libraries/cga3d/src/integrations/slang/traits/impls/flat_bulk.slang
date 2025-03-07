@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public FlatPoint operator /(AntiCircleRotor lhs, FlatBulkPrefixOrPostfix rhs)  {
     return lhs.flat_bulk();

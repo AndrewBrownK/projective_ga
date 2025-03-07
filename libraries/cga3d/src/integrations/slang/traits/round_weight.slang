@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RoundWeight
 /// This is the aspect of a round object that characterizes the carrier's relationship with the horizon.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public float operator /(AntiCircleRotor lhs, UnitizedRadiusNormSquaredPrefixOrPostfix rhs)  {
     return lhs.unitized_radius_norm_squared();

@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// UnitizedRoundNorm
 /// Unitized Norm for round aspect.

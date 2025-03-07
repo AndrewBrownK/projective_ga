@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public Scalar operator /(Scalar lhs, SquareRootPrefixOrPostfix rhs)  {
     return lhs.square_root();

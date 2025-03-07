@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// ProjectViaOriginOnto
 /// Central (to origin) Projection.

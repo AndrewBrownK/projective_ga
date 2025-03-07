@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// FlatBulkNormSquared
 /// Intermediate result for FlatBulkNorm.

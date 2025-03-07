@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// UnitizedFlatNorm
 /// Unitized FlatNorm.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// CenterNorm
 /// Distance between origin and center (not yet unitized, still requires division by round weight).

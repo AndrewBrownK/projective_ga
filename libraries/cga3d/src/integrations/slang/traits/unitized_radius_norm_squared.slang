@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// UnitizedRadiusNormSquared
 /// Intermediate result to UnitizedRadiusNorm.

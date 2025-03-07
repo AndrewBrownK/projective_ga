@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public BulkExpansionInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, BulkExpansionInfix rhs) {
     return BulkExpansionInfixPartial<AntiCircleRotor>(lhs);

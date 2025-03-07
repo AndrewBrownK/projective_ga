@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public MultiVector operator /(AntiCircleRotor lhs, FlatNormSquaredPrefixOrPostfix rhs)  {
     return lhs.flat_norm_squared();

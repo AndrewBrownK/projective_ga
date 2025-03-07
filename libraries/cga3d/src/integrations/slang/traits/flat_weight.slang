@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// FlatWeight
 /// This characterizes the flat aspect's relationship with the horizon.

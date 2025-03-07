@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public Dipole operator /(AntiCircleRotor lhs, RoundWeightPrefixOrPostfix rhs)  {
     return lhs.round_weight();

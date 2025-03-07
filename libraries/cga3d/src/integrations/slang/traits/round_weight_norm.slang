@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RoundWeightNorm
 /// Weight Norm for round aspect.

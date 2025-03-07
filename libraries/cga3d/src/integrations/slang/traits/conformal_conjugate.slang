@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// ConformalConjugate
 /// The conformal conjugate negates the flat elements of an object, and is useful in calculating the center norm of the object.

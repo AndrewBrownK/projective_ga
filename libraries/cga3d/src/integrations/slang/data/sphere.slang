@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Sphere
 public struct Sphere {

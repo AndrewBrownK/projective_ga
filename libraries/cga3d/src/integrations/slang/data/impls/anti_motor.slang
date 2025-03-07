@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiMotor {
     public VersorOdd operator +(AntiCircleRotor other) {
         return VersorOdd(

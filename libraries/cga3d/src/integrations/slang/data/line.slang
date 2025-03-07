@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Line
 public struct Line {

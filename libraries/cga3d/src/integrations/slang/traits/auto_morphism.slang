@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AutoMorphism
 /// Negate every BasisElement with an odd Grade. Also known as grade involution.

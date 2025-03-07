@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// UnitizedRadiusNorm
 /// Unitized radius of an object.

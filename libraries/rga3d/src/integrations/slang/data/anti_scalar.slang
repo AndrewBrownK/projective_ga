@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// AntiScalar
 public struct AntiScalar {

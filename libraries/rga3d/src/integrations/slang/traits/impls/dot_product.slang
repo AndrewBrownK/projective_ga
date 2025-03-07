@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public DotProductInfixPartial<DualNum> operator /(DualNum lhs, DotProductInfix rhs) {
     return DotProductInfixPartial<DualNum>(lhs);

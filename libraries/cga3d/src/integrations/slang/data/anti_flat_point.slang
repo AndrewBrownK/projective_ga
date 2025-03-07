@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiFlatPoint
 public struct AntiFlatPoint {

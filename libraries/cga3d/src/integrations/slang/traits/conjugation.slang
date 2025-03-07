@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Conjugation
 /// This composes the reverse and grade involution (automorphism).

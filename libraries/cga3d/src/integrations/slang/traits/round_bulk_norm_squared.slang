@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// RoundBulkNormSquared
 /// Intermediate result to RoundBulkNorm.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// FlatBulkNorm
 /// BulkNorm for flat aspect.

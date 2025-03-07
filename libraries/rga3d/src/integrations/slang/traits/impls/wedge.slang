@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public WedgeInfixPartial<AntiScalar> operator /(AntiScalar lhs, WedgeInfix rhs) {
     return WedgeInfixPartial<AntiScalar>(lhs);

@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// GeometricAntiProduct
 /// The GeometricAntiProduct or sometimes called AntiProduct is the dual to the GeometricProduct. It depends on a specified AntiScalar. Anti-Multiplying uniform grade geometry may result in mixed grade anti-products, bottoming out at the Scalar. See also AntiSandwich.

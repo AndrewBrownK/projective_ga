@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Unitize
 /// Scale the object to have a weight norm of 1.

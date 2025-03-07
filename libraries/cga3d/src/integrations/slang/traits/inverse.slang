@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Inverse
 /// The inverse with respect to geometric product. Inverse(x) = x^-1.

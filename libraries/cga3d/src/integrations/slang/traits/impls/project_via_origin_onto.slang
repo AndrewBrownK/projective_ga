@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public ProjectViaOriginOntoInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, ProjectViaOriginOntoInfix rhs) {
     return ProjectViaOriginOntoInfixPartial<AntiCircleRotor>(lhs);

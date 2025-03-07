@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// FlatWeightNorm
 /// Weight Norm for flat aspect.

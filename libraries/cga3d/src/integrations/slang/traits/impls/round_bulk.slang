@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public AntiMotor operator /(AntiCircleRotor lhs, RoundBulkPrefixOrPostfix rhs)  {
     return lhs.round_bulk();

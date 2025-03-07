@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension AntiScalar {
     public AntiScalar unit() {
         return AntiScalar(

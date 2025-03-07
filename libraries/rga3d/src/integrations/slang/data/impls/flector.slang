@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension Flector {
     public MultiVector operator +(AntiScalar other) {
         return MultiVector(

@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// Norm
 /// Norm for flat aspect.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiSupport
 /// The anti-support is the anti-vector furthest from the origin that encloses the object.

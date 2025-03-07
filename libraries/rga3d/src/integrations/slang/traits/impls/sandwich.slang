@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public SandwichInfixPartial<AntiScalar> operator /(AntiScalar lhs, SandwichInfix rhs) {
     return SandwichInfixPartial<AntiScalar>(lhs);

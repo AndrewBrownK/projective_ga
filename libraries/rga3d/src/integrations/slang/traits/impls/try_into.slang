@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension AntiScalar {
     public static Optional<AntiScalar> try_from(DualNum dual_num) {
 

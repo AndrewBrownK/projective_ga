@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// UnitizedCenterNorm
 /// Unitized distance from origin to center of round object.

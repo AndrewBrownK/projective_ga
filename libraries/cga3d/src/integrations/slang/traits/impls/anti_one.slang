@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiScalar {
     public AntiScalar anti_one() {
         return AntiScalar(

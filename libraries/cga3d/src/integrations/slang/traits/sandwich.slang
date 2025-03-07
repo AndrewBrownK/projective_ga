@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Sandwich
 /// The so-called "sandwich product" squeezes some factor A between another factor B and the reversal of B. This is frequently used to represent geometric transformations, for example reflecting across a plane or rotating around a line.

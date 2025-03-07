@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiDualNum {
     public VersorOdd operator +(AntiCircleRotor other) {
         return VersorOdd(

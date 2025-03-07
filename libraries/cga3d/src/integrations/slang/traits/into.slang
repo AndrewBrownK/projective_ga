@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Into
 /// Reliably convert one type into another.

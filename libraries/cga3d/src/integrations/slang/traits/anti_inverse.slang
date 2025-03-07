@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiInverse
 /// The inverse with respect to the geometric anti-product.

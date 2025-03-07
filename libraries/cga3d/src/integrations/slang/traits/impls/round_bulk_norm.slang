@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy postfix trick
 public Scalar operator /(AntiCircleRotor lhs, RoundBulkNormPrefixOrPostfix rhs)  {
     return lhs.round_bulk_norm();

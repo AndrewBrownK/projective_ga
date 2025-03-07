@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension Motor {
     public Motor operator +(AntiScalar other) {
         return Motor(

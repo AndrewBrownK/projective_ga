@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// RejectOrthogonallyFrom
 /// Counterpart to ProjectOrthogonallyOnto.

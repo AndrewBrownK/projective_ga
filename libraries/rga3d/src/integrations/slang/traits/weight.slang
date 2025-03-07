@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// Weight
 /// This characterizes the flat aspect's relationship with the horizon.

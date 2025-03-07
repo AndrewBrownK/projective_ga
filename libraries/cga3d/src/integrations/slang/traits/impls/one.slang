@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 public extension AntiCircleRotor {
     public AntiCircleRotor one() {
         return AntiCircleRotor(

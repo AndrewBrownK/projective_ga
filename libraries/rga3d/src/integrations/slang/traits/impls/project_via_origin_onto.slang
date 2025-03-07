@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public ProjectViaOriginOntoInfixPartial<DualNum> operator /(DualNum lhs, ProjectViaOriginOntoInfix rhs) {
     return ProjectViaOriginOntoInfixPartial<DualNum>(lhs);

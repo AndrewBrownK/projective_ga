@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension AntiScalar {
     public uint anti_grade() {
         return 0;

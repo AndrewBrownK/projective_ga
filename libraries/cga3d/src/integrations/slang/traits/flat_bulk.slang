@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// FlatBulk
 /// This characterizes the flat aspect's relationship with the origin.

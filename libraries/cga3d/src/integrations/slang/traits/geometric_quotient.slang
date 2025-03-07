@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// GeometricQuotient
 /// Product of A with Inverse of B.

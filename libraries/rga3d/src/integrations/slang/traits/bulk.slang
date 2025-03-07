@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// Bulk
 /// This characterizes the flat aspect's relationship with the origin.

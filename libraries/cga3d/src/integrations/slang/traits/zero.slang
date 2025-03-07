@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// Zero
 /// All elements set to zero.

@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy postfix trick
 public Horizon operator /(Horizon lhs, FixPrefixOrPostfix rhs)  {
     return lhs.fix();

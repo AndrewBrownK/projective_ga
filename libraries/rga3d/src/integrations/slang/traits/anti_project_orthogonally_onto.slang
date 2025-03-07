@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// AntiProjectOrthogonallyOnto
 /// Typically involves bringing a higher dimensional object to a lower dimensional object.

@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 // Fancy infix trick (first half)
 public GeometricProductInfixPartial<AntiScalar> operator /(AntiScalar lhs, GeometricProductInfix rhs) {
     return GeometricProductInfixPartial<AntiScalar>(lhs);

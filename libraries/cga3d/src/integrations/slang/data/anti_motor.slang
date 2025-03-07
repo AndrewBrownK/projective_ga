@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiMotor
 public struct AntiMotor {

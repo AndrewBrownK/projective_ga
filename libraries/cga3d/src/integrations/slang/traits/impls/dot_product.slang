@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public DotProductInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, DotProductInfix rhs) {
     return DotProductInfixPartial<AntiCircleRotor>(lhs);

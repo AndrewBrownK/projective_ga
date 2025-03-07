@@ -1,5 +1,4 @@
 implementing cga3d;
-using data;
 
 /// AntiOne
 /// The anti-scalar element set to one, and all other elements set to zero.

@@ -1,5 +1,4 @@
 implementing cga3d;
-using traits;
 // Fancy infix trick (first half)
 public AntiWedgeInfixPartial<AntiCircleRotor> operator /(AntiCircleRotor lhs, AntiWedgeInfix rhs) {
     return AntiWedgeInfixPartial<AntiCircleRotor>(lhs);

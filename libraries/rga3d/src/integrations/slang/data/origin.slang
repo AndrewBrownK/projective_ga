@@ -1,5 +1,4 @@
 implementing rga3d;
-using data;
 
 /// Origin.
 /// The Origin is the RoundPoint where x, y, z, and radius are all zero.

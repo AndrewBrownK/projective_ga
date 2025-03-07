@@ -1,5 +1,4 @@
 implementing rga3d;
-using traits;
 public extension DualNum {
     public DualNum one() {
         return DualNum(
