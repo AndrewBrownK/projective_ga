@@ -573,8 +573,8 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                     if i > 0 { write!(w, " * ")?; }
                     self.write_f32(w, *last_factor)?;
                 }
-                let division = i < len;
-                let division_group = (len - i) > 1;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
                 if division { write!(w, " / ")? }
                 if division_group { write!(w, " (")? }
                 let mut i = 0;
@@ -762,8 +762,8 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         write!(w, "])")?;
                     }
                 }
-                let division = i < len;
-                let division_group = (len - i) > 1;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
                 if division { write!(w, " / ")? }
                 if division_group { write!(w, " (")? }
                 let mut i = 0;
@@ -982,8 +982,8 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         write!(w, "])")?;
                     }
                 }
-                let division = i < len;
-                let division_group = (len - i) > 1;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
                 if division { write!(w, " / ")? }
                 if division_group { write!(w, " (")? }
                 let mut i = 0;
