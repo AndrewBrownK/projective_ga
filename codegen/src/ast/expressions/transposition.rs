@@ -20,6 +20,54 @@ impl FloatExpr {
             }
         }
     }
+    
+    fn redo_flat_access(&mut self) {
+        match self {
+            FloatExpr::AccessVec2(box Vec2Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
+                let mut flat_idx = 0;
+                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
+                    if scanning_group_idx == (*target_group_idx) {
+                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
+                        return
+                    }
+                    flat_idx = flat_idx + g.simd_width();
+                }
+            }
+            FloatExpr::AccessVec3(box Vec3Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
+                let mut flat_idx = 0;
+                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
+                    if scanning_group_idx == (*target_group_idx) {
+                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
+                        return
+                    }
+                    flat_idx = flat_idx + g.simd_width();
+                }
+            }
+            FloatExpr::AccessVec4(box Vec4Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
+                let mut flat_idx = 0;
+                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
+                    if scanning_group_idx == (*target_group_idx) {
+                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
+                        return
+                    }
+                    flat_idx = flat_idx + g.simd_width();
+                }
+            }
+            FloatExpr::AccessMultiVecGroup(mve, idx) => {
+                let idx = *idx;
+                let mv = mve.mv_class;
+                let mut flat_idx = 0;
+                for (i, g) in mv.groups().into_iter().enumerate() {
+                    if i == idx {
+                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx);
+                        return
+                    }
+                    flat_idx = flat_idx + g.simd_width();
+                }
+            }
+            _ => {}
+        }
+    }
 }
 
 fn transpose_vec2_product(
@@ -43,6 +91,9 @@ fn transpose_vec2_product(
     });
 
     if vec2_product.is_empty() && coalesce_product_literal == [1.0; 2] {
+        // Revert to flat access, from the extraction-converted group access
+        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         return None;
     }
     let mut keep_remaining = false;
@@ -98,6 +149,10 @@ fn vec2_product_extract(
     if pulled_out_literal {
         return false;
     }
+    
+    // TODO if f0 == f1 in order to do anything anyway, then might be able to return early
+    //  by testing it right here
+    
     if e0 == e1 && f0 == f1 {
         vec2_product.push((Vec2Expr::Gather1(e0.clone()), *f0));
         return true;
@@ -286,6 +341,10 @@ fn transpose_vec3_product(
     });
 
     if vec3_product.is_empty() && coalesce_product_literal == [1.0; 3] {
+        // Revert to flat access, from the extraction-converted group access
+        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         return None;
     }
     let mut keep_remaining = false;
@@ -623,6 +682,11 @@ fn transpose_vec4_product(
     });
 
     if vec4_product.is_empty() && coalesce_product_literal == [1.0; 4] {
+        // Revert to flat access, from the extraction-converted group access
+        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        float_product_3.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         return None;
     }
     let mut keep_remaining = false;
