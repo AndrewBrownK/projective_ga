@@ -755,11 +755,11 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float2([")?;
+                        write!(w, "float2(")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
-                        write!(w, "])")?;
+                        write!(w, ")")?;
                     }
                 }
                 let division = i < v.len();
@@ -973,13 +973,13 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float3([")?;
+                        write!(w, "float3(")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
                         write!(w, ", ")?;
                         self.write_f32(w, c)?;
-                        write!(w, "])")?;
+                        write!(w, ")")?;
                     }
                 }
                 let division = i < v.len();
@@ -1199,7 +1199,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float4([")?;
+                        write!(w, "float4(")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
@@ -1207,7 +1207,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, c)?;
                         write!(w, ", ")?;
                         self.write_f32(w, d)?;
-                        write!(w, "])")?;
+                        write!(w, ")")?;
                     }
                 }
                 let division = i < v.len();
@@ -2114,7 +2114,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
     }
 }
 
-fn swizzle_term(idx: &u8) -> anyhow::Result<&'static str> {
+fn swizzle_term(idx: &usize) -> anyhow::Result<&'static str> {
     match *idx {
         0 => Ok("x"),
         1 => Ok("y"),

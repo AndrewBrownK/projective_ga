@@ -179,7 +179,7 @@ impl BasisElementGroup {
         }
     }
 
-    pub(crate) fn simd_width(&self) -> u8 {
+    pub(crate) fn simd_width(&self) -> usize {
         match self {
             BasisElementGroup::G1(_) => 1,
             BasisElementGroup::G2(_, _) => 2,

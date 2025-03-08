@@ -2721,7 +2721,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         'outer: loop {
             'inner: loop {
                 // Scan through the lines in reverse, drop unused variables
-                return_expr.final_simplify();
+                return_expr.simplify();
                 let mut i = lines.len();
                 while i > 0 {
                     i -= 1;
@@ -2731,7 +2731,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                         Some(vd) => {
                             if let Some(v) = &vd.expr {
                                 let mut expr = v.write();
-                                expr.final_simplify();
+                                expr.simplify();
                             }
                         }
                     }

@@ -3,15 +3,15 @@
 impl FloatExpr {
     pub fn access_vec_2(v: Vec2Expr, i: usize) -> Self {
         assert!(i < 2);
-        FloatExpr::AccessVec2(Box::new(v), i as u8)
+        FloatExpr::AccessVec2(Box::new(v), i)
     }
     pub fn access_vec_3(v: Vec3Expr, i: usize) -> Self {
         assert!(i < 3);
-        FloatExpr::AccessVec3(Box::new(v), i as u8)
+        FloatExpr::AccessVec3(Box::new(v), i)
     }
     pub fn access_vec_4(v: Vec4Expr, i: usize) -> Self {
         assert!(i < 4);
-        FloatExpr::AccessVec4(Box::new(v), i as u8)
+        FloatExpr::AccessVec4(Box::new(v), i)
     }
     pub fn product(factors: Vec<(FloatExpr, f32)>, literal: f32) -> Self {
         assert!(!factors.is_empty());
@@ -35,7 +35,7 @@ impl Vec2Expr {
     pub fn swizzle_vec_2(v: Vec2Expr, x: usize, y: usize) -> Self {
         assert!(x < 2);
         assert!(y < 2);
-        Vec2Expr::SwizzleVec2(Box::new(v), x as u8, y as u8)
+        Vec2Expr::SwizzleVec2(Box::new(v), x, y)
     }
 }
 
@@ -52,7 +52,7 @@ impl Vec3Expr {
         assert!(x < 3);
         assert!(y < 3);
         assert!(z < 3);
-        Vec3Expr::SwizzleVec3(Box::new(v), x as u8, y as u8, z as u8)
+        Vec3Expr::SwizzleVec3(Box::new(v), x, y, z)
     }
 }
 
@@ -70,6 +70,6 @@ impl Vec4Expr {
         assert!(y < 4);
         assert!(z < 4);
         assert!(w < 4);
-        Vec4Expr::SwizzleVec4(Box::new(v), x as u8, y as u8, z as u8, w as u8)
+        Vec4Expr::SwizzleVec4(Box::new(v), x, y, z, w)
     }
 }

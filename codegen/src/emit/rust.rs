@@ -3009,7 +3009,7 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
 }
 
 
-fn swizzle_term(idx: &u8) -> anyhow::Result<&'static str> {
+fn swizzle_term(idx: &usize) -> anyhow::Result<&'static str> {
     match *idx {
         0 => Ok("x"),
         1 => Ok("y"),
