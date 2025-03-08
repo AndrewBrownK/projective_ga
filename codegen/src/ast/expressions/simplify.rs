@@ -378,6 +378,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::Product(product, last_factor) => {
+                // TODO smells like nested products in impl AntiConstraintViolation for DualNum
+
                 if product.is_empty() {
                     panic!("Problem")
                 }
@@ -1071,6 +1073,10 @@ impl Vec2Expr {
                         *self = v2.take_as_owned();
                         return
                     }
+                    Vec3Expr::Truncate4to3(box v4) => {
+                        *self = Vec2Expr::Truncate4to2(Box::new(v4.take_as_owned()));
+                        return
+                    }
                     _ => {}
                 }
             }
@@ -1101,6 +1107,10 @@ impl Vec2Expr {
                     }
                     Vec4Expr::Extend2to4(v2, _, _) => {
                         *self = v2.take_as_owned();
+                        return
+                    }
+                    Vec4Expr::Extend3to4(v2, _) => {
+                        *self = Vec2Expr::Truncate3to2(Box::new(v2.take_as_owned()));
                         return
                     }
                     _ => {}
