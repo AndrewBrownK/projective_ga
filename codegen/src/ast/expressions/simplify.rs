@@ -18,6 +18,19 @@ impl<Expr: Ord> SortVecDespiteF32 for Vec<(Expr, f32)> {
 
 impl AnyExpression {
     pub(crate) fn final_simplify(&mut self) {
+
+        // TODO impl AntiInverse for FlatPoint
+        //  Simd32x4::from(1.0 / (self[e45] * self[e45])) * Simd32x4::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0, self[e45] * -1.0]),
+        //  if my suspicions are correct, this occurs because
+        //  of the two-phase final simplification, where simd can't be transposed after
+        //  we convert to flat access. When the multi-line simplification routine in
+        //  traits.rs TraitImplBuilder.into_trait_xx() inlines more expressions, it might
+        //  create more situations where we want transposition (like above), but without
+        //  the ability to do transposition anymore (because of flat access). The solution
+        //  to allow transposition with flat access. This is SUPER FUCKING TEDIOUS but on the
+        //  bright side, I'll be able to eliminate the "double simplifies" described below,
+        //  and simplification will be a one-and-done operation again.
+
         // First do the transposing simplify.
         // Then do the flat access conversion.
         // Can't do both at once because flat access interferes with transposition,
@@ -1285,7 +1298,7 @@ impl Vec3Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = advanced_transpose_vec2_product(true, x_product, y_product, lits) {
+                        if let Some(transposed) = transpose_vec2_product(x_product, y_product, lits) {
                             *self = Vec3Expr::Extend2to3(transposed, z.take_as_owned());
                             return
                         }
@@ -1358,7 +1371,7 @@ impl Vec3Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = advanced_transpose_vec2_sum(true, x_sum, y_sum, lits) {
+                        if let Some(transposed) = transpose_vec2_sum(x_sum, y_sum, lits) {
                             *self = Vec3Expr::Extend2to3(transposed, z.take_as_owned());
                             return
                         }
@@ -1979,7 +1992,7 @@ impl Vec4Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = advanced_transpose_vec3_product(true, x_product, y_product, z_product, lits) {
+                        if let Some(transposed) = transpose_vec3_product(x_product, y_product, z_product, lits) {
                             *self = Vec4Expr::Extend3to4(transposed, w.take_as_owned());
                             return
                         }
@@ -2011,7 +2024,7 @@ impl Vec4Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = advanced_transpose_vec2_product(true, x_product, y_product, lits) {
+                        if let Some(transposed) = transpose_vec2_product(x_product, y_product, lits) {
                             *self = Vec4Expr::Extend2to4(transposed, z.take_as_owned(), w.take_as_owned());
                             return
                         }
@@ -2164,7 +2177,7 @@ impl Vec4Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = advanced_transpose_vec3_sum(true, x_sum, y_sum, z_sum, lits) {
+                        if let Some(transposed) = transpose_vec3_sum(x_sum, y_sum, z_sum, lits) {
                             *self = Vec4Expr::Extend3to4(transposed, w.take_as_owned());
                             return
                         }
@@ -2196,7 +2209,7 @@ impl Vec4Expr {
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = advanced_transpose_vec2_sum(true, x_sum, y_sum, lits) {
+                        if let Some(transposed) = transpose_vec2_sum(x_sum, y_sum, lits) {
                             *self = Vec4Expr::Extend2to4(transposed, z.take_as_owned(), w.take_as_owned());
                             return
                         }
@@ -2477,6 +2490,14 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Product(product, last_factor) => {
+
+                // TODO impl AntiInverse for FlatPoint
+                //  Simd32x4::from(1.0 / (self[e45] * self[e45])) * Simd32x4::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0, self[e45] * -1.0]),
+                //  We can/should convert that into the following
+                //  self.group0() * Simd32x4::from(-1.0 / (self[e45] * self[e45]))
+                //  or
+                //  self.group0() * Simd32x4::from(-1.0) / Simd32x4::from(self[e45] * self[e45])
+
                 if product.is_empty() {
                     panic!("Problem")
                 }

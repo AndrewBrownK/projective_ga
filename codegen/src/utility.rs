@@ -200,20 +200,6 @@ impl<T: Copy, const N: usize> IntoIterator for ConstVec<T, N> {
         v.into_iter()
     }
 }
-// TODO see if you can get the below item to work and remove the above item
-// type ConstVecIterator<T> = FilterMap<std::vec::IntoIter<Option<T>>, fn(Option<T>) -> Option<T>>;
-// impl<T: Copy, const N: usize> IntoIterator for ConstVec<T, N> {
-// type Item = T;
-// type IntoIter = ConstVecIterator<T>;
-//
-// fn into_iter(self) -> Self::IntoIter {
-// This technique uses Copy to directly copy memory to the heap, instead of manually
-// iterating to construct the Vec (and we want a Vec so that we don't have to worry about
-// a type level size)
-// let result = self.0.into_vec().into_iter().filter_map(|it| it);
-// result
-// }
-// }
 impl<T: Copy + PartialOrd, const N: usize> PartialOrd for ConstVec<T, N> {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let mut i = 0;

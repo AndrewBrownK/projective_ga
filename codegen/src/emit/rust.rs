@@ -1013,80 +1013,61 @@ postgres-types = "0.2.7""#
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_float(w, factor, false)?,
-                        (-1.0, false) => {
-                            if !grouping_provided {
-                                write!(w, "(")?;
-                            }
-                            // TODO impl AntiFix for AntiFlatPoint
-                            write!(w, "1.0/")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_float(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_float(w, factor, false)?;
-                            if !grouping_provided {
-                                write!(w, ")")?;
-                            }
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                if e == 2 && factor.is_memory_read_and_not_compute() {
-                                    self.write_float(w, factor, false)?;
-                                    write!(w, " * ")?;
-                                    self.write_float(w, factor, false)?;
-                                } else {
-                                    write!(w, "f32::powi(")?;
-                                    self.write_float(w, factor, true)?;
-                                    write!(w, ", {e})")?;
-                                }
-                            } else {
-                                write!(w, "f32::powf(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
                             self.write_float(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "f32::powi(")?; } else { write!(w, "f32::powf(")?; }
                             self.write_float(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, " * f32::powi(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * f32::powf(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
                         }
                     }
+                    i += 1;
                 }
-                match (*last_factor, len > 1) {
-                    (fl, _) if fl == 1.0 => {}
-                    (fl, false) => self.write_f32(w, fl)?,
-                    (fl, true) => {
-                        write!(w, " * ")?;
-                        self.write_f32(w, fl)?
+                if i == 0 || *last_factor != 1.0 {
+                    if i > 0 { write!(w, " * ")?; }
+                    self.write_f32(w, *last_factor)?;
+                }
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_float(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_float(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_float(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "f32::powi(")?; } else { write!(w, "f32::powf(")?; }
+                            self.write_float(w, factor, true)?;
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
+                        }
                     }
+                    i += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
-                }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             FloatExpr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != 0.0;
@@ -1209,63 +1190,30 @@ postgres-types = "0.2.7""#
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec2(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(Simd32x2::from(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec2(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec2(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, "Simd32x2::powi(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "Simd32x2::powf(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec2(w, factor, false)?
+                            self.write_vec2(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x2::powi(")?; } else { write!(w, "Simd32x2::powf(")?; }
                             self.write_vec2(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, " * Simd32x2::powi(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * Simd32x2::powf(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 2] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 2] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     if a == b {
@@ -1280,9 +1228,35 @@ postgres-types = "0.2.7""#
                         write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec2(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec2(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec2(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x2::powi(")?; } else { write!(w, "Simd32x2::powf(")?; }
+                            self.write_vec2(w, factor, true)?;
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec2Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 2];
@@ -1428,63 +1402,30 @@ postgres-types = "0.2.7""#
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec3(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(Simd32x3::from(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec3(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec3(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, "Simd32x3::powi(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "Simd32x3::powf(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec3(w, factor, false)?
+                            self.write_vec3(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x3::powi(")?; } else { write!(w, "Simd32x3::powf(")?; }
                             self.write_vec3(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, " * Simd32x3::powi(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * Simd32x3::powf(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 3] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 3] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     let c = last_factor[2];
@@ -1502,9 +1443,35 @@ postgres-types = "0.2.7""#
                         write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec3(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec3(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec3(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x3::powi(")?; } else { write!(w, "Simd32x3::powf(")?; }
+                            self.write_vec3(w, factor, true)?;
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec3Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 3];
@@ -1654,63 +1621,30 @@ postgres-types = "0.2.7""#
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec4(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(Simd32x4::from(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec4(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec4(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, "Simd32x4::powi(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "Simd32x4::powf(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec4(w, factor, false)?
+                            self.write_vec4(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x4::powi(")?; } else { write!(w, "Simd32x4::powf(")?; }
                             self.write_vec4(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                // TODO impl AntiProjectOrthogonallyOnto<AntiDualNum> for AntiCircleRotor
-                                let e = e as i32;
-                                write!(w, " * Simd32x4::powi(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * Simd32x4::powf(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 4] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 4] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     let c = last_factor[2];
@@ -1731,9 +1665,35 @@ postgres-types = "0.2.7""#
                         write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec4(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec4(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec4(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            let use_powi = e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32;
+                            if use_powi { write!(w, "Simd32x4::powi(")?; } else { write!(w, "Simd32x4::powf(")?; }
+                            self.write_vec4(w, factor, true)?;
+                            if use_powi { write!(w, ", {})", e as i32)?; } else { write!(w, ", {e})")?; }
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec4Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 4];

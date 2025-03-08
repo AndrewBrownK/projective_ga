@@ -548,79 +548,59 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_float(w, factor, false)?,
-                        (-1.0, false) => {
-                            if !grouping_provided {
-                                write!(w, "(")?;
-                            }
-                            write!(w, "1.0/")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_float(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_float(w, factor, false)?;
-                            if !grouping_provided {
-                                write!(w, ")")?;
-                            }
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                if e == 2 && factor.is_memory_read_and_not_compute() {
-                                    self.write_float(w, factor, false)?;
-                                    write!(w, " * ")?;
-                                    self.write_float(w, factor, false)?;
-                                } else {
-                                    write!(w, "pow(")?;
-                                    self.write_float(w, factor, true)?;
-                                    write!(w, ", {e})")?;
-                                }
-                            } else {
-                                write!(w, "pow(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
                             self.write_float(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            write!(w, "pow(")?;
                             self.write_float(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, " * pow(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * pow(")?;
-                                self.write_float(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            write!(w, ", {e})")?;
                         }
                     }
+                    i += 1;
                 }
-                match (*last_factor, len > 1) {
-                    (fl, _) if fl == 1.0 => {}
-                    (fl, false) => self.write_f32(w, fl)?,
-                    (fl, true) => {
-                        write!(w, " * ")?;
-                        self.write_f32(w, fl)?
+                if i == 0 || *last_factor != 1.0 {
+                    if i > 0 { write!(w, " * ")?; }
+                    self.write_f32(w, *last_factor)?;
+                }
+                let division = i < len;
+                let division_group = (len - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_float(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_float(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_float(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            write!(w, "pow(")?;
+                            self.write_float(w, factor, true)?;
+                            write!(w, ", {e})")?;
+                        }
                     }
+                    i += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
-                }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             FloatExpr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != 0.0;
@@ -745,61 +725,29 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec2(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(float2(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec2(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec2(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, "float2_pow(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "float2_pow(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec2(w, factor, false)?
+                            self.write_vec2(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            write!(w, "float2_pow(")?;
                             self.write_vec2(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, " * float2_pow(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * float2_pow(")?;
-                                self.write_vec2(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            write!(w, ", {e})")?;
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 2] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 2] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     if a == b {
@@ -807,16 +755,41 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float2(")?;
+                        write!(w, "float2([")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
-                        write!(w, ")")?;
+                        write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < len;
+                let division_group = (len - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec2(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec2(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec2(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            write!(w, "float2_pow(")?;
+                            self.write_vec2(w, factor, true)?;
+                            write!(w, ", {e})")?;
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec2Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 2];
@@ -969,61 +942,29 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec3(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(float3(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec3(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec3(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, "float3_pow(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "float3_pow(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec3(w, factor, false)?
+                            self.write_vec3(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            write!(w, "float3_pow(")?;
                             self.write_vec3(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, " * float3_pow(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * float3_pow(")?;
-                                self.write_vec3(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            write!(w, ", {e})")?;
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 3] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 3] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     let c = last_factor[2];
@@ -1032,18 +973,43 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float3(")?;
+                        write!(w, "float3([")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
                         write!(w, ", ")?;
                         self.write_f32(w, c)?;
-                        write!(w, ")")?;
+                        write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < len;
+                let division_group = (len - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec3(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec3(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec3(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            write!(w, "float3_pow(")?;
+                            self.write_vec3(w, factor, true)?;
+                            write!(w, ", {e})")?;
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec3Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 3];
@@ -1201,61 +1167,29 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 if has_last_factor {
                     len += 1;
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, "(")?;
-                }
-                for (i, (factor, exponent)) in v.iter().enumerate() {
-                    // This recursion is unlikely to cause a stack overflow,
-                    // because expression simplification flattens out associative operations.
-                    match (*exponent, i > 0) {
-                        (f, _) if f == 0.0 => continue,
-
-                        (1.0, false) => self.write_vec4(w, factor, false)?,
-                        (-1.0, false) => {
-                            write!(w, "(float4(1.0) / ")?;
+                let multiplication_group = len > 1 && !grouping_provided;
+                if multiplication_group { write!(w, "(")?; }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent <= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        1.0 => self.write_vec4(w, factor, false)?,
+                        2.0 if factor.is_memory_read_and_not_compute() => {
                             self.write_vec4(w, factor, false)?;
-                            write!(w, ")")?;
-                        }
-                        (e, false) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, "float4_pow(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, "float4_pow(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
-                        }
-
-                        (1.0, true) => {
                             write!(w, " * ")?;
-                            self.write_vec4(w, factor, false)?
+                            self.write_vec4(w, factor, false)?;
                         }
-                        (-1.0, true) => {
-                            write!(w, " / (")?;
+                        e => {
+                            write!(w, "float4_pow(")?;
                             self.write_vec4(w, factor, true)?;
-                            write!(w, ")")?;
-                        }
-                        (e, true) => {
-                            if e.fract() == 0.0 && e <= i32::MAX as f32 && e >= i32::MIN as f32 {
-                                let e = e as i32;
-                                write!(w, " * float4_pow(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            } else {
-                                write!(w, " * float4_pow(")?;
-                                self.write_vec4(w, factor, true)?;
-                                write!(w, ", {e})")?;
-                            }
+                            write!(w, ", {e})")?;
                         }
                     }
+                    i += 1;
                 }
-                if *last_factor != [1.0; 4] {
-                    if len > 1 {
-                        write!(w, " * ")?;
-                    }
+                if i == 0 || *last_factor != [1.0; 4] {
+                    if i > 0 { write!(w, " * ")?; }
                     let a = last_factor[0];
                     let b = last_factor[1];
                     let c = last_factor[2];
@@ -1265,7 +1199,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, a)?;
                         write!(w, ")")?;
                     } else {
-                        write!(w, "float4(")?;
+                        write!(w, "float4([")?;
                         self.write_f32(w, a)?;
                         write!(w, ", ")?;
                         self.write_f32(w, b)?;
@@ -1273,12 +1207,37 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                         self.write_f32(w, c)?;
                         write!(w, ", ")?;
                         self.write_f32(w, d)?;
-                        write!(w, ")")?;
+                        write!(w, "])")?;
                     }
                 }
-                if len > 1 && !grouping_provided {
-                    write!(w, ")")?;
+                let division = i < v.len();
+                let division_group = (v.len() - i) > 1;
+                if division { write!(w, " / ")? }
+                if division_group { write!(w, " (")? }
+                let mut i = 0;
+                for (factor, exponent) in v.iter() {
+                    if *exponent >= 0.0 { continue; }
+                    if i > 0 { write!(w, " * ")?; }
+                    match *exponent {
+                        -1.0 => self.write_vec4(w, factor, false)?,
+                        -2.0 if factor.is_memory_read_and_not_compute() => {
+                            if !division_group { write!(w, " (")? }
+                            self.write_vec4(w, factor, false)?;
+                            write!(w, " * ")?;
+                            self.write_vec4(w, factor, false)?;
+                            if !division_group { write!(w, ")")? }
+                        }
+                        e => {
+                            let e = e * -1.0;
+                            write!(w, "float4_pow(")?;
+                            self.write_vec4(w, factor, true)?;
+                            write!(w, ", {e})")?;
+                        }
+                    }
+                    i += 1;
                 }
+                if division_group { write!(w, ")")? }
+                if multiplication_group { write!(w, ")")?; }
             }
             Vec4Expr::Sum(v, last_addend) => {
                 let has_last_addend = *last_addend != [0.0; 4];
