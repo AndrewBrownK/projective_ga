@@ -751,6 +751,15 @@ impl MultiVectorGroupExpr {
         }
     }
 
+    fn width(&self) -> usize {
+        match self {
+            MultiVectorGroupExpr::JustFloat(_) => 1,
+            MultiVectorGroupExpr::Vec2(_) => 2,
+            MultiVectorGroupExpr::Vec3(_) => 3,
+            MultiVectorGroupExpr::Vec4(_) => 4,
+        }
+    }
+
     /// Check if this expression is zero, assuming it is already simplified
     fn is_zero(&self) -> bool {
         match self {

@@ -432,6 +432,7 @@ impl FloatExpr {
                 product.append(&mut flatten);
                 product.sort_with_f32();
 
+                // a^x * a^y   ->   a^(x+y)
                 let mut partition = 1;
                 while partition <= product.len() {
                     let (front, back) = product.split_at_mut(partition);
@@ -2904,7 +2905,7 @@ impl MultiVectorExpr {
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Class(mut new_self) = inlined_expr {
-                            new_self.simplify_nuanced(false);
+                            new_self.simplify();
                             *self = new_self;
                             return
                         }
@@ -2917,13 +2918,12 @@ impl MultiVectorExpr {
                         group.simplify_nuanced(insides_already_done);
                     }
                 }
-                let mut undid_flat_access = false;
+                let mut flat_idx_offset = 0;
                 let result = groups.iter_mut().enumerate().fold(None, |a, (b_idx, b)| {
-                    if let MultiVectorGroupExpr::JustFloat(f) = b {
-                        f.undo_flat_access();
-                        undid_flat_access = true;
-                    }
+                    let group_width = b.width();
                     let mv_b = match b {
+                        MultiVectorGroupExpr::JustFloat(FloatExpr::AccessMultiVecFlat(mv, flat_idx))
+                        if (*flat_idx - flat_idx_offset) == 0 && mv.mv_class == self.mv_class => Some(mv),
                         MultiVectorGroupExpr::JustFloat(FloatExpr::AccessMultiVecGroup(mv, idx))
                         if *idx == b_idx && mv.mv_class == self.mv_class => Some(mv),
                         MultiVectorGroupExpr::Vec2(Vec2Expr::AccessMultiVecGroup(mv, idx))
@@ -2934,6 +2934,7 @@ impl MultiVectorExpr {
                         if *idx == b_idx && mv.mv_class == self.mv_class => Some(mv),
                         _ => None,
                     };
+                    flat_idx_offset += group_width;
                     if b_idx == 0 {
                         return mv_b;
                     }
@@ -2946,9 +2947,6 @@ impl MultiVectorExpr {
                     }
                 });
                 if let Some(result) = result {
-                    if undid_flat_access {
-                        result.simplify();
-                    }
                     // Any chance of take_as_owned for MultiVectorExpr? Not trivial.
                     *self = result.take_as_owned();
                 }

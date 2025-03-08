@@ -46,11 +46,11 @@ impl Display for FloatExpr {
             }
             FloatExpr::Literal(l) => write!(f, "{l}")?,
             FloatExpr::FromInt(i) => write!(f, "{i}")?,
-            FloatExpr::AccessVec2(box v, i) => v.display_indexed(f, *i as usize)?,
-            FloatExpr::AccessVec3(box v, i) => v.display_indexed(f, *i as usize)?,
-            FloatExpr::AccessVec4(box v, i) => v.display_indexed(f, *i as usize)?,
+            FloatExpr::AccessVec2(box v, i) => v.display_indexed(f, *i)?,
+            FloatExpr::AccessVec3(box v, i) => v.display_indexed(f, *i)?,
+            FloatExpr::AccessVec4(box v, i) => v.display_indexed(f, *i)?,
             FloatExpr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G1(be0) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G1(be0) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access FloatExpr as MultiVecGroup \
                         unless the MultiVecGroup is just one Float"
@@ -66,7 +66,7 @@ impl Display for FloatExpr {
                             write!(f, "{n}_{i}[{be0}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::JustFloat(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access FloatExpr as MultiVecGroup \
@@ -97,8 +97,20 @@ impl Display for FloatExpr {
             }
             FloatExpr::AccessMultiVecFlat(mv, i) => {
                 let gs: Vec<_> = mv.elements().collect();
-                let (float, el) = &gs[*i as usize];
-                write!(f, "{el}({float})")?;
+                let (float, el) = &gs[*i];
+                match mv.expr.as_ref() {
+                    MultiVectorVia::Variable(v) => {
+                        let (n, i) = &v.decl.name;
+                        if *i == 0 {
+                            write!(f, "{n}[{el}]")?;
+                        } else {
+                            let i = i + 1;
+                            write!(f, "{n}_{i}[{el}]")?;
+                        }
+                    }
+                    // TODO is this even right? I think it is a stack overflow
+                    _ => write!(f, "{el}({float})")?,
+                }
             }
             FloatExpr::TraitInvoke11ToFloat(t, mv) => {
                 let n = t.as_lower_snake();
@@ -209,13 +221,13 @@ impl Display for Vec2Expr {
             }
             Vec2Expr::SwizzleVec2(box v, x, y) => {
                 write!(f, "[")?;
-                v.display_indexed(f, *x as usize)?;
+                v.display_indexed(f, *x)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *y as usize)?;
+                v.display_indexed(f, *y)?;
                 write!(f, "]")?;
             }
             Vec2Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec2Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec2"
@@ -231,7 +243,7 @@ impl Display for Vec2Expr {
                             write!(f, "{n}_{i}[{be0}, {be1}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec2(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec2Expr as MultiVecGroup \
@@ -354,15 +366,15 @@ impl Display for Vec3Expr {
             }
             Vec3Expr::SwizzleVec3(box v, x, y , z) => {
                 write!(f, "[")?;
-                v.display_indexed(f, *x as usize)?;
+                v.display_indexed(f, *x)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *y as usize)?;
+                v.display_indexed(f, *y)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *z as usize)?;
+                v.display_indexed(f, *z)?;
                 write!(f, "]")?;
             }
             Vec3Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G3(be0, be1, be2) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G3(be0, be1, be2) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec3Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec3"
@@ -378,7 +390,7 @@ impl Display for Vec3Expr {
                             write!(f, "{n}_{i}[{be0}, {be1}, {be2}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec3(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec3Expr as MultiVecGroup \
@@ -503,17 +515,17 @@ impl Display for Vec4Expr {
             }
             Vec4Expr::SwizzleVec4(box v, x, y, z, w) => {
                 write!(f, "[")?;
-                v.display_indexed(f, *x as usize)?;
+                v.display_indexed(f, *x)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *y as usize)?;
+                v.display_indexed(f, *y)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *z as usize)?;
+                v.display_indexed(f, *z)?;
                 write!(f, ", ")?;
-                v.display_indexed(f, *w as usize)?;
+                v.display_indexed(f, *w)?;
                 write!(f, "]")?;
             }
             Vec4Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G4(be0, be1, be2, be3) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G4(be0, be1, be2, be3) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec4Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec4"
@@ -529,7 +541,7 @@ impl Display for Vec4Expr {
                             write!(f, "{n}_{i}[{be0}, {be1}, {be2}, {be3}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec4(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec4Expr as MultiVecGroup \
@@ -739,14 +751,14 @@ impl Vec2Expr {
             }
             Vec2Expr::SwizzleVec2(v, i0, i1) => {
                 if idx == 0 {
-                    v.display_indexed(f, *i0 as usize)?;
+                    v.display_indexed(f, *i0)?;
                 }
                 if idx == 1 {
-                    v.display_indexed(f, *i1 as usize)?;
+                    v.display_indexed(f, *i1)?;
                 }
             }
             Vec2Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec2Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec2"
@@ -768,7 +780,7 @@ impl Vec2Expr {
                             write!(f, "{be1}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec2(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec2Expr as MultiVecGroup \
@@ -919,17 +931,17 @@ impl Vec3Expr {
             }
             Vec3Expr::SwizzleVec3(v, i0, i1, i2) => {
                 if idx == 0 {
-                    v.display_indexed(f, *i0 as usize)?;
+                    v.display_indexed(f, *i0)?;
                 }
                 if idx == 1 {
-                    v.display_indexed(f, *i1 as usize)?;
+                    v.display_indexed(f, *i1)?;
                 }
                 if idx == 2 {
-                    v.display_indexed(f, *i2 as usize)?;
+                    v.display_indexed(f, *i2)?;
                 }
             }
             Vec3Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G3(be0, be1, be2) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G3(be0, be1, be2) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec3Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec3"
@@ -954,7 +966,7 @@ impl Vec3Expr {
                             write!(f, "{be2}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec3(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec3Expr as MultiVecGroup \
@@ -1131,20 +1143,20 @@ impl Vec4Expr {
             }
             Vec4Expr::SwizzleVec4(v, i0, i1, i2, i3) => {
                 if idx == 0 {
-                    v.display_indexed(f, *i0 as usize)?;
+                    v.display_indexed(f, *i0)?;
                 }
                 if idx == 1 {
-                    v.display_indexed(f, *i1 as usize)?;
+                    v.display_indexed(f, *i1)?;
                 }
                 if idx == 2 {
-                    v.display_indexed(f, *i2 as usize)?;
+                    v.display_indexed(f, *i2)?;
                 }
                 if idx == 3 {
-                    v.display_indexed(f, *i3 as usize)?;
+                    v.display_indexed(f, *i3)?;
                 }
             }
             Vec4Expr::AccessMultiVecGroup(mv, i) => {
-                let BasisElementGroup::G4(be0, be1, be2, be3) = mv.mv_class.groups()[*i as usize] else {
+                let BasisElementGroup::G4(be0, be1, be2, be3) = mv.mv_class.groups()[*i] else {
                     unreachable!(
                         "Should not be able to access Vec4Expr as MultiVecGroup \
                         unless the MultiVecGroup is Vec4"
@@ -1172,7 +1184,7 @@ impl Vec4Expr {
                             write!(f, "{be3}]")?;
                         }
                     }
-                    MultiVectorVia::Construct(gs) => match &gs[*i as usize] {
+                    MultiVectorVia::Construct(gs) => match &gs[*i] {
                         MultiVectorGroupExpr::Vec4(v) => Display::fmt(v, f)?,
                         _ => unreachable!(
                             "Should not be able to access Vec4Expr as MultiVecGroup \
