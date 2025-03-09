@@ -1,4 +1,10 @@
 
+// TODO impl AntiProjectOrthogonallyOnto<Flector> for AntiScalar {
+//  Old generation:
+//  let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
+//  Current generation:
+//  let anti_wedge_g1_xyz = Simd32x3::from([self[e1234], self[e1234], other[e3]]) * other.group0().xy().with_z(self[e1234]);
+
 impl FloatExpr {
     fn undo_flat_access(&mut self) {
         if let FloatExpr::AccessMultiVecFlat(mve, flat_idx) = self {

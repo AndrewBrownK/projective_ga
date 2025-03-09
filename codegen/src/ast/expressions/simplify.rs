@@ -1109,6 +1109,15 @@ impl Vec2Expr {
                         *self = v2.take_as_owned();
                         return
                     }
+                    Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(v4), _) => {
+                        // So in total, self matches Truncate4to2(Extend3to4(Truncate4to3(...)))
+                        // You would normally think this rare/impossible to occur,
+                        // since truncations are driven towards the leaves of the AST and
+                        // extensions are pulled towards the root of the AST.
+                        // So the sneaky place where this shows up is variable inlining.
+                        *self = Vec2Expr::Truncate4to2(Box::new(v4.take_as_owned()));
+                        return
+                    }
                     Vec4Expr::Extend3to4(v2, _) => {
                         *self = Vec2Expr::Truncate3to2(Box::new(v2.take_as_owned()));
                         return
