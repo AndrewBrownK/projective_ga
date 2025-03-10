@@ -1299,6 +1299,9 @@ impl DynamicMultiVector {
         let mut vals = BTreeMap::new();
         let mut keys = BTreeSet::new();
         for (el, mut f) in self.vals.into_iter() {
+            // TODO is this necessary anymore, considering the advanced multi-line inlining in traits.rs?
+            //      All this deep inlining here seems like it would be extremely expensive.
+            //      I should test cga3d_faceted without this deep inlining and see what happens.
             // Some calculations are less efficient without variables.
             // But some expressions can't be simplified down to 0 without variable inlining.
             // So we explore what happens with deep inlining,

@@ -117,9 +117,7 @@ fn transpose_vec2_product(
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
-                if pulling_out_factor {
-                    return true;
-                }
+                if pulling_out_factor { return true; }
                 pulling_out_factor = vec2_product_extract(extraction_strength, &mut vec2_product, &mut coalesce_product_literal, e0, f0, e1, f1);
                 if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
             });
@@ -255,9 +253,7 @@ fn transpose_vec2_sum(
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
-                if pulling_out_addend {
-                    return true;
-                }
+                if pulling_out_addend { return true; }
                 pulling_out_addend = vec2_sum_extract(extraction_strength, &mut vec2_sum, &mut coalesce_sum_literal, e0, f0, e1, f1);
                 if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
             });
@@ -390,13 +386,9 @@ fn transpose_vec3_product(
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
-                if pulling_out_factor {
-                    return true;
-                }
+                if pulling_out_factor { return true; }
                 float_product_2.retain_mut(|(e2, f2)| {
-                    if pulling_out_factor {
-                        return true;
-                    }
+                    if pulling_out_factor { return true; }
                     pulling_out_factor = vec3_product_extract(extraction_strength, &mut vec3_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2);
                     if let Literal(1.0) = e2 { true } else if let Literal(0.0) = e2 { true } else { !pulling_out_factor }
                 });
@@ -472,6 +464,7 @@ fn vec3_product_extract(
         *z_power = 1.0;
         z_is_zero_or_one = true;
     }
+    let z_is_zero = coalesce_product_literals[2] == 0.0;
 
     // Some critical match criteria that we can calculate up front.
     // xyz all have the same power
@@ -491,6 +484,10 @@ fn vec3_product_extract(
     //
 
     if extraction_strength >= Gather1 && xyz && eqs!(x, y, z) {
+        vec3_product.push((Vec3Expr::Gather1(x.clone()), power));
+        return true;
+    }
+    if extraction_strength >= Gather1 && xy_z && eqs!(x, y) && z_is_zero {
         vec3_product.push((Vec3Expr::Gather1(x.clone()), power));
         return true;
     }
@@ -576,13 +573,9 @@ fn transpose_vec3_sum(
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
-                if pulling_out_addend {
-                    return true;
-                }
+                if pulling_out_addend { return true; }
                 float_sum_2.retain_mut(|(e2, f2)| {
-                    if pulling_out_addend {
-                        return true;
-                    }
+                    if pulling_out_addend { return true; }
                     pulling_out_addend = vec3_sum_extract(extraction_strength, &mut vec3_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2);
                     if let Literal(0.0) = e2 { true } else { !pulling_out_addend }
                 });
@@ -759,17 +752,11 @@ fn transpose_vec4_product(
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
-                if pulling_out_factor {
-                    return true;
-                }
+                if pulling_out_factor { return true; }
                 float_product_2.retain_mut(|(e2, f2)| {
-                    if pulling_out_factor {
-                        return true;
-                    }
+                    if pulling_out_factor { return true; }
                     float_product_3.retain_mut(|(e3, f3)| {
-                        if pulling_out_factor {
-                            return true;
-                        }
+                        if pulling_out_factor { return true; }
                         pulling_out_factor = vec4_product_extract(extraction_strength, &mut vec4_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2, e3, f3);
                         if let Literal(1.0) = e3 { true } else if let Literal(0.0) = e3 { true } else { !pulling_out_factor }
                     });
@@ -863,6 +850,8 @@ fn vec4_product_extract(
         *w_power = 1.0;
         w_is_zero_or_one = true;
     }
+    let z_is_zero = coalesce_product_literals[2] == 0.0;
+    let w_is_zero = coalesce_product_literals[3] == 0.0;
 
     // Some critical match criteria that we can calculate up front.
     // xyzw all have the same power
@@ -884,6 +873,14 @@ fn vec4_product_extract(
     //
 
     if extraction_strength >= Gather1 && xyzw && eqs!(x, y, z, w) {
+        vec4_product.push((Vec4Expr::Gather1(x.clone()), power));
+        return true;
+    }
+    if extraction_strength >= Gather1 && xyz_w && eqs!(x, y, z) && w_is_zero {
+        vec4_product.push((Vec4Expr::Gather1(x.clone()), power));
+        return true;
+    }
+    if extraction_strength >= Gather1 && xy_zw && eqs!(x, y) && z_is_zero && w_is_zero {
         vec4_product.push((Vec4Expr::Gather1(x.clone()), power));
         return true;
     }
@@ -1007,17 +1004,11 @@ fn transpose_vec4_sum(
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
-                if pulling_out_addend {
-                    return true;
-                }
+                if pulling_out_addend { return true; }
                 float_sum_2.retain_mut(|(e2, f2)| {
-                    if pulling_out_addend {
-                        return true;
-                    }
+                    if pulling_out_addend { return true; }
                     float_sum_3.retain_mut(|(e3, f3)| {
-                        if pulling_out_addend {
-                            return true;
-                        }
+                        if pulling_out_addend { return true; }
                         pulling_out_addend = vec4_sum_extract(extraction_strength, &mut vec4_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2, e3, f3);
                         if let Literal(0.0) = e3 { true } else { !pulling_out_addend }
                     });
