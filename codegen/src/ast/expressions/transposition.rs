@@ -5,6 +5,35 @@
 //  Current generation:
 //  let anti_wedge_g1_xyz = Simd32x3::from([self[e1234], self[e1234], other[e3]]) * other.group0().xy().with_z(self[e1234]);
 
+use ExtractionStrength::WholeGroups;
+use ExtractionStrength::Gather1;
+use ExtractionStrength::Swizzle;
+use ExtractionStrength::ExtendAndTruncate;
+
+#[repr(usize)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum ExtractionStrength {
+    WholeGroups = 0,
+    Gather1 = 1,
+    Swizzle = 2,
+    ExtendAndTruncate = 3
+}
+impl ExtractionStrength {
+    pub const ASCENDING_STRENGTH: [ExtractionStrength; 4] = [
+        WholeGroups,
+        Gather1,
+        Swizzle,
+        ExtendAndTruncate,
+    ];
+}
+
+/// This macro tests that all elements are equal
+macro_rules! eqs {
+    ($first:expr, $($rest:expr),+ $(,)?) => {
+        true $(&& $first == $rest)+
+    };
+}
+
 impl FloatExpr {
     fn undo_flat_access(&mut self) {
         if let FloatExpr::AccessMultiVecFlat(mve, flat_idx) = self {
@@ -84,17 +113,19 @@ fn transpose_vec2_product(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec2Expr::Product
     let mut vec2_product = vec![];
-    float_product_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_factor = false;
-        float_product_1.retain_mut(|(e1, f1)| {
-            if pulling_out_factor {
-                return true;
-            }
-            pulling_out_factor = vec2_product_extract(&mut vec2_product, &mut coalesce_product_literal, e0, f0, e1, f1);
-            if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_product_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_factor = false;
+            float_product_1.retain_mut(|(e1, f1)| {
+                if pulling_out_factor {
+                    return true;
+                }
+                pulling_out_factor = vec2_product_extract(extraction_strength, &mut vec2_product, &mut coalesce_product_literal, e0, f0, e1, f1);
+                if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
+            });
+            if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
         });
-        if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
-    });
+    }
 
     if vec2_product.is_empty() && coalesce_product_literal == [1.0; 2] {
         // Revert to flat access, from the extraction-converted group access
@@ -127,74 +158,85 @@ fn transpose_vec2_product(
 }
 
 fn vec2_product_extract(
+    extraction_strength: ExtractionStrength,
     vec2_product: &mut Vec<(Vec2Expr, f32)>,
     coalesce_product_literals: &mut [f32; 2],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32,
+    x: &mut FloatExpr,
+    x_power: &mut f32,
+    y: &mut FloatExpr,
+    y_power: &mut f32,
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut pulled_out_literal = false;
-    if let Literal(f) = e0 {
-        if *f != 1.0 {
-            coalesce_product_literals[0] *= f32::powf(*f, *f0);
-            *f = 1.0;
-            *f0 = 0.0;
-            pulled_out_literal = true;
-        }
+    if let Literal(f) = x {
+        coalesce_product_literals[0] *= f32::powf(*f, *x_power);
+        *f = 1.0;
+        *x_power = 1.0;
     }
-    if let Literal(f) = e1 {
-        if *f != 1.0 {
-            coalesce_product_literals[1] *= f32::powf(*f, *f1);
-            *f = 1.0;
-            *f1 = 0.0;
-            pulled_out_literal = true;
-        }
+    if let Literal(f) = y {
+        coalesce_product_literals[1] *= f32::powf(*f, *y_power);
+        *f = 1.0;
+        *y_power = 1.0;
     }
-    if pulled_out_literal {
-        return false;
-    }
-    
-    // TODO if f0 == f1 in order to do anything anyway, then might be able to return early
-    //  by testing it right here
-    
-    if e0 == e1 && f0 == f1 {
-        vec2_product.push((Vec2Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xyzw all have the same power
+    let xy = eqs!(x_power, y_power);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy { return false; }
+
+    // The final power we will use when extracting
+    let power = x_power.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xy && eqs!(x, y) {
+        vec2_product.push((Vec2Expr::Gather1(x.clone()), power));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    match (e0, e1) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    match (x, y) {
+        (
+            AccessVec2(box v0, 0),
+            AccessVec2(box v1, 1)
+        ) if extraction_strength >= WholeGroups && xy && eqs!(v0, v1) => {
+            // The swizzle will later be simplified, if applicable
+            vec2_product.push((v0.clone(), power));
+            true
+        }
         (
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
+        ) if extraction_strength >= Swizzle && xy && eqs!(v0, v1) => {
             // The swizzle will later be simplified, if applicable
-            vec2_product.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), *f0));
+            vec2_product.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), power));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
-            vec2_product.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+            vec2_product.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), power));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
-            vec2_product.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+            vec2_product.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), power));
             true
         }
         (
             Sum(v0, a0),
             Sum(v1, a1)
-        ) if f0 == f1 => {
+        ) if xy => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
-            vec2_product.push((transposed, *f0));
+            vec2_product.push((transposed, power));
             true
         }
         _ => false,
@@ -209,17 +251,19 @@ fn transpose_vec2_sum(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec2Expr::Sum
     let mut vec2_sum = vec![];
-    float_sum_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_addend = false;
-        float_sum_1.retain_mut(|(e1, f1)| {
-            if pulling_out_addend {
-                return true;
-            }
-            pulling_out_addend = vec2_sum_extract(&mut vec2_sum, &mut coalesce_sum_literal, e0, f0, e1, f1);
-            if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_sum_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_addend = false;
+            float_sum_1.retain_mut(|(e1, f1)| {
+                if pulling_out_addend {
+                    return true;
+                }
+                pulling_out_addend = vec2_sum_extract(extraction_strength, &mut vec2_sum, &mut coalesce_sum_literal, e0, f0, e1, f1);
+                if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
+            });
+            if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
         });
-        if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
-    });
+    }
 
     if vec2_sum.is_empty() && coalesce_sum_literal == [0.0; 2] {
         return None;
@@ -249,70 +293,84 @@ fn transpose_vec2_sum(
 }
 
 fn vec2_sum_extract(
+    extraction_strength: ExtractionStrength,
     vec2_sum: &mut Vec<(Vec2Expr, f32)>,
     coalesce_sum_literals: &mut [f32; 2],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32
+    x: &mut FloatExpr,
+    x_coefficient: &mut f32,
+    y: &mut FloatExpr,
+    y_coefficient: &mut f32
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut pulled_out_literal = false;
-    if let Literal(f) = e0 {
-        if *f != 0.0 {
-            coalesce_sum_literals[0] += *f * *f0;
-            *f = 0.0;
-            *f0 = 0.0;
-            pulled_out_literal = true;
-        }
+    if let Literal(f) = x {
+        coalesce_sum_literals[0] += *f * *x_coefficient;
+        *f = 0.0;
+        *x_coefficient = 0.0;
     }
-    if let Literal(f) = e1 {
-        if *f != 0.0 {
-            coalesce_sum_literals[1] += *f * *f1;
-            *f = 0.0;
-            *f1 = 0.0;
-            pulled_out_literal = true;
-        }
+    if let Literal(f) = y {
+        coalesce_sum_literals[1] += *f * *y_coefficient;
+        *f = 0.0;
+        *y_coefficient = 0.0;
     }
-    if pulled_out_literal {
-        return false;
-    }
-    if e0 == e1 && f0 == f1 {
-        vec2_sum.push((Vec2Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xy all have the same coefficient
+    let xy = eqs!(x_coefficient, y_coefficient);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy { return false; }
+
+    // The final coefficient we'll use when extracting
+    let coefficient = x_coefficient.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xy && eqs!(x, y) {
+        vec2_sum.push((Vec2Expr::Gather1(x.clone()), coefficient));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    match (e0, e1) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    match (x, y) {
+        (
+            AccessVec2(box v0, 0),
+            AccessVec2(box v1, 1)
+        ) if extraction_strength >= WholeGroups && xy && eqs!(v0, v1) => {
+            vec2_sum.push((v0.clone(), coefficient));
+            true
+        }
         (
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
+        ) if extraction_strength >= Swizzle && xy && eqs!(v0, v1) => {
             // The swizzle will later be simplified, if applicable
-            vec2_sum.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), *f0));
+            vec2_sum.push((Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), coefficient));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
-            vec2_sum.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+            vec2_sum.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), coefficient));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
-        ) if v0 == v1 && f0 == f1 => {
-            vec2_sum.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+            vec2_sum.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), coefficient));
             true
         }
         (
             Product(v0, a0),
             Product(v1, a1)
-        ) if f0 == f1 => {
+        ) if xy => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
-            vec2_sum.push((transposed, *f0));
+            vec2_sum.push((transposed, coefficient));
             true
         }
         _ => false,
@@ -328,23 +386,25 @@ fn transpose_vec3_product(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec3Expr::Product
     let mut vec3_product = vec![];
-    float_product_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_factor = false;
-        float_product_1.retain_mut(|(e1, f1)| {
-            if pulling_out_factor {
-                return true;
-            }
-            float_product_2.retain_mut(|(e2, f2)| {
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_product_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_factor = false;
+            float_product_1.retain_mut(|(e1, f1)| {
                 if pulling_out_factor {
                     return true;
                 }
-                pulling_out_factor = vec3_product_extract(&mut vec3_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2);
-                if let Literal(1.0) = e2 { true } else if let Literal(0.0) = e2 { true } else { !pulling_out_factor }
+                float_product_2.retain_mut(|(e2, f2)| {
+                    if pulling_out_factor {
+                        return true;
+                    }
+                    pulling_out_factor = vec3_product_extract(extraction_strength, &mut vec3_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2);
+                    if let Literal(1.0) = e2 { true } else if let Literal(0.0) = e2 { true } else { !pulling_out_factor }
+                });
+                if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
             });
-            if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
+            if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
         });
-        if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
-    });
+    }
 
     if vec3_product.is_empty() && coalesce_product_literal == [1.0; 3] {
         // Revert to flat access, from the extraction-converted group access
@@ -384,108 +444,119 @@ fn transpose_vec3_product(
 }
 
 fn vec3_product_extract(
+    extraction_strength: ExtractionStrength,
     vec3_product: &mut Vec<(Vec3Expr, f32)>,
     coalesce_product_literals: &mut [f32; 3],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32,
-    e2: &mut FloatExpr,
-    f2: &mut f32,
+    x: &mut FloatExpr,
+    x_power: &mut f32,
+    y: &mut FloatExpr,
+    y_power: &mut f32,
+    z: &mut FloatExpr,
+    z_power: &mut f32,
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut e2_is_special_lit = false;
-    if let Literal(f) = e0 {
-        if *f == 0.0 {
-            coalesce_product_literals[0] = 0.0;
-            *f0 = 1.0;
-        } else if *f != 1.0 {
-            coalesce_product_literals[0] *= f32::powf(*f, *f0);
-            *f = 1.0;
-            *f0 = 0.0;
-        }
+    let mut z_is_zero_or_one = false;
+    if let Literal(f) = x {
+        coalesce_product_literals[0] *= f32::powf(*f, *x_power);
+        *f = 1.0;
+        *x_power = 1.0;
     }
-    if let Literal(f) = e1 {
-        if *f == 0.0 {
-            coalesce_product_literals[1] = 0.0;
-            *f1 = 1.0;
-        } else if *f != 1.0 {
-            coalesce_product_literals[1] *= f32::powf(*f, *f1);
-            *f = 1.0;
-            *f1 = 0.0;
-        }
+    if let Literal(f) = y {
+        coalesce_product_literals[1] *= f32::powf(*f, *y_power);
+        *f = 1.0;
+        *y_power = 1.0;
     }
-    if let Literal(f) = e2 {
-        if *f == 0.0 {
-            coalesce_product_literals[2] = 0.0;
-            *f2 = 1.0;
-            e2_is_special_lit = true;
-        } else if *f != 1.0 {
-            coalesce_product_literals[2] *= f32::powf(*f, *f2);
-            *f = 1.0;
-            *f2 = 0.0;
-            e2_is_special_lit = true;
-        }
+    if let Literal(f) = z {
+        coalesce_product_literals[2] *= f32::powf(*f, *z_power);
+        *f = 1.0;
+        *z_power = 1.0;
+        z_is_zero_or_one = true;
     }
-    if e0 == e1 && e1 == e2 && f0 == f1 && f1 == f2 {
-        vec3_product.push((Vec3Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xyz all have the same power
+    let xyz = eqs!(x_power, y_power, z_power);
+    // z has the same power as xy, or is 0 or 1 so can accept any power
+    let xy_z = eqs!(x_power, y_power) && (x_power == z_power || z_is_zero_or_one);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy_z { return false; }
+
+    // The final power we will use when extracting
+    let power = x_power.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xyz && eqs!(x, y, z) {
+        vec3_product.push((Vec3Expr::Gather1(x.clone()), power));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    e2.undo_flat_access();
-    match (e0, e1, e2) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    z.undo_flat_access();
+    match (x, y, z) {
+        (
+            AccessVec3(box v0, 0),
+            AccessVec3(box v1, 1),
+            AccessVec3(box v2, 2)
+        ) if extraction_strength >= WholeGroups && xyz && eqs!(v0, v1, v2) => {
+            vec3_product.push((v0.clone(), power));
+            true
+        }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2)
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
+        ) if extraction_strength >= Swizzle && xyz && eqs!(v0, v1, v2) => {
             // The swizzle will later be simplified, if applicable
-            vec3_product.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), *f0));
+            vec3_product.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), power));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             z
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), power));
             true
         }
         (
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+            vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), power));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2)
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
-            vec3_product.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyz && eqs!(v0, v1, v2) => {
+            vec3_product.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), power));
             true
         }
         (
             Sum(v0, a0),
             Sum(v1, a1),
             Sum(v2, a2)
-        ) if f0 == f1 && f1 == f2 => {
+        ) if xyz => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = transpose_vec3_sum(v0, v1, v2, a) else { return false };
-            vec3_product.push((transposed, *f0));
+            vec3_product.push((transposed, power));
             true
         }
         (
             Sum(v0, a0),
             Sum(v1, a1),
             z,
-        ) if f0 == f1 && f1 == f2 => {
+        ) if extraction_strength >= ExtendAndTruncate && xyz => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
-            vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), *f0));
+            vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), power));
             true
         }
         _ => false,
@@ -501,23 +572,25 @@ fn transpose_vec3_sum(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec3Expr::Sum
     let mut vec3_sum = vec![];
-    float_sum_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_addend = false;
-        float_sum_1.retain_mut(|(e1, f1)| {
-            if pulling_out_addend {
-                return true;
-            }
-            float_sum_2.retain_mut(|(e2, f2)| {
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_sum_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_addend = false;
+            float_sum_1.retain_mut(|(e1, f1)| {
                 if pulling_out_addend {
                     return true;
                 }
-                pulling_out_addend = vec3_sum_extract(&mut vec3_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2);
-                if let Literal(0.0) = e2 { true } else { !pulling_out_addend }
+                float_sum_2.retain_mut(|(e2, f2)| {
+                    if pulling_out_addend {
+                        return true;
+                    }
+                    pulling_out_addend = vec3_sum_extract(extraction_strength, &mut vec3_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2);
+                    if let Literal(0.0) = e2 { true } else { !pulling_out_addend }
+                });
+                if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
             });
-            if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
+            if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
         });
-        if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
-    });
+    }
 
     if vec3_sum.is_empty() && coalesce_sum_literal == [0.0; 3] {
         return None;
@@ -553,100 +626,119 @@ fn transpose_vec3_sum(
 }
 
 fn vec3_sum_extract(
+    extraction_strength: ExtractionStrength,
     vec3_sum: &mut Vec<(Vec3Expr, f32)>,
     coalesce_sum_literals: &mut [f32; 3],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32,
-    e2: &mut FloatExpr,
-    f2: &mut f32,
+    x: &mut FloatExpr,
+    x_coefficient: &mut f32,
+    y: &mut FloatExpr,
+    y_coefficient: &mut f32,
+    z: &mut FloatExpr,
+    z_coefficient: &mut f32,
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut e2_is_special_lit = false;
-    if let Literal(f) = e0 {
-        if *f != 0.0 {
-            coalesce_sum_literals[0] += *f * *f0;
-            *f = 0.0;
-            *f0 = 0.0;
-        }
+    let mut z_is_zero = false;
+    if let Literal(f) = x {
+        coalesce_sum_literals[0] += *f * *x_coefficient;
+        *f = 0.0;
+        *x_coefficient = 0.0;
     }
-    if let Literal(f) = e1 {
-        if *f != 0.0 {
-            coalesce_sum_literals[1] += *f * *f1;
-            *f = 0.0;
-            *f1 = 0.0;
-        }
+    if let Literal(f) = y {
+        coalesce_sum_literals[1] += *f * *y_coefficient;
+        *f = 0.0;
+        *y_coefficient = 0.0;
     }
-    if let Literal(f) = e2 {
-        if *f != 0.0 {
-            coalesce_sum_literals[2] += *f * *f2;
-            *f = 0.0;
-            *f2 = 0.0;
-        } else {
-            *f2 = 0.0;
-            e2_is_special_lit = true;
-        }
+    if let Literal(f) = z {
+        coalesce_sum_literals[2] += *f * *z_coefficient;
+        *f = 0.0;
+        *z_coefficient = 0.0;
+        z_is_zero = true;
     }
-    if e0 == e1 && e1 == e2 && f0 == f1 && f1 == f2 {
-        vec3_sum.push((Vec3Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xyz all have the same coefficient
+    let xyz = eqs!(x_coefficient, y_coefficient, z_coefficient);
+    // z has the same coefficient as xy, or is 0 so can accept any coefficient
+    let xy_z = eqs!(x_coefficient, y_coefficient) && (x_coefficient == z_coefficient || z_is_zero);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy_z { return false; }
+
+    // The final coefficient we'll use when extracting
+    let coefficient = x_coefficient.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xyz && eqs!(x, y, z) {
+        vec3_sum.push((Vec3Expr::Gather1(x.clone()), coefficient));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    e2.undo_flat_access();
-    match (e0, e1, e2) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    z.undo_flat_access();
+    match (x, y, z) {
+        (
+            AccessVec3(box v0, 0),
+            AccessVec3(box v1, 1),
+            AccessVec3(box v2, 2),
+        ) if extraction_strength >= WholeGroups && xyz && eqs!(v0, v1, v2) => {
+            vec3_sum.push((v0.clone(), coefficient));
+            true
+        }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2)
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
+        ) if extraction_strength >= Swizzle && xyz && eqs!(v0, v1, v2) => {
             // The swizzle will later be simplified, if applicable
-            vec3_sum.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), *f0));
+            vec3_sum.push((Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), coefficient));
             true
         }
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             z
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
-            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), coefficient));
             true
         }
         (
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if v0 == v1 && f0 == f1 && f1 == f2 => {
-            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+            vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), coefficient));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
-            AccessVec4(box v2, i2)
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 => {
-            vec3_sum.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), *f0));
+            AccessVec4(box v2, i2),
+        ) if extraction_strength >= ExtendAndTruncate && xyz && eqs!(v0, v1, v2) => {
+            vec3_sum.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), coefficient));
             true
         }
         (
             Product(v0, a0),
             Product(v1, a1),
-            Product(v2, a2)
-        ) if f0 == f1 && f1 == f2 => {
+            Product(v2, a2),
+        ) if xyz => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = transpose_vec3_product(v0, v1, v2, a) else { return false };
-            vec3_sum.push((transposed, *f0));
+            vec3_sum.push((transposed, coefficient));
             true
         }
         (
             Product(v0, a0),
             Product(v1, a1),
             z,
-        ) if f0 == f1 && (f1 == f2 || e2_is_special_lit) => {
+        ) if extraction_strength >= ExtendAndTruncate && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
-            vec3_sum.push((Vec3Expr::Extend2to3(transposed, z.clone()), *f0));
+            vec3_sum.push((Vec3Expr::Extend2to3(transposed, z.clone()), coefficient));
             true
         }
         _ => false,
@@ -663,29 +755,31 @@ fn transpose_vec4_product(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec4Expr::Product
     let mut vec4_product = vec![];
-    float_product_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_factor = false;
-        float_product_1.retain_mut(|(e1, f1)| {
-            if pulling_out_factor {
-                return true;
-            }
-            float_product_2.retain_mut(|(e2, f2)| {
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_product_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_factor = false;
+            float_product_1.retain_mut(|(e1, f1)| {
                 if pulling_out_factor {
                     return true;
                 }
-                float_product_3.retain_mut(|(e3, f3)| {
+                float_product_2.retain_mut(|(e2, f2)| {
                     if pulling_out_factor {
                         return true;
                     }
-                    pulling_out_factor = vec4_product_extract(&mut vec4_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2, e3, f3);
-                    if let Literal(1.0) = e3 { true } else if let Literal(0.0) = e3 { true } else { !pulling_out_factor }
+                    float_product_3.retain_mut(|(e3, f3)| {
+                        if pulling_out_factor {
+                            return true;
+                        }
+                        pulling_out_factor = vec4_product_extract(extraction_strength, &mut vec4_product, &mut coalesce_product_literal, e0, f0, e1, f1, e2, f2, e3, f3);
+                        if let Literal(1.0) = e3 { true } else if let Literal(0.0) = e3 { true } else { !pulling_out_factor }
+                    });
+                    if let Literal(1.0) = e2 { true } else if let Literal(0.0) = e2 { true } else { !pulling_out_factor }
                 });
-                if let Literal(1.0) = e2 { true } else if let Literal(0.0) = e2 { true } else { !pulling_out_factor }
+                if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
             });
-            if let Literal(1.0) = e1 { true } else if let Literal(0.0) = e1 { true } else { !pulling_out_factor }
+            if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
         });
-        if let Literal(1.0) = e0 { true } else if let Literal(0.0) = e0 { true } else { !pulling_out_factor }
-    });
+    }
 
     if vec4_product.is_empty() && coalesce_product_literal == [1.0; 4] {
         // Revert to flat access, from the extraction-converted group access
@@ -732,81 +826,89 @@ fn transpose_vec4_product(
 }
 
 fn vec4_product_extract(
+    extraction_strength: ExtractionStrength,
     vec4_product: &mut Vec<(Vec4Expr, f32)>,
     coalesce_product_literals: &mut [f32; 4],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32,
-    e2: &mut FloatExpr,
-    f2: &mut f32,
-    e3: &mut FloatExpr,
-    f3: &mut f32,
+    x: &mut FloatExpr,
+    x_power: &mut f32,
+    y: &mut FloatExpr,
+    y_power: &mut f32,
+    z: &mut FloatExpr,
+    z_power: &mut f32,
+    w: &mut FloatExpr,
+    w_power: &mut f32,
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut e2_is_special_lit = false;
-    let mut e3_is_special_lit = false;
-    if let Literal(f) = e0 {
-        if *f == 0.0 {
-            coalesce_product_literals[0] = 0.0;
-            *f0 = 1.0;
-        } else if *f != 1.0 {
-            coalesce_product_literals[0] *= f32::powf(*f, *f0);
-            *f = 1.0;
-            *f0 = 0.0;
-        }
+    let mut z_is_zero_or_one = false;
+    let mut w_is_zero_or_one = false;
+    if let Literal(f) = x {
+        coalesce_product_literals[0] *= f32::powf(*f, *x_power);
+        *f = 1.0;
+        *x_power = 1.0;
     }
-    if let Literal(f) = e1 {
-        if *f == 0.0 {
-            coalesce_product_literals[1] = 0.0;
-            *f1 = 1.0;
-        } else if *f != 1.0 {
-            coalesce_product_literals[1] *= f32::powf(*f, *f1);
-            *f = 1.0;
-            *f1 = 0.0;
-        }
+    if let Literal(f) = y {
+        coalesce_product_literals[1] *= f32::powf(*f, *y_power);
+        *f = 1.0;
+        *y_power = 1.0;
     }
-    if let Literal(f) = e2 {
-        if *f == 0.0 {
-            coalesce_product_literals[2] = 0.0;
-            *f2 = 1.0;
-            e2_is_special_lit = true;
-        } else if *f != 1.0 {
-            coalesce_product_literals[2] *= f32::powf(*f, *f2);
-            *f = 1.0;
-            *f2 = 0.0;
-            e2_is_special_lit = true;
-        }
+    if let Literal(f) = z {
+        coalesce_product_literals[2] *= f32::powf(*f, *z_power);
+        *f = 1.0;
+        *z_power = 1.0;
+        z_is_zero_or_one = true;
     }
-    if let Literal(f) = e3 {
-        if *f == 0.0 {
-            coalesce_product_literals[3] = 0.0;
-            *f3 = 1.0;
-            e3_is_special_lit = true;
-        } else if *f != 1.0 {
-            coalesce_product_literals[3] *= f32::powf(*f, *f3);
-            *f = 1.0;
-            *f3 = 0.0;
-            e3_is_special_lit = true;
-        }
+    if let Literal(f) = w {
+        coalesce_product_literals[3] *= f32::powf(*f, *w_power);
+        *f = 1.0;
+        *w_power = 1.0;
+        w_is_zero_or_one = true;
     }
-    if e0 == e1 && e1 == e2 && e2 == e3 && f0 == f1 && f1 == f2 && f2 == f3 {
-        vec4_product.push((Vec4Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xyzw all have the same power
+    let xyzw = eqs!(x_power, y_power, z_power, w_power);
+    // w has the same power as xyz, or is 0 or 1 so can accept any power
+    let xyz_w = eqs!(x_power, y_power, z_power) && (x_power == w_power || w_is_zero_or_one);
+    // zw has the same power as xy, or is 0 or 1 so can accept any power
+    let xy_zw = eqs!(x_power, y_power) && (x_power == z_power || z_is_zero_or_one) && (x_power == w_power || w_is_zero_or_one);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy_zw { return false; }
+
+    // The final power we will use when extracting
+    let power = x_power.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xyzw && eqs!(x, y, z, w) {
+        vec4_product.push((Vec4Expr::Gather1(x.clone()), power));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    e2.undo_flat_access();
-    e3.undo_flat_access();
-    match (e0, e1, e2, e3) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    z.undo_flat_access();
+    w.undo_flat_access();
+    match (x, y, z, w) {
+        (
+            AccessVec4(box v0, 0),
+            AccessVec4(box v1, 1),
+            AccessVec4(box v2, 2),
+            AccessVec4(box v3, 3),
+        ) if extraction_strength >= WholeGroups && xyzw && eqs!(v0, v1, v2, v3) => {
+            vec4_product.push((v0.clone(), power));
+            true
+        }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
             AccessVec4(box v3, i3),
-        ) if v0 == v1 && v1 == v2 && v2 == v3 && f0 == f1 && f1 == f2 && f2 == f3 => {
+        ) if extraction_strength >= Swizzle && xyzw && eqs!(v0, v1, v2, v3) => {
             // The swizzle will later be simplified, if applicable
-            vec4_product.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, *i3), *f0));
+            vec4_product.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, *i3), power));
             true
         }
         (
@@ -814,8 +916,8 @@ fn vec4_product_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
             w
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), power));
             true
         }
         (
@@ -823,8 +925,8 @@ fn vec4_product_extract(
             AccessVec4(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), power));
             true
         }
         (
@@ -832,8 +934,8 @@ fn vec4_product_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit)  => {
-            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+            vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), power));
             true
         }
         (
@@ -841,8 +943,8 @@ fn vec4_product_extract(
             AccessVec3(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), power));
             true
         }
         (
@@ -850,19 +952,19 @@ fn vec4_product_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && f1 == f2 && f2 == f3 => {
-            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyzw && eqs!(v0, v1) => {
+            vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), power));
             true
         }
         (
             Sum(v0, a0),
             Sum(v1, a1),
             Sum(v2, a2),
-            Sum(v3, a3)
-        ) if f0 == f1 && f1 == f2 && f2 == f3 => {
+            Sum(v3, a3),
+        ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
             let Some(transposed) = transpose_vec4_sum(v0, v1, v2, v3, a) else { return false };
-            vec4_product.push((transposed, *f0));
+            vec4_product.push((transposed, power));
             true
         }
         (
@@ -870,10 +972,10 @@ fn vec4_product_extract(
             Sum(v1, a1),
             Sum(v2, a2),
             w
-        ) if f0 == f1 && f1 == f2 && f2 == f3 => {
+        ) if extraction_strength >= ExtendAndTruncate && xyzw => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = transpose_vec3_sum(v0, v1, v2, a) else { return false };
-            vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), power));
             true
         }
         (
@@ -881,10 +983,10 @@ fn vec4_product_extract(
             Sum(v1, a1),
             z,
             w
-        ) if f0 == f1 && f1 == f2 && f2 == f3 => {
+        ) if extraction_strength >= ExtendAndTruncate && xyzw => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
-            vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), *f0));
+            vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), power));
             true
         }
         _ => false,
@@ -901,29 +1003,31 @@ fn transpose_vec4_sum(
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec4Expr::Sum
     let mut vec4_sum = vec![];
-    float_sum_0.retain_mut(|(e0, f0)| {
-        let mut pulling_out_addend = false;
-        float_sum_1.retain_mut(|(e1, f1)| {
-            if pulling_out_addend {
-                return true;
-            }
-            float_sum_2.retain_mut(|(e2, f2)| {
+    for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        float_sum_0.retain_mut(|(e0, f0)| {
+            let mut pulling_out_addend = false;
+            float_sum_1.retain_mut(|(e1, f1)| {
                 if pulling_out_addend {
                     return true;
                 }
-                float_sum_3.retain_mut(|(e3, f3)| {
+                float_sum_2.retain_mut(|(e2, f2)| {
                     if pulling_out_addend {
                         return true;
                     }
-                    pulling_out_addend = vec4_sum_extract(&mut vec4_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2, e3, f3);
-                    if let Literal(0.0) = e3 { true } else { !pulling_out_addend }
+                    float_sum_3.retain_mut(|(e3, f3)| {
+                        if pulling_out_addend {
+                            return true;
+                        }
+                        pulling_out_addend = vec4_sum_extract(extraction_strength, &mut vec4_sum, &mut coalesce_sum_literal, e0, f0, e1, f1, e2, f2, e3, f3);
+                        if let Literal(0.0) = e3 { true } else { !pulling_out_addend }
+                    });
+                    if let Literal(0.0) = e2 { true } else { !pulling_out_addend }
                 });
-                if let Literal(0.0) = e2 { true } else { !pulling_out_addend }
+                if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
             });
-            if let Literal(0.0) = e1 { true } else { !pulling_out_addend }
+            if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
         });
-        if let Literal(0.0) = e0 { true } else { !pulling_out_addend }
-    });
+    }
 
     if vec4_sum.is_empty() && coalesce_sum_literal == [0.0; 4] {
         return None;
@@ -965,71 +1069,89 @@ fn transpose_vec4_sum(
 }
 
 fn vec4_sum_extract(
+    extraction_strength: ExtractionStrength,
     vec4_sum: &mut Vec<(Vec4Expr, f32)>,
     coalesce_sum_literals: &mut [f32; 4],
-    e0: &mut FloatExpr,
-    f0: &mut f32,
-    e1: &mut FloatExpr,
-    f1: &mut f32,
-    e2: &mut FloatExpr,
-    f2: &mut f32,
-    e3: &mut FloatExpr,
-    f3: &mut f32,
+    x: &mut FloatExpr,
+    x_coefficient: &mut f32,
+    y: &mut FloatExpr,
+    y_coefficient: &mut f32,
+    z: &mut FloatExpr,
+    z_coefficient: &mut f32,
+    w: &mut FloatExpr,
+    w_coefficient: &mut f32,
 ) -> bool {
     use crate::ast::expressions::FloatExpr::*;
-    let mut e2_is_special_lit = false;
-    let mut e3_is_special_lit = false;
-    if let Literal(f) = e0 {
-        if *f != 0.0 {
-            coalesce_sum_literals[0] += *f * *f0;
-            *f = 0.0;
-            *f0 = 0.0;
-        }
+    let mut z_is_zero = false;
+    let mut w_is_zero = false;
+    if let Literal(f) = x {
+        coalesce_sum_literals[0] += *f * *x_coefficient;
+        *f = 0.0;
+        *x_coefficient = 0.0;
     }
-    if let Literal(f) = e1 {
-        if *f != 0.0 {
-            coalesce_sum_literals[1] += *f * *f1;
-            *f = 0.0;
-            *f1 = 0.0;
-        }
+    if let Literal(f) = y {
+        coalesce_sum_literals[1] += *f * *y_coefficient;
+        *f = 0.0;
+        *y_coefficient = 0.0;
     }
-    if let Literal(f) = e2 {
-        if *f != 0.0 {
-            coalesce_sum_literals[2] += *f * *f2;
-            *f = 0.0;
-            *f2 = 0.0;
-        } else {
-            *f2 = 0.0;
-            e2_is_special_lit = true;
-        }
+    if let Literal(f) = z {
+        coalesce_sum_literals[2] += *f * *z_coefficient;
+        *f = 0.0;
+        *z_coefficient = 0.0;
+        z_is_zero = true;
     }
-    if let Literal(f) = e3 {
-        if *f != 0.0 {
-            coalesce_sum_literals[3] += *f * *f3;
-            *f = 0.0;
-            *f3 = 0.0;
-        } else {
-            *f3 = 0.0;
-            e3_is_special_lit = true;
-        }
+    if let Literal(f) = w {
+        coalesce_sum_literals[3] += *f * *w_coefficient;
+        *f = 0.0;
+        *w_coefficient = 0.0;
+        w_is_zero = true;
     }
-    if e0 == e1 && e1 == e2 && e2 == e3 && f0 == f1 && f1 == f2 && f2 == f3 {
-        vec4_sum.push((Vec4Expr::Gather1(e0.clone()), *f0));
+
+    // Some critical match criteria that we can calculate up front.
+    // xyzw all have the same coefficient
+    let xyzw = eqs!(x_coefficient, y_coefficient, z_coefficient, w_coefficient);
+    // w has the same coefficient as xyz, or is 0 so can accept any coefficient
+    let xyz_w = eqs!(x_coefficient, y_coefficient, z_coefficient) && (x_coefficient == w_coefficient || w_is_zero);
+    // zw has the same coefficient as xy, or is 0 so can accept any coefficient
+    let xy_zw = eqs!(x_coefficient, y_coefficient) && (x_coefficient == z_coefficient || z_is_zero) && (x_coefficient == w_coefficient || w_is_zero);
+
+    // Early return if no possible extractions
+    // (Further uses of this variable are left intact to reinforce the requirement to the reader)
+    if !xy_zw { return false; }
+
+    // The final coefficient we'll use when extracting
+    let coefficient = x_coefficient.clone();
+
+    //
+    // Begin extractions!
+    //
+
+    if extraction_strength >= Gather1 && xyzw && eqs!(x, y, z, w) {
+        vec4_sum.push((Vec4Expr::Gather1(x.clone()), coefficient));
         return true;
     }
-    e0.undo_flat_access();
-    e1.undo_flat_access();
-    e2.undo_flat_access();
-    e3.undo_flat_access();
-    match (e0, e1, e2, e3) {
+    x.undo_flat_access();
+    y.undo_flat_access();
+    z.undo_flat_access();
+    w.undo_flat_access();
+    match (x, y, z, w) {
+        (
+            AccessVec4(box v0, 0),
+            AccessVec4(box v1, 1),
+            AccessVec4(box v2, 2),
+            AccessVec4(box v3, 3),
+        ) if extraction_strength >= WholeGroups && xyzw && eqs!(v0, v1, v2, v3) => {
+            vec4_sum.push((v0.clone(), coefficient));
+            true
+        }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
-            AccessVec4(box v3, i3)
-        ) if v0 == v1 && v1 == v2 && v2 == v3 && f0 == f1 && f1 == f2 && f2 == f3 => {
+            AccessVec4(box v3, i3),
+        ) if extraction_strength >= Swizzle && xyzw && eqs!(v0, v1, v2, v3) => {
             // The swizzle will later be simplified, if applicable
-            vec4_sum.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, *i3), *f0));
+            vec4_sum.push((Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, *i3), coefficient));
             true
         }
         (
@@ -1037,8 +1159,8 @@ fn vec4_sum_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
             w
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), coefficient));
             true
         }
         (
@@ -1046,8 +1168,8 @@ fn vec4_sum_extract(
             AccessVec4(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), coefficient));
             true
         }
         (
@@ -1055,8 +1177,8 @@ fn vec4_sum_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if v0 == v1 && v1 == v2 && f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+            vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), coefficient));
             true
         }
         (
@@ -1064,8 +1186,8 @@ fn vec4_sum_extract(
             AccessVec3(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), coefficient));
             true
         }
         (
@@ -1073,19 +1195,19 @@ fn vec4_sum_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if v0 == v1 && f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
-            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), *f0));
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+            vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), coefficient));
             true
         }
         (
             Product(v0, a0),
             Product(v1, a1),
             Product(v2, a2),
-            Product(v3, a3)
-        ) if f0 == f1 && f1 == f2 && f2 == f3 => {
+            Product(v3, a3),
+        ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
             let Some(transposed) = transpose_vec4_product(v0, v1, v2, v3, a) else { return false };
-            vec4_sum.push((transposed, *f0));
+            vec4_sum.push((transposed, coefficient));
             true
         }
         (
@@ -1093,10 +1215,10 @@ fn vec4_sum_extract(
             Product(v1, a1),
             Product(v2, a2),
             w
-        ) if f0 == f1 && f1 == f2 && (f2 == f3 || e3_is_special_lit) => {
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = transpose_vec3_product(v0, v1, v2, a) else { return false };
-            vec4_sum.push((Vec4Expr::Extend3to4(transposed, w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend3to4(transposed, w.clone()), coefficient));
             true
         }
         (
@@ -1104,10 +1226,10 @@ fn vec4_sum_extract(
             Product(v1, a1),
             z,
             w
-        ) if f0 == f1 && (f1 == f2 || e2_is_special_lit) && (f2 == f3 || e3_is_special_lit) => {
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
-            vec4_sum.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), *f0));
+            vec4_sum.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), coefficient));
             true
         }
         _ => false,
