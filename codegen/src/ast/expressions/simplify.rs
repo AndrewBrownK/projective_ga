@@ -381,7 +381,7 @@ impl FloatExpr {
                 // TODO smells like nested products in impl AntiConstraintViolation for DualNum
 
                 if product.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use FloatExpr::product so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     for (factor, _exponent) in product.iter_mut() {
@@ -509,7 +509,7 @@ impl FloatExpr {
             }
             FloatExpr::Sum(sum, last_addend) => {
                 if sum.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use FloatExpr::sum so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
@@ -839,7 +839,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Product(ref mut product, last_factor) => {
                 if product.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec2Expr::product so you can find out where you constructed something wrong");
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
@@ -931,7 +931,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Sum(ref mut sum, last_addend) => {
                 if sum.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec2Expr::sum so you can find out where you constructed something wrong");
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
@@ -1031,7 +1031,7 @@ impl Vec2Expr {
             }
             Vec2Expr::SwizzleVec2(v2, i0, i1) => {
                 if *i0 > 1 || *i1 > 1 {
-                    panic!("Problem!");
+                    panic!("Please use Vec2Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     v2.simplify_nuanced(insides_already_done, transpose_simd);
@@ -1485,7 +1485,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Product(ref mut product, last_factor) => {
                 if product.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec3Expr::product so you can find out where you constructed something wrong");
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
@@ -1618,7 +1618,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Sum(ref mut sum, last_addend) => {
                 if sum.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec3Expr::sum so you can find out where you constructed something wrong");
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
@@ -1741,7 +1741,7 @@ impl Vec3Expr {
             }
             Vec3Expr::SwizzleVec3(v3, i0, i1, i2) => {
                 if *i0 > 2 || *i1 > 2 || *i2 > 2 {
-                    panic!("Problem!");
+                    panic!("Please use Vec3Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     v3.simplify_nuanced(insides_already_done, transpose_simd);
@@ -2480,7 +2480,7 @@ impl Vec4Expr {
                 //  self.group0() * Simd32x4::from(-1.0) / Simd32x4::from(self[e45] * self[e45])
 
                 if product.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec4Expr::product so you can find out where you constructed something wrong");
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
@@ -2651,7 +2651,7 @@ impl Vec4Expr {
             }
             Vec4Expr::Sum(sum, last_addend) => {
                 if sum.is_empty() {
-                    panic!("Problem")
+                    panic!("Please use Vec4Expr::sum so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
@@ -2794,7 +2794,7 @@ impl Vec4Expr {
             }
             Vec4Expr::SwizzleVec4(v4, i0, i1, i2, i3) => {
                 if *i0 > 3 || *i1 > 3 || *i2 > 3 {
-                    panic!("Problem!");
+                    panic!("Please use Vec4Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
                     v4.simplify_nuanced(insides_already_done, transpose_simd);
