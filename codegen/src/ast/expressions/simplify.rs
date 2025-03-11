@@ -2684,11 +2684,10 @@ impl Vec4Expr {
                 }
 
                 if eqs!(x, y, z, w) && !gather1.is_empty() {
-                    let mut gather1 = swap_take!(gather1, vec![]);
-                    gather1.push((FloatExpr::Literal(x), 1.0));
-                    let mut f = FloatExpr::product(gather1, 1.0);
-                    f.simplify_nuanced(true);
-                    product.push((Vec4Expr::Gather1(f), x));
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::product(gather1, x);
+                    f.simplify();
+                    product.push((Vec4Expr::Gather1(f), 1.0));
                     last_factor[0] = 1.0;
                     last_factor[1] = 1.0;
                     last_factor[2] = 1.0;
@@ -2707,6 +2706,8 @@ impl Vec4Expr {
                 let mut leftover_z = default_coefficient!(2);
                 let mut leftover_w = default_coefficient!(3);
 
+                // println!("SIMPLIFY VEC4 PRODUCT product:        {product:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT gather1:        {gather1:?}");
                 // println!("SIMPLIFY VEC4 PRODUCT extend3to4_xyz: {extend3to4_xyz:?}");
                 // println!("SIMPLIFY VEC4 PRODUCT extend2to4_xy:  {extend2to4_xy:?}");
                 // println!("SIMPLIFY VEC4 PRODUCT gather4_x:      {gather4_x:?}");
@@ -2750,9 +2751,9 @@ impl Vec4Expr {
                 let is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
 
                 if !gather1.is_empty() {
-                    let mut f = FloatExpr::product(gather1, 1.0);
+                    let mut f = FloatExpr::product(gather1, x);
                     f.simplify_nuanced(true);
-                    product.push((Vec4Expr::Gather1(f), x));
+                    product.push((Vec4Expr::Gather1(f), 1.0));
                 }
                 if !extend2to4_xy.is_empty() {
                     let mut xy_coefficient = [1.0; 2];
@@ -2851,52 +2852,6 @@ impl Vec4Expr {
                     }
                 }
 
-                // TODO confirm that these commented out branches aren't needed, then delete them
-                // if !product.is_empty() && last_factor[2] == 0.0 && last_factor[3] == 0.0 {
-                //     let mut new_factors = vec![];
-                //     for (existing_factor, existing_exponent) in product {
-                //         new_factors.push((Vec2Expr::Truncate4to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
-                //     }
-                //     *self = Vec4Expr::Extend2to4(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0), FloatExpr::Literal(0.0));
-                //     self.simplify_nuanced(false, transpose_simd);
-                //     return
-                // }
-                // if !product.is_empty() && last_factor[3] == 0.0 {
-                //     let mut new_factors = vec![];
-                //     for (existing_factor, existing_exponent) in product {
-                //         new_factors.push((Vec3Expr::Truncate4to3(Box::new(existing_factor.take_as_owned())), *existing_exponent));
-                //     }
-                //     *self = Vec4Expr::Extend3to4(Vec3Expr::product(new_factors, [last_factor[0], last_factor[1], last_factor[2]]), FloatExpr::Literal(0.0));
-                //     self.simplify_nuanced(false, transpose_simd);
-                //     return
-                // }
-
-                // Vec extensions get pulled to the outside of arithmetic
-                // if product.len() == 2 {
-                //     let (a, b) = product.split_at_mut(1);
-                //     match (&mut a[0], &mut b[0]) {
-                //         ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
-                //             *self = Vec4Expr::Extend3to4(
-                //                 Vec3Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1], last_factor[2]]),
-                //                 FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
-                //             );
-                //             // Significant restructure, so re-simplify
-                //             self.simplify_nuanced(false, transpose_simd);
-                //             return
-                //         }
-                //         ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
-                //             *self = Vec4Expr::Extend2to4(
-                //                 Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
-                //                 FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
-                //                 FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
-                //             );
-                //             // Significant restructure, so re-simplify
-                //             self.simplify_nuanced(false, transpose_simd);
-                //             return
-                //         }
-                //         _ => {}
-                //     }
-                // }
                 if product.is_empty() {
                     let f0 = FloatExpr::Literal(last_factor[0]);
                     let f1 = FloatExpr::Literal(last_factor[1]);
