@@ -1,5 +1,43 @@
 use std::sync::atomic::Ordering::Acquire;
 
+// TODO clean up commented out println!()
+//  (after you're sure you no longer need them)
+
+
+
+// TODO seeming mistakes, seen in diffs:
+//  .
+//  impl AntiInverse for Flector {
+//  // e1, e2, e3, e4
+//  Simd32x4::from(other_g0) * self.group0() * Simd32x4::from(-1.0),
+//  self.group0() / Simd32x4::from(other_g0 * -1.0),
+//  .
+//  impl AntiConstraintViolation for Flector {
+//  .
+//  impl AntiInverse for Motor {
+//  // e41, e42, e43, e1234
+//  Simd32x4::from(other_g0) * self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+//  self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]) / Simd32x4::from(other_g0),
+//  // e23, e31, e12, scalar
+//  Simd32x4::from(other_g0) * self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+//  self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]) / Simd32x4::from(other_g0),
+//  .
+//
+
+
+
+// TODO not strict correctness mistakes, but could still use improvement, seen in diffs:
+//  .
+//  impl std::ops::Sub<AntiScalar> for DualNum {
+//  DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([0.0, other[e1234] * -1.0]) + self.group0())
+//  DualNum::from_groups(/* scalar, e1234 */ self.group0() + (Simd32x2::from([1.0, other[e1234]]) * Simd32x2::from([0.0, -1.0])))
+//  .
+//  impl AntiProjectOrthogonallyOnto<Flector> for AntiScalar {
+//  let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
+//  let anti_wedge_g1 = Simd32x4::from(self[e1234]) * other.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]);
+
+
+
 trait SortVecDespiteF32 {
     fn sort_with_f32(&mut self);
 }
@@ -1236,6 +1274,50 @@ impl Vec3Expr {
                         }
                     }
                     (
+                        AccessMultiVecFlat(x_mve, x_idx),
+                        AccessMultiVecFlat(y_mve, y_idx),
+                        z,
+                    ) if x_mve == y_mve => {
+                        let max_idx = usize::max(*x_idx, *y_idx);
+                        let min_idx = usize::min(*x_idx, *y_idx);
+                        if (min_idx + 1) < max_idx {
+                            // indexes are too far apart
+                            return
+                        }
+                        let no_swizzle = *x_idx + 1 == *y_idx;
+                        let mut group_idx = 0;
+                        let mut flat_idx = 0;
+                        for group in x_mve.mv_class.groups().into_iter() {
+                            if flat_idx > min_idx {
+                                return
+                            }
+                            if min_idx == flat_idx && group.simd_width() >= 2 {
+                                let mv_group = match group.simd_width() {
+                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
+                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
+                                    _ => unreachable!("max simd width is 4")
+                                };
+                                *self = if no_swizzle {
+                                    Vec3Expr::Extend2to3(mv_group, z.take_as_owned())
+                                } else {
+                                    let x = *x_idx - min_idx;
+                                    let y = *y_idx - min_idx;
+                                    Vec3Expr::Extend2to3(
+                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
+                                        z.take_as_owned(),
+                                    )
+                                };
+                                return
+                            }
+                            group_idx = group_idx + 1;
+                            flat_idx = flat_idx + group.simd_width();
+                        }
+                    }
+                    (Literal(x), Literal(y), z) if *x == *y => {
+                        *self = Vec3Expr::Extend2to3(Vec2Expr::Gather1(Literal(*x)), z.take_as_owned())
+                    }
+                    (
                         Product(ref mut x_product, x_lit),
                         Product(ref mut y_product, y_lit),
                         Product(ref mut z_product, z_lit)
@@ -1379,50 +1461,6 @@ impl Vec3Expr {
                         let mut z = vec![(z.clone(), 1.0)];
                         if let Some(transposed) = transpose_vec3_sum(x_sum, &mut y, &mut z, lits) {
                             *self = transposed;
-                        }
-                    }
-                    (Literal(x), Literal(y), z) if *x == *y => {
-                        *self = Vec3Expr::Extend2to3(Vec2Expr::Gather1(Literal(*x)), z.take_as_owned())
-                    }
-                    (
-                        AccessMultiVecFlat(x_mve, x_idx),
-                        AccessMultiVecFlat(y_mve, y_idx),
-                        z,
-                    ) if x_mve == y_mve => {
-                        let max_idx = usize::max(*x_idx, *y_idx);
-                        let min_idx = usize::min(*x_idx, *y_idx);
-                        if (min_idx + 1) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
-                        let no_swizzle = *x_idx + 1 == *y_idx;
-                        let mut group_idx = 0;
-                        let mut flat_idx = 0;
-                        for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
-                                return
-                            }
-                            if min_idx == flat_idx && group.simd_width() >= 2 {
-                                let mv_group = match group.simd_width() {
-                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec3Expr::Extend2to3(mv_group, z.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    Vec3Expr::Extend2to3(
-                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
-                                        z.take_as_owned(),
-                                    )
-                                };
-                                return
-                            }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
                         }
                     }
                     (x, y, z) if x == y => {
@@ -1840,13 +1878,15 @@ impl Vec4Expr {
             }
             Vec4Expr::Gather4(f0, f1, f2, f3) => {
                 use crate::ast::expressions::FloatExpr::*;
+                // println!("simplify Vec4Expr::Gather4 BEFORE: {f0:?} {f1:?} {f2:?} {f3:?}");
                 if !insides_already_done {
                     f0.simplify_nuanced(insides_already_done);
                     f1.simplify_nuanced(insides_already_done);
                     f2.simplify_nuanced(insides_already_done);
                     f3.simplify_nuanced(insides_already_done);
                 }
-                if f0 == f1 && f0 == f2 && f0 == f3 {
+                // println!("simplify Vec4Expr::Gather4 AFTER: {f0:?} {f1:?} {f2:?} {f3:?}");
+                if eqs!(f0, f1, f2, f3) {
                     *self = Vec4Expr::Gather1(f0.take_as_owned());
                     return;
                 }
@@ -1912,6 +1952,97 @@ impl Vec4Expr {
                             group_idx = group_idx + 1;
                             flat_idx = flat_idx + group.simd_width();
                         }
+                    }
+                    (
+                        AccessMultiVecFlat(x_mve, x_idx),
+                        AccessMultiVecFlat(y_mve, y_idx),
+                        AccessMultiVecFlat(z_mve, z_idx),
+                        w,
+                    ) if x_mve == y_mve && y_mve == z_mve => {
+                        let max_idx = usize::max(*x_idx, usize::max(*y_idx, *z_idx));
+                        let min_idx = usize::min(*x_idx, usize::min(*y_idx, *z_idx));
+                        if (min_idx + 2) < max_idx {
+                            // indexes are too far apart
+                            return
+                        }
+                        let no_swizzle = (*x_idx + 1 == *y_idx) && (*x_idx + 2 == *z_idx);
+                        let mut group_idx = 0;
+                        let mut flat_idx = 0;
+                        for group in x_mve.mv_class.groups().into_iter() {
+                            if flat_idx > min_idx {
+                                return
+                            }
+                            if min_idx == flat_idx && group.simd_width() >= 3 {
+                                let mv_group = match group.simd_width() {
+                                    3 => Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                    4 => Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
+                                    _ => unreachable!("max simd width is 4")
+                                };
+                                *self = if no_swizzle {
+                                    Vec4Expr::Extend3to4(mv_group, w.take_as_owned())
+                                } else {
+                                    let x = *x_idx - min_idx;
+                                    let y = *y_idx - min_idx;
+                                    let z = *z_idx - min_idx;
+                                    Vec4Expr::Extend3to4(
+                                        Vec3Expr::swizzle_vec_3(mv_group, x, y, z),
+                                        w.take_as_owned()
+                                    )
+                                };
+                                return
+                            }
+                            group_idx = group_idx + 1;
+                            flat_idx = flat_idx + group.simd_width();
+                        }
+                    }
+                    (
+                        AccessMultiVecFlat(x_mve, x_idx),
+                        AccessMultiVecFlat(y_mve, y_idx),
+                        z,
+                        w,
+                    ) if x_mve == y_mve => {
+                        let max_idx = usize::max(*x_idx, *y_idx);
+                        let min_idx = usize::min(*x_idx, *y_idx);
+                        if (min_idx + 1) < max_idx {
+                            // indexes are too far apart
+                            return
+                        }
+                        let no_swizzle = *x_idx + 1 == *y_idx;
+                        let mut group_idx = 0;
+                        let mut flat_idx = 0;
+                        for group in x_mve.mv_class.groups().into_iter() {
+                            if flat_idx > min_idx {
+                                return
+                            }
+                            if min_idx == flat_idx && group.simd_width() >= 2 {
+                                let mv_group = match group.simd_width() {
+                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
+                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
+                                    _ => unreachable!("max simd width is 4")
+                                };
+                                *self = if no_swizzle {
+                                    Vec4Expr::Extend2to4(mv_group, z.take_as_owned(), w.take_as_owned())
+                                } else {
+                                    let x = *x_idx - min_idx;
+                                    let y = *y_idx - min_idx;
+                                    Vec4Expr::Extend2to4(
+                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
+                                        z.take_as_owned(),
+                                        w.take_as_owned(),
+                                    )
+                                };
+                                return
+                            }
+                            group_idx = group_idx + 1;
+                            flat_idx = flat_idx + group.simd_width();
+                        }
+                    }
+                    (Literal(x), Literal(y), Literal(z), w) if eqs!(x, y, z) => {
+                        *self = Vec4Expr::Extend3to4(Vec3Expr::Gather1(Literal(*x)), w.take_as_owned());
+                    }
+                    (Literal(x), Literal(y), z, w) if eqs!(x, y) => {
+                        *self = Vec4Expr::Extend2to4(Vec2Expr::Gather1(Literal(*x)), z.take_as_owned(), w.take_as_owned())
                     }
                     (
                         Product(ref mut x_product, x_lit),
@@ -2063,12 +2194,16 @@ impl Vec4Expr {
                         }
                     }
                     (x, y, z, Product(ref mut w_product, w_lit)) if transpose_simd => {
+                        // println!("simplify (will try transpose) Vec4Expr::Gather4(x, y, z, Product(w_product, w_lit))");
                         let lits = [1.0, 1.0, 1.0, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
                         if let Some(transposed) = transpose_vec4_product(&mut x, &mut y, &mut z, w_product, lits) {
+                            // println!("yes transposed");
                             *self = transposed;
+                        } else {
+                            // println!("no transposed");
                         }
                     }
                     (x, y, Product(ref mut z_product, z_lit), w) if transpose_simd => {
@@ -2283,105 +2418,14 @@ impl Vec4Expr {
                             *self = transposed;
                         }
                     }
-                    (Literal(x), Literal(y), Literal(z), w) if *x == *y && *y == *z => {
-                        *self = Vec4Expr::Extend3to4(Vec3Expr::Gather1(Literal(*x)), w.take_as_owned())
-                    }
-                    (Literal(x), Literal(y), z, w) if *x == *y => {
-                        *self = Vec4Expr::Extend2to4(Vec2Expr::Gather1(Literal(*x)), z.take_as_owned(), w.take_as_owned())
-                    }
-                    (
-                        AccessMultiVecFlat(x_mve, x_idx),
-                        AccessMultiVecFlat(y_mve, y_idx),
-                        AccessMultiVecFlat(z_mve, z_idx),
-                        w,
-                    ) if x_mve == y_mve && y_mve == z_mve => {
-                        let max_idx = usize::max(*x_idx, usize::max(*y_idx, *z_idx));
-                        let min_idx = usize::min(*x_idx, usize::min(*y_idx, *z_idx));
-                        if (min_idx + 2) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
-                        let no_swizzle = (*x_idx + 1 == *y_idx) && (*x_idx + 2 == *z_idx);
-                        let mut group_idx = 0;
-                        let mut flat_idx = 0;
-                        for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
-                                return
-                            }
-                            if min_idx == flat_idx && group.simd_width() >= 3 {
-                                let mv_group = match group.simd_width() {
-                                    3 => Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    4 => Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec4Expr::Extend3to4(mv_group, w.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    let z = *z_idx - min_idx;
-                                    Vec4Expr::Extend3to4(
-                                        Vec3Expr::swizzle_vec_3(mv_group, x, y, z),
-                                        w.take_as_owned()
-                                    )
-                                };
-                                return
-                            }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
-                        }
-                    }
-                    (
-                        AccessMultiVecFlat(x_mve, x_idx),
-                        AccessMultiVecFlat(y_mve, y_idx),
-                        z,
-                        w,
-                    ) if x_mve == y_mve => {
-                        let max_idx = usize::max(*x_idx, *y_idx);
-                        let min_idx = usize::min(*x_idx, *y_idx);
-                        if (min_idx + 1) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
-                        let no_swizzle = *x_idx + 1 == *y_idx;
-                        let mut group_idx = 0;
-                        let mut flat_idx = 0;
-                        for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
-                                return
-                            }
-                            if min_idx == flat_idx && group.simd_width() >= 2 {
-                                let mv_group = match group.simd_width() {
-                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec4Expr::Extend2to4(mv_group, z.take_as_owned(), w.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    Vec4Expr::Extend2to4(
-                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
-                                        z.take_as_owned(),
-                                        w.take_as_owned(),
-                                    )
-                                };
-                                return
-                            }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
-                        }
-                    }
-                    (x, y, z, w) if x == y && y == z => {
+                    (x, y, z, w) if eqs!(x, y, z) => {
                         *self = Vec4Expr::Extend3to4(
                             Vec3Expr::Gather1(x.take_as_owned()),
                             w.take_as_owned(),
                         );
                         return
                     }
-                    (x, y, z, w) if x == y => {
+                    (x, y, z, w) if eqs!(x, y) => {
                         *self = Vec4Expr::Extend2to4(
                             Vec2Expr::Gather1(x.take_as_owned()),
                             z.take_as_owned(),
@@ -2413,10 +2457,12 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Extend3to4(v3, f1) => {
+                // println!("simplify Vec4Expr::Extend3to4 BEFORE: {v3:?} {f1:?}");
                 if !insides_already_done {
                     v3.simplify_nuanced(insides_already_done, transpose_simd);
                     f1.simplify_nuanced(insides_already_done);
                 }
+                // println!("simplify Vec4Expr::Extend3to4 AFTER: {v3:?} {f1:?}");
                 match (v3, f1) {
                     (Vec3Expr::Gather1(x), w) if x.is_memory_read_and_not_compute() => {
                         *self = Vec4Expr::Gather4(x.clone(), x.clone(), x.take_as_owned(), w.take_as_owned());
@@ -2494,59 +2540,270 @@ impl Vec4Expr {
                         return;
                     }
                 }
-                let mut flatten = vec![];
-                product.retain_mut(|(factor, exponent)| match factor {
-                    Vec4Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        last_factor[2] *= powf;
-                        last_factor[3] *= powf;
-                        false
-                    }
-                    Vec4Expr::Gather4(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2), FloatExpr::Literal(f3)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        last_factor[2] *= f32::powf(*f2, *exponent);
-                        last_factor[3] *= f32::powf(*f3, *exponent);
-                        false
-                    }
-                    Vec4Expr::Product(ref mut p, another_factor) => {
-                        for (_, e) in p.iter_mut() {
-                            *e = *e * *exponent;
+
+                // println!("SIMPLIFY VEC4 PRODUCT BEFORE:   {product:?}     {last_factor:?}");
+
+                let mut gather1 = vec![];
+                let mut extend3to4_xyz = vec![];
+                let mut extend2to4_xy = vec![];
+                let mut gather4_x = vec![];
+                let mut gather4_y = vec![];
+                let mut gather4_z = vec![];
+                let mut gather4_w = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < product.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    product.retain_mut(|(factor, exponent)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(p);
-                        last_factor[0] *= another_factor[0];
-                        last_factor[1] *= another_factor[1];
-                        last_factor[2] *= another_factor[2];
-                        last_factor[3] *= another_factor[3];
-                        false
-                    }
-                    _ => true,
-                });
-                flatten.retain(|(factor, exponent)| match factor {
-                    Vec4Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        last_factor[2] *= powf;
-                        last_factor[3] *= powf;
-                        false
-                    }
-                    Vec4Expr::Gather4(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2), FloatExpr::Literal(f3)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        last_factor[2] *= f32::powf(*f2, *exponent);
-                        last_factor[3] *= f32::powf(*f3, *exponent);
-                        false
-                    }
-                    _ => true,
-                });
+                        match factor {
+                            Vec4Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let powf = f32::powf(*f, *exponent);
+                                        last_factor[0] *= powf;
+                                        last_factor[1] *= powf;
+                                        last_factor[2] *= powf;
+                                        last_factor[3] *= powf;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Gather4(x, y, z, w) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_factor[0] *= f32::powf(*x, *exponent),
+                                    _ => gather4_x.push((x.take_as_owned(), *exponent)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_factor[1] *= f32::powf(*y, *exponent),
+                                    _ => gather4_y.push((y.take_as_owned(), *exponent)),
+                                }
+                                match z {
+                                    FloatExpr::Literal(z) => last_factor[2] *= f32::powf(*z, *exponent),
+                                    _ => gather4_z.push((z.take_as_owned(), *exponent)),
+                                }
+                                match w {
+                                    FloatExpr::Literal(w) => last_factor[3] *= f32::powf(*w, *exponent),
+                                    _ => gather4_w.push((w.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Extend3to4(xyz, w) => {
+                                // Do not need to further match on xyz because
+                                // xyz + w would simplify to Gather4 when we care about it.
+                                extend3to4_xyz.push((xyz.take_as_owned(), *exponent));
+                                match w {
+                                    FloatExpr::Literal(w) => last_factor[3] *= f32::powf(*w, *exponent),
+                                    _ => gather4_w.push((w.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Extend2to4(xy, z, w) => {
+                                // Do not need to further match on xy because
+                                // xy + z + w would simplify to Gather4 when we care about it.
+                                extend2to4_xy.push((xy.take_as_owned(), *exponent));
+                                match z {
+                                    FloatExpr::Literal(z) => last_factor[2] *= f32::powf(*z, *exponent),
+                                    _ => gather4_z.push((z.take_as_owned(), *exponent)),
+                                }
+                                match w {
+                                    FloatExpr::Literal(w) => last_factor[3] *= f32::powf(*w, *exponent),
+                                    _ => gather4_w.push((w.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Product(ref mut p, another_factor) => {
+                                // TODO I think there's a bug here, see before and after of impl AntiInverse for Point
+                                for (_, e) in p.iter_mut() {
+                                    *e = *e * *exponent;
+                                }
+                                flatten.append(p);
+                                last_factor[0] *= another_factor[0];
+                                last_factor[1] *= another_factor[1];
+                                last_factor[2] *= another_factor[2];
+                                last_factor[3] *= another_factor[3];
+                                false
+                            }
+                            _ => true,
+                        }
+                    });
+                    start_idx = product.len();
+                    product.append(&mut flatten);
+                }
+
                 if *last_factor == [0.0; 4] {
                     *self = Vec4Expr::Gather1(FloatExpr::Literal(0.0));
                     return
                 }
-                product.append(&mut flatten);
+
+                let x = last_factor[0];
+                let y = last_factor[1];
+                let z = last_factor[2];
+                let w = last_factor[3];
+                if x == 0.0 { gather4_x.clear(); }
+                if y == 0.0 { gather4_y.clear(); }
+                if z == 0.0 { gather4_z.clear(); }
+                if w == 0.0 { gather4_w.clear(); }
+                if x == 0.0 && y == 0.0 { extend2to4_xy.clear(); }
+                if x == 0.0 && y == 0.0 && z == 0.0 { extend3to4_xyz.clear(); }
+
+                // println!("SIMPLIFY VEC4 PRODUCT gather1:        {gather1:?}");
+
+                macro_rules! default_coefficient {
+                    ($i:expr) => {
+                        FloatExpr::Literal(if last_factor[$i] == 0.0 { 0.0 } else { 1.0 })
+                    };
+                }
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
+                        }
+                    };
+                }
+                macro_rules! mul_coefficient {
+                    ($float_expr:expr, $k:expr) => {
+                        match &mut $float_expr {
+                            FloatExpr::Product(v, c) => {
+                                c.mul_assign($k);
+                            }
+                            otherwise => {
+                                let f = $float_expr.take_as_owned();
+                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                $float_expr.simplify_nuanced(true);
+                            }
+                        }
+                    }
+                }
+
+                if eqs!(x, y, z, w) && !gather1.is_empty() {
+                    let mut gather1 = swap_take!(gather1, vec![]);
+                    gather1.push((FloatExpr::Literal(x), 1.0));
+                    let mut f = FloatExpr::product(gather1, 1.0);
+                    f.simplify_nuanced(true);
+                    product.push((Vec4Expr::Gather1(f), x));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                    last_factor[2] = 1.0;
+                    last_factor[3] = 1.0;
+                } else if eqs!(x, y, z) && !extend3to4_xyz.is_empty() {
+                    extend3to4_xyz.push((Vec3Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                    last_factor[2] = 1.0;
+                } else if eqs!(x, y) && !extend2to4_xy.is_empty() {
+                    extend2to4_xy.push((Vec2Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                }
+
+                let mut leftover_z = default_coefficient!(2);
+                let mut leftover_w = default_coefficient!(3);
+
+                // println!("SIMPLIFY VEC4 PRODUCT extend3to4_xyz: {extend3to4_xyz:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT extend2to4_xy:  {extend2to4_xy:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT gather4_x:      {gather4_x:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT gather4_y:      {gather4_y:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT gather4_z:      {gather4_z:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT gather4_w:      {gather4_w:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT leftover_z:     {leftover_z:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT leftover_w:     {leftover_w:?}");
+                // println!("SIMPLIFY VEC4 PRODUCT last_factor:    {last_factor:?}");
+
+                match (gather4_x.is_empty(), gather4_y.is_empty(), gather4_z.is_empty(), gather4_w.is_empty()) {
+                    (false, false, true, true) => {
+                        let x = swap_take!(gather4_x, vec![]);
+                        let y = swap_take!(gather4_y, vec![]);
+                        let gather2 = Vec2Expr::Gather2(FloatExpr::product(x, 1.0), FloatExpr::product(y, 1.0));
+                        extend2to4_xy.push((gather2, 1.0));
+                    }
+                    (false, false, false, true) => {
+                        let x = swap_take!(gather4_x, vec![]);
+                        let y = swap_take!(gather4_y, vec![]);
+                        let z = swap_take!(gather4_z, vec![]);
+                        let gather3 = Vec3Expr::Gather3(FloatExpr::product(x, 1.0), FloatExpr::product(y, 1.0), FloatExpr::product(z, 1.0));
+                        extend3to4_xyz.push((gather3, 1.0));
+                    }
+                    (true, true, false, false) if !extend2to4_xy.is_empty() => {
+                        let z = swap_take!(gather4_z, vec![]);
+                        let w = swap_take!(gather4_w, vec![]);
+                        leftover_z = FloatExpr::product(z, 1.0);
+                        leftover_w = FloatExpr::product(w, 1.0);
+                    }
+                    (true, true, true, false) if !extend3to4_xyz.is_empty() => {
+                        let w = swap_take!(gather4_w, vec![]);
+                        leftover_w = FloatExpr::product(w, 1.0);
+                    }
+                    _ => {}
+                }
+
+                let is_any_gather4 = !gather4_x.is_empty() || !gather4_y.is_empty() || !gather4_z.is_empty() || !gather4_w.is_empty();
+                let is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
+                let is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                let is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::product(gather1, 1.0);
+                    f.simplify_nuanced(true);
+                    product.push((Vec4Expr::Gather1(f), x));
+                }
+                if !extend2to4_xy.is_empty() {
+                    let mut xy_coefficient = [1.0; 2];
+                    let mut vec2_products = Vec2Expr::product(extend2to4_xy, xy_coefficient);
+                    vec2_products.simplify();
+                    let mut leftover_w = swap_take!(leftover_w, default_coefficient!(3));
+                    if is_only_2to4 {
+                        xy_coefficient = [last_factor[0], last_factor[1]];
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                        mul_coefficient!(leftover_z, last_factor[2]);
+                        mul_coefficient!(leftover_w, last_factor[3]);
+                        last_factor[2] = 1.0;
+                        last_factor[3] = 1.0;
+                    }
+                    product.push((Vec4Expr::Extend2to4(vec2_products, leftover_z, leftover_w), 1.0));
+                }
+                if !extend3to4_xyz.is_empty() {
+                    let mut xyz_coefficient = [1.0; 3];
+                    if is_only_3to4 {
+                        xyz_coefficient = [last_factor[0], last_factor[1], last_factor[2]];
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                        last_factor[2] = 1.0;
+                        mul_coefficient!(leftover_w, last_factor[3]);
+                        last_factor[3] = 1.0;
+                    }
+                    let mut vec3_products = Vec3Expr::product(extend3to4_xyz, xyz_coefficient);
+                    vec3_products.simplify();
+                    product.push((Vec4Expr::Extend3to4(vec3_products, leftover_w), 1.0));
+                }
+                if is_any_gather4 {
+                    let mut x = if gather4_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather4_x, 1.0) };
+                    let mut y = if gather4_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather4_y, 1.0) };
+                    let mut z = if gather4_z.is_empty() { default_coefficient!(2) } else { FloatExpr::Product(gather4_z, 1.0) };
+                    let mut w = if gather4_w.is_empty() { default_coefficient!(3) } else { FloatExpr::Product(gather4_w, 1.0) };
+                    x.simplify();
+                    y.simplify();
+                    z.simplify();
+                    w.simplify();
+                    product.push((Vec4Expr::Gather4(x, y, z, w), 1.0));
+                    if is_only_gather4 {
+                        // Should we move the last_factor (coefficients) inside the Gather?
+                        // Well... maybe. Maybe sometimes. Maybe not other times.
+                        // Maybe we will deal with it on a case by case basis depending on
+                        // how the code generation looks
+                    }
+                }
+
+                // println!("SIMPLIFY VEC4 PRODUCT AFTER:   {product:?}     {last_factor:?}");
+
                 product.sort_with_f32();
 
                 let mut partition = 1;
@@ -2573,6 +2830,7 @@ impl Vec4Expr {
                         return;
                     }
                 }
+                // TODO see if I can remove this branch
                 if product.len() == 1 && *last_factor == [0.0, 0.0, 1.0, 1.0] {
                     let (factor, exp) = &mut product[0];
                     if *exp == 1.0 {
@@ -2582,6 +2840,7 @@ impl Vec4Expr {
                         }
                     }
                 }
+                // TODO see if I can remove this branch
                 if product.len() == 1 && *last_factor == [0.0, 0.0, 0.0, 1.0] {
                     let (factor, exp) = &mut product[0];
                     if *exp == 1.0 {
@@ -2592,57 +2851,58 @@ impl Vec4Expr {
                     }
                 }
 
-                if !product.is_empty() && last_factor[2] == 0.0 && last_factor[3] == 0.0 {
-                    let mut new_factors = vec![];
-                    for (existing_factor, existing_exponent) in product {
-                        new_factors.push((Vec2Expr::Truncate4to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
-                    }
-                    *self = Vec4Expr::Extend2to4(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0), FloatExpr::Literal(0.0));
-                    self.simplify_nuanced(false, transpose_simd);
-                    return
-                }
-                if !product.is_empty() && last_factor[3] == 0.0 {
-                    let mut new_factors = vec![];
-                    for (existing_factor, existing_exponent) in product {
-                        new_factors.push((Vec3Expr::Truncate4to3(Box::new(existing_factor.take_as_owned())), *existing_exponent));
-                    }
-                    *self = Vec4Expr::Extend3to4(Vec3Expr::product(new_factors, [last_factor[0], last_factor[1], last_factor[2]]), FloatExpr::Literal(0.0));
-                    self.simplify_nuanced(false, transpose_simd);
-                    return
-                }
+                // TODO confirm that these commented out branches aren't needed, then delete them
+                // if !product.is_empty() && last_factor[2] == 0.0 && last_factor[3] == 0.0 {
+                //     let mut new_factors = vec![];
+                //     for (existing_factor, existing_exponent) in product {
+                //         new_factors.push((Vec2Expr::Truncate4to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
+                //     }
+                //     *self = Vec4Expr::Extend2to4(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0), FloatExpr::Literal(0.0));
+                //     self.simplify_nuanced(false, transpose_simd);
+                //     return
+                // }
+                // if !product.is_empty() && last_factor[3] == 0.0 {
+                //     let mut new_factors = vec![];
+                //     for (existing_factor, existing_exponent) in product {
+                //         new_factors.push((Vec3Expr::Truncate4to3(Box::new(existing_factor.take_as_owned())), *existing_exponent));
+                //     }
+                //     *self = Vec4Expr::Extend3to4(Vec3Expr::product(new_factors, [last_factor[0], last_factor[1], last_factor[2]]), FloatExpr::Literal(0.0));
+                //     self.simplify_nuanced(false, transpose_simd);
+                //     return
+                // }
 
                 // Vec extensions get pulled to the outside of arithmetic
-                if product.len() == 2 {
-                    let (a, b) = product.split_at_mut(1);
-                    match (&mut a[0], &mut b[0]) {
-                        ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
-                            *self = Vec4Expr::Extend3to4(
-                                Vec3Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1], last_factor[2]]),
-                                FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
-                            );
-                            // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd);
-                            return
-                        }
-                        ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
-                            *self = Vec4Expr::Extend2to4(
-                                Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
-                                FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
-                                FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
-                            );
-                            // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd);
-                            return
-                        }
-                        _ => {}
-                    }
-                }
+                // if product.len() == 2 {
+                //     let (a, b) = product.split_at_mut(1);
+                //     match (&mut a[0], &mut b[0]) {
+                //         ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
+                //             *self = Vec4Expr::Extend3to4(
+                //                 Vec3Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1], last_factor[2]]),
+                //                 FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
+                //             );
+                //             // Significant restructure, so re-simplify
+                //             self.simplify_nuanced(false, transpose_simd);
+                //             return
+                //         }
+                //         ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
+                //             *self = Vec4Expr::Extend2to4(
+                //                 Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
+                //                 FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
+                //                 FloatExpr::product(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_factor[3])
+                //             );
+                //             // Significant restructure, so re-simplify
+                //             self.simplify_nuanced(false, transpose_simd);
+                //             return
+                //         }
+                //         _ => {}
+                //     }
+                // }
                 if product.is_empty() {
                     let f0 = FloatExpr::Literal(last_factor[0]);
                     let f1 = FloatExpr::Literal(last_factor[1]);
                     let f2 = FloatExpr::Literal(last_factor[2]);
                     let f3 = FloatExpr::Literal(last_factor[3]);
-                    *self = if f0 == f1 && f1 == f2 && f2 == f3 {
+                    *self = if eqs!(f0, f1, f2, f3) {
                         Vec4Expr::Gather1(f0)
                     } else {
                         Vec4Expr::Gather4(f0, f1, f2, f3)

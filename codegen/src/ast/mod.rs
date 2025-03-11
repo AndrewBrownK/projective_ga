@@ -4,8 +4,9 @@ use std::cmp::Ordering;
 use std::ops::Deref;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
-
-use crate::ast::expressions::AnyExpression;
+use crate::ast;
+use crate::ast::datatype::Float;
+use crate::ast::expressions::{AnyExpression, FloatExpr, Vec4Expr};
 
 pub mod datatype;
 pub mod expressions;
@@ -34,6 +35,23 @@ impl<ExprType> Variable<ExprType> {
         }
     }
 }
+
+
+#[test]
+fn simplification_debugger() {
+    let v = Variable::<Float>::quick_var("test", Float);
+    let mut term = Vec4Expr::Gather4(
+        FloatExpr::Literal(0.0),
+        FloatExpr::Literal(0.0),
+        FloatExpr::Literal(0.0),
+        FloatExpr::Product(vec![(v.into(), 1.0)], -1.0)
+    );
+    println!("{:?}", term);
+    term.simplify();
+    println!("{:?}", term);
+}
+
+
 impl<ExprType> PartialEq for Variable<ExprType> where ExprType: PartialEq {
     fn eq(&self, other: &Self) -> bool {
         self.expr_type == other.expr_type && self.decl == other.decl

@@ -202,6 +202,10 @@ impl TraitResultType for MultiVector {
     }
 }
 
+// TODO we could alter Vec4Expr::Extend2to4 to accept two Vec2Expr instead of one Vec2Expr and 2 FloatExpr
+//  then we could also have Vec4Expr::Extend1to4 that accepts a Vec3Expr
+//  and then we could get truncations/extensions to be symmetrical
+
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum IntExpr {
     Variable(RawVariableInvocation),
@@ -301,6 +305,12 @@ pub enum AnyExpression {
 }
 
 
+/// This macro tests that all elements are equal
+macro_rules! eqs {
+    ($first:expr, $($rest:expr),+ $(,)?) => {
+        true $(&& $first == $rest)+
+    };
+}
 
 // Trait implementations and stuff
 include!("expressions/impl_from.rs");

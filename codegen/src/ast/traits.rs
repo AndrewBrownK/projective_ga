@@ -194,12 +194,9 @@ pub trait TraitDef_1_Type_0_Args: TraitImpl_10 + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits10.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_10::<Self>(&trait_key, raw_impl);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            // return builder.inline_by_copy_existing_10::<Self>(&trait_key, raw_impl);
         }
 
         let slf = self.clone();
@@ -354,12 +351,9 @@ pub trait TraitDef_1_Type_1_Arg: TraitImpl_11 + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits11.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_11::<Self, _>(&trait_key, raw_impl, owner);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            // return builder.inline_by_copy_existing_11::<Self, _>(&trait_key, raw_impl, owner);
         }
 
         let slf = self.clone();
@@ -523,12 +517,9 @@ pub trait TraitDef_2_Types_1_Arg: TraitImpl_21 + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits21.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_21::<Self, _>(&trait_key, raw_impl, owner);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            // return builder.inline_by_copy_existing_21::<Self, _>(&trait_key, raw_impl, owner);
         }
 
         let slf = self.clone();
@@ -701,12 +692,9 @@ pub trait TraitDef_2_Types_2_Args: TraitImpl_22 + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits22.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_22::<Self, _, _>(&trait_key, raw_impl, owner, other);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            // return builder.inline_by_copy_existing_22::<Self, _, _>(&trait_key, raw_impl, owner, other);
         }
 
         let slf = self.clone();
@@ -889,12 +877,9 @@ pub trait TraitDef_1_Type_2_Args_f32: TraitImpl_12f + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits12f.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_12f::<Self, _, _>(&trait_key, raw_impl, owner, other);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            //return builder.inline_by_copy_existing_12f::<Self, _, _>(&trait_key, raw_impl, owner, other);
         }
 
         let slf = self.clone();
@@ -1059,12 +1044,9 @@ pub trait TraitDef_1_Type_2_Args_i32: TraitImpl_12i + ProvideTraitNames {
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
         if let Some(Some(raw_impl)) = builder.registry.traits12i.get(&impl_key).await {
-            // It is faster to inline here, rather than copying existing impls,
-            // because variable substitution involves copying and mutating an entire AST.
-            // So the only time we want to copy an AST is if it is specialized.
-            if raw_impl.specialized {
-                return builder.inline_by_copy_existing_12i::<Self, _, _>(&trait_key, raw_impl, owner, other);
-            }
+            // Simplification can be expensive, reuse existing implementation
+            // TODO enable and debug the panic
+            // return builder.inline_by_copy_existing_12i::<Self, _, _>(&trait_key, raw_impl, owner, other);
         }
 
         let slf = self.clone();

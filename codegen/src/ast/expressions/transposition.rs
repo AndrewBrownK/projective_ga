@@ -27,13 +27,6 @@ impl ExtractionStrength {
     ];
 }
 
-/// This macro tests that all elements are equal
-macro_rules! eqs {
-    ($first:expr, $($rest:expr),+ $(,)?) => {
-        true $(&& $first == $rest)+
-    };
-}
-
 impl FloatExpr {
     fn undo_flat_access(&mut self) {
         if let FloatExpr::AccessMultiVecFlat(mve, flat_idx) = self {
@@ -852,6 +845,8 @@ fn vec4_product_extract(
     }
     let z_is_zero = coalesce_product_literals[2] == 0.0;
     let w_is_zero = coalesce_product_literals[3] == 0.0;
+
+    // TODO what about leading Vec3Expr::Gather1(FloatExpr::Literal(0.0)) or Vec2Expr::Gather1(FloatExpr::Literal(0.0))?
 
     // Some critical match criteria that we can calculate up front.
     // xyzw all have the same power

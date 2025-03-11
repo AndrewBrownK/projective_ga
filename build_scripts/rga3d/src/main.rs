@@ -123,10 +123,10 @@ fn base_documentation(mut declarations: DeclareMultiVecs<e1234>) -> DeclareMulti
 pub mod custom_traits {
     use codegen::algebra::basis::BasisElement;
     use codegen::ast::impls::Elaborated;
-    use codegen::build_scripts::common_traits::{anti_support, support, unitize};
-    use codegen::build_scripts::common_traits::conformal::{flat_bulk, flat_bulk_norm, flat_bulk_norm_squared, flat_norm, flat_norm_squared, flat_weight, flat_weight_norm, flat_weight_norm_squared, unitized_flat_norm, unitized_flat_norm_squared};
     use codegen::build_scripts::common_traits::conformal::impls::{FlatBulkImpl, FlatBulkNormImpl, FlatBulkNormSquaredImpl, FlatNormImpl, FlatNormSquaredImpl, FlatWeightImpl, FlatWeightNormImpl, FlatWeightNormSquaredImpl, UnitizedFlatNormImpl, UnitizedFlatNormSquaredImpl};
+    use codegen::build_scripts::common_traits::conformal::{flat_bulk, flat_bulk_norm, flat_bulk_norm_squared, flat_norm, flat_norm_squared, flat_weight, flat_weight_norm, flat_weight_norm_squared, unitized_flat_norm, unitized_flat_norm_squared};
     use codegen::build_scripts::common_traits::impls::{AntiSupportImpl, SupportImpl, UnitizeImpl};
+    use codegen::build_scripts::common_traits::{anti_support, support, unitize};
 
     const origin: BasisElement = codegen::elements::e4;
 
