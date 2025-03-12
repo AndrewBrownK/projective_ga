@@ -876,6 +876,12 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Product(ref mut product, last_factor) => {
+                // TODO not sure if this should be fixed here in simplification, or in code emission:
+                //  impl AntiProjectOrthogonallyOnto<Scalar> for DualNum
+                //  Before:    DualNum::from_groups(/* scalar, e1234 */ Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0())
+                //  After:     DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar]) * Simd32x2::from(other[scalar]) * self.group0())
+                //  Preferred: DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar] * other[scalar]) * self.group0())
+
                 if product.is_empty() {
                     panic!("Please use Vec2Expr::product so you can find out where you constructed something wrong");
                 }
@@ -2746,9 +2752,9 @@ impl Vec4Expr {
                 }
 
                 let is_any_gather4 = !gather4_x.is_empty() || !gather4_y.is_empty() || !gather4_z.is_empty() || !gather4_w.is_empty();
-                let is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
-                let is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
-                let is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
+                let mut is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
+                let mut is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                let mut is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
 
                 let mut x_is_zeroed_without_last_factor = false;
                 let mut y_is_zeroed_without_last_factor = false;
@@ -2758,13 +2764,19 @@ impl Vec4Expr {
                 if !gather1.is_empty() {
                     let mut f = FloatExpr::product(gather1, 1.0);
                     f.simplify();
-                    if let FloatExpr::Literal(0.0) = &f {
-                        x_is_zeroed_without_last_factor = true;
-                        y_is_zeroed_without_last_factor = true;
-                        z_is_zeroed_without_last_factor = true;
-                        w_is_zeroed_without_last_factor = true;
+                    if z == 0.0 && w == 0.0 {
+                        extend2to4_xy.push((Vec2Expr::Gather1(f), 1.0));
+                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
+                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                        is_only_gather4 = is_any_gather4 && product.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
+                    } else if w == 0.0 {
+                        extend3to4_xyz.push((Vec3Expr::Gather1(f), 1.0));
+                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
+                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                        is_only_gather4 = is_any_gather4 && product.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
+                    } else {
+                        product.push((Vec4Expr::Gather1(f), 1.0));
                     }
-                    product.push((Vec4Expr::Gather1(f), 1.0));
                 }
                 if !extend2to4_xy.is_empty() {
                     let mut xy_coefficient = [1.0; 2];
