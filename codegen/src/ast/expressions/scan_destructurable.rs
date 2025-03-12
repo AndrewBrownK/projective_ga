@@ -38,16 +38,34 @@ impl DestructurableVariables {
         // TODO maybe we should allow destructuring Products if they are just one term with coefficients
         //  impl AntiConstraintViolation for AntiMotor
         let ae = vd.read();
-        let result = match *ae {
+        let result = match &*ae {
             AnyExpression::Vec2(Vec2Expr::Gather1(_)) => true,
             AnyExpression::Vec2(Vec2Expr::Gather2(_, _)) => true,
+            AnyExpression::Vec2(Vec2Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
+                Vec2Expr::Gather1(_) if last_factor[0] == last_factor[1] => true,
+                Vec2Expr::Gather2(_, _) => true,
+                _ => false
+            }
             AnyExpression::Vec3(Vec3Expr::Gather1(_)) => true,
             AnyExpression::Vec3(Vec3Expr::Gather3(_, _, _)) => true,
             AnyExpression::Vec3(Vec3Expr::Extend2to3(_, _)) => true,
+            AnyExpression::Vec3(Vec3Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
+                Vec3Expr::Gather1(_) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] => true,
+                Vec3Expr::Gather3(_, _, _) => true,
+                Vec3Expr::Extend2to3(_, _) => true,
+                _ => false
+            }
             AnyExpression::Vec4(Vec4Expr::Gather1(_)) => true,
             AnyExpression::Vec4(Vec4Expr::Gather4(_, _, _, _)) => true,
             AnyExpression::Vec4(Vec4Expr::Extend2to4(_, _, _)) => true,
             AnyExpression::Vec4(Vec4Expr::Extend3to4(_, _)) => true,
+            AnyExpression::Vec4(Vec4Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
+                Vec4Expr::Gather1(_) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] && last_factor[0] == last_factor[3] => true,
+                Vec4Expr::Gather4(_, _, _, _) => true,
+                Vec4Expr::Extend2to4(_, _, _) => true,
+                Vec4Expr::Extend3to4(_, _) => true,
+                _ => false
+            }
             AnyExpression::Class(MultiVectorExpr { expr: box MultiVectorVia::Construct(_), .. }) => true,
             _ => false
         };

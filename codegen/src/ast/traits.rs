@@ -2885,14 +2885,21 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             make_a_var(expr, suffix.as_str())
         };
 
+        // TODO there are some cases where a variable gets used as a whole because of swizzling,
+        //  but if you inspect the variable it actually has a lot of zeroes in it.
+        //  impl AntiProjectViaHorizonOnto<MultiVector> for DualNum
+        //  let anti_wedge_g1 = Simd32x3::from(0.0).with_w(self[e1234] * other[e321] * -1.0);
+        //  later we see several float access, but also lots of swizzling on only x, y, and z
+
+
         // TODO maybe we should allow destructuring Products if they are just one term with coefficients
         //  impl AntiConstraintViolation for AntiMotor
         let mut ae = vd.write();
         match &mut *ae {
-            AnyExpression::Vec2(Vec2Expr::Gather1(x)) => {
+            AnyExpression::Vec2(Vec2Expr::Gather1(xy)) => {
                 rvd.force_inline.store(true, Release);
-                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
-                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let x_decl = make_a_var(AnyExpression::Float(xy.take_as_owned()), "x");
+                *xy = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
                 vec![x_decl]
             }
             AnyExpression::Vec2(Vec2Expr::Gather2(x, y)) => {
@@ -2903,10 +2910,27 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
                 vec![x_decl, y_decl]
             }
-            AnyExpression::Vec3(Vec3Expr::Gather1(x)) => {
+            AnyExpression::Vec2(Vec2Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
+                (Vec2Expr::Gather1(xy), exponent) if last_factor[0] == last_factor[1] => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(xy.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *xy = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    vec![x_decl]
+                }
+                (Vec2Expr::Gather2(x, y), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(x.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    let y_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(y.take_as_owned(), *exponent)], last_factor[1])), "y");
+                    *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                    vec![x_decl, y_decl]
+                }
+                _ => vec![],
+            }
+            AnyExpression::Vec3(Vec3Expr::Gather1(xyz)) => {
                 rvd.force_inline.store(true, Release);
-                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
-                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let x_decl = make_a_var(AnyExpression::Float(xyz.take_as_owned()), "x");
+                *xyz = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
                 vec![x_decl]
             }
             AnyExpression::Vec3(Vec3Expr::Gather3(x, y, z)) => {
@@ -2927,10 +2951,37 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
                 vec![xy_decl, z_decl]
             }
-            AnyExpression::Vec4(Vec4Expr::Gather1(x)) => {
+            AnyExpression::Vec3(Vec3Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
+                (Vec3Expr::Gather1(xyz), exponent) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(xyz.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *xyz = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    vec![x_decl]
+                }
+                (Vec3Expr::Gather3(x, y, z), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(x.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    let y_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(y.take_as_owned(), *exponent)], last_factor[1])), "y");
+                    *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                    let z_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(z.take_as_owned(), *exponent)], last_factor[2])), "z");
+                    *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                    vec![x_decl, y_decl, z_decl]
+                }
+                (Vec3Expr::Extend2to3(xy, z), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let xy_decl = make_a_var(AnyExpression::Vec2(Vec2Expr::Product(vec![(xy.take_as_owned(), *exponent)], [last_factor[0], last_factor[1]])), "xy");
+                    *xy = Vec2Expr::Variable(RawVariableInvocation { decl: xy_decl.clone(), });
+                    let z_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(z.take_as_owned(), *exponent)], last_factor[2])), "z");
+                    *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                    vec![xy_decl, z_decl]
+                }
+                _ => vec![],
+            }
+            AnyExpression::Vec4(Vec4Expr::Gather1(xyzw)) => {
                 rvd.force_inline.store(true, Release);
-                let x_decl = make_a_var(AnyExpression::Float(x.take_as_owned()), "x");
-                *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                let x_decl = make_a_var(AnyExpression::Float(xyzw.take_as_owned()), "x");
+                *xyzw = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
                 vec![x_decl]
             }
             AnyExpression::Vec4(Vec4Expr::Gather4(x, y, z, w)) => {
@@ -2962,6 +3013,45 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 let w_decl = make_a_var(AnyExpression::Float(w.take_as_owned()), "w");
                 *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
                 vec![xyz_decl, w_decl]
+            }
+            AnyExpression::Vec4(Vec4Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
+                (Vec4Expr::Gather1(xyzw), exponent) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] && last_factor[0] == last_factor[3] => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(xyzw.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *xyzw = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    vec![x_decl]
+                }
+                (Vec4Expr::Gather4(x, y, z, w), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let x_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(x.take_as_owned(), *exponent)], last_factor[0])), "x");
+                    *x = FloatExpr::Variable(RawVariableInvocation { decl: x_decl.clone(), });
+                    let y_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(y.take_as_owned(), *exponent)], last_factor[1])), "y");
+                    *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
+                    let z_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(z.take_as_owned(), *exponent)], last_factor[2])), "z");
+                    *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                    let w_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(w.take_as_owned(), *exponent)], last_factor[3])), "w");
+                    *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                    vec![x_decl, y_decl, z_decl, w_decl]
+                }
+                (Vec4Expr::Extend2to4(xy, z, w), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let xy_decl = make_a_var(AnyExpression::Vec2(Vec2Expr::Product(vec![(xy.take_as_owned(), *exponent)], [last_factor[0], last_factor[1]])), "xy");
+                    *xy = Vec2Expr::Variable(RawVariableInvocation { decl: xy_decl.clone(), });
+                    let z_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(z.take_as_owned(), *exponent)], last_factor[2])), "z");
+                    *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
+                    let w_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(w.take_as_owned(), *exponent)], last_factor[3])), "w");
+                    *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                    vec![xy_decl, z_decl, w_decl]
+                }
+                (Vec4Expr::Extend3to4(xyz, w), exponent) => {
+                    rvd.force_inline.store(true, Release);
+                    let xyz_decl = make_a_var(AnyExpression::Vec3(Vec3Expr::Product(vec![(xyz.take_as_owned(), *exponent)], [last_factor[0], last_factor[1], last_factor[1]])), "xyz");
+                    *xyz = Vec3Expr::Variable(RawVariableInvocation { decl: xyz_decl.clone(), });
+                    let w_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(w.take_as_owned(), *exponent)], last_factor[3])), "w");
+                    *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
+                    vec![xyz_decl, w_decl]
+                }
+                _ => vec![],
             }
             AnyExpression::Class(MultiVectorExpr { expr: box MultiVectorVia::Construct(parts), .. }) => {
                 if !parts.is_empty() {
