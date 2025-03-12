@@ -897,49 +897,142 @@ impl Vec2Expr {
                         return;
                     }
                 }
-                let mut flatten = vec![];
-                product.retain_mut(|(factor, exponent)| match factor {
-                    Vec2Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        false
-                    }
-                    Vec2Expr::Gather2(FloatExpr::Literal(f0), FloatExpr::Literal(f1)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        false
-                    }
-                    Vec2Expr::Product(ref mut p, another_factor) => {
-                        for (_, e) in p.iter_mut() {
-                            *e = *e * *exponent;
+
+                let mut gather1 = vec![];
+                let mut gather2_x = vec![];
+                let mut gather2_y = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < product.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    product.retain_mut(|(factor, exponent)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(p);
-                        last_factor[0] *= another_factor[0];
-                        last_factor[1] *= another_factor[1];
-                        false
-                    }
-                    _ => true,
-                });
-                flatten.retain(|(factor, exponent)| match factor {
-                    Vec2Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        false
-                    }
-                    Vec2Expr::Gather2(FloatExpr::Literal(f0), FloatExpr::Literal(f1)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        false
-                    }
-                    _ => true,
-                });
+                        match factor {
+                            Vec2Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let powf = f32::powf(*f, *exponent);
+                                        last_factor[0] *= powf;
+                                        last_factor[1] *= powf;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec2Expr::Gather2(x, y) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_factor[0] *= f32::powf(*x, *exponent),
+                                    _ => gather2_x.push((x.take_as_owned(), *exponent)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_factor[1] *= f32::powf(*y, *exponent),
+                                    _ => gather2_y.push((y.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec2Expr::Product(ref mut p, another_factor) => {
+                                for (_, e) in p.iter_mut() {
+                                    *e = *e * *exponent;
+                                }
+                                flatten.append(p);
+                                last_factor[0] *= another_factor[0];
+                                last_factor[1] *= another_factor[1];
+                                false
+                            }
+                            _ => true,
+                        }
+                    });
+                    start_idx = product.len();
+                    product.append(&mut flatten);
+                }
+
                 if *last_factor == [0.0; 2] {
                     *self = Vec2Expr::Gather1(FloatExpr::Literal(0.0));
                     return
                 }
-                product.append(&mut flatten);
+
+                let x = last_factor[0];
+                let y = last_factor[1];
+                if x == 0.0 { gather2_x.clear(); }
+                if y == 0.0 { gather2_y.clear(); }
+
+                macro_rules! default_coefficient {
+                    ($i:expr) => {
+                        FloatExpr::Literal(if last_factor[$i] == 0.0 { 0.0 } else { 1.0 })
+                    };
+                }
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
+                        }
+                    };
+                }
+                macro_rules! mul_coefficient {
+                    ($float_expr:expr, $k:expr) => {
+                        match &mut $float_expr {
+                            FloatExpr::Product(v, c) => {
+                                c.mul_assign($k);
+                            }
+                            otherwise => {
+                                let f = $float_expr.take_as_owned();
+                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                $float_expr.simplify_nuanced(true);
+                            }
+                        }
+                    }
+                }
+
+                if eqs!(x, y) && !gather1.is_empty() {
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::product(gather1, x);
+                    f.simplify();
+                    product.push((Vec2Expr::Gather1(f), 1.0));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                }
+
+                let is_any_gather2 = !gather2_x.is_empty() || !gather2_y.is_empty();
+                let mut is_only_gather2 = is_any_gather2 && product.is_empty() && gather1.is_empty();
+
+                let mut x_is_zeroed_without_last_factor = false;
+                let mut y_is_zeroed_without_last_factor = false;
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::product(gather1, 1.0);
+                    f.simplify();
+                    product.push((Vec2Expr::Gather1(f), 1.0));
+                }
+                if is_any_gather2 {
+                    let mut x = if gather2_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather2_x, 1.0) };
+                    let mut y = if gather2_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather2_y, 1.0) };
+                    x.simplify();
+                    y.simplify();
+                    if let FloatExpr::Literal(0.0) = &x {
+                        x_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &y {
+                        y_is_zeroed_without_last_factor = true;
+                    }
+                    product.push((Vec2Expr::Gather2(x, y), 1.0));
+                    if is_only_gather2 {
+                        // Should we move the last_factor (coefficients) inside the Gather?
+                        // Well... maybe. Maybe sometimes. Maybe not other times.
+                        // Maybe we will deal with it on a case by case basis depending on
+                        // how the code generation looks
+                    }
+                }
+                if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&
+                    (last_factor[1] == 1.0 || y_is_zeroed_without_last_factor) {
+                    *last_factor = [1.0; 2];
+                }
+
                 product.sort_with_f32();
 
                 let mut partition = 1;
@@ -958,8 +1051,7 @@ impl Vec2Expr {
                     partition += 1;
                 }
                 product.retain(|(_, e)| *e != 0.0);
-                // TODO impl Carrier for AntiDualNum
-                //  DualNum::from_groups(Simd32x2::from([self[scalar], 1.0]) * Simd32x2::from([1.0, 0.0]))
+
                 if product.len() == 1 && *last_factor == [1.0; 2] {
                     if product[0].1 == 1.0 {
                         let (factor, _exponent) = product.remove(0);
@@ -967,10 +1059,15 @@ impl Vec2Expr {
                         return;
                     }
                 }
+
                 if product.is_empty() {
                     let f0 = FloatExpr::Literal(last_factor[0]);
                     let f1 = FloatExpr::Literal(last_factor[1]);
-                    *self = if f0 == f1 { Vec2Expr::Gather1(f0) } else { Vec2Expr::Gather2(f0, f1) };
+                    *self = if eqs!(f0, f1) {
+                        Vec2Expr::Gather1(f0)
+                    } else {
+                        Vec2Expr::Gather2(f0, f1)
+                    };
                 }
             }
             Vec2Expr::Sum(ref mut sum, last_addend) => {
@@ -1543,54 +1640,218 @@ impl Vec3Expr {
                         return;
                     }
                 }
-                let mut flatten = vec![];
-                product.retain_mut(|(factor, exponent)| match factor {
-                    Vec3Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        last_factor[2] *= powf;
-                        false
-                    }
-                    Vec3Expr::Gather3(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        last_factor[2] *= f32::powf(*f2, *exponent);
-                        false
-                    }
-                    Vec3Expr::Product(ref mut p, another_factor) => {
-                        for (_, e) in p.iter_mut() {
-                            *e = *e * *exponent;
+
+                let mut gather1 = vec![];
+                let mut extend2to3_xy = vec![];
+                let mut gather3_x = vec![];
+                let mut gather3_y = vec![];
+                let mut gather3_z = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < product.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    product.retain_mut(|(factor, exponent)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(p);
-                        last_factor[0] *= another_factor[0];
-                        last_factor[1] *= another_factor[1];
-                        last_factor[2] *= another_factor[2];
-                        false
-                    }
-                    _ => true,
-                });
-                flatten.retain(|(factor, exponent)| match factor {
-                    Vec3Expr::Gather1(FloatExpr::Literal(f)) => {
-                        let powf = f32::powf(*f, *exponent);
-                        last_factor[0] *= powf;
-                        last_factor[1] *= powf;
-                        last_factor[2] *= powf;
-                        false
-                    }
-                    Vec3Expr::Gather3(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2)) => {
-                        last_factor[0] *= f32::powf(*f0, *exponent);
-                        last_factor[1] *= f32::powf(*f1, *exponent);
-                        last_factor[2] *= f32::powf(*f2, *exponent);
-                        false
-                    }
-                    _ => true,
-                });
+                        match factor {
+                            Vec3Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let powf = f32::powf(*f, *exponent);
+                                        last_factor[0] *= powf;
+                                        last_factor[1] *= powf;
+                                        last_factor[2] *= powf;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Gather3(x, y, z) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_factor[0] *= f32::powf(*x, *exponent),
+                                    _ => gather3_x.push((x.take_as_owned(), *exponent)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_factor[1] *= f32::powf(*y, *exponent),
+                                    _ => gather3_y.push((y.take_as_owned(), *exponent)),
+                                }
+                                match z {
+                                    FloatExpr::Literal(z) => last_factor[2] *= f32::powf(*z, *exponent),
+                                    _ => gather3_z.push((z.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Extend2to3(xy, z) => {
+                                // Do not need to further match on xy because
+                                // xy + z would simplify to Gather3 when we care about it.
+                                extend2to3_xy.push((xy.take_as_owned(), *exponent));
+                                match z {
+                                    FloatExpr::Literal(z) => last_factor[2] *= f32::powf(*z, *exponent),
+                                    _ => gather3_z.push((z.take_as_owned(), *exponent)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Product(ref mut p, another_factor) => {
+                                for (_, e) in p.iter_mut() {
+                                    *e = *e * *exponent;
+                                }
+                                flatten.append(p);
+                                last_factor[0] *= another_factor[0];
+                                last_factor[1] *= another_factor[1];
+                                last_factor[2] *= another_factor[2];
+                                false
+                            }
+                            _ => true,
+                        }
+                    });
+                    start_idx = product.len();
+                    product.append(&mut flatten);
+                }
+
                 if *last_factor == [0.0; 3] {
                     *self = Vec3Expr::Gather1(FloatExpr::Literal(0.0));
                     return
                 }
-                product.append(&mut flatten);
+
+                let x = last_factor[0];
+                let y = last_factor[1];
+                let z = last_factor[2];
+                if x == 0.0 { gather3_x.clear(); }
+                if y == 0.0 { gather3_y.clear(); }
+                if z == 0.0 { gather3_z.clear(); }
+                if x == 0.0 && y == 0.0 { extend2to3_xy.clear(); }
+
+                macro_rules! default_coefficient {
+                    ($i:expr) => {
+                        FloatExpr::Literal(if last_factor[$i] == 0.0 { 0.0 } else { 1.0 })
+                    };
+                }
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
+                        }
+                    };
+                }
+                macro_rules! mul_coefficient {
+                    ($float_expr:expr, $k:expr) => {
+                        match &mut $float_expr {
+                            FloatExpr::Product(v, c) => {
+                                c.mul_assign($k);
+                            }
+                            otherwise => {
+                                let f = $float_expr.take_as_owned();
+                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                $float_expr.simplify_nuanced(true);
+                            }
+                        }
+                    }
+                }
+
+                if eqs!(x, y, z) && !gather1.is_empty() {
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::product(gather1, x);
+                    f.simplify();
+                    product.push((Vec3Expr::Gather1(f), 1.0));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                    last_factor[2] = 1.0;
+                } else if eqs!(x, y) && !extend2to3_xy.is_empty() {
+                    extend2to3_xy.push((Vec2Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_factor[0] = 1.0;
+                    last_factor[1] = 1.0;
+                }
+
+                let mut leftover_z = default_coefficient!(2);
+
+                match (gather3_x.is_empty(), gather3_y.is_empty(), gather3_z.is_empty()) {
+                    (false, false, true) => {
+                        let x = swap_take!(gather3_x, vec![]);
+                        let y = swap_take!(gather3_y, vec![]);
+                        let gather2 = Vec2Expr::Gather2(FloatExpr::product(x, 1.0), FloatExpr::product(y, 1.0));
+                        extend2to3_xy.push((gather2, 1.0));
+                    }
+                    (true, true, false) if !extend2to3_xy.is_empty() => {
+                        let z = swap_take!(gather3_z, vec![]);
+                        leftover_z = FloatExpr::product(z, 1.0);
+                    }
+                    _ => {}
+                }
+
+                let is_any_gather3 = !gather3_x.is_empty() || !gather3_y.is_empty() || !gather3_z.is_empty();
+                let mut is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && gather1.is_empty() && !is_any_gather3;
+                let mut is_only_gather3 = is_any_gather3 && product.is_empty() && gather1.is_empty() && extend2to3_xy.is_empty();
+
+                let mut x_is_zeroed_without_last_factor = false;
+                let mut y_is_zeroed_without_last_factor = false;
+                let mut z_is_zeroed_without_last_factor = false;
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::product(gather1, 1.0);
+                    f.simplify();
+                    if z == 0.0 {
+                        extend2to3_xy.push((Vec2Expr::Gather1(f), 1.0));
+                        is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && !is_any_gather3;
+                        is_only_gather3 = is_any_gather3 && product.is_empty() && extend2to3_xy.is_empty();
+                    } else {
+                        product.push((Vec3Expr::Gather1(f), 1.0));
+                    }
+                }
+                if !extend2to3_xy.is_empty() {
+                    let mut xy_coefficient = [1.0; 2];
+                    let mut vec2_products = Vec2Expr::product(extend2to3_xy, xy_coefficient);
+                    vec2_products.simplify();
+                    if is_only_2to3 {
+                        xy_coefficient = [last_factor[0], last_factor[1]];
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                        mul_coefficient!(leftover_z, last_factor[2]);
+                        last_factor[2] = 1.0;
+                    }
+                    if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
+                        x_is_zeroed_without_last_factor = true;
+                        y_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &leftover_z {
+                        z_is_zeroed_without_last_factor = true;
+                    }
+                    product.push((Vec3Expr::Extend2to3(vec2_products, leftover_z), 1.0));
+                }
+                if is_any_gather3 {
+                    let mut x = if gather3_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather3_x, 1.0) };
+                    let mut y = if gather3_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather3_y, 1.0) };
+                    let mut z = if gather3_z.is_empty() { default_coefficient!(2) } else { FloatExpr::Product(gather3_z, 1.0) };
+                    x.simplify();
+                    y.simplify();
+                    z.simplify();
+                    if let FloatExpr::Literal(0.0) = &x {
+                        x_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &y {
+                        y_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &z {
+                        z_is_zeroed_without_last_factor = true;
+                    }
+                    product.push((Vec3Expr::Gather3(x, y, z), 1.0));
+                    if is_only_gather3 {
+                        // Should we move the last_factor (coefficients) inside the Gather?
+                        // Well... maybe. Maybe sometimes. Maybe not other times.
+                        // Maybe we will deal with it on a case by case basis depending on
+                        // how the code generation looks
+                    }
+                }
+                if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&
+                    (last_factor[1] == 1.0 || y_is_zeroed_without_last_factor) &&
+                    (last_factor[2] == 1.0 || z_is_zeroed_without_last_factor) {
+                    *last_factor = [1.0; 3];
+                }
+
                 product.sort_with_f32();
 
                 let mut partition = 1;
@@ -1617,47 +1878,16 @@ impl Vec3Expr {
                         return;
                     }
                 }
-                if product.len() == 1 && *last_factor == [0.0, 0.0, 1.0] {
-                    let (factor, exp) = &mut product[0];
-                    if *exp == 1.0 {
-                        if let Vec3Expr::Extend2to3(_xy, z) = factor {
-                            *self = Vec3Expr::Extend2to3(Vec2Expr::Gather1(FloatExpr::Literal(0.0)), z.take_as_owned());
-                            return
-                        }
-                    }
-                }
 
-                if !product.is_empty() && last_factor[2] == 0.0 {
-                    let mut new_factors = vec![];
-                    for (existing_factor, existing_exponent) in product {
-                        new_factors.push((Vec2Expr::Truncate3to2(Box::new(existing_factor.take_as_owned())), *existing_exponent));
-                    }
-                    *self = Vec3Expr::Extend2to3(Vec2Expr::product(new_factors, [last_factor[0], last_factor[1]]), FloatExpr::Literal(0.0));
-                    self.simplify_nuanced(false, transpose_simd);
-                    return
-                }
-
-                // Vec extensions get pulled to the outside of arithmetic
-                if product.len() == 2 {
-                    let (a, b) = product.split_at_mut(1);
-                    match (&mut a[0], &mut b[0]) {
-                        ((Vec3Expr::Extend2to3(va, za), a), (Vec3Expr::Extend2to3(vb, zb), b)) => {
-                            *self = Vec3Expr::Extend2to3(
-                                Vec2Expr::product(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_factor[0], last_factor[1]]),
-                                FloatExpr::product(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_factor[2]),
-                            );
-                            // Significant restructure, so re-simplify
-                            self.simplify_nuanced(false, transpose_simd);
-                            return
-                        }
-                        _ => {}
-                    }
-                }
                 if product.is_empty() {
                     let f0 = FloatExpr::Literal(last_factor[0]);
                     let f1 = FloatExpr::Literal(last_factor[1]);
                     let f2 = FloatExpr::Literal(last_factor[2]);
-                    *self = if f0 == f1 && f1 == f2 { Vec3Expr::Gather1(f0) } else { Vec3Expr::Gather3(f0, f1, f2) };
+                    *self = if eqs!(f0, f1, f2) {
+                        Vec3Expr::Gather1(f0)
+                    } else {
+                        Vec3Expr::Gather3(f0, f1, f2)
+                    };
                 }
             }
             Vec3Expr::Sum(ref mut sum, last_addend) => {
@@ -2523,14 +2753,6 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Product(product, last_factor) => {
-
-                // TODO impl AntiInverse for FlatPoint
-                //  Simd32x4::from(1.0 / (self[e45] * self[e45])) * Simd32x4::from([self[e15] * -1.0, self[e25] * -1.0, self[e35] * -1.0, self[e45] * -1.0]),
-                //  We can/should convert that into the following
-                //  self.group0() * Simd32x4::from(-1.0 / (self[e45] * self[e45]))
-                //  or
-                //  self.group0() * Simd32x4::from(-1.0) / Simd32x4::from(self[e45] * self[e45])
-
                 if product.is_empty() {
                     panic!("Please use Vec4Expr::product so you can find out where you constructed something wrong");
                 }
@@ -2546,8 +2768,6 @@ impl Vec4Expr {
                         return;
                     }
                 }
-
-                // println!("SIMPLIFY VEC4 PRODUCT BEFORE:   {product:?}     {last_factor:?}");
 
                 let mut gather1 = vec![];
                 let mut extend3to4_xyz = vec![];
@@ -2624,7 +2844,6 @@ impl Vec4Expr {
                                 false
                             }
                             Vec4Expr::Product(ref mut p, another_factor) => {
-                                // TODO I think there's a bug here, see before and after of impl AntiInverse for Point
                                 for (_, e) in p.iter_mut() {
                                     *e = *e * *exponent;
                                 }
@@ -2657,8 +2876,6 @@ impl Vec4Expr {
                 if w == 0.0 { gather4_w.clear(); }
                 if x == 0.0 && y == 0.0 { extend2to4_xy.clear(); }
                 if x == 0.0 && y == 0.0 && z == 0.0 { extend3to4_xyz.clear(); }
-
-                // println!("SIMPLIFY VEC4 PRODUCT gather1:        {gather1:?}");
 
                 macro_rules! default_coefficient {
                     ($i:expr) => {
@@ -2711,18 +2928,6 @@ impl Vec4Expr {
 
                 let mut leftover_z = default_coefficient!(2);
                 let mut leftover_w = default_coefficient!(3);
-
-                // println!("SIMPLIFY VEC4 PRODUCT product:        {product:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT gather1:        {gather1:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT extend3to4_xyz: {extend3to4_xyz:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT extend2to4_xy:  {extend2to4_xy:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT gather4_x:      {gather4_x:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT gather4_y:      {gather4_y:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT gather4_z:      {gather4_z:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT gather4_w:      {gather4_w:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT leftover_z:     {leftover_z:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT leftover_w:     {leftover_w:?}");
-                // println!("SIMPLIFY VEC4 PRODUCT last_factor:    {last_factor:?}");
 
                 match (gather4_x.is_empty(), gather4_y.is_empty(), gather4_z.is_empty(), gather4_w.is_empty()) {
                     (false, false, true, true) => {
@@ -2861,8 +3066,6 @@ impl Vec4Expr {
                     (last_factor[3] == 1.0 || w_is_zeroed_without_last_factor) {
                     *last_factor = [1.0; 4];
                 }
-
-                // println!("SIMPLIFY VEC4 PRODUCT AFTER:   {product:?}     {last_factor:?}");
 
                 product.sort_with_f32();
 
@@ -3196,7 +3399,7 @@ impl MultiVectorExpr {
                     let group_width = b.width();
                     let mv_b = match b {
                         MultiVectorGroupExpr::JustFloat(FloatExpr::AccessMultiVecFlat(mv, flat_idx))
-                        if (*flat_idx - flat_idx_offset) == 0 && mv.mv_class == self.mv_class => Some(mv),
+                        if *flat_idx == flat_idx_offset && mv.mv_class == self.mv_class => Some(mv),
                         MultiVectorGroupExpr::JustFloat(FloatExpr::AccessMultiVecGroup(mv, idx))
                         if *idx == b_idx && mv.mv_class == self.mv_class => Some(mv),
                         MultiVectorGroupExpr::Vec2(Vec2Expr::AccessMultiVecGroup(mv, idx))

@@ -1,12 +1,25 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused)]
 
-use crate::ast::datatype::ExpressionType;
+use crate::ast::datatype::{ExpressionType, Float, MultiVector};
+use crate::ast::expressions::Vec4Expr;
+use crate::ast::Variable;
 use crate::elements::e1234;
 
 crate::multi_vecs! { e1234;
     // Versors
     Motor      as e41, e42, e43, e1234 | e23, e31, e12, scalar;
+}
+
+#[test]
+fn simplification_debugger() {
+    let slf = Variable::<MultiVector>::quick_var("self", MultiVector::from(&Motor));
+    let other_g0 = Variable::<Float>::quick_var("other_g0", Float);
+    let anti_reverse_g0 = Vec4Expr::Product(vec![(Vec4Expr::AccessMultiVecGroup(slf.into(), 0), 1.0)], [-1.0, -1.0, -1.0, 1.0]);
+    let mut term = Vec4Expr::Product(vec![(anti_reverse_g0, 1.0), (Vec4Expr::Gather1(other_g0.into()), 1.0)], [1.0; 4]);
+    println!("{:?}", term);
+    term.simplify();
+    println!("{:?}", term);
 }
 
 #[test]
