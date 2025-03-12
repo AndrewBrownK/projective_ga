@@ -2750,9 +2750,20 @@ impl Vec4Expr {
                 let is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
                 let is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
 
+                let mut x_is_zeroed_without_last_factor = false;
+                let mut y_is_zeroed_without_last_factor = false;
+                let mut z_is_zeroed_without_last_factor = false;
+                let mut w_is_zeroed_without_last_factor = false;
+
                 if !gather1.is_empty() {
                     let mut f = FloatExpr::product(gather1, 1.0);
-                    f.simplify_nuanced(true);
+                    f.simplify();
+                    if let FloatExpr::Literal(0.0) = &f {
+                        x_is_zeroed_without_last_factor = true;
+                        y_is_zeroed_without_last_factor = true;
+                        z_is_zeroed_without_last_factor = true;
+                        w_is_zeroed_without_last_factor = true;
+                    }
                     product.push((Vec4Expr::Gather1(f), 1.0));
                 }
                 if !extend2to4_xy.is_empty() {
@@ -2769,6 +2780,16 @@ impl Vec4Expr {
                         last_factor[2] = 1.0;
                         last_factor[3] = 1.0;
                     }
+                    if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
+                        x_is_zeroed_without_last_factor = true;
+                        y_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &leftover_z {
+                        z_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &leftover_w {
+                        w_is_zeroed_without_last_factor = true;
+                    }
                     product.push((Vec4Expr::Extend2to4(vec2_products, leftover_z, leftover_w), 1.0));
                 }
                 if !extend3to4_xyz.is_empty() {
@@ -2783,6 +2804,14 @@ impl Vec4Expr {
                     }
                     let mut vec3_products = Vec3Expr::product(extend3to4_xyz, xyz_coefficient);
                     vec3_products.simplify();
+                    if let Vec3Expr::Gather1(FloatExpr::Literal(0.0)) = &vec3_products {
+                        x_is_zeroed_without_last_factor = true;
+                        y_is_zeroed_without_last_factor = true;
+                        z_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &leftover_w {
+                        w_is_zeroed_without_last_factor = true;
+                    }
                     product.push((Vec4Expr::Extend3to4(vec3_products, leftover_w), 1.0));
                 }
                 if is_any_gather4 {
@@ -2794,6 +2823,18 @@ impl Vec4Expr {
                     y.simplify();
                     z.simplify();
                     w.simplify();
+                    if let FloatExpr::Literal(0.0) = &x {
+                        x_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &y {
+                        y_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &z {
+                        z_is_zeroed_without_last_factor = true;
+                    }
+                    if let FloatExpr::Literal(0.0) = &w {
+                        w_is_zeroed_without_last_factor = true;
+                    }
                     product.push((Vec4Expr::Gather4(x, y, z, w), 1.0));
                     if is_only_gather4 {
                         // Should we move the last_factor (coefficients) inside the Gather?
@@ -2801,6 +2842,12 @@ impl Vec4Expr {
                         // Maybe we will deal with it on a case by case basis depending on
                         // how the code generation looks
                     }
+                }
+                if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&
+                    (last_factor[1] == 1.0 || y_is_zeroed_without_last_factor) &&
+                    (last_factor[2] == 1.0 || z_is_zeroed_without_last_factor) &&
+                    (last_factor[3] == 1.0 || w_is_zeroed_without_last_factor) {
+                    *last_factor = [1.0; 4];
                 }
 
                 // println!("SIMPLIFY VEC4 PRODUCT AFTER:   {product:?}     {last_factor:?}");
@@ -2829,26 +2876,6 @@ impl Vec4Expr {
                         let (factor, _exponent) = product.remove(0);
                         *self = factor;
                         return;
-                    }
-                }
-                // TODO see if I can remove this branch
-                if product.len() == 1 && *last_factor == [0.0, 0.0, 1.0, 1.0] {
-                    let (factor, exp) = &mut product[0];
-                    if *exp == 1.0 {
-                        if let Vec4Expr::Extend2to4(_xy, z, w) = factor {
-                            *self = Vec4Expr::Extend2to4(Vec2Expr::Gather1(FloatExpr::Literal(0.0)), z.take_as_owned(), w.take_as_owned());
-                            return
-                        }
-                    }
-                }
-                // TODO see if I can remove this branch
-                if product.len() == 1 && *last_factor == [0.0, 0.0, 0.0, 1.0] {
-                    let (factor, exp) = &mut product[0];
-                    if *exp == 1.0 {
-                        if let Vec4Expr::Extend3to4(_xyz, w) = factor {
-                            *self = Vec4Expr::Extend3to4(Vec3Expr::Gather1(FloatExpr::Literal(0.0)), w.take_as_owned());
-                            return
-                        }
                     }
                 }
 
