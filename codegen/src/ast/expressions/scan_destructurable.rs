@@ -41,29 +41,47 @@ impl DestructurableVariables {
         let result = match &*ae {
             AnyExpression::Vec2(Vec2Expr::Gather1(_)) => true,
             AnyExpression::Vec2(Vec2Expr::Gather2(_, _)) => true,
+            AnyExpression::Vec2(Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => true,
+            // AnyExpression::Vec2(Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..))) => true,
+            // AnyExpression::Vec2(Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(_), ..))) => true,
+            // AnyExpression::Vec2(Vec2Expr::Truncate4to2(box Vec4Expr::Variable(..))) => true,
+            // AnyExpression::Vec2(Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(_), ..))) => true,
             AnyExpression::Vec2(Vec2Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
                 Vec2Expr::Gather1(_) if last_factor[0] == last_factor[1] => true,
                 Vec2Expr::Gather2(_, _) => true,
+                Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _) => true,
+                // Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..)) => true,
+                // Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(_), ..)) => true,
+                // Vec2Expr::Truncate4to2(box Vec4Expr::Variable(..)) => true,
+                // Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(_), ..)) => true,
                 _ => false
             }
             AnyExpression::Vec3(Vec3Expr::Gather1(_)) => true,
             AnyExpression::Vec3(Vec3Expr::Gather3(_, _, _)) => true,
             AnyExpression::Vec3(Vec3Expr::Extend2to3(_, _)) => true,
+            AnyExpression::Vec3(Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => true,
+            // AnyExpression::Vec3(Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..))) => true,
+            // AnyExpression::Vec3(Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..))) => true,
             AnyExpression::Vec3(Vec3Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
                 Vec3Expr::Gather1(_) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] => true,
                 Vec3Expr::Gather3(_, _, _) => true,
                 Vec3Expr::Extend2to3(_, _) => true,
+                Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _) => true,
+                // Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..)) => true,
+                // Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..)) => true,
                 _ => false
             }
             AnyExpression::Vec4(Vec4Expr::Gather1(_)) => true,
             AnyExpression::Vec4(Vec4Expr::Gather4(_, _, _, _)) => true,
             AnyExpression::Vec4(Vec4Expr::Extend2to4(_, _, _)) => true,
             AnyExpression::Vec4(Vec4Expr::Extend3to4(_, _)) => true,
+            AnyExpression::Vec4(Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => true,
             AnyExpression::Vec4(Vec4Expr::Product(v, last_factor)) if v.len() == 1 => match &v[0].0 {
                 Vec4Expr::Gather1(_) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] && last_factor[0] == last_factor[3] => true,
                 Vec4Expr::Gather4(_, _, _, _) => true,
                 Vec4Expr::Extend2to4(_, _, _) => true,
                 Vec4Expr::Extend3to4(_, _) => true,
+                Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _) => true,
                 _ => false
             }
             AnyExpression::Class(MultiVectorExpr { expr: box MultiVectorVia::Construct(_), .. }) => true,
@@ -218,20 +236,12 @@ impl Vec2Expr {
             Vec2Expr::SwizzleVec2(box v, _a, _b) => {
                 v.scan_for_destructurable_variables(tracker);
             }
-            Vec2Expr::Truncate3to2(v) => {
-                if let box Vec3Expr::Variable(v) = &v {
-                    tracker.note_partial_variable_use(&v);
-                } else {
-                    v.scan_for_destructurable_variables(tracker);
-                }
-            }
-            Vec2Expr::Truncate4to2(v) => {
-                if let box Vec4Expr::Variable(v) = &v {
-                    tracker.note_partial_variable_use(&v);
-                } else {
-                    v.scan_for_destructurable_variables(tracker);
-                }
-            }
+            // Vec2Expr::Truncate3to2(box Vec3Expr::Variable(v)) => tracker.note_partial_variable_use(v),
+            // Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(v), _, _, _)) => tracker.note_partial_variable_use(v),
+            Vec2Expr::Truncate3to2(box v) => v.scan_for_destructurable_variables(tracker),
+            // Vec2Expr::Truncate4to2(box Vec4Expr::Variable(v)) => tracker.note_partial_variable_use(v),
+            // Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(v), _, _, _, _)) => tracker.note_partial_variable_use(v),
+            Vec2Expr::Truncate4to2(box v) => v.scan_for_destructurable_variables(tracker),
         }
     }
 }
@@ -276,13 +286,9 @@ impl Vec3Expr {
             Vec3Expr::SwizzleVec3(box v, _a, _b, _c) => {
                 v.scan_for_destructurable_variables(tracker);
             }
-            Vec3Expr::Truncate4to3(v) => {
-                if let box Vec4Expr::Variable(v) = &v {
-                    tracker.note_partial_variable_use(&v);
-                } else {
-                    v.scan_for_destructurable_variables(tracker);
-                }
-            }
+            // Vec3Expr::Truncate4to3(box Vec4Expr::Variable(v)) => tracker.note_partial_variable_use(v),
+            // Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(v), _, _, _, _)) => tracker.note_partial_variable_use(v),
+            Vec3Expr::Truncate4to3(box v) => v.scan_for_destructurable_variables(tracker),
             Vec3Expr::Extend2to3(v, d) => {
                 // It is tempting to note_whole_variable_use here, but actually,
                 // not doing so will work and inline more stuff.

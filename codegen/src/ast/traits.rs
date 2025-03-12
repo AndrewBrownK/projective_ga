@@ -9,7 +9,7 @@ use std::borrow::Cow;
 use std::collections::{BTreeSet, HashMap, HashSet};
 use std::ops::Deref;
 use std::sync::atomic::AtomicBool;
-use std::sync::atomic::Ordering::Release;
+use std::sync::atomic::Ordering::{Acquire, Release};
 use std::sync::{Arc, Weak};
 use tokio::task::JoinSet;
 
@@ -2754,7 +2754,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
 
                 let new_vars = Self::destructure_variable_if_applicable(self.variables.clone(), vd.clone());
 
-                if new_vars.is_empty() {
+                if new_vars.is_empty() && !vd.force_inline.load(Acquire) {
                     if let Some(e) = &vd.expr {
                         let expr = e.read();
                         expr.scan_for_destructurable_variables(&mut dv);
@@ -2910,6 +2910,46 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
                 vec![x_decl, y_decl]
             }
+            AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
+                rvd.force_inline.store(true, Release);
+                *v2 = Vec2Expr::Gather2(
+                    FloatExpr::access_vec_2(v2.clone(), 0),
+                    FloatExpr::access_vec_2(v2.take_as_owned(), 1),
+                );
+                vec![]
+            }
+            // AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v2 = Vec2Expr::Gather2(
+            //         FloatExpr::access_vec_2(v2.clone(), 0),
+            //         FloatExpr::access_vec_2(v2.take_as_owned(), 1),
+            //     );
+            //     vec![]
+            // }
+            // AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(..), ..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v2 = Vec2Expr::Gather2(
+            //         FloatExpr::access_vec_2(v2.clone(), 0),
+            //         FloatExpr::access_vec_2(v2.take_as_owned(), 1),
+            //     );
+            //     vec![]
+            // }
+            // AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::Truncate4to2(box Vec4Expr::Variable(..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v2 = Vec2Expr::Gather2(
+            //         FloatExpr::access_vec_2(v2.clone(), 0),
+            //         FloatExpr::access_vec_2(v2.take_as_owned(), 1),
+            //     );
+            //     vec![]
+            // }
+            // AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v2 = Vec2Expr::Gather2(
+            //         FloatExpr::access_vec_2(v2.clone(), 0),
+            //         FloatExpr::access_vec_2(v2.take_as_owned(), 1),
+            //     );
+            //     vec![]
+            // }
             AnyExpression::Vec2(Vec2Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
                 (Vec2Expr::Gather1(xy), exponent) if last_factor[0] == last_factor[1] => {
                     rvd.force_inline.store(true, Release);
@@ -2925,6 +2965,46 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     *y = FloatExpr::Variable(RawVariableInvocation { decl: y_decl.clone(), });
                     vec![x_decl, y_decl]
                 }
+                (v2, exponent) if matches!(v2, Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _))  => {
+                    rvd.force_inline.store(true, Release);
+                    *v2 = Vec2Expr::Gather2(
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
+                    );
+                    vec![]
+                }
+                // (v2, exponent) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v2 = Vec2Expr::Gather2(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
+                //     );
+                //     vec![]
+                // }
+                // (v2, exponent) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(..), ..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v2 = Vec2Expr::Gather2(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
+                //     );
+                //     vec![]
+                // }
+                // (v2, exponent) if matches!(v2, Vec2Expr::Truncate4to2(box Vec4Expr::Variable(..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v2 = Vec2Expr::Gather2(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
+                //     );
+                //     vec![]
+                // }
+                // (v2, exponent) if matches!(v2, Vec2Expr::Truncate4to2(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v2 = Vec2Expr::Gather2(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
+                //     );
+                //     vec![]
+                // }
                 _ => vec![],
             }
             AnyExpression::Vec3(Vec3Expr::Gather1(xyz)) => {
@@ -2951,6 +3031,33 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
                 vec![xy_decl, z_decl]
             }
+            AnyExpression::Vec3(v3) if matches!(v3, Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
+                rvd.force_inline.store(true, Release);
+                *v3 = Vec3Expr::Gather3(
+                    FloatExpr::access_vec_3(v3.clone(), 0),
+                    FloatExpr::access_vec_3(v3.clone(), 1),
+                    FloatExpr::access_vec_3(v3.take_as_owned(), 2),
+                );
+                vec![]
+            }
+            // AnyExpression::Vec3(v3) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v3 = Vec3Expr::Gather3(
+            //         FloatExpr::access_vec_3(v3.clone(), 0),
+            //         FloatExpr::access_vec_3(v3.clone(), 1),
+            //         FloatExpr::access_vec_3(v3.take_as_owned(), 2),
+            //     );
+            //     vec![]
+            // }
+            // AnyExpression::Vec3(v3) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..))) => {
+            //     rvd.force_inline.store(true, Release);
+            //     *v3 = Vec3Expr::Gather3(
+            //         FloatExpr::access_vec_3(v3.clone(), 0),
+            //         FloatExpr::access_vec_3(v3.clone(), 1),
+            //         FloatExpr::access_vec_3(v3.take_as_owned(), 2),
+            //     );
+            //     vec![]
+            // }
             AnyExpression::Vec3(Vec3Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
                 (Vec3Expr::Gather1(xyz), exponent) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] => {
                     rvd.force_inline.store(true, Release);
@@ -2976,6 +3083,33 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     *z = FloatExpr::Variable(RawVariableInvocation { decl: z_decl.clone(), });
                     vec![xy_decl, z_decl]
                 }
+                (v3, exponent) if matches!(v3, Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
+                    rvd.force_inline.store(true, Release);
+                    *v3 = Vec3Expr::Gather3(
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 0), *exponent)], last_factor[0]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 1), *exponent)], last_factor[1]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.take_as_owned(), 2), *exponent)], last_factor[2]),
+                    );
+                    vec![]
+                }
+                // (v3, exponent) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v3 = Vec3Expr::Gather3(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 1), *exponent)], last_factor[1]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.take_as_owned(), 2), *exponent)], last_factor[2]),
+                //     );
+                //     vec![]
+                // }
+                // (v3, exponent) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::SwizzleVec4(box Vec4Expr::Variable(..), ..))) => {
+                //     rvd.force_inline.store(true, Release);
+                //     *v3 = Vec3Expr::Gather3(
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 0), *exponent)], last_factor[0]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 1), *exponent)], last_factor[1]),
+                //         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.take_as_owned(), 2), *exponent)], last_factor[2]),
+                //     );
+                //     vec![]
+                // }
                 _ => vec![],
             }
             AnyExpression::Vec4(Vec4Expr::Gather1(xyzw)) => {
@@ -3014,6 +3148,16 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
                 vec![xyz_decl, w_decl]
             }
+            AnyExpression::Vec4(v4) if matches!(v4, Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
+                rvd.force_inline.store(true, Release);
+                *v4 = Vec4Expr::Gather4(
+                    FloatExpr::access_vec_4(v4.clone(), 0),
+                    FloatExpr::access_vec_4(v4.clone(), 1),
+                    FloatExpr::access_vec_4(v4.clone(), 2),
+                    FloatExpr::access_vec_4(v4.take_as_owned(), 3),
+                );
+                vec![]
+            }
             AnyExpression::Vec4(Vec4Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
                 (Vec4Expr::Gather1(xyzw), exponent) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] && last_factor[0] == last_factor[3] => {
                     rvd.force_inline.store(true, Release);
@@ -3050,6 +3194,16 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     let w_decl = make_a_var(AnyExpression::Float(FloatExpr::Product(vec![(w.take_as_owned(), *exponent)], last_factor[3])), "w");
                     *w = FloatExpr::Variable(RawVariableInvocation { decl: w_decl.clone(), });
                     vec![xyz_decl, w_decl]
+                }
+                (v4, exponent) if matches!(v4, Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
+                    rvd.force_inline.store(true, Release);
+                    *v4 = Vec4Expr::Gather4(
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 0), *exponent)], last_factor[0]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 1), *exponent)], last_factor[1]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 2), *exponent)], last_factor[2]),
+                        FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.take_as_owned(), 3), *exponent)], last_factor[3]),
+                    );
+                    vec![]
                 }
                 _ => vec![],
             }

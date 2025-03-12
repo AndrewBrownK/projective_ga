@@ -882,6 +882,17 @@ impl Vec2Expr {
                 //  After:     DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar]) * Simd32x2::from(other[scalar]) * self.group0())
                 //  Preferred: DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar] * other[scalar]) * self.group0())
 
+                // TODO impl AntiConstraintViolation for Flector {
+                //  push the last_factor inside the vec in this situation:
+                //  (Simd32x2::from([0.0, self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]]) * Simd32x2::from([0.0, -1.0]))
+
+                // TODO impl AntiConstraintViolation for Flector {
+                //  this thing is torture.
+                //  It's like... I'll either have to un-transpose, then do exponent (for product) or coefficient (for sum) cancellations, then re-transpose
+                //  Or I'll have to just do a shallow un-transpose here in the simplification
+                //  What a fricken nightmare
+                //  I think... maybe it can be an iterated shallow un-transpose... Fuck it. Maybe this should be done outside simplification.
+
                 if product.is_empty() {
                     panic!("Please use Vec2Expr::product so you can find out where you constructed something wrong");
                 }
