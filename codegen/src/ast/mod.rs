@@ -1,12 +1,12 @@
+use crate::ast::datatype::{Float, MultiVector};
+use crate::ast::expressions::{AnyExpression, Vec4Expr};
 use parking_lot::RwLock;
 use std::borrow::Cow;
 use std::cmp::Ordering;
+use std::fmt::{Debug, Formatter};
 use std::ops::Deref;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
-use crate::ast;
-use crate::ast::datatype::Float;
-use crate::ast::expressions::{AnyExpression, FloatExpr, Vec4Expr};
 
 pub mod datatype;
 pub mod expressions;
@@ -37,19 +37,6 @@ impl<ExprType> Variable<ExprType> {
 }
 
 
-#[test]
-fn simplification_debugger() {
-    let v = Variable::<Float>::quick_var("test", Float);
-    let mut term = Vec4Expr::Gather4(
-        FloatExpr::Literal(0.0),
-        FloatExpr::Literal(0.0),
-        FloatExpr::Literal(0.0),
-        FloatExpr::Product(vec![(v.into(), 1.0)], -1.0)
-    );
-    println!("{:?}", term);
-    term.simplify();
-    println!("{:?}", term);
-}
 
 
 impl<ExprType> PartialEq for Variable<ExprType> where ExprType: PartialEq {
@@ -128,10 +115,19 @@ impl Ord for RawVariableDeclaration {
 
 
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct RawVariableInvocation {
     pub(crate) decl: Arc<RawVariableDeclaration>,
 }
+impl Debug for RawVariableInvocation {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match &self.decl.name {
+            (n, 0) => write!(f, "{n}"),
+            (n, i) => write!(f, "{n}_{}", i + 1),
+        }
+    }
+}
+
 impl PartialEq for RawVariableInvocation {
     fn eq(&self, other: &Self) -> bool {
         self.decl == other.decl

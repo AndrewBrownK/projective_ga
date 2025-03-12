@@ -14,6 +14,19 @@
 // TODO rendering round objects in polygons (triangles)
 //  https://www.youtube.com/watch?v=VEnglRKNHjU
 
+// TODO how to handle stuff like Hamish Todd's interpretation where an object of a single grade can
+//  be multiple different objects? like in CGA a grade 2 object being a dipole or circle, depending on characteristics.
+//  The answer is (I think) wrapper types. In a situation like this, you might leave the
+//  multivector names to their defaults like Vector1 Vector2 Vector3 etc. Then the wrapper type
+//  could be Circle<V>, Dipole<V>, etc. And a Circle could accept a Vector2 or Vector3 inside it.
+//  Then control how it can be instantiated by using non-generic constructors. The return type
+//  of the constructors would be Options or Results, depending on if the underlying Vector
+//  meets the appropriate criteria. You could also take the raw Vector give it a method that
+//  returns Either<Circle, Dipole> depending on what the data matches. In fact it would probably
+//  have to be Either<Circle, NullObject, Dipole>. The annoying thing is making these wrapper types
+//  work seamlessly with traits methods/operations.
+
+
 
 // TODO calculus: https://en.wikipedia.org/wiki/Geometric_calculus
 pub mod algebra;

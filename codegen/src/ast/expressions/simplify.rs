@@ -2751,7 +2751,7 @@ impl Vec4Expr {
                 let is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
 
                 if !gather1.is_empty() {
-                    let mut f = FloatExpr::product(gather1, x);
+                    let mut f = FloatExpr::product(gather1, 1.0);
                     f.simplify_nuanced(true);
                     product.push((Vec4Expr::Gather1(f), 1.0));
                 }
