@@ -32,7 +32,7 @@ fn main() {
         0 => e4
     };
     let repo = base_documentation(register_multi_vecs(rga3d)).finished();
-    let traits = codegen::register_all! { repo;
+    let traits = codegen::register_all! { e1234 repo;
         Zero One AntiOne Unit
         Into TryInto
         Grade AntiGrade
@@ -63,7 +63,7 @@ fn main() {
         UnitizedNorm
         Unitize
     };
-    codegen::operators! { repo, traits;
+    codegen::operators! { e1234 repo, traits;
         fancy_infix => Div;
 
         binary

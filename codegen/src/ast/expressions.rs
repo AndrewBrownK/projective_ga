@@ -329,3 +329,4 @@ include!("expressions/scan_destructurable.rs");
 // The extremely tedious stuff
 include!("expressions/simplify.rs");
 include!("expressions/transposition.rs");
+include!("expressions/slice_to_floats.rs");

@@ -893,6 +893,13 @@ impl Vec2Expr {
                 //  What a fricken nightmare
                 //  I think... maybe it can be an iterated shallow un-transpose... Fuck it. Maybe this should be done outside simplification.
 
+                // TODO is this possible to fix?
+                //  impl AntiConstraintViolation for Line {
+                //  DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([
+                //     -2.0 * (self[e41] * self[e23]) - 2.0 * (self[e42] * self[e31]) - 2.0 * (self[e43] * self[e12]),
+                //     -2.0 * self[e41] * self[e41] - 2.0 * self[e42] * self[e42] - 2.0 * self[e43] * self[e43],
+                //  ]))
+
                 if product.is_empty() {
                     panic!("Please use Vec2Expr::product so you can find out where you constructed something wrong");
                 }

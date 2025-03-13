@@ -1523,7 +1523,11 @@ impl TraitImplRegistry {
     }
 
     // TODO allow 12f and 12i as well
-    pub fn set_binary_operator<TD: TraitDef_2_Types_2_Args, const AntiScalar: BasisElement>(&self, repo: Arc<MultiVecRepository<AntiScalar>>, op: BinaryOps, td: TD) {
+    pub fn set_binary_operator<TD: TraitDef_2_Types_2_Args, const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
+        &self, repo: Arc<MultiVecRepository<AntiScalar>>,
+        op: BinaryOps,
+        td: TD
+    ) {
         let mut set_ops = self.has_set_operators.lock();
         let op_key = op.rust_trait_name();
         let op = Ops::Binary(op);
@@ -1549,11 +1553,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits22.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
+                td.register::<AntiScalar, useProgressBars, debug>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
+                td.register::<AntiScalar, useProgressBars, debug>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits22.get(&key).await.expect("Created during registration");
@@ -1566,11 +1570,15 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
-            overall_pb.finish_and_clear();
+            if useProgressBars { overall_pb.finish_and_clear(); }
         });
     }
 
-    pub fn set_unary_operator<TD: TraitDef_1_Type_1_Arg, const AntiScalar: BasisElement>(&self, repo: Arc<MultiVecRepository<AntiScalar>>, op: UnaryOps, td: TD) {
+    pub fn set_unary_operator<TD: TraitDef_1_Type_1_Arg, const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
+        &self, repo: Arc<MultiVecRepository<AntiScalar>>,
+        op: UnaryOps,
+        td: TD
+    ) {
         let mut set_ops = self.has_set_operators.lock();
         let op_key = op.rust_trait_name();
         let op = Ops::Unary(op);
@@ -1596,11 +1604,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits11.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
+                td.register::<AntiScalar, useProgressBars, debug>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register(slf, repo, multi_progress, overall_pb.clone()).await;
+                td.register::<AntiScalar, useProgressBars, debug>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits11.get(&key).await.expect("Created during registration");
@@ -1613,7 +1621,7 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
-            overall_pb.finish_and_clear();
+            if useProgressBars { overall_pb.finish_and_clear(); }
         });
     }
 
@@ -1700,33 +1708,37 @@ pub fn progress_style() -> indicatif::ProgressStyle {
 
 #[async_trait]
 pub trait Register10: TraitDef_1_Type_0_Args {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tr: TraitImplRegistry,
         mvs: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_0_Args> Register10 for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits10.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
-        overall_progress.inc_length(qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
 
         let mut qty_done = 0;
         let update_period = 50;
@@ -1748,10 +1760,12 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
                     }
                 })
                 .await;
-            qty_done += 1;
-            pb.inc(1);
-            if qty_done % update_period == 0 {
-                overall_progress.inc(update_period);
+            if useProgressBars && let Some(pb) = &pb {
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 && let Some(op) = &overall_progress {
+                    op.inc(update_period);
+                }
             }
             let Some(the_impl) = the_impl else { continue };
             let owner_type = ExpressionType::Class(mv_a.clone());
@@ -1759,39 +1773,45 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        overall_progress.inc(qty % update_period);
-        pb.finish_and_clear();
+        if useProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+            op.inc(qty % update_period);
+            pb.finish_and_clear();
+        }
     }
 }
 #[async_trait]
 pub trait Register11: TraitDef_1_Type_1_Arg {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
         let def = tir.defs.traits11.get_or_create_or_panic(trait_key.clone(), async move { self.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
-        overall_progress.inc_length(qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
 
         let mut qty_done = 0;
         let update_period = 50;
@@ -1819,10 +1839,12 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
                     }
                 })
                 .await;
-            qty_done += 1;
-            pb.inc(1);
-            if qty_done % update_period == 0 {
-                overall_progress.inc(update_period);
+            if useProgressBars && let Some(pb) = &pb {
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 && let Some(op) = &overall_progress{
+                    op.inc(update_period);
+                }
             }
             let Some(the_impl) = the_impl else { continue };
             let owner_type = ExpressionType::Class(mv_a.clone());
@@ -1830,28 +1852,30 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        overall_progress.inc(qty % update_period);
-        pb.finish_and_clear();
+        if useProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+            op.inc(qty % update_period);
+            pb.finish_and_clear();
+        }
     }
 }
 #[async_trait]
 pub trait Register21: TraitDef_2_Types_1_Arg {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
@@ -1859,11 +1883,15 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
 
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
-        overall_progress.inc_length(big_qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(big_qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
 
         let update_period = 50;
         let mut js = JoinSet::new();
@@ -1902,10 +1930,12 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                             }
                         })
                         .await;
-                    pb_2.inc(1);
-                    qty_done += 1;
-                    if qty_done % update_period == 0 {
-                        overall_progress_2.inc(update_period);
+                    if useProgressBars && let Some(pb) = &pb_2 {
+                        pb.inc(1);
+                        qty_done += 1;
+                        if qty_done % update_period == 0 && let Some(op) = &overall_progress_2 {
+                            op.inc(update_period);
+                        }
                     }
                     let Some(the_impl) = the_impl else { continue };
                     let owner_type = ExpressionType::Class(mv_a.clone());
@@ -1913,33 +1943,37 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                     TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
                     TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
                 }
-                overall_progress_2.inc(qty % update_period);
+                if useProgressBars && let Some(op) = &overall_progress_2 {
+                    op.inc(qty % update_period);
+                }
             });
         }
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish_and_clear();
+        if useProgressBars && let Some(pb) = &pb {
+            pb.finish_and_clear();
+        }
     }
 }
 #[async_trait]
 pub trait Register22: TraitDef_2_Types_2_Args {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_2_Args> Register22 for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
@@ -1947,11 +1981,15 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
 
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
-        overall_progress.inc_length(big_qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(big_qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
 
         let update_period = 50;
         let mut js = JoinSet::new();
@@ -1996,10 +2034,12 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                             }
                         })
                         .await;
-                    pb_2.inc(1);
-                    qty_done += 1;
-                    if qty_done % update_period == 0 {
-                        overall_progress_2.inc(update_period);
+                    if useProgressBars && let Some(pb) = &pb_2 {
+                        pb.inc(1);
+                        qty_done += 1;
+                        if qty_done % update_period == 0 && let Some(op) = &overall_progress_2 {
+                            op.inc(update_period);
+                        }
                     }
                     let Some(the_impl) = the_impl else { continue };
                     let owner_type = ExpressionType::Class(mv_a.clone());
@@ -2007,33 +2047,37 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                     TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
                     TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
                 }
-                overall_progress_2.inc(qty % update_period);
+                if useProgressBars && let Some(op) = &overall_progress_2 {
+                    op.inc(qty % update_period);
+                }
             });
         }
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        pb.finish_and_clear();
+        if useProgressBars && let Some(pb) = &pb {
+            pb.finish_and_clear();
+        }
     }
 }
 #[async_trait]
 pub trait Register12f: TraitDef_1_Type_2_Args_f32 {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
@@ -2041,11 +2085,15 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
-        overall_progress.inc_length(qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
         let mut qty_done = 0;
         let update_period = 50;
 
@@ -2080,10 +2128,12 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
                     }
                 })
                 .await;
-            qty_done += 1;
-            pb.inc(1);
-            if qty_done % update_period == 0 {
-                overall_progress.inc(update_period);
+            if useProgressBars && let Some(pb) = &pb {
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 && let Some(op) = &overall_progress {
+                    op.inc(update_period);
+                }
             }
             let Some(the_impl) = the_impl else { continue };
             let owner_type = ExpressionType::Class(mv_a.clone());
@@ -2091,28 +2141,30 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        overall_progress.inc(qty % update_period);
-        pb.finish_and_clear();
+        if useProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+            op.inc(qty % update_period);
+            pb.finish_and_clear();
+        }
     }
 }
 #[async_trait]
 pub trait Register12i: TraitDef_1_Type_2_Args_i32 {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
-    async fn register<const AntiScalar: BasisElement>(
+    async fn register<const AntiScalar: BasisElement, const useProgressBars: bool, const debug: bool>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<indicatif::MultiProgress>,
-        overall_progress: Arc<indicatif::ProgressBar>,
+        overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
         let trait_key = self.trait_names().trait_key;
@@ -2120,11 +2172,15 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
-        overall_progress.inc_length(qty);
-        let pb = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
-        pb.set_style(progress_style());
-        let n = trait_key.as_upper_camel();
-        pb.set_message(format!("AST: {n}"));
+        let mut pb = None;
+        if useProgressBars && let Some(op) = &overall_progress {
+            op.inc_length(qty);
+            let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
+            prog_bar.set_style(progress_style());
+            let n = trait_key.as_upper_camel();
+            prog_bar.set_message(format!("AST: {n}"));
+            pb = Some(prog_bar);
+        }
 
         let mut qty_done = 0;
         let update_period = 50;
@@ -2159,10 +2215,12 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
                     }
                 })
                 .await;
-            qty_done += 1;
-            pb.inc(1);
-            if qty_done % update_period == 0 {
-                overall_progress.inc(update_period);
+            if useProgressBars && let Some(pb) = &pb {
+                qty_done += 1;
+                pb.inc(1);
+                if qty_done % update_period == 0 && let Some(op) = &overall_progress {
+                    op.inc(update_period);
+                }
             }
             let Some(the_impl) = the_impl else { continue };
             let owner_type = ExpressionType::Class(mv_a.clone());
@@ -2170,8 +2228,10 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        overall_progress.inc(qty % update_period);
-        pb.finish_and_clear();
+        if useProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+            op.inc(qty % update_period);
+            pb.finish_and_clear();
+        }
     }
 }
 
@@ -2193,7 +2253,14 @@ pub fn indicatif_and_leave() -> ProgressFinish {
 
 #[macro_export]
 macro_rules! register_all {
-    ($mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)*) => {
+    ( $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)* ) => {
+        $crate::register_all!(true false $anti_scalar $mv_repo; $($t )* $(| $($t2 )* )*)
+    };
+    ( debug $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)* ) => {
+        $crate::register_all!(false true $anti_scalar $mv_repo; $($t )* $(| $($t2 )* )*)
+    };
+
+    ( $useProgressBars:literal $debug:literal $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)*) => {
         {
             use $crate::build_scripts::common_traits::*;
             let tir = $crate::ast::traits::TraitImplRegistry::new();
@@ -2202,10 +2269,13 @@ macro_rules! register_all {
 
             let multi_progress = $crate::ast::traits::indicatif_multi_progress();
             let _: () = rt.block_on(async {
-                let overall_pb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
-                overall_pb.set_style($crate::ast::traits::progress_style());
-                overall_pb.set_message("AST: Trait Implementations");
-
+                let mut overall_pb = None;
+                if $useProgressBars {
+                    let opb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
+                    opb.set_style($crate::ast::traits::progress_style());
+                    opb.set_message("AST: Trait Implementations");
+                    overall_pb = Some(opb);
+                }
                 let mut js = $crate::ast::traits::tokio_joinset();
                 $(
                 let tir_c = tir.clone();
@@ -2213,7 +2283,7 @@ macro_rules! register_all {
                 let mp = multi_progress.clone();
                 let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t.register(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                    $t.register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
@@ -2226,12 +2296,14 @@ macro_rules! register_all {
                 let mp = multi_progress.clone();
                 let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t2.register(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                    $t2.register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
                 )*
-                overall_pb.finish();
+                if let Some(opb) = overall_pb {
+                    opb.finish();
+                }
             });
             tir
         }
@@ -2240,17 +2312,42 @@ macro_rules! register_all {
 
 #[macro_export]
 macro_rules! operators {
-    ($mv_repo:expr, $tir:ident $(; fancy_infix => $itr:ident)? $(; binary $($bop:ident => $btr:ident),+)? $(; unary $($uop:ident => $utr:ident),+ )? $(;)? ) => {
+    (
+        $anti_scalar:ident $mv_repo:expr, $tir:ident
+        $(; fancy_infix => $itr:ident)?
+        $(; binary $($bop:ident => $btr:ident),+)?
+        $(; unary $($uop:ident => $utr:ident),+ )?
+        $(;)?
+    ) => {
+        $crate::operators!(true false $anti_scalar $mv_repo, $tir $(; fancy_infix => $itr)? $(; binary $($bop => $btr),*)? $(; unary $($uop => $utr),*)?)
+    };
+    (
+        debug $anti_scalar:ident $mv_repo:expr, $tir:ident
+        $(; fancy_infix => $itr:ident)?
+        $(; binary $($bop:ident => $btr:ident),+)?
+        $(; unary $($uop:ident => $utr:ident),+ )?
+        $(;)?
+    ) => {
+        $crate::operators!(false true $anti_scalar $mv_repo, $tir $(; fancy_infix => $itr)? $(; binary $($bop => $btr),*)? $(; unary $($uop => $utr),*)?)
+    };
+    (
+        $useProgressBars:literal $debug:literal $anti_scalar:ident
+        $mv_repo:expr, $tir:ident
+        $(; fancy_infix => $itr:ident)?
+        $(; binary $($bop:ident => $btr:ident),+)?
+        $(; unary $($uop:ident => $utr:ident),+ )?
+        $(;)?
+    ) => {
         {
             use $crate::build_scripts::common_traits::*;
             use $crate::ast::traits::BinaryOps::*;
             use $crate::ast::traits::UnaryOps::*;
             $($tir.generate_infix_trick($itr);)?
             $($(
-                $tir.set_binary_operator($mv_repo.clone(), $bop, $btr);
+                $tir.set_binary_operator::<_, $anti_scalar, $useProgressBars, $debug>($mv_repo.clone(), $bop, $btr);
             )+)?
             $($(
-                $tir.set_unary_operator($mv_repo.clone(), $uop, $utr);
+                $tir.set_unary_operator::<_, $anti_scalar, $useProgressBars, $debug>($mv_repo.clone(), $uop, $utr);
             )+)?
         }
     };
@@ -2700,10 +2797,68 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         let mut return_expr = self.return_expr.expect("Must have return expression in order to register");
         let mut lines = self.lines.into_inner();
 
+        // TODO clean up all this debugging code clutter
+        let debug = false;
+        let match_owner = owner.name() == "Flector";
+        let log_simplification = match_owner;
+        // let match_other = match other_type_params.get(0) {
+        //     Some(TraitParam::Class(mv)) => mv.name() == "Flector",
+        //     _ => false,
+        // };
+        // let log_simplification = match_owner && match_other;
+        if debug && log_simplification {
+            println!();
+            println!();
+            for line in &lines {
+                let CommentOrVariableDeclaration::VarDec(vd) = &line else { continue };
+                let Some(vd) = vd.upgrade() else { continue };
+                let Some(expr) = &vd.expr else { continue };
+                let expr = expr.read();
+                let n = &vd.name;
+                println!("let {n:?} = {expr:?}");
+            }
+            println!("return {:?}", return_expr);
+        }
+
+        // let mut oli = 0;
+
         'outer: loop {
+            // println!("outer loop iterations: {oli}");
+            // oli += 1;
+
+            // let mut ili1 = 0;
             'inner: loop {
+                // println!("inner loop 1 iterations: {ili1}");
+                // ili1 += 1;
+                // if ili1 > 10 {
+                //     panic!("infinite loop")
+                // }
+
+
                 // Scan through the lines in reverse, drop unused variables
+
+                // TODO I think it should be possible to add a flag to the TraitImplBuilder
+                //  that indicates whether or not extra-aggressive simplification should be used
+                //  and then we read that falg here and maybe don't slice_to_float unless necessary.
+                //  We can then use git diffs to see which traits need it on, and trigger the flag
+                //  in those implementations. Why though? Because simplification is expensive
+                //  enough as it is, it is annoying to undo and redo transposition over and over.
+
+                if debug {
+                    println!("\nreturn {:?}", return_expr);
+                }
+                return_expr.slice_to_floats();
+                if debug {
+                    println!("slice_to_floats");
+                    println!("return {:?}", return_expr);
+                }
                 return_expr.simplify();
+                if debug {
+                    println!("simplify");
+                    println!("return {:?}\n", return_expr);
+                }
+
+
                 let mut i = lines.len();
                 while i > 0 {
                     i -= 1;
@@ -2713,13 +2868,51 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                         Some(vd) => {
                             if let Some(v) = &vd.expr {
                                 let mut expr = v.write();
+
+
+                                if debug {
+                                    let n = &vd.name;
+                                    println!("\nlet {n:?} = {expr:?}");
+                                    println!("slice_to_floats");
+                                }
+                                expr.slice_to_floats();
+                                if debug {
+                                    let n = &vd.name;
+                                    println!("let {n:?} = {expr:?}");
+                                }
                                 expr.simplify();
+                                if debug {
+                                    let n = &vd.name;
+                                    println!("simplify");
+                                    println!("let {n:?} = {expr:?}\n");
+                                }
                             }
                         }
                     }
                 }
 
-                if lines.iter().any(|it| it.needs_more_inlining()) {
+                let mut needs_more_inlining = false;
+                for line in lines.iter() {
+                    if line.needs_more_inlining() {
+                        needs_more_inlining = true;
+                        // Normally variable declarations will automatically inline during
+                        // simplification if the Arc only has one strong holder.
+                        // However, by performing float slicing prior to simplification,
+                        // the Arc can/will be cloned, and simplification won't have collapsed it
+                        // again by the time it reaches the point it can/should inline a single
+                        // use variable. Therefore, we set the force_inline flag.
+                        if let CommentOrVariableDeclaration::VarDec(var) = &line {
+                            if let Some(var) = var.upgrade() {
+                                var.force_inline.store(true, Release);
+                                // let n = &var.name;
+                                // println!("\nneeds more inlining:");
+                                // println!("let {n:?}\n");
+                            }
+                        }
+                    }
+                }
+
+                if needs_more_inlining {
                     continue 'inner
                 } else {
                     break 'inner
@@ -2732,9 +2925,13 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             return_expr.scan_for_destructurable_variables(&mut dv);
             let mut should_destructure = dv.needs_destructuring();
 
+            // let mut ili2 = 0;
             let mut did_destructure = false;
             let mut i = 0;
             'inner: while i < lines.len() {
+                // println!("inner loop 2 iterations: {ili2}");
+                // ili2 += 1;
+
                 // Foo i=2 j=0
                 // Bar i=1 j=1
                 // Baz i=0 j=2
@@ -2763,6 +2960,21 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     i += 1;
                     continue 'inner
                 }
+                if let Some(expr) = &vd.expr {
+                    let mut expr = expr.write();
+
+                    if debug {
+                        let n = &vd.name;
+                        println!("\nlet {n:?} = {expr:?}");
+                        println!("slice_to_floats");
+                    }
+                    expr.slice_to_floats();
+                    if debug {
+                        let n = &vd.name;
+                        println!("let {n:?} = {expr:?}\n");
+                    }
+                }
+
                 did_destructure = true;
 
                 // Foo i=2 j=0
