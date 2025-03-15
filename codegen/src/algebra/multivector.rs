@@ -1299,9 +1299,6 @@ impl DynamicMultiVector {
         let mut vals = BTreeMap::new();
         let mut keys = BTreeSet::new();
         for (el, mut f) in self.vals.into_iter() {
-            // TODO is this necessary anymore, considering the advanced multi-line inlining in traits.rs?
-            //      All this deep inlining here seems like it would be extremely expensive.
-            //      I should test cga3d_faceted without this deep inlining and see what happens.
             // Some calculations are less efficient without variables.
             // But some expressions can't be simplified down to 0 without variable inlining.
             // So we explore what happens with deep inlining,
@@ -1346,6 +1343,8 @@ impl DynamicMultiVector {
         Some(result)
     }
 
+    // TODO do I need to add tracing to this function? Would hate to find simplification bugs
+    //  in such an early stage of trait implementation construction
     // noinspection DuplicatedCode
     pub fn construct_exact<const AntiScalar: BasisElement>(self, b: &TraitImplBuilder<AntiScalar, HasNotReturned>) -> Option<MultiVectorExpr> {
         if self.vals.is_empty() {

@@ -367,7 +367,8 @@ impl Vec2Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, true);
+            self.slice_to_floats();
+            self.simplify_nuanced(false, false);
         }
         result
     }
@@ -493,7 +494,8 @@ impl Vec3Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, true);
+            self.slice_to_floats();
+            self.simplify_nuanced(false, false);
         }
         result
     }
@@ -630,7 +632,8 @@ impl Vec4Expr {
             }
         };
         if result {
-            self.simplify_nuanced(true, true);
+            self.slice_to_floats();
+            self.simplify_nuanced(false, false);
         }
         result
     }

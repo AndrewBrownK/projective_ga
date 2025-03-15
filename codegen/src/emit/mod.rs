@@ -23,8 +23,8 @@ fn sort_trait_impls(trait_implementations: &mut Vec<Arc<RawTraitImplementation>>
         let owner_cmp = a.owner.cmp(&b.owner);
         let std::cmp::Ordering::Equal = owner_cmp else { return owner_cmp };
 
-        let a_other = a.other_type_params.get(0);
-        let b_other = b.other_type_params.get(0);
+        let a_other = a.other_params.get(0);
+        let b_other = b.other_params.get(0);
         a_other.cmp(&b_other)
     });
 

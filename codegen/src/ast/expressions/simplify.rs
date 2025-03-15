@@ -73,6 +73,7 @@ impl IntExpr {
         self.simplify_nuanced(false);
     }
     #[allow(unused)]
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool) {
         match self {
             IntExpr::Variable(v) => {
@@ -106,6 +107,7 @@ impl FloatExpr {
         self.simplify_nuanced(false);
     }
 
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool) {
         match self {
             FloatExpr::Variable(v) => {
@@ -699,6 +701,7 @@ impl Vec2Expr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false, true);
     }
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec2Expr::Variable(v) => {
@@ -1291,6 +1294,7 @@ impl Vec3Expr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false, true);
     }
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec3Expr::Variable(v) => {
@@ -2106,11 +2110,13 @@ impl Vec4Expr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false, true);
     }
-
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec4Expr::Variable(v) => {
                 let decl = &v.decl;
+                // TODO convert all the strong_count uses to into_inner instead
+                //  Arc::into_inner(decl)
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
@@ -3305,6 +3311,7 @@ impl Vec4Expr {
     }
 }
 impl MultiVectorGroupExpr {
+    #[tracing::instrument(level = "trace", skip_all)]
     fn simplify_nuanced(&mut self, insides_already_done: bool) {
         match self {
             MultiVectorGroupExpr::JustFloat(f) => {
@@ -3389,7 +3396,8 @@ impl MultiVectorExpr {
     pub(crate) fn simplify(&mut self) {
         self.simplify_nuanced(false);
     }
-    fn simplify_nuanced(&mut self, insides_already_done: bool) {
+    #[tracing::instrument(level = "trace", skip_all)]
+    pub(crate) fn simplify_nuanced(&mut self, insides_already_done: bool) {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
                 let decl = &v.decl;

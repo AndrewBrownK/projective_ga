@@ -13,6 +13,7 @@ pub mod expressions;
 pub mod impls;
 mod operations_tracker;
 pub mod traits;
+pub mod trace;
 
 #[derive(Clone, Debug)]
 pub struct Variable<ExprType> {
@@ -20,10 +21,9 @@ pub struct Variable<ExprType> {
     decl: Arc<RawVariableDeclaration>,
 }
 
-// TODO see if this can be used generally, or if I need a more formal solution
 impl<ExprType> Variable<ExprType> {
     // For quick testing purposes
-    pub fn quick_var(name: &str, e: ExprType) -> Self {
+    fn quick_var(name: &str, e: ExprType) -> Self {
         Variable {
             expr_type: e,
             decl: Arc::new(RawVariableDeclaration {
@@ -33,6 +33,38 @@ impl<ExprType> Variable<ExprType> {
                 force_inline: Arc::new(AtomicBool::new(false)),
             }),
         }
+    }
+}
+
+
+/// Quickly create variables for testing purposes. These are not suitable for use
+/// in trait implementations or trait definition registration, since the names are not
+/// checked for uniqueness. These are just intended for test cases and small demo scripts.
+pub mod quick_variables {
+    use crate::algebra::basis::BasisElement;
+    use crate::ast::datatype::{Float, Integer, MultiVector, Vec2, Vec3, Vec4};
+    use crate::ast::Variable;
+
+    pub fn int_var(name: &str) -> Variable<Integer> {
+        Variable::<Integer>::quick_var(name, Integer)
+    }
+    pub fn float_var(name: &str) -> Variable<Float> {
+        Variable::<Float>::quick_var(name, Float)
+    }
+    pub fn vec2_var(name: &str) -> Variable<Vec2> {
+        Variable::<Vec2>::quick_var(name, Vec2)
+    }
+    pub fn vec3_var(name: &str) -> Variable<Vec3> {
+        Variable::<Vec3>::quick_var(name, Vec3)
+    }
+    pub fn vec4_var(name: &str) -> Variable<Vec4> {
+        Variable::<Vec4>::quick_var(name, Vec4)
+    }
+    pub fn multivec_var<const AntiScalar: BasisElement>(
+        name: &str, mv: &'static crate::algebra::multivector::MultiVec<AntiScalar>
+    ) -> Variable<MultiVector> {
+        let mv = MultiVector::from(mv);
+        Variable::<MultiVector>::quick_var(name, mv)
     }
 }
 

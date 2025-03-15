@@ -226,12 +226,12 @@ impl Slang {
             let k = i.definition.names.trait_key;
             let (folder, name) = match k.as_upper_camel().as_str() {
                 "Add" | "Sub" | "Mul" | "Div" | "Shl" | "Shr" | "BitAnd" | "BitOr" | "BitXor" | "Neg" | "Not" => {
-                    let ExpressionType::Class(mv) = i.owner else { continue };
+                    let ExpressionType::Class(mv) = i.owner.0 else { continue };
                     let n = TraitKey::new(mv.name()).as_lower_snake();
                     ("data", n)
                 }
                 // "Into" | "TryInto" => {
-                //     let Some(ExpressionType::Class(mv)) = i.other_type_params.get(0) else { continue };
+                //     let Some(ExpressionType::Class(mv)) = i.other_params.get(0) else { continue };
                 //     let n = TraitKey::new(mv.name()).as_lower_snake();
                 //     ("data", n)
                 // }
@@ -1458,10 +1458,10 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
 
     fn write_trait_from<W: Write>(&self, w: &mut W, impls: Arc<RawTraitImplementation>) -> anyhow::Result<()> {
         // TODO
-        let ExpressionType::Class(other) = impls.owner else {
+        let ExpressionType::Class(other) = impls.owner.0 else {
             bail!("Owner of Into (Other of From) impl is not a MultiVector")
         };
-        let Some(ExpressionType::Class(owner)) = impls.other_type_params.get(0) else {
+        let Some((ExpressionType::Class(owner), _)) = impls.other_params.get(0) else {
             bail!("Other of Into (Owner of From) impl is not a MultiVector")
         };
         let other = other.name();
@@ -1501,10 +1501,10 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
 
     fn write_trait_try_from<W: Write>(&self, w: &mut W, impls: Arc<RawTraitImplementation>) -> anyhow::Result<()> {
         // TODO
-        let ExpressionType::Class(other) = impls.owner else {
+        let ExpressionType::Class(other) = impls.owner.0 else {
             bail!("Owner of Into (Other of From) impl is not a MultiVector")
         };
-        let Some(ExpressionType::Class(owner)) = impls.other_type_params.get(0) else {
+        let Some((ExpressionType::Class(owner), _)) = impls.other_params.get(0) else {
             bail!("Other of TryInto (Owner of TryFrom) impl is not a MultiVector")
         };
         let destination_elements: BTreeSet<_> = owner.elements().into_iter().collect();
@@ -1842,8 +1842,8 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
         let def = &impls.definition;
 
         let output_ty = impls.return_expr.expression_type();
-        let owner_ty = &impls.owner;
-        if impls.other_var_params.len() > 1 || impls.other_type_params.len() > 1 {
+        let owner_ty = &impls.owner.0;
+        if impls.other_params.len() > 1 || impls.other_params.len() > 1 {
             bail!("We do not support high arity traits yet");
         }
 
@@ -1866,16 +1866,8 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
         let do_assign_impl = do_assign_impl;
 
         let mut var_param = None;
-        if !impls.other_var_params.is_empty() {
-            let v_param = &impls.other_var_params[0];
-            if !impls.other_type_params.is_empty() {
-                let ty_param = &impls.other_type_params[0];
-                if ty_param != v_param {
-                    // TODO I feel like this is a representation problem, need to review and maybe
-                    //  refactor the algebraic data types involved here
-                    bail!("Type of trait implementation does not agree");
-                }
-            }
+        if !impls.other_params.is_empty() {
+            let v_param = &impls.other_params[0].0;
             var_param = Some(v_param);
         }
 
@@ -1887,7 +1879,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 TraitArity::Two => Some("Infix"),
             };
             if let (Some(infix_term), Some(operator_method)) = (infix_term, operator_method) {
-                if let TraitParam::Class(mv) = &owner_ty {
+                if let ExpressionType::Class(mv) = &owner_ty {
                     let n = mv.name();
                     if !is_op {
                         // TODO use the [ForceInline] attribute

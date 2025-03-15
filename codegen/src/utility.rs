@@ -16,6 +16,7 @@ use tokio::task::JoinSet;
 pub mod fstr;
 pub mod const_option;
 pub mod ptrarc;
+pub mod tracing;
 
 pub enum AwaitOrClone<T: Clone> {
     InProgress(broadcast::Receiver<T>),
@@ -49,7 +50,7 @@ pub enum AsyncMapResult<V> {
     Oops(RecvError),
 }
 impl<V: Clone> AsyncMapResult<V> {
-    pub async fn get_or_panic(self) -> V {
+    pub async fn expect(self) -> V {
         match self {
             AsyncMapResult::AlreadyDone(v) => v,
             AsyncMapResult::ItsOnTheWay(mut thingy) => thingy.recv().await.expect("AsyncMapResult recv error"),
@@ -70,8 +71,8 @@ impl<K: Eq + Hash + Clone + Send + Sync + 'static, V: Clone + Send + Sync + 'sta
         awaiter.await_clone().await.ok()
     }
 
-    pub async fn get_or_create_or_panic<F: Future<Output = V> + Send + 'static>(&self, k: K, f: F) -> V {
-        self.get_or_create(k, f).await.get_or_panic().await
+    pub async fn expect_get_or_create<F: Future<Output = V> + Send + 'static>(&self, k: K, f: F) -> V {
+        self.get_or_create(k, f).await.expect().await
     }
     pub async fn get_or_create<F: Future<Output = V> + Send + 'static>(&self, k: K, f: F) -> AsyncMapResult<V> {
         let read = self.0.read().await;
@@ -175,7 +176,7 @@ impl<T: Copy + Debug, const N: usize> ConstVec<T, N> {
                 // Cannot format nicer error message in const evaluation
                 panic!("ConstVec get() index out of bounds")
             }
-            Some(stuff) => return stuff,
+            Some(stuff) => stuff,
         }
     }
 
@@ -184,7 +185,7 @@ impl<T: Copy + Debug, const N: usize> ConstVec<T, N> {
             None => {
                 panic!("ConstVec get_mut() index out of bounds")
             }
-            Some(stuff) => return stuff,
+            Some(stuff) => stuff,
         }
     }
 }
@@ -218,7 +219,7 @@ impl<T: Copy + PartialOrd, const N: usize> PartialOrd for ConstVec<T, N> {
                 },
             }
         }
-        return Some(Ordering::Equal);
+        Some(Ordering::Equal)
     }
 }
 impl<T: Copy + Ord, const N: usize> Ord for ConstVec<T, N> {
@@ -238,7 +239,7 @@ impl<T: Copy + Ord, const N: usize> Ord for ConstVec<T, N> {
                 },
             }
         }
-        return Ordering::Equal;
+        Ordering::Equal
     }
 }
 
@@ -271,13 +272,13 @@ impl CollectResults for JoinSet<anyhow::Result<()>> {
                 Err(e) => errs.push(anyhow::Error::new(e)),
             }
         }
-        return if errs.is_empty() {
+        if errs.is_empty() {
             Ok(())
         } else {
             // Combine all errors into a single error
             let combined_error = errs.into_iter().map(|e| format!("{e:?}")).collect::<Vec<_>>().join(", ");
             Err(anyhow!(combined_error))
-        };
+        }
     }
 }
 
@@ -293,7 +294,7 @@ where
             i += 1;
         }
     }
-    return i;
+    i
 }
 
 

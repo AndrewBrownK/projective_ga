@@ -499,12 +499,12 @@ postgres-types = "0.2.7""#
             let k = i.definition.names.trait_key;
             let (folder, name) = match k.as_upper_camel().as_str() {
                 "Add" | "Sub" | "Mul" | "Div" | "Shl" | "Shr" | "BitAnd" | "BitOr" | "BitXor" | "Neg" | "Not" => {
-                    let ExpressionType::Class(mv) = i.owner else { continue };
+                    let ExpressionType::Class(mv) = i.owner.0 else { continue };
                     let n = TraitKey::new(mv.name()).as_lower_snake();
                     ("data", n)
                 }
                 "Into" | "TryInto" => {
-                    let Some(ExpressionType::Class(mv)) = i.other_type_params.get(0) else { continue };
+                    let Some((ExpressionType::Class(mv), _)) = i.other_params.get(0) else { continue };
                     let n = TraitKey::new(mv.name()).as_lower_snake();
                     ("data", n)
                 }
@@ -663,13 +663,13 @@ postgres-types = "0.2.7""#
                     }?;
                     let i = j;
                     if let TraitArity::Two = i.definition.arity {
-                        let owner = i.owner;
-                        let other = i.other_type_params.first();
+                        let owner = i.owner.0;
+                        let other = i.other_params.first().map(|it| it.0);
                         let output = i.return_expr.expression_type();
                         // TODO I could output information like this in a comment on the type itself. And trait definition.
                         match (owner, other, output) {
-                            (TraitParam::Class(a), Some(TraitParam::Class(b)), ExpressionType::Class(c))
-                                if a == *b && a == c && (ucc.as_str() == "GeometricProduct" || ucc.as_str() == "GeometricAntiProduct") =>
+                            (ExpressionType::Class(a), Some(ExpressionType::Class(b)), ExpressionType::Class(c))
+                                if a == b && a == c && (ucc.as_str() == "GeometricProduct" || ucc.as_str() == "GeometricAntiProduct") =>
                             {
                                 let n = a.name();
                                 let msg = format!("{n} is closed under {ucc}");
@@ -1910,10 +1910,10 @@ postgres-types = "0.2.7""#
     }
 
     fn write_trait_from<W: Write>(&self, w: &mut W, impls: Arc<RawTraitImplementation>) -> anyhow::Result<()> {
-        let ExpressionType::Class(other) = impls.owner else {
+        let ExpressionType::Class(other) = impls.owner.0 else {
             bail!("Owner of Into (Other of From) impl is not a MultiVector")
         };
-        let Some(ExpressionType::Class(owner)) = impls.other_type_params.get(0) else {
+        let Some((ExpressionType::Class(owner), _)) = impls.other_params.get(0) else {
             bail!("Other of Into (Owner of From) impl is not a MultiVector")
         };
         let other = other.name();
@@ -1950,10 +1950,10 @@ impl From<{other}> for {owner} {{
     }
 
     fn write_trait_try_from<W: Write>(&self, w: &mut W, impls: Arc<RawTraitImplementation>) -> anyhow::Result<()> {
-        let ExpressionType::Class(other) = impls.owner else {
+        let ExpressionType::Class(other) = impls.owner.0 else {
             bail!("Owner of Into (Other of From) impl is not a MultiVector")
         };
-        let Some(ExpressionType::Class(owner)) = impls.other_type_params.get(0) else {
+        let Some((ExpressionType::Class(owner), _)) = impls.other_params.get(0) else {
             bail!("Other of TryInto (Owner of TryFrom) impl is not a MultiVector")
         };
         let destination_elements: BTreeSet<_> = owner.elements().into_iter().collect();
@@ -2657,8 +2657,8 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
 
         let output_kind = def.output.read();
         let output_ty = impls.return_expr.expression_type();
-        let owner_ty = &impls.owner;
-        if impls.other_var_params.len() > 1 || impls.other_type_params.len() > 1 {
+        let owner_ty = &impls.owner.0;
+        if impls.other_params.len() > 1 {
             bail!("We do not support high arity traits yet");
         }
 
@@ -2682,16 +2682,8 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
         let do_assign_impl = do_assign_impl;
 
         let mut var_param = None;
-        if !impls.other_var_params.is_empty() {
-            let v_param = &impls.other_var_params[0];
-            if !impls.other_type_params.is_empty() {
-                let ty_param = &impls.other_type_params[0];
-                if ty_param != v_param {
-                    // TODO I feel like this is a representation problem, need to review and maybe
-                    //  refactor the algebraic data types involved here
-                    bail!("Type of trait implementation does not agree");
-                }
-            }
+        if !impls.other_params.is_empty() {
+            let v_param = &impls.other_params[0].0;
             var_param = Some(v_param);
         }
 
@@ -2704,7 +2696,7 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
                 TraitArity::Two => Some("Infix"),
             };
             if let Some(infix_term) = infix_term {
-                if let TraitParam::Class(mv) = &owner_ty {
+                if let ExpressionType::Class(mv) = &owner_ty {
                     let n = mv.name();
                     if !is_op && !already_granted_infix.contains(n) {
                         already_granted_infix.insert(n);

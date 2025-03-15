@@ -9,12 +9,10 @@ use crate::ast::traits::{TraitDef_1_Type_1_Arg, TraitDef_2_Types_2_Args, TraitIm
 use crate::ast::Variable;
 use crate::build_scripts::common_traits::{AntiReverse, AntiDotProduct, AntiWedge, GeometricProduct, Reverse, RightDual, Sandwich, DotProduct, Wedge};
 use crate::{ga, multi_vecs};
+use crate::ast::quick_variables::float_var;
 
-fn float_var(n: &str) -> Variable<Float> {
-    Variable::quick_var(n, Float)
-}
 fn float_var_expr(n: &str) -> FloatExpr {
-    Variable::quick_var(n, Float).into()
+    float_var(n).into()
 }
 
 // R ⟑ C = MultiVector(

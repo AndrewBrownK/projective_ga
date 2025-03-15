@@ -25,7 +25,7 @@ async-trait = "0.1.80"
 rand = "0.9.0-alpha.1"
 regex = "1.10.4"
 lazy_static = "1.4.0"
-tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "io-std", "io-util", "sync", "signal", "fs", "parking_lot", "time"] }
+tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "io-std", "io-util", "sync", "signal", "fs", "parking_lot", "time", "macros"] }
 im = "15.1.0"
 either = "1.12.0"
 atom = "0.4.0"
@@ -38,6 +38,9 @@ float-ord = "0.3.2"
 encase = "0.9.0"
 nearly = "0.4.0"
 
+tracing = "0.1.41"
+tracing-subscriber = "0.3.19"
+once_cell = "1.20.2"
 
 #bitvec = "1.0.1"
 

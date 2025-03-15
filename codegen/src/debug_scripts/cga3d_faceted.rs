@@ -55,7 +55,7 @@ fn debug_stuff() {
     };
     let decls = register_multi_vecs(cga3d);
     let repo = generate_variants(decls).finished();
-    let traits = crate::register_all! { repo;
+    let traits = crate::register_all! { e12345 repo;
         Wedge
     };
     let traits = traits.finish();
@@ -69,8 +69,8 @@ fn debug_stuff() {
     let result: Option<()> = rt.block_on(async move {
         let impls = traits.get_impls().await;
         for i in impls {
-            let ExpressionType::Class(owner) = i.owner.clone() else { continue };
-            let Some(ExpressionType::Class(other)) = i.other_type_params.get(0).cloned() else { continue };
+            let ExpressionType::Class(owner) = i.owner.0.clone() else { continue };
+            let Some((ExpressionType::Class(other), _)) = i.other_params.get(0).cloned() else { continue };
 
             if owner.name() == "AntiPlane" && other.name() == "AntiFlectorOnOrigin" {
                 let r = &i.return_expr;

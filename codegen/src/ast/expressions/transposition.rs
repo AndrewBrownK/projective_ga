@@ -98,6 +98,7 @@ impl FloatExpr {
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec2_product(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
@@ -148,6 +149,7 @@ fn transpose_vec2_product(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec2_product_extract(
     extraction_strength: ExtractionStrength,
     vec2_product: &mut Vec<(Vec2Expr, f32)>,
@@ -234,6 +236,7 @@ fn vec2_product_extract(
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec2_sum(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
@@ -281,6 +284,7 @@ fn transpose_vec2_sum(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec2_sum_extract(
     extraction_strength: ExtractionStrength,
     vec2_sum: &mut Vec<(Vec2Expr, f32)>,
@@ -366,6 +370,7 @@ fn vec2_sum_extract(
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec3_product(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
@@ -428,6 +433,7 @@ fn transpose_vec3_product(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec3_product_extract(
     extraction_strength: ExtractionStrength,
     vec3_product: &mut Vec<(Vec3Expr, f32)>,
@@ -553,6 +559,7 @@ fn vec3_product_extract(
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec3_sum(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
@@ -611,6 +618,7 @@ fn transpose_vec3_sum(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec3_sum_extract(
     extraction_strength: ExtractionStrength,
     vec3_sum: &mut Vec<(Vec3Expr, f32)>,
@@ -731,6 +739,7 @@ fn vec3_sum_extract(
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec4_product(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
@@ -805,6 +814,7 @@ fn transpose_vec4_product(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec4_product_extract(
     extraction_strength: ExtractionStrength,
     vec4_product: &mut Vec<(Vec4Expr, f32)>,
@@ -985,6 +995,7 @@ fn vec4_product_extract(
     }
 }
 
+#[tracing::instrument(level = "trace", skip_all)]
 fn transpose_vec4_sum(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
@@ -1054,6 +1065,7 @@ fn transpose_vec4_sum(
     Some(result)
 }
 
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
 fn vec4_sum_extract(
     extraction_strength: ExtractionStrength,
     vec4_sum: &mut Vec<(Vec4Expr, f32)>,

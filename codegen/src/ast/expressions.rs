@@ -206,14 +206,14 @@ impl TraitResultType for MultiVector {
 //  then we could also have Vec4Expr::Extend1to4 that accepts a Vec3Expr
 //  and then we could get truncations/extensions to be symmetrical
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum IntExpr {
     Variable(RawVariableInvocation),
     Literal(u32),
     // e.g. Grade
     TraitInvoke10ToInt(TraitKey, MultiVector),
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum FloatExpr {
     Variable(RawVariableInvocation),
     Literal(f32),
@@ -230,7 +230,7 @@ pub enum FloatExpr {
     Exp(Box<FloatExpr>, Option<Box<FloatExpr>>, f32),
     // TODO trig? floor? log? round? trunc? mix? step? smoothstep? fma? fract? modf?
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum Vec2Expr {
     Variable(RawVariableInvocation),
     Gather1(FloatExpr),
@@ -242,7 +242,7 @@ pub enum Vec2Expr {
     Truncate3to2(Box<Vec3Expr>),
     Truncate4to2(Box<Vec4Expr>),
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum Vec3Expr {
     Variable(RawVariableInvocation),
     Gather1(FloatExpr),
@@ -254,7 +254,7 @@ pub enum Vec3Expr {
     Truncate4to3(Box<Vec4Expr>),
     Extend2to3(Vec2Expr, FloatExpr),
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub enum Vec4Expr {
     Variable(RawVariableInvocation),
     Gather1(FloatExpr),
@@ -294,7 +294,7 @@ pub enum MultiVectorVia {
     TraitInvoke22ToClass(TraitKey, MultiVectorExpr, MultiVectorExpr),
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum AnyExpression {
     Int(IntExpr),
     Float(FloatExpr),
