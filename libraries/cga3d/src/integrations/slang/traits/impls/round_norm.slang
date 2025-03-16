@@ -227,7 +227,7 @@ public extension MultiVector {
     public MultiVector round_norm() {
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * this.scalar + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321, this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234), 
+            float2(this.scalar * this.scalar + this.e2 * this.e2 + this.e3 * this.e3 + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234) + float2_pow(this.group1.xw, 2), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -299,7 +299,7 @@ public extension VersorEven {
     public MultiVector round_norm() {
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4), 
+            float2(this.e321 * this.e321 + this.e2 * this.e2 + this.e3 * this.e3, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412) + float2_pow(this.group3.xw, 2), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -335,7 +335,7 @@ public extension VersorOdd {
     public MultiVector round_norm() {
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234), 
+            float2(this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234) + float2_pow(this.group0.wx, 2), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */

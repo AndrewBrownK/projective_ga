@@ -176,7 +176,7 @@ public RoundPoint operator /(UnitizePrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public RoundPoint unitize() {
-        float geometric_anti_product_g0 = 1.0/this.e4;
+        float geometric_anti_product_g0 = 1.0 / this.e4;
         return RoundPoint(
             /* e1, e2, e3, e4 */
             float4(geometric_anti_product_g0) * this.group0, 
@@ -195,7 +195,7 @@ public Sphere operator /(UnitizePrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public Sphere unitize() {
-        float geometric_anti_product_g0 = 1.0/this.e1234;
+        float geometric_anti_product_g0 = 1.0 / this.e1234;
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
             float4(geometric_anti_product_g0) * this.group0, 

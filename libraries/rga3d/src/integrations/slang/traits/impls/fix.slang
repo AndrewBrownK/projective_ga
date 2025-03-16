@@ -27,7 +27,7 @@ public extension Plane {
     public Plane fix() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(1.0/this.e321) * this.group0
+            float4((this.group0.xyz / this.group0.www), 1.0)
         );
     }
 }
@@ -43,7 +43,7 @@ public extension Point {
     public Point fix() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3) * this.group0
+            float4(pow(this.e1, 3), pow(this.e2, 3), pow(this.e3, 3), this.e3 * this.e3 * this.e4) + (float4_pow(this.group0.yxxx, 2) * this.group0) + (float4_pow(this.group0.zzyy, 2) * this.group0)
         );
     }
 }

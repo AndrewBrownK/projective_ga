@@ -9,8 +9,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, AntiCircleRotor r
 }
 public extension AntiCircleRotor {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = this.e45 * this.e45 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.scalar * this.scalar - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35);
-        return -(this.e41 * this.e41 * pow(anti_dot_product_g0, 0.5)) - (this.e42 * this.e42 * pow(anti_dot_product_g0, 0.5)) - (this.e43 * this.e43 * pow(anti_dot_product_g0, 0.5));
+        return (pow(this.e41, 3) * this.e15) * 2.0;
     }
 }
 // Fancy postfix trick
@@ -23,8 +22,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, AntiDipoleInversi
 }
 public extension AntiDipoleInversion {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e4 * this.e5) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
-        return -(this.e423 * this.e423 * pow(anti_dot_product_g0, 0.5)) - (this.e431 * this.e431 * pow(anti_dot_product_g0, 0.5)) - (this.e412 * this.e412 * pow(anti_dot_product_g0, 0.5)) - (this.e4 * this.e4 * pow(anti_dot_product_g0, 0.5));
+        return this.e321 * this.e321 * this.e4 * this.e4;
     }
 }
 // Fancy postfix trick
@@ -37,8 +35,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321;
-        return -(this.e423 * this.e423 * pow(anti_dot_product_g0, 0.5)) - (this.e431 * this.e431 * pow(anti_dot_product_g0, 0.5)) - (this.e412 * this.e412 * pow(anti_dot_product_g0, 0.5));
+        return this.e423 * this.e423 * this.e321 * this.e321;
     }
 }
 // Fancy postfix trick
@@ -51,8 +48,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, CircleRotor rhs) 
 }
 public extension CircleRotor {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e12345 * this.e12345 - this.e321 * this.e321;
-        return -(this.e423 * this.e423 * pow(anti_dot_product_g0, 0.5)) - (this.e431 * this.e431 * pow(anti_dot_product_g0, 0.5)) - (this.e412 * this.e412 * pow(anti_dot_product_g0, 0.5));
+        return this.e423 * this.e423 * this.e321 * this.e321;
     }
 }
 // Fancy postfix trick
@@ -65,8 +61,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = this.e45 * this.e45 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35);
-        return -(this.e41 * this.e41 * pow(anti_dot_product_g0, 0.5)) - (this.e42 * this.e42 * pow(anti_dot_product_g0, 0.5)) - (this.e43 * this.e43 * pow(anti_dot_product_g0, 0.5));
+        return (pow(this.e41, 3) * this.e15) * 2.0;
     }
 }
 // Fancy postfix trick
@@ -79,8 +74,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, DipoleInversion r
 }
 public extension DipoleInversion {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215);
-        return -(this.e41 * this.e41 * pow(anti_dot_product_g0, 0.5)) - (this.e42 * this.e42 * pow(anti_dot_product_g0, 0.5)) - (this.e43 * this.e43 * pow(anti_dot_product_g0, 0.5)) - (this.e1234 * this.e1234 * pow(anti_dot_product_g0, 0.5));
+        return pow(this.e41, 3) * this.e15 * 2.0;
     }
 }
 // Fancy postfix trick
@@ -93,8 +87,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, MultiVector rhs) 
 }
 public extension MultiVector {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = 2.0*(this.e4 * this.e5) + 2.0 * (this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e321 * this.e321 - 2.0 * (this.e15 * this.e41) - 2.0 * (this.e25 * this.e42) - 2.0 * (this.e35 * this.e43) - 2.0 * (this.e3215 * this.e1234);
-        return -(this.e4 * this.e4 * pow(anti_dot_product_g0, 0.5)) - (this.e41 * this.e41 * pow(anti_dot_product_g0, 0.5)) - (this.e42 * this.e42 * pow(anti_dot_product_g0, 0.5)) - (this.e43 * this.e43 * pow(anti_dot_product_g0, 0.5)) - (this.e423 * this.e423 * pow(anti_dot_product_g0, 0.5)) - (this.e431 * this.e431 * pow(anti_dot_product_g0, 0.5)) - (this.e412 * this.e412 * pow(anti_dot_product_g0, 0.5)) - (this.e1234 * this.e1234 * pow(anti_dot_product_g0, 0.5));
+        return 0.0;
     }
 }
 // Fancy postfix trick
@@ -107,7 +100,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public float unitized_radius_norm() {
-        return (this.e1 * this.e1 / (this.e4)) + (this.e2 * this.e2 / (this.e4)) + (this.e3 * this.e3 / (this.e4)) - 2.0 * this.e5;
+        return (this.e1 * this.e1 / this.e4) + (this.e2 * this.e2 / this.e4) + (this.e3 * this.e3 / this.e4) - 2.0 * this.e5;
     }
 }
 // Fancy postfix trick
@@ -120,7 +113,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public float unitized_radius_norm() {
-        return 2.0*this.e3215 - (this.e4235 * this.e4235 / (this.e1234)) - (this.e4315 * this.e4315 / (this.e1234)) - (this.e4125 * this.e4125 / (this.e1234));
+        return 2.0*this.e3215 - (this.e4235 * this.e4235 / this.e1234) - (this.e4315 * this.e4315 / this.e1234) - (this.e4125 * this.e4125 / this.e1234);
     }
 }
 // Fancy postfix trick
@@ -133,8 +126,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e5 * this.e4) + this.e12345 * this.e12345 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
-        return -(this.e423 * this.e423 * pow(anti_dot_product_g0, 0.5)) - (this.e431 * this.e431 * pow(anti_dot_product_g0, 0.5)) - (this.e412 * this.e412 * pow(anti_dot_product_g0, 0.5)) - (this.e4 * this.e4 * pow(anti_dot_product_g0, 0.5));
+        return this.e321 * this.e321 * this.e4 * this.e4;
     }
 }
 // Fancy postfix trick
@@ -147,7 +139,6 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public float unitized_radius_norm() {
-        float anti_dot_product_g0 = this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e1234 * this.e3215);
-        return -(this.e41 * this.e41 * pow(anti_dot_product_g0, 0.5)) - (this.e42 * this.e42 * pow(anti_dot_product_g0, 0.5)) - (this.e43 * this.e43 * pow(anti_dot_product_g0, 0.5)) - (this.e1234 * this.e1234 * pow(anti_dot_product_g0, 0.5));
+        return pow(this.e41, 3) * this.e15 * 2.0;
     }
 }

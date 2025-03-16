@@ -13,6 +13,19 @@ public extension AntiFlatPoint {
     }
 }
 // Fancy postfix trick
+public AntiFlector operator /(AntiFlector lhs, AntiConstraintValidPrefixOrPostfix rhs)  {
+    return lhs.anti_constraint_valid();
+    }
+// Fancy prefix trick
+public AntiFlector operator /(AntiConstraintValidPrefixOrPostfix lhs, AntiFlector rhs) {
+    return rhs.anti_constraint_valid();
+}
+public extension AntiFlector {
+    public AntiFlector anti_constraint_valid() {
+        return this;
+    }
+}
+// Fancy postfix trick
 public AntiPlane operator /(AntiPlane lhs, AntiConstraintValidPrefixOrPostfix rhs)  {
     return lhs.anti_constraint_valid();
     }
@@ -48,6 +61,19 @@ public FlatPoint operator /(AntiConstraintValidPrefixOrPostfix lhs, FlatPoint rh
 }
 public extension FlatPoint {
     public FlatPoint anti_constraint_valid() {
+        return this;
+    }
+}
+// Fancy postfix trick
+public Flector operator /(Flector lhs, AntiConstraintValidPrefixOrPostfix rhs)  {
+    return lhs.anti_constraint_valid();
+    }
+// Fancy prefix trick
+public Flector operator /(AntiConstraintValidPrefixOrPostfix lhs, Flector rhs) {
+    return rhs.anti_constraint_valid();
+}
+public extension Flector {
+    public Flector anti_constraint_valid() {
         return this;
     }
 }

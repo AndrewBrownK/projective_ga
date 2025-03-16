@@ -27,7 +27,7 @@ public extension Flector {
     public Flector right_anti_dual() {
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e321 * -1.0), 
             /* e423, e431, e412, e321 */
             float4(this.group0.xyz, 0.0)
         );
@@ -99,7 +99,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(0.0, this.scalar), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e321 * -1.0), 
             /* e41, e42, e43 */
             this.group3.xyz * float3(-1.0), 
             /* e23, e31, e12 */

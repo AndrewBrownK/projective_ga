@@ -8,14 +8,4 @@ pub trait BulkContraction<T> {
     type Output;
     fn bulk_contraction(self, other: T) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static bulk_contraction: BulkContractionInfix = BulkContractionInfix;
-pub struct BulkContractionInfix;
-pub struct BulkContractionInfixPartial<A>(A);
-impl<A: BulkContraction<B>, B> std::ops::Div<B> for BulkContractionInfixPartial<A> {
-    type Output = <A as BulkContraction<B>>::Output;
-    fn div(self, rhs: B) -> Self::Output {
-        self.0.bulk_contraction(rhs)
-    }
-}
 include!("./impls/bulk_contraction.rs");

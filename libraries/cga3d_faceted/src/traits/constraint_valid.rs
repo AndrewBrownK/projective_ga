@@ -7,13 +7,4 @@ use crate::simd::*;
 pub trait ConstraintValid {
     fn constraint_valid(self) -> Self;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static constraint_valid: ConstraintValidPrefixOrPostfix = ConstraintValidPrefixOrPostfix;
-pub struct ConstraintValidPrefixOrPostfix;
-impl<A: ConstraintValid> std::ops::Div<A> for ConstraintValidPrefixOrPostfix {
-    type Output = A;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.constraint_valid()
-    }
-}
 include!("./impls/constraint_valid.rs");

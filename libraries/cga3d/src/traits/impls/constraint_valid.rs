@@ -3,9 +3,9 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
-// Total Implementations: 8
+// Total Implementations: 10
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
@@ -30,6 +30,22 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlatPoint {
     }
 }
 impl ConstraintValid for AntiFlatPoint {
+    fn constraint_valid(self) -> Self {
+        self
+    }
+}
+impl std::ops::Div<ConstraintValidPrefixOrPostfix> for AntiFlector {
+    type Output = AntiFlector;
+    fn div(self, _rhs: ConstraintValidPrefixOrPostfix) -> Self::Output {
+        self.constraint_valid()
+    }
+}
+impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for AntiFlector {
+    fn div_assign(&mut self, _rhs: ConstraintValidPrefixOrPostfix) {
+        *self = self.constraint_valid()
+    }
+}
+impl ConstraintValid for AntiFlector {
     fn constraint_valid(self) -> Self {
         self
     }
@@ -78,6 +94,22 @@ impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for FlatPoint {
     }
 }
 impl ConstraintValid for FlatPoint {
+    fn constraint_valid(self) -> Self {
+        self
+    }
+}
+impl std::ops::Div<ConstraintValidPrefixOrPostfix> for Flector {
+    type Output = Flector;
+    fn div(self, _rhs: ConstraintValidPrefixOrPostfix) -> Self::Output {
+        self.constraint_valid()
+    }
+}
+impl std::ops::DivAssign<ConstraintValidPrefixOrPostfix> for Flector {
+    fn div_assign(&mut self, _rhs: ConstraintValidPrefixOrPostfix) {
+        *self = self.constraint_valid()
+    }
+}
+impl ConstraintValid for Flector {
     fn constraint_valid(self) -> Self {
         self
     }

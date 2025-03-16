@@ -13,7 +13,7 @@ public extension AntiCircleRotor {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e45 * -1.0), 
             /* e15, e25, e35, scalar */
             this.group2 * float4(-1.0, -1.0, -1.0, 1.0)
         );
@@ -37,7 +37,7 @@ public extension AntiDipoleInversion {
             /* e235, e315, e125, e4 */
             this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            this.group3 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group3.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -87,7 +87,7 @@ public extension AntiFlector {
             /* e235, e315, e125, e321 */
             this.group0 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e1, e2, e3, e5 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group1.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -139,7 +139,7 @@ public extension AntiPlane {
     public AntiPlane conformal_conjugate() {
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group0.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -213,7 +213,7 @@ public extension Dipole {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e45 * -1.0), 
             /* e15, e25, e35 */
             this.group2.xyz * float3(-1.0)
         );
@@ -233,7 +233,7 @@ public extension DipoleInversion {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e45 * -1.0), 
             /* e15, e25, e35, e1234 */
             this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -440,7 +440,7 @@ public extension VersorEven {
     public VersorEven conformal_conjugate() {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e12345 * -1.0), 
             /* e415, e425, e435, e321 */
             this.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
@@ -464,7 +464,7 @@ public extension VersorOdd {
             /* e41, e42, e43, scalar */
             this.group0, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e45 * -1.0), 
             /* e15, e25, e35, e1234 */
             this.group2 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e4235, e4315, e4125, e3215 */

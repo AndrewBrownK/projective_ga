@@ -3,9 +3,9 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
-// Total Implementations: 6
+// Total Implementations: 7
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
@@ -30,6 +30,22 @@ impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for AntiScalar {
     }
 }
 impl AntiConstraintValid for AntiScalar {
+    fn anti_constraint_valid(self) -> Self {
+        self
+    }
+}
+impl std::ops::Div<AntiConstraintValidPrefixOrPostfix> for Flector {
+    type Output = Flector;
+    fn div(self, _rhs: AntiConstraintValidPrefixOrPostfix) -> Self::Output {
+        self.anti_constraint_valid()
+    }
+}
+impl std::ops::DivAssign<AntiConstraintValidPrefixOrPostfix> for Flector {
+    fn div_assign(&mut self, _rhs: AntiConstraintValidPrefixOrPostfix) {
+        *self = self.anti_constraint_valid()
+    }
+}
+impl AntiConstraintValid for Flector {
     fn anti_constraint_valid(self) -> Self {
         self
     }

@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 25
 //
@@ -16,7 +16,7 @@
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       4       0
-//  Average:         0       5       0
+//  Average:         0       4       0
 //  Maximum:         0      17       0
 impl std::ops::Div<ConjugationPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
@@ -61,17 +61,21 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for AntiDipoleInversion {
 }
 impl Conjugation for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn conjugation(self) -> Self {
+        use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1(),
             // e235, e315, e125, e4
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e4] * -1.0),
             // e1, e2, e3, e5
             self.group3() * Simd32x4::from(-1.0),
         )
@@ -248,17 +252,17 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for CircleRotor {
 }
 impl Conjugation for CircleRotor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn conjugation(self) -> Self {
+        use crate::elements::*;
         CircleRotor::from_groups(
             // e423, e431, e412
             self.group0(),
             // e415, e425, e435, e321
             self.group1(),
             // e235, e315, e125, e12345
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e12345] * -1.0),
         )
     }
 }
@@ -413,15 +417,15 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for Motor {
 }
 impl Conjugation for Motor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn conjugation(self) -> Self {
+        use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e235, e315, e125, e5
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
         )
     }
 }
@@ -559,17 +563,21 @@ impl std::ops::DivAssign<ConjugationPrefixOrPostfix> for VersorEven {
 }
 impl Conjugation for VersorEven {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div
+    //      f32        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0        6        0
     fn conjugation(self) -> Self {
+        use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e415, e425, e435, e321
             self.group1(),
             // e235, e315, e125, e5
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e5] * -1.0),
             // e1, e2, e3, e4
             self.group3() * Simd32x4::from(-1.0),
         )

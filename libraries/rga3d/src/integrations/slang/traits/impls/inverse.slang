@@ -11,7 +11,7 @@ public extension DualNum {
     public DualNum inverse() {
         return DualNum(
             /* scalar, e1234 */
-            float2(pow(this.scalar, -2)) * this.group0.xy
+            float2(1.0 / this.scalar, this.e1234 /  (this.scalar * this.scalar))
         );
     }
 }
@@ -30,7 +30,7 @@ public extension Flector {
             /* e1, e2, e3, e4 */
             float4(other_g0) * this.group0, 
             /* e423, e431, e412, e321 */
-            float4(other_g0) * this.group1 * float4(-1.0)
+            float4(other_g0 * -1.0) * this.group1
         );
     }
 }
@@ -46,7 +46,7 @@ public extension Horizon {
     public Horizon inverse() {
         return Horizon(
             /* e321 */
-            1.0/this.e321 * -1.0
+            -1.0 / this.e321
         );
     }
 }
@@ -63,9 +63,9 @@ public extension Line {
         float other_g0 = this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12;
         return Line(
             /* e41, e42, e43 */
-            float3(other_g0) * this.group0.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group0.xyz, 
             /* e23, e31, e12 */
-            float3(other_g0) * this.group1.xyz * float3(-1.0)
+            float3(other_g0 * -1.0) * this.group1.xyz
         );
     }
 }
@@ -105,11 +105,11 @@ public extension MultiVector {
             /* e1, e2, e3, e4 */
             float4(other_g0) * this.group1, 
             /* e41, e42, e43 */
-            float3(other_g0) * this.group2.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group2.xyz, 
             /* e23, e31, e12 */
-            float3(other_g0) * this.group3.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            float4(other_g0) * this.group4 * float4(-1.0)
+            float4(other_g0 * -1.0) * this.group4
         );
     }
 }
@@ -125,7 +125,7 @@ public extension Plane {
     public Plane inverse() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(pow(this.e321, -2)) * float4(this.e423 * -1.0, this.e431 * -1.0, this.e412 * -1.0, this.e321 * -1.0)
+            float4(this.e423 /  (this.e321 * this.e321), this.e431 /  (this.e321 * this.e321), this.e412 /  (this.e321 * this.e321), 1.0 / this.e321) * float4(-1.0)
         );
     }
 }
@@ -141,7 +141,7 @@ public extension Point {
     public Point inverse() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3) * this.group0
+            float4(pow(this.e1, 3), pow(this.e2, 3), pow(this.e3, 3), this.e3 * this.e3 * this.e4) + (float4_pow(this.group0.yxxx, 2) * this.group0) + (float4_pow(this.group0.zzyy, 2) * this.group0)
         );
     }
 }
@@ -157,7 +157,7 @@ public extension Scalar {
     public Scalar inverse() {
         return Scalar(
             /* scalar */
-            1.0/this.scalar
+            1.0 / this.scalar
         );
     }
 }

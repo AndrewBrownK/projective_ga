@@ -63,7 +63,7 @@ public extension Scalar {
             /* e41, e42, e43, e1234 */
             other.group0, 
             /* e23, e31, e12, scalar */
-            other.group1 + float4(float3(0.0), this.scalar)
+            float4(other.group1.xyz, other.scalar + this.scalar)
         );
     }
 }
@@ -137,6 +137,109 @@ public extension Scalar {
             /* scalar */
             other.scalar + this.scalar
         );
+    }
+}
+// Fancy infix trick (first half)
+public BitXorInfixPartial<Scalar> operator /(Scalar lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<Scalar>(lhs);
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<Scalar> lhs, AntiScalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public AntiScalar bit_xor(AntiScalar other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public DualNum operator /(BitXorInfixPartial<Scalar> lhs, DualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public DualNum bit_xor(DualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Flector operator /(BitXorInfixPartial<Scalar> lhs, Flector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Flector bit_xor(Flector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Horizon operator /(BitXorInfixPartial<Scalar> lhs, Horizon rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Horizon bit_xor(Horizon other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<Scalar> lhs, Line rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Line bit_xor(Line other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<Scalar> lhs, Motor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Motor bit_xor(Motor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<Scalar> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public MultiVector bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Origin operator /(BitXorInfixPartial<Scalar> lhs, Origin rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Origin bit_xor(Origin other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Scalar> lhs, Plane rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Plane bit_xor(Plane other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Point operator /(BitXorInfixPartial<Scalar> lhs, Point rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Point bit_xor(Point other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Scalar operator /(BitXorInfixPartial<Scalar> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Scalar {
+    public Scalar bit_xor(Scalar other) {
+        return this.wedge(other);
     }
 }
 public extension Scalar {
@@ -251,7 +354,7 @@ public extension Scalar {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0)
+            float4(float3(0.0), other.e321 * -1.0)
         );
     }
 }
@@ -261,7 +364,7 @@ public extension Scalar {
             /* e41, e42, e43, e1234 */
             float4((other.group0.xyz * float3(-1.0)), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(other.group1.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4((other.group1.xyz * float3(-1.0)), this.scalar)
         );
     }
 }
@@ -271,7 +374,7 @@ public extension Scalar {
             /* e41, e42, e43, e1234 */
             other.group0 * float4(-1.0), 
             /* e23, e31, e12, scalar */
-            float4(other.group1.xyz, this.scalar - other.scalar) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4((other.group1.xyz * float3(-1.0)), this.scalar - other.scalar)
         );
     }
 }
@@ -297,7 +400,7 @@ public extension Scalar {
             /* scalar, e1234 */
             float2(this.scalar, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), other.e4) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e4 * -1.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */

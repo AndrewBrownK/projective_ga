@@ -3,15 +3,15 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 10
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         2       0       0
 //   Median:         5       0       0
-//  Average:         5       0       0
-//  Maximum:        14       0       0
+//  Average:         4       0       0
+//  Maximum:        13       0       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         2       0       0
@@ -271,30 +271,32 @@ impl std::ops::DivAssign<RoundNormPrefixOrPostfix> for MultiVector {
 }
 impl RoundNorm for MultiVector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32       14        0        0
+    //           add/sub      mul      div
+    //      f32       12        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd       13        0        0
+    //  no simd       14        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar]
-                    + self[e1] * self[e1]
                     + self[e2] * self[e2]
                     + self[e3] * self[e3]
                     + self[e23] * self[e23]
                     + self[e31] * self[e31]
                     + self[e12] * self[e12]
                     + self[e321] * self[e321],
-                self[e4] * self[e4]
-                    + self[e41] * self[e41]
+                self[e41] * self[e41]
                     + self[e42] * self[e42]
                     + self[e43] * self[e43]
                     + self[e423] * self[e423]
                     + self[e431] * self[e431]
                     + self[e412] * self[e412]
                     + self[e1234] * self[e1234],
-            ]),
+            ]) + Simd32x2::powi(self.group1().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -364,16 +366,20 @@ impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorEven {
 }
 impl RoundNorm for VersorEven {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        4        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        5        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
-                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4],
-            ]),
+                self[e321] * self[e321] + self[e2] * self[e2] + self[e3] * self[e3],
+                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412],
+            ]) + Simd32x2::powi(self.group3().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -405,16 +411,20 @@ impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorOdd {
 }
 impl RoundNorm for VersorOdd {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        4        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        5        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
-                self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
-            ]),
+                self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
+                self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
+            ]) + Simd32x2::powi(self.group0().wx(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5

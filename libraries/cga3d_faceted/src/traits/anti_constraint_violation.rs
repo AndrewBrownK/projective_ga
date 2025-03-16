@@ -8,13 +8,4 @@ pub trait AntiConstraintViolation {
     type Output;
     fn anti_constraint_violation(self) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static anti_constraint_violation: AntiConstraintViolationPrefixOrPostfix = AntiConstraintViolationPrefixOrPostfix;
-pub struct AntiConstraintViolationPrefixOrPostfix;
-impl<A: AntiConstraintViolation> std::ops::Div<A> for AntiConstraintViolationPrefixOrPostfix {
-    type Output = <A as AntiConstraintViolation>::Output;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.anti_constraint_violation()
-    }
-}
 include!("./impls/anti_constraint_violation.rs");

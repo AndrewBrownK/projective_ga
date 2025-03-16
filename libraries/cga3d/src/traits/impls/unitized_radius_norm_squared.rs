@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 11
 //
@@ -221,8 +221,7 @@ impl UnitizedRadiusNormSquared for RoundPoint {
     // f32        3        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2))
-            - 2.0 * (self[e5] / (self[e4]))
+        (self[e1] * self[e1] / (self[e4] * self[e4])) + (self[e2] * self[e2] / (self[e4] * self[e4])) + (self[e3] * self[e3] / (self[e4] * self[e4])) - 2.0 * (self[e5] / self[e4])
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for Sphere {
@@ -237,10 +236,10 @@ impl UnitizedRadiusNormSquared for Sphere {
     // f32        3        1        1
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        2.0 * (self[e3215] / (self[e1234]))
-            - (self[e4235] * self[e4235] * f32::powi(self[e1234], -2))
-            - (self[e4315] * self[e4315] * f32::powi(self[e1234], -2))
-            - (self[e4125] * self[e4125] * f32::powi(self[e1234], -2))
+        2.0 * (self[e3215] / self[e1234])
+            - (self[e4235] * self[e4235] / (self[e1234] * self[e1234]))
+            - (self[e4315] * self[e4315] / (self[e1234] * self[e1234]))
+            - (self[e4125] * self[e4125] / (self[e1234] * self[e1234]))
     }
 }
 impl std::ops::Div<UnitizedRadiusNormSquaredPrefixOrPostfix> for VersorEven {

@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 502
 //
@@ -15,9 +15,9 @@
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       1       0
-//   Median:         5      12       0
+//   Median:         5      13       0
 //  Average:        11      20       0
-//  Maximum:       211     243       0
+//  Maximum:       211     245       0
 impl std::ops::Div<AntiWedgeInfix> for AntiCircleRotor {
     type Output = AntiWedgeInfixPartial<AntiCircleRotor>;
     fn div(self, _rhs: AntiWedgeInfix) -> Self::Output {
@@ -142,11 +142,11 @@ impl AntiWedge<CircleRotor> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       11        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd       10       14        0
-    //  no simd       10       21        0
+    //  no simd       10       22        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -155,7 +155,10 @@ impl AntiWedge<CircleRotor> for AntiCircleRotor {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2().xyz()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 (self[scalar] * other[e12345])
                     - (self[e41] * other[e235])
                     - (self[e42] * other[e315])
@@ -167,7 +170,7 @@ impl AntiWedge<CircleRotor> for AntiCircleRotor {
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ),
+            ]) * self.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -260,11 +263,11 @@ impl AntiWedge<Motor> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        6        7        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        6       10        0
-    //  no simd        6       17        0
+    //  no simd        6       18        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -273,7 +276,10 @@ impl AntiWedge<Motor> for AntiCircleRotor {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2().xyz()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 (self[scalar] * other[e12345])
                     - (self[e41] * other[e235])
                     - (self[e42] * other[e315])
@@ -281,7 +287,7 @@ impl AntiWedge<Motor> for AntiCircleRotor {
                     - (self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435]),
-            ),
+            ]) * self.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -290,11 +296,11 @@ impl AntiWedge<MultiVector> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       17       24        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       19       29        0
-    //  no simd       25       41        0
+    //  no simd       25       42        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -319,8 +325,8 @@ impl AntiWedge<MultiVector> for AntiCircleRotor {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group9().yzxx() * self.group1().zxy().with_w(self[e41]))
-                - (Simd32x3::from(other[e1234]) * self.group2().xyz()).with_w(self[e42] * other[e4315]),
+            ]) - (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e42] * other[e4315]]) * self.group2().xyz().with_w(1.0))
+                - (other.group9().yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
             // e15, e25, e35, e45
@@ -371,11 +377,10 @@ impl AntiWedge<Sphere> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7       13        0
-    //    simd3        0        1        0
-    //    simd4        2        1        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        9       15        0
-    //  no simd       15       20        0
+    //  no simd       15       21        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
@@ -385,8 +390,8 @@ impl AntiWedge<Sphere> for AntiCircleRotor {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group0().yzxx() * self.group1().zxy().with_w(self[e41]))
-                - (Simd32x3::from(other[e1234]) * self.group2().xyz()).with_w(self[e42] * other[e4315]),
+            ]) - (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e42] * other[e4315]]) * self.group2().xyz().with_w(1.0))
+                - (other.group0().yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
         )
@@ -397,11 +402,11 @@ impl AntiWedge<VersorEven> for AntiCircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       11        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd       10       14        0
-    //  no simd       10       21        0
+    //  no simd       10       22        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -410,7 +415,10 @@ impl AntiWedge<VersorEven> for AntiCircleRotor {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2().xyz()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 (self[scalar] * other[e12345])
                     - (self[e41] * other[e235])
                     - (self[e42] * other[e315])
@@ -422,7 +430,7 @@ impl AntiWedge<VersorEven> for AntiCircleRotor {
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ),
+            ]) * self.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -526,7 +534,7 @@ impl AntiWedge<AntiDualNum> for AntiDipoleInversion {
             // e23, e31, e12, scalar
             Simd32x4::from(other[e3215]) * self.group0().with_w(self[e4]),
             // e15, e25, e35, e3215
-            (self.group1().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -592,15 +600,19 @@ impl AntiWedge<AntiMotor> for AntiDipoleInversion {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        6        7        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        6        9        0
-    //  no simd        6       13        0
+    //  no simd        6       14        0
     fn anti_wedge(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e3215]) * self.group0()).with_w(
+            Simd32x4::from([
+                other[e3215],
+                other[e3215],
+                other[e3215],
                 (self[e4] * other[e3215])
                     - (self[e423] * other[e15])
                     - (self[e431] * other[e25])
@@ -608,9 +620,9 @@ impl AntiWedge<AntiMotor> for AntiDipoleInversion {
                     - (self[e415] * other[e23])
                     - (self[e425] * other[e31])
                     - (self[e435] * other[e12]),
-            ),
+            ]) * self.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (self.group1().xyz() * other.group1().www()).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -673,11 +685,11 @@ impl AntiWedge<CircleRotor> for AntiDipoleInversion {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       18       24        0
-    //    simd3        0        3        0
-    //    simd4        3        3        0
+    //    simd3        0        2        0
+    //    simd4        3        4        0
     // Totals...
     // yes simd       21       30        0
-    //  no simd       30       45        0
+    //  no simd       30       46        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -686,7 +698,10 @@ impl AntiWedge<CircleRotor> for AntiDipoleInversion {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2().xyz()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 (self[e4] * other[e12345])
                     - (self[e423] * other[e415])
                     - (self[e431] * other[e425])
@@ -694,7 +709,7 @@ impl AntiWedge<CircleRotor> for AntiDipoleInversion {
                     - (self[e415] * other[e423])
                     - (self[e425] * other[e431])
                     - (self[e435] * other[e412]),
-            ),
+            ]) * self.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]) + (self[e1] * other[e12345]),
@@ -872,11 +887,11 @@ impl AntiWedge<Motor> for AntiDipoleInversion {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       16        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       12       21        0
-    //  no simd       18       33        0
+    //  no simd       18       34        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -885,8 +900,12 @@ impl AntiWedge<Motor> for AntiDipoleInversion {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2().xyz())
-                .with_w((self[e4] * other[e12345]) - (self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                (self[e4] * other[e12345]) - (self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435]),
+            ]) * self.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e321] * other[e415]) + (self[e1] * other[e12345]),
@@ -902,11 +921,11 @@ impl AntiWedge<MultiVector> for AntiDipoleInversion {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       36       48        0
-    //    simd3        4       10        0
-    //    simd4        4        3        0
+    //      f32       36       49        0
+    //    simd3        4       11        0
+    //    simd4        4        2        0
     // Totals...
-    // yes simd       44       61        0
+    // yes simd       44       62        0
     //  no simd       64       90        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
@@ -928,11 +947,11 @@ impl AntiWedge<MultiVector> for AntiDipoleInversion {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (self[e412] * other[e315]) + (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]),
-                (self[e423] * other[e125]) + (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e125] * other[e423]),
-                (self[e431] * other[e235]) + (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e235] * other[e431]),
+                (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]) + (self[e1] * other[e12345]),
+                (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e125] * other[e423]) + (self[e2] * other[e12345]),
+                (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e235] * other[e431]) + (self[e3] * other[e12345]),
                 -(self[e412] * other[e435]) - (self[e415] * other[e423]) - (self[e425] * other[e431]) - (self[e435] * other[e412]),
-            ]) + (Simd32x4::from(other[e12345]) * self.group3().xyz().with_w(self[e4]))
+            ]) + (self.group0().zxy() * other.group8().yzx()).with_w(self[e4] * other[e12345])
                 - (self.group0().yzx() * other.group8().zxy()).with_w(self[e423] * other[e415])
                 - (other.group7().yzx() * self.group2().zxy()).with_w(self[e431] * other[e425]),
             // e5
@@ -1038,11 +1057,11 @@ impl AntiWedge<VersorEven> for AntiDipoleInversion {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       18       25        0
-    //    simd3        0        4        0
-    //    simd4        3        2        0
+    //    simd3        0        3        0
+    //    simd4        3        3        0
     // Totals...
     // yes simd       21       31        0
-    //  no simd       30       45        0
+    //  no simd       30       46        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -1051,7 +1070,10 @@ impl AntiWedge<VersorEven> for AntiDipoleInversion {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2().xyz()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 (self[e4] * other[e12345])
                     - (self[e423] * other[e415])
                     - (self[e431] * other[e425])
@@ -1059,7 +1081,7 @@ impl AntiWedge<VersorEven> for AntiDipoleInversion {
                     - (self[e415] * other[e423])
                     - (self[e425] * other[e431])
                     - (self[e435] * other[e412]),
-            ),
+            ]) * self.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]) + (self[e1] * other[e12345]),
@@ -1122,12 +1144,15 @@ impl std::ops::Div<AntiWedgeInfix> for AntiDualNum {
 impl AntiWedge<AntiCircleRotor> for AntiDualNum {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e45]) * Simd32x4::from(-1.0))
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215] * -1.0) * other.group0().with_w(other[e45]))
     }
 }
 impl AntiWedge<AntiDipoleInversion> for AntiDualNum {
@@ -1145,7 +1170,7 @@ impl AntiWedge<AntiDipoleInversion> for AntiDualNum {
             // e23, e31, e12, scalar
             Simd32x4::from(self[e3215]) * other.group0().with_w(other[e4]),
             // e15, e25, e35, e3215
-            (other.group1().xyz() * self.group0().xx().with_z(self[e3215])).with_w(0.0),
+            (Simd32x3::from(self[e3215]) * other.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -1179,14 +1204,17 @@ impl AntiWedge<Circle> for AntiDualNum {
 impl AntiWedge<CircleRotor> for AntiDualNum {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0        9        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            self.group0().xx().with_zw(self[e3215], self[scalar]) * other.group0().with_w(other[e12345]),
+            self.group0().xx().with_zw(self[e3215], self[scalar] * other[e12345]) * other.group0().with_w(1.0),
             // e15, e25, e35, e3215
             Simd32x4::from(self[e3215]) * other.group1().xyz().with_w(other[e12345]),
         )
@@ -1195,27 +1223,33 @@ impl AntiWedge<CircleRotor> for AntiDualNum {
 impl AntiWedge<Dipole> for AntiDualNum {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e45]) * Simd32x4::from(-1.0))
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215] * -1.0) * other.group0().with_w(other[e45]))
     }
 }
 impl AntiWedge<DipoleInversion> for AntiDualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //      f32        0        2        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        4        0
+    //  no simd        0       10        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group3().xyz().with_w(other[e1234]),
             // e1, e2, e3, e5
-            Simd32x4::from(self[e3215]) * other.group0().with_w(other[e45]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group0().with_w(other[e45]),
         )
     }
 }
@@ -1241,26 +1275,25 @@ impl AntiWedge<FlatPoint> for AntiDualNum {
     //  no simd        0        3        0
     fn anti_wedge(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e45], 1.0]) * Simd32x2::from([-1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e45], 0.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl AntiWedge<Flector> for AntiDualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //      f32        0        3        0
+    //    simd3        0        1        0
     // Totals...
     // yes simd        0        4        0
-    //  no simd        0       11        0
+    //  no simd        0        6        0
     fn anti_wedge(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (other.group1().xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
+            (Simd32x3::from(self[e3215] * -1.0) * other.group1().xyz()).with_w(0.0),
             // e1, e2, e3, e5
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e45] * -1.0),
         )
     }
 }
@@ -1272,7 +1305,7 @@ impl AntiWedge<Line> for AntiDualNum {
     // no simd        0        3        0
     fn anti_wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (other.group0() * self.group0().xx().with_z(self[e3215])).with_w(0.0))
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (Simd32x3::from(self[e3215]) * other.group0()).with_w(0.0))
     }
 }
 impl AntiWedge<Motor> for AntiDualNum {
@@ -1298,33 +1331,32 @@ impl AntiWedge<MultiVector> for AntiDualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        1        6        0
-    //    simd3        0        6        0
-    //    simd4        0        1        0
+    //      f32        1        9        0
+    //    simd3        0        4        0
     // Totals...
     // yes simd        1       13        0
-    //  no simd        1       28        0
+    //  no simd        1       21        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([(self[e3215] * other[e4]) + (self[scalar] * other[e12345]), 0.0]),
             // e1, e2, e3, e4
-            (other.group4() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
+            (Simd32x3::from(self[e3215] * -1.0) * other.group4()).with_w(0.0),
             // e5
             self[e3215] * other[e45] * -1.0,
             // e15, e25, e35, e45
-            (other.group6().xyz() * self.group0().xx().with_z(self[e3215])).with_w(0.0),
+            (Simd32x3::from(self[e3215]) * other.group6().xyz()).with_w(0.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12
             Simd32x3::from(self[e3215]) * other.group7(),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234] * -1.0),
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e235, e315, e125
-            Simd32x3::from(self[e3215]) * other.group9().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(self[e3215] * -1.0) * other.group9().xyz(),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(self[e3215] * other[e12345]),
             // e1234
@@ -1335,15 +1367,15 @@ impl AntiWedge<MultiVector> for AntiDualNum {
 impl AntiWedge<Plane> for AntiDualNum {
     type Output = AntiFlatPoint;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd3        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        4        0
     fn anti_wedge(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        AntiFlatPoint::from_groups(
-            // e235, e315, e125, e321
-            (other.group0().xyz() * self.group0().xx().with_z(self[e3215]) * Simd32x3::from(-1.0)).with_w(0.0),
-        )
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (Simd32x3::from(self[e3215] * -1.0) * other.group0().xyz()).with_w(0.0))
     }
 }
 impl AntiWedge<RoundPoint> for AntiDualNum {
@@ -1359,15 +1391,15 @@ impl AntiWedge<RoundPoint> for AntiDualNum {
 impl AntiWedge<Sphere> for AntiDualNum {
     type Output = AntiFlatPoint;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
-        AntiFlatPoint::from_groups(
-            // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
-        )
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ Simd32x4::from(self[e3215] * -1.0) * other.group0().xyz().with_w(other[e1234]))
     }
 }
 impl AntiWedge<VersorEven> for AntiDualNum {
@@ -1392,16 +1424,19 @@ impl AntiWedge<VersorEven> for AntiDualNum {
 impl AntiWedge<VersorOdd> for AntiDualNum {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //      f32        0        2        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        4        0
+    //  no simd        0       10        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group3().xyz().with_w(other[e1234]),
             // e1, e2, e3, e5
-            Simd32x4::from(self[e3215]) * other.group0().xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group0().xyz().with_w(other[e45]),
         )
     }
 }
@@ -1461,11 +1496,10 @@ impl AntiWedge<Circle> for AntiFlatPoint {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        0        0
+    //      f32        4        8        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        5       10        0
+    // yes simd        5        9        0
     //  no simd        8       12        0
     fn anti_wedge(self, other: Circle) -> Self::Output {
         use crate::elements::*;
@@ -1476,7 +1510,7 @@ impl AntiWedge<Circle> for AntiFlatPoint {
                 (self[e125] * other[e423]) + (self[e321] * other[e425]),
                 (self[e235] * other[e431]) + (self[e321] * other[e435]),
                 -(self[e315] * other[e425]) - (self[e125] * other[e435]),
-            ]) - (other.group0().yzx() * self.group0().zxy()).with_w(self[e235] * other[e415]),
+            ]) - (self.group0().zxyx() * other.group0().yzx().with_w(other[e415])),
         )
     }
 }
@@ -1484,11 +1518,10 @@ impl AntiWedge<CircleRotor> for AntiFlatPoint {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        1        0
+    //      f32        4        8        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        5       11        0
+    // yes simd        5       10        0
     //  no simd        8       16        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
@@ -1501,7 +1534,7 @@ impl AntiWedge<CircleRotor> for AntiFlatPoint {
                 (self[e125] * other[e423]) + (self[e321] * other[e425]),
                 (self[e235] * other[e431]) + (self[e321] * other[e435]),
                 -(self[e315] * other[e425]) - (self[e125] * other[e435]),
-            ]) - (other.group0().yzx() * self.group0().zxy()).with_w(self[e235] * other[e415]),
+            ]) - (self.group0().zxyx() * other.group0().yzx().with_w(other[e415])),
         )
     }
 }
@@ -1522,11 +1555,11 @@ impl AntiWedge<DipoleInversion> for AntiFlatPoint {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        7        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //      f32        2        6        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        4       10        0
+    // yes simd        4        9        0
     //  no simd        9       16        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
@@ -1537,7 +1570,7 @@ impl AntiWedge<DipoleInversion> for AntiFlatPoint {
                 self[e315] * other[e1234],
                 self[e125] * other[e1234],
                 -(self[e315] * other[e42]) - (self[e125] * other[e43]) - (self[e321] * other[e45]),
-            ]) - (other.group3().xyz() * self.group0().www()).with_w(self[e235] * other[e41]),
+            ]) - (self.group0().wwwx() * other.group3().xyz().with_w(other[e41])),
             // e15, e25, e35, e3215
             ((self.group0().yzx() * other.group3().zxy()) - (self.group0().zxy() * other.group3().yzx())).with_w(0.0),
         )
@@ -1568,16 +1601,17 @@ impl AntiWedge<Flector> for AntiFlatPoint {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
+    //      f32        0        1        0
     //    simd3        1        2        0
-    //    simd4        0        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        3       14        0
+    //  no simd        3       11        0
     fn anti_wedge(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x4::from(self[e321]) * other.group1().xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e321] * -1.0) * other.group1().xyz().with_w(other[e45]),
             // e15, e25, e35, e3215
             ((self.group0().yzx() * other.group1().zxy()) - (self.group0().zxy() * other.group1().yzx())).with_w(0.0),
         )
@@ -1596,7 +1630,7 @@ impl AntiWedge<Line> for AntiFlatPoint {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            (Simd32x3::from(self[e321]) * other.group0()).with_w(-(self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
+            (other.group0() * self.group0().www()).with_w(-(self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
         )
     }
 }
@@ -1662,14 +1696,17 @@ impl AntiWedge<MultiVector> for AntiFlatPoint {
 impl AntiWedge<Plane> for AntiFlatPoint {
     type Output = AntiLine;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        4        0
-    // no simd        3       12        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd3        1        3        0
+    // Totals...
+    // yes simd        1        4        0
+    //  no simd        3       10        0
     fn anti_wedge(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         AntiLine::from_groups(
             // e23, e31, e12
-            Simd32x3::from(self[e321]) * other.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(self[e321] * -1.0) * other.group0().xyz(),
             // e15, e25, e35
             (self.group0().yzx() * other.group0().zxy()) - (self.group0().zxy() * other.group0().yzx()),
         )
@@ -1801,11 +1838,10 @@ impl AntiWedge<Circle> for AntiFlector {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        0        0
+    //      f32        4        8        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        5       10        0
+    // yes simd        5        9        0
     //  no simd        8       12        0
     fn anti_wedge(self, other: Circle) -> Self::Output {
         use crate::elements::*;
@@ -1816,7 +1852,7 @@ impl AntiWedge<Circle> for AntiFlector {
                 (self[e125] * other[e423]) + (self[e321] * other[e425]),
                 (self[e235] * other[e431]) + (self[e321] * other[e435]),
                 -(self[e315] * other[e425]) - (self[e125] * other[e435]),
-            ]) - (other.group0().yzx() * self.group0().zxy()).with_w(self[e235] * other[e415]),
+            ]) - (self.group0().zxyx() * other.group0().yzx().with_w(other[e415])),
         )
     }
 }
@@ -1824,11 +1860,11 @@ impl AntiWedge<CircleRotor> for AntiFlector {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //      f32        4        9        0
+    //    simd3        0        1        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        6       13        0
+    // yes simd        6       12        0
     //  no simd       12       20        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
@@ -1842,7 +1878,7 @@ impl AntiWedge<CircleRotor> for AntiFlector {
                 (self[e321] * other[e435]) + (self[e3] * other[e12345]),
                 -(self[e315] * other[e425]) - (self[e125] * other[e435]),
             ]) + (other.group0().zxy() * self.group0().yzx()).with_w(self[e5] * other[e12345])
-                - (other.group0().yzx() * self.group0().zxy()).with_w(self[e235] * other[e415]),
+                - (self.group0().zxyx() * other.group0().yzx().with_w(other[e415])),
         )
     }
 }
@@ -1863,11 +1899,11 @@ impl AntiWedge<DipoleInversion> for AntiFlector {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5        8        0
-    //    simd3        1        4        0
-    //    simd4        2        0        0
+    //      f32        5        7        0
+    //    simd3        1        3        0
+    //    simd4        2        1        0
     // Totals...
-    // yes simd        8       12        0
+    // yes simd        8       11        0
     //  no simd       16       20        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
@@ -1879,7 +1915,7 @@ impl AntiWedge<DipoleInversion> for AntiFlector {
                     - (self[e125] * other[e43])
                     - (self[e321] * other[e45]),
             ) + (self.group0().xyz() * other.group2().www()).with_w(self[e1] * other[e4235])
-                - (other.group3().xyz() * self.group0().www()).with_w(self[e235] * other[e41]),
+                - (self.group0().wwwx() * other.group3().xyz().with_w(other[e41])),
             // e15, e25, e35, e3215
             ((self.group0().yzx() * other.group3().zxy()) - (self.group0().zxy() * other.group3().yzx())).with_w(0.0),
         )
@@ -1944,7 +1980,7 @@ impl AntiWedge<Line> for AntiFlector {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            (Simd32x3::from(self[e321]) * other.group0()).with_w(-(self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
+            (other.group0() * self.group0().www()).with_w(-(self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435])),
         )
     }
 }
@@ -2044,11 +2080,11 @@ impl AntiWedge<Sphere> for AntiFlector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2       10        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd        4       13        0
-    //  no simd        9       19        0
+    //  no simd        9       20        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
@@ -2058,7 +2094,7 @@ impl AntiWedge<Sphere> for AntiFlector {
                 self[e321] * other[e4315] * -1.0,
                 self[e321] * other[e4125] * -1.0,
                 (self[e2] * other[e4315]) + (self[e3] * other[e4125]) + (self[e5] * other[e1234]),
-            ]) + (Simd32x3::from(other[e1234]) * self.group0().xyz()).with_w(self[e1] * other[e4235]),
+            ]) + (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e1] * other[e4235]]) * self.group0().xyz().with_w(1.0)),
             // e15, e25, e35, e3215
             ((self.group0().yzx() * other.group0().zxy()) - (self.group0().zxy() * other.group0().yzx())).with_w(0.0),
         )
@@ -2168,24 +2204,28 @@ impl AntiWedge<CircleRotor> for AntiLine {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e12345]) * self.group0()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435])
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ),
+            ]) * self.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (self.group1() * other.group2().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group1()).with_w(0.0),
         )
     }
 }
@@ -2264,17 +2304,23 @@ impl AntiWedge<Motor> for AntiLine {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        3        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        2        5        0
-    //  no simd        2        9        0
+    //  no simd        2       10        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e12345]) * self.group0()).with_w(-(self[e23] * other[e415]) - (self[e31] * other[e425]) - (self[e12] * other[e435])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                -(self[e23] * other[e415]) - (self[e31] * other[e425]) - (self[e12] * other[e435]),
+            ]) * self.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (self.group1() * other.group0().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group1()).with_w(0.0),
         )
     }
 }
@@ -2308,7 +2354,7 @@ impl AntiWedge<MultiVector> for AntiLine {
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
             // e15, e25, e35, e45
-            (self.group1() * other.group0().yy().with_z(other[e12345])).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group1()).with_w(0.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12
@@ -2375,24 +2421,28 @@ impl AntiWedge<VersorEven> for AntiLine {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e12345]) * self.group0()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435])
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ),
+            ]) * self.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (self.group1() * other.group0().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group1()).with_w(0.0),
         )
     }
 }
@@ -2427,12 +2477,15 @@ impl std::ops::Div<AntiWedgeInfix> for AntiMotor {
 impl AntiWedge<AntiCircleRotor> for AntiMotor {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
-        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215]) * other.group0().with_w(other[e45]) * Simd32x4::from(-1.0))
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215] * -1.0) * other.group0().with_w(other[e45]))
     }
 }
 impl AntiWedge<AntiDipoleInversion> for AntiMotor {
@@ -2440,15 +2493,19 @@ impl AntiWedge<AntiDipoleInversion> for AntiMotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        6        7        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        6        9        0
-    //  no simd        6       13        0
+    //  no simd        6       14        0
     fn anti_wedge(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e3215]) * other.group0()).with_w(
+            Simd32x4::from([
+                self[e3215],
+                self[e3215],
+                self[e3215],
                 (other[e4] * self[e3215])
                     - (other[e423] * self[e15])
                     - (other[e431] * self[e25])
@@ -2456,9 +2513,9 @@ impl AntiWedge<AntiDipoleInversion> for AntiMotor {
                     - (other[e415] * self[e23])
                     - (other[e425] * self[e31])
                     - (other[e435] * self[e12]),
-            ),
+            ]) * other.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (other.group1().xyz() * self.group1().www()).with_w(0.0),
+            (Simd32x3::from(self[e3215]) * other.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -2491,7 +2548,7 @@ impl AntiWedge<Circle> for AntiMotor {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e3215]) * other.group0()).with_w(
+            (other.group0() * self.group1().www()).with_w(
                 -(self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435])
@@ -2500,7 +2557,7 @@ impl AntiWedge<Circle> for AntiMotor {
                     - (self[e35] * other[e412]),
             ),
             // e15, e25, e35, e3215
-            (other.group1().xyz() * self.group1().www()).with_w(0.0),
+            (Simd32x3::from(self[e3215]) * other.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -2508,27 +2565,27 @@ impl AntiWedge<CircleRotor> for AntiMotor {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5       11        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //      f32        5       10        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        7       14        0
+    // yes simd        7       13        0
     //  no simd       12       20        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from([
-                self[e23] * other[e12345],
-                self[e31] * other[e12345],
-                self[e12] * other[e12345],
+                self[e3215] * other[e423],
+                self[e3215] * other[e431],
+                self[e3215] * other[e412],
                 -(self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435])
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ]) + (other.group0() * self.group1().www()).with_w(self[scalar] * other[e12345]),
+            ]) + (Simd32x4::from(other[e12345]) * self.group0()),
             // e15, e25, e35, e3215
             ((Simd32x3::from(self[e3215]) * other.group1().xyz()) + (Simd32x3::from(other[e12345]) * self.group1().xyz())).with_w(self[e3215] * other[e12345]),
         )
@@ -2538,42 +2595,39 @@ impl AntiWedge<Dipole> for AntiMotor {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //      f32        0        1        0
+    //    simd4        0        1        0
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
-        AntiPlane::from_groups(
-            // e1, e2, e3, e5
-            (other.group0() * self.group1().www() * Simd32x3::from(-1.0)).with_w(self[e3215] * other[e45] * -1.0),
-        )
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(self[e3215] * -1.0) * other.group0().with_w(other[e45]))
     }
 }
 impl AntiWedge<DipoleInversion> for AntiMotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
+    //      f32        4       10        0
     //    simd3        0        1        0
-    //    simd4        2        3        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        6       13        0
-    //  no simd       12       24        0
+    //  no simd       12       21        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group3().xyz().with_w(other[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from([
-                -(self[e12] * other[e4315]) - (self[e15] * other[e1234]),
-                -(self[e23] * other[e4125]) - (self[e25] * other[e1234]),
-                -(self[e31] * other[e4235]) - (self[e35] * other[e1234]),
+                -(self[e15] * other[e1234]) - (self[e3215] * other[e41]),
+                -(self[e25] * other[e1234]) - (self[e3215] * other[e42]),
+                -(self[e35] * other[e1234]) - (self[e3215] * other[e43]),
                 (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
             ]) + (other.group3().zxyx() * self.group0().yzx().with_w(self[e15]))
-                - (other.group0() * self.group1().www()).with_w(self[e3215] * other[e45]),
+                - (self.group0().zxy() * other.group3().yzx()).with_w(self[e3215] * other[e45]),
         )
     }
 }
@@ -2604,24 +2658,24 @@ impl AntiWedge<FlatPoint> for AntiMotor {
     //  no simd        0        3        0
     fn anti_wedge(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e45], 1.0]) * Simd32x2::from([-1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e3215] * other[e45], 0.0]) * Simd32x2::from([-1.0, 0.0]))
     }
 }
 impl AntiWedge<Flector> for AntiMotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        3        0
+    //      f32        1        4        0
+    //    simd3        0        2        0
     //    simd4        2        1        0
     // Totals...
     // yes simd        3        7        0
-    //  no simd        9       16        0
+    //  no simd        9       14        0
     fn anti_wedge(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (other.group1().xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
+            (Simd32x3::from(self[e3215] * -1.0) * other.group1().xyz()).with_w(0.0),
             // e1, e2, e3, e5
             (other.group1().zxyx() * self.group0().yzx().with_w(self[e15])) + Simd32x3::from(0.0).with_w((self[e25] * other[e4315]) + (self[e35] * other[e4125]))
                 - (self.group0().zxy() * other.group1().yzx()).with_w(self[e3215] * other[e45]),
@@ -2643,7 +2697,7 @@ impl AntiWedge<Line> for AntiMotor {
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(self[e23] * other[e415]) - (self[e31] * other[e425]) - (self[e12] * other[e435])),
             // e15, e25, e35, e3215
-            (other.group0() * self.group1().www()).with_w(0.0),
+            (Simd32x3::from(self[e3215]) * other.group0()).with_w(0.0),
         )
     }
 }
@@ -2652,16 +2706,21 @@ impl AntiWedge<Motor> for AntiMotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        5        0
-    //    simd3        1        3        0
+    //    simd3        1        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        4        8        0
-    //  no simd        6       14        0
+    //  no simd        6       15        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e12345]) * self.group0().xyz())
-                .with_w((self[scalar] * other[e12345]) - (self[e23] * other[e415]) - (self[e31] * other[e425]) - (self[e12] * other[e435])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                (self[scalar] * other[e12345]) - (self[e23] * other[e415]) - (self[e31] * other[e425]) - (self[e12] * other[e435]),
+            ]) * self.group0().xyz().with_w(1.0),
             // e15, e25, e35, e3215
             ((Simd32x3::from(self[e3215]) * other.group0().xyz()) + (Simd32x3::from(other[e12345]) * self.group1().xyz())).with_w(self[e3215] * other[e12345]),
         )
@@ -2671,12 +2730,12 @@ impl AntiWedge<MultiVector> for AntiMotor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       10       14        0
-    //    simd3        2       10        0
-    //    simd4        3        1        0
+    //      f32       10       16        0
+    //    simd3        2        9        0
+    //    simd4        3        0        0
     // Totals...
     // yes simd       15       25        0
-    //  no simd       28       48        0
+    //  no simd       28       43        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2705,11 +2764,11 @@ impl AntiWedge<MultiVector> for AntiMotor {
             // e23, e31, e12
             (Simd32x3::from(self[e3215]) * other.group7()) + (Simd32x3::from(other[e12345]) * self.group0().xyz()),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e3215] * other[e1234] * -1.0),
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e235, e315, e125
-            Simd32x3::from(self[e3215]) * other.group9().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(self[e3215] * -1.0) * other.group9().xyz(),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(self[e3215] * other[e12345]),
             // e1234
@@ -2721,17 +2780,17 @@ impl AntiWedge<Plane> for AntiMotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        1        8        0
-    //    simd3        0        2        0
+    //      f32        1        9        0
+    //    simd3        0        1        0
     //    simd4        1        1        0
     // Totals...
     // yes simd        2       11        0
-    //  no simd        5       18        0
+    //  no simd        5       16        0
     fn anti_wedge(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (other.group0().xyz() * self.group1().www() * Simd32x3::from(-1.0)).with_w(0.0),
+            (Simd32x3::from(self[e3215] * -1.0) * other.group0().xyz()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 self[e12] * other[e4315] * -1.0,
@@ -2756,16 +2815,16 @@ impl AntiWedge<Sphere> for AntiMotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        8        0
-    //    simd4        1        3        0
+    //      f32        4        9        0
+    //    simd4        1        2        0
     // Totals...
     // yes simd        5       11        0
-    //  no simd        8       20        0
+    //  no simd        8       17        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group0().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group0().xyz().with_w(other[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from([
                 -(self[e12] * other[e4315]) - (self[e15] * other[e1234]),
@@ -2809,17 +2868,17 @@ impl AntiWedge<VersorOdd> for AntiMotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
+    //      f32        4       10        0
     //    simd3        0        1        0
-    //    simd4        2        3        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        6       13        0
-    //  no simd       12       24        0
+    //  no simd       12       21        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(self[e3215]) * other.group3().xyz().with_w(other[e1234]) * Simd32x4::from(-1.0),
+            Simd32x4::from(self[e3215] * -1.0) * other.group3().xyz().with_w(other[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from([
                 -(self[e15] * other[e1234]) - (self[e3215] * other[e41]),
@@ -2919,7 +2978,7 @@ impl AntiWedge<MultiVector> for AntiPlane {
             // scalar, e12345
             Simd32x2::from([(self[e1] * other[e4235]) + (self[e2] * other[e4315]) + (self[e3] * other[e4125]) + (self[e5] * other[e1234]), 0.0]),
             // e1, e2, e3, e4
-            (self.group0().xyz() * other.group0().yy().with_z(other[e12345])).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group0().xyz()).with_w(0.0),
             // e5
             self[e5] * other[e12345],
             // e15, e25, e35, e45
@@ -3497,11 +3556,10 @@ impl AntiWedge<AntiFlatPoint> for Circle {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        0        0
+    //      f32        4        8        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        5       10        0
+    // yes simd        5        9        0
     //  no simd        8       12        0
     fn anti_wedge(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
@@ -3512,7 +3570,7 @@ impl AntiWedge<AntiFlatPoint> for Circle {
                 (other[e125] * self[e423]) + (other[e321] * self[e425]),
                 (other[e235] * self[e431]) + (other[e321] * self[e435]),
                 -(other[e315] * self[e425]) - (other[e125] * self[e435]),
-            ]) - (self.group0().yzx() * other.group0().zxy()).with_w(other[e235] * self[e415]),
+            ]) - (other.group0().zxyx() * self.group0().yzx().with_w(self[e415])),
         )
     }
 }
@@ -3520,11 +3578,10 @@ impl AntiWedge<AntiFlector> for Circle {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        0        0
+    //      f32        4        8        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        5       10        0
+    // yes simd        5        9        0
     //  no simd        8       12        0
     fn anti_wedge(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
@@ -3535,7 +3592,7 @@ impl AntiWedge<AntiFlector> for Circle {
                 (other[e125] * self[e423]) + (other[e321] * self[e425]),
                 (other[e235] * self[e431]) + (other[e321] * self[e435]),
                 -(other[e315] * self[e425]) - (other[e125] * self[e435]),
-            ]) - (self.group0().yzx() * other.group0().zxy()).with_w(other[e235] * self[e415]),
+            ]) - (other.group0().zxyx() * self.group0().yzx().with_w(self[e415])),
         )
     }
 }
@@ -3565,7 +3622,7 @@ impl AntiWedge<AntiMotor> for Circle {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(other[e3215]) * self.group0()).with_w(
+            (self.group0() * other.group1().www()).with_w(
                 -(other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435])
@@ -3574,7 +3631,7 @@ impl AntiWedge<AntiMotor> for Circle {
                     - (other[e35] * self[e412]),
             ),
             // e15, e25, e35, e3215
-            (self.group1().xyz() * other.group1().www()).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group1().xyz()).with_w(0.0),
         )
     }
 }
@@ -3634,12 +3691,12 @@ impl AntiWedge<CircleRotor> for Circle {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       17       24        0
-    //    simd3        0        4        0
-    //    simd4        2        1        0
+    //      f32       17       23        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
-    // yes simd       19       29        0
-    //  no simd       25       40        0
+    // yes simd       19       28        0
+    //  no simd       25       41        0
     fn anti_wedge(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -3648,22 +3705,25 @@ impl AntiWedge<CircleRotor> for Circle {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e423] * other[e415])
                     - (self[e431] * other[e425])
                     - (self[e412] * other[e435])
                     - (self[e415] * other[e423])
                     - (self[e425] * other[e431])
                     - (self[e435] * other[e412]),
-            ),
+            ]) * self.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e412] * other[e315]) + (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]),
                 (self[e423] * other[e125]) + (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e125] * other[e423]),
                 (self[e431] * other[e235]) + (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e235] * other[e431]),
-                -(self[e415] * other[e235]) - (self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e125] * other[e435]),
-            ]) - (self.group0().yzx() * other.group2().zxy()).with_w(self[e235] * other[e415])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e315] * other[e425]),
+                -(self[e435] * other[e125]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
+            ]) - (other.group2().zxyx() * self.group0().yzx().with_w(self[e415]))
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e425] * other[e315]),
         )
     }
 }
@@ -3829,12 +3889,12 @@ impl AntiWedge<Motor> for Circle {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        1        0
+    //      f32        9       14        0
+    //    simd3        0        1        0
+    //    simd4        1        3        0
     // Totals...
-    // yes simd       10       19        0
-    //  no simd       13       28        0
+    // yes simd       10       18        0
+    //  no simd       13       29        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -3843,14 +3903,19 @@ impl AntiWedge<Motor> for Circle {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(-(self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                -(self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435]),
+            ]) * self.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e412] * other[e315]) + (self[e321] * other[e415]),
                 (self[e423] * other[e125]) + (self[e321] * other[e425]),
                 (self[e431] * other[e235]) + (self[e321] * other[e435]),
-                -(self[e415] * other[e235]) - (self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
-            ]) - (self.group0().yzx() * other.group1().zxy()).with_w(self[e235] * other[e415]),
+                -(self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
+            ]) - (other.group1().zxyx() * self.group0().yzx().with_w(self[e415])),
         )
     }
 }
@@ -3978,12 +4043,12 @@ impl AntiWedge<VersorEven> for Circle {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       17       24        0
-    //    simd3        0        4        0
-    //    simd4        2        1        0
+    //      f32       17       23        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
-    // yes simd       19       29        0
-    //  no simd       25       40        0
+    // yes simd       19       28        0
+    //  no simd       25       41        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -3992,22 +4057,25 @@ impl AntiWedge<VersorEven> for Circle {
             // e415, e425, e435, e321
             Simd32x4::from(other[e12345]) * self.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e423] * other[e415])
                     - (self[e431] * other[e425])
                     - (self[e412] * other[e435])
                     - (self[e415] * other[e423])
                     - (self[e425] * other[e431])
                     - (self[e435] * other[e412]),
-            ),
+            ]) * self.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e412] * other[e315]) + (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]),
                 (self[e423] * other[e125]) + (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e125] * other[e423]),
                 (self[e431] * other[e235]) + (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e235] * other[e431]),
-                -(self[e415] * other[e235]) - (self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e125] * other[e435]),
-            ]) - (self.group0().yzx() * other.group2().zxy()).with_w(self[e235] * other[e415])
-                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e315] * other[e425]),
+                -(self[e435] * other[e125]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
+            ]) - (other.group2().zxyx() * self.group0().yzx().with_w(self[e415]))
+                - (self.group2().zxy() * other.group0().yzx()).with_w(self[e425] * other[e315]),
         )
     }
 }
@@ -4062,11 +4130,11 @@ impl AntiWedge<AntiCircleRotor> for CircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       11        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd       10       14        0
-    //  no simd       10       21        0
+    //  no simd       10       22        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -4075,7 +4143,10 @@ impl AntiWedge<AntiCircleRotor> for CircleRotor {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2().xyz()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 (other[scalar] * self[e12345])
                     - (other[e41] * self[e235])
                     - (other[e42] * self[e315])
@@ -4087,7 +4158,7 @@ impl AntiWedge<AntiCircleRotor> for CircleRotor {
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ),
+            ]) * other.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -4096,11 +4167,11 @@ impl AntiWedge<AntiDipoleInversion> for CircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       18       24        0
-    //    simd3        0        3        0
-    //    simd4        3        3        0
+    //    simd3        0        2        0
+    //    simd4        3        4        0
     // Totals...
     // yes simd       21       30        0
-    //  no simd       30       45        0
+    //  no simd       30       46        0
     fn anti_wedge(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -4109,7 +4180,10 @@ impl AntiWedge<AntiDipoleInversion> for CircleRotor {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2().xyz()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 (other[e4] * self[e12345])
                     - (other[e423] * self[e415])
                     - (other[e431] * self[e425])
@@ -4117,7 +4191,7 @@ impl AntiWedge<AntiDipoleInversion> for CircleRotor {
                     - (other[e415] * self[e423])
                     - (other[e425] * self[e431])
                     - (other[e435] * self[e412]),
-            ),
+            ]) * other.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]) + (other[e1] * self[e12345]),
@@ -4133,14 +4207,17 @@ impl AntiWedge<AntiDipoleInversion> for CircleRotor {
 impl AntiWedge<AntiDualNum> for CircleRotor {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0        9        0
     fn anti_wedge(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            other.group0().xx().with_zw(other[e3215], other[scalar]) * self.group0().with_w(self[e12345]),
+            other.group0().xx().with_zw(other[e3215], other[scalar] * self[e12345]) * self.group0().with_w(1.0),
             // e15, e25, e35, e3215
             Simd32x4::from(other[e3215]) * self.group1().xyz().with_w(self[e12345]),
         )
@@ -4150,11 +4227,10 @@ impl AntiWedge<AntiFlatPoint> for CircleRotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        1        0
-    //    simd4        1        1        0
+    //      f32        4        8        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        5       11        0
+    // yes simd        5       10        0
     //  no simd        8       16        0
     fn anti_wedge(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
@@ -4167,7 +4243,7 @@ impl AntiWedge<AntiFlatPoint> for CircleRotor {
                 (other[e125] * self[e423]) + (other[e321] * self[e425]),
                 (other[e235] * self[e431]) + (other[e321] * self[e435]),
                 -(other[e315] * self[e425]) - (other[e125] * self[e435]),
-            ]) - (self.group0().yzx() * other.group0().zxy()).with_w(other[e235] * self[e415]),
+            ]) - (other.group0().zxyx() * self.group0().yzx().with_w(self[e415])),
         )
     }
 }
@@ -4175,11 +4251,11 @@ impl AntiWedge<AntiFlector> for CircleRotor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //      f32        4        9        0
+    //    simd3        0        1        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        6       13        0
+    // yes simd        6       12        0
     //  no simd       12       20        0
     fn anti_wedge(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
@@ -4193,7 +4269,7 @@ impl AntiWedge<AntiFlector> for CircleRotor {
                 (other[e321] * self[e435]) + (other[e3] * self[e12345]),
                 -(other[e315] * self[e425]) - (other[e125] * self[e435]),
             ]) + (self.group0().zxy() * other.group0().yzx()).with_w(other[e5] * self[e12345])
-                - (self.group0().yzx() * other.group0().zxy()).with_w(other[e235] * self[e415]),
+                - (other.group0().zxyx() * self.group0().yzx().with_w(self[e415])),
         )
     }
 }
@@ -4202,24 +4278,28 @@ impl AntiWedge<AntiLine> for CircleRotor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e12345]) * other.group0()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435])
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ),
+            ]) * other.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (other.group1() * self.group2().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group1()).with_w(0.0),
         )
     }
 }
@@ -4227,27 +4307,27 @@ impl AntiWedge<AntiMotor> for CircleRotor {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5       11        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //      f32        5       10        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        7       14        0
+    // yes simd        7       13        0
     //  no simd       12       20        0
     fn anti_wedge(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
             Simd32x4::from([
-                other[e23] * self[e12345],
-                other[e31] * self[e12345],
-                other[e12] * self[e12345],
+                other[e3215] * self[e423],
+                other[e3215] * self[e431],
+                other[e3215] * self[e412],
                 -(other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435])
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ]) + (self.group0() * other.group1().www()).with_w(other[scalar] * self[e12345]),
+            ]) + (Simd32x4::from(self[e12345]) * other.group0()),
             // e15, e25, e35, e3215
             ((Simd32x3::from(other[e3215]) * self.group1().xyz()) + (Simd32x3::from(self[e12345]) * other.group1().xyz())).with_w(other[e3215] * self[e12345]),
         )
@@ -4289,12 +4369,12 @@ impl AntiWedge<Circle> for CircleRotor {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       17       24        0
-    //    simd3        0        4        0
-    //    simd4        2        1        0
+    //      f32       17       23        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
-    // yes simd       19       29        0
-    //  no simd       25       40        0
+    // yes simd       19       28        0
+    //  no simd       25       41        0
     fn anti_wedge(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -4303,22 +4383,25 @@ impl AntiWedge<Circle> for CircleRotor {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e423] * self[e415])
                     - (other[e431] * self[e425])
                     - (other[e412] * self[e435])
                     - (other[e415] * self[e423])
                     - (other[e425] * self[e431])
                     - (other[e435] * self[e412]),
-            ),
+            ]) * other.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]),
                 (other[e423] * self[e125]) + (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e125] * self[e423]),
                 (other[e431] * self[e235]) + (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e235] * self[e431]),
-                -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e125] * self[e435]),
-            ]) - (other.group0().yzx() * self.group2().zxy()).with_w(other[e235] * self[e415])
-                - (other.group2().zxy() * self.group0().yzx()).with_w(other[e315] * self[e425]),
+                -(other[e435] * self[e125]) - (other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
+            ]) - (self.group2().zxyx() * other.group0().yzx().with_w(other[e415]))
+                - (other.group2().zxy() * self.group0().yzx()).with_w(other[e425] * self[e315]),
         )
     }
 }
@@ -4380,7 +4463,7 @@ impl AntiWedge<Dipole> for CircleRotor {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(
+            (other.group2() * self.group2().www()).with_w(
                 -(self[e423] * other[e15])
                     - (self[e431] * other[e25])
                     - (self[e412] * other[e35])
@@ -4530,16 +4613,16 @@ impl AntiWedge<Line> for CircleRotor {
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
-            (other.group0() * self.group2().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group0()).with_w(0.0),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group1()).with_w(-(self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435])),
+            (other.group1() * self.group2().www()).with_w(-(self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435])),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e412] * other[e315]) + (self[e321] * other[e415]),
                 (self[e423] * other[e125]) + (self[e321] * other[e425]),
                 (self[e431] * other[e235]) + (self[e321] * other[e435]),
-                -(self[e415] * other[e235]) - (self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
-            ]) - (self.group0().yzx() * other.group1().zxy()).with_w(self[e235] * other[e415]),
+                -(self[e425] * other[e315]) - (self[e435] * other[e125]) - (self[e235] * other[e415]) - (self[e315] * other[e425]) - (self[e125] * other[e435]),
+            ]) - (self.group0().yzx() * other.group1().zxy()).with_w(self[e415] * other[e235]),
         )
     }
 }
@@ -4893,15 +4976,12 @@ impl AntiWedge<AntiFlector> for Dipole {
 impl AntiWedge<AntiMotor> for Dipole {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    //          add/sub      mul      div
+    //   simd4        0        1        0
+    // no simd        0        4        0
     fn anti_wedge(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        AntiPlane::from_groups(/* e1, e2, e3, e5 */ (self.group0() * other.group1().www()).with_w(other[e3215] * self[e45]))
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ Simd32x4::from(other[e3215]) * self.group0().with_w(self[e45]))
     }
 }
 impl AntiWedge<AntiScalar> for Dipole {
@@ -4965,7 +5045,7 @@ impl AntiWedge<CircleRotor> for Dipole {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(
+            (self.group2() * other.group2().www()).with_w(
                 -(other[e423] * self[e15])
                     - (other[e431] * self[e25])
                     - (other[e412] * self[e35])
@@ -4999,8 +5079,8 @@ impl AntiWedge<DipoleInversion> for Dipole {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group3().yzxy() * self.group1().zxy().with_w(self[e42]))
-                - (self.group2() * other.group2().www()).with_w(self[e41] * other[e4235]),
+            ]) - (other.group3().yzxx() * self.group1().zxy().with_w(self[e41]))
+                - (self.group2() * other.group2().www()).with_w(self[e42] * other[e4315]),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
         )
@@ -5069,11 +5149,11 @@ impl AntiWedge<Motor> for Dipole {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        5        9        0
-    //  no simd        5       16        0
+    //  no simd        5       17        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -5082,14 +5162,17 @@ impl AntiWedge<Motor> for Dipole {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e41] * other[e235])
                     - (self[e42] * other[e315])
                     - (self[e43] * other[e125])
                     - (self[e23] * other[e415])
                     - (self[e31] * other[e425])
                     - (self[e12] * other[e435]),
-            ),
+            ]) * self.group2().with_w(1.0),
         )
     }
 }
@@ -5098,11 +5181,11 @@ impl AntiWedge<MultiVector> for Dipole {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       16       23        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       18       28        0
-    //  no simd       24       40        0
+    //  no simd       24       41        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -5126,8 +5209,8 @@ impl AntiWedge<MultiVector> for Dipole {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group9().yzxy() * self.group1().zxy().with_w(self[e42]))
-                - (Simd32x3::from(other[e1234]) * self.group2()).with_w(self[e41] * other[e4235]),
+            ]) - (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e42] * other[e4315]]) * self.group2().with_w(1.0))
+                - (other.group9().yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
             // e15, e25, e35, e45
@@ -5178,11 +5261,10 @@ impl AntiWedge<Sphere> for Dipole {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7       13        0
-    //    simd3        0        1        0
-    //    simd4        2        1        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        9       15        0
-    //  no simd       15       20        0
+    //  no simd       15       21        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
@@ -5192,8 +5274,8 @@ impl AntiWedge<Sphere> for Dipole {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group0().yzxy() * self.group1().zxy().with_w(self[e42]))
-                - (Simd32x3::from(other[e1234]) * self.group2()).with_w(self[e41] * other[e4235]),
+            ]) - (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e42] * other[e4315]]) * self.group2().with_w(1.0))
+                - (other.group0().yzxx() * self.group1().zxy().with_w(self[e41])),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
         )
@@ -5204,11 +5286,11 @@ impl AntiWedge<VersorEven> for Dipole {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       10        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        9       13        0
-    //  no simd        9       20        0
+    //  no simd        9       21        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -5217,7 +5299,10 @@ impl AntiWedge<VersorEven> for Dipole {
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group2()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e41] * other[e235])
                     - (self[e42] * other[e315])
                     - (self[e43] * other[e125])
@@ -5228,7 +5313,7 @@ impl AntiWedge<VersorEven> for Dipole {
                     - (self[e15] * other[e423])
                     - (self[e25] * other[e431])
                     - (self[e35] * other[e412]),
-            ),
+            ]) * self.group2().with_w(1.0),
         )
     }
 }
@@ -5251,8 +5336,8 @@ impl AntiWedge<VersorOdd> for Dipole {
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
                 -(self[e43] * other[e4125]) - (self[e45] * other[e1234]),
-            ]) - (other.group3().yzxy() * self.group1().zxy().with_w(self[e42]))
-                - (self.group2() * other.group2().www()).with_w(self[e41] * other[e4235]),
+            ]) - (other.group3().yzxx() * self.group1().zxy().with_w(self[e41]))
+                - (self.group2() * other.group2().www()).with_w(self[e42] * other[e4315]),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]),
         )
@@ -5351,11 +5436,11 @@ impl AntiWedge<AntiFlatPoint> for DipoleInversion {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        7        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //      f32        2        6        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
-    // yes simd        4       10        0
+    // yes simd        4        9        0
     //  no simd        9       16        0
     fn anti_wedge(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
@@ -5366,7 +5451,7 @@ impl AntiWedge<AntiFlatPoint> for DipoleInversion {
                 other[e315] * self[e1234],
                 other[e125] * self[e1234],
                 -(other[e315] * self[e42]) - (other[e125] * self[e43]) - (other[e321] * self[e45]),
-            ]) - (self.group3().xyz() * other.group0().www()).with_w(other[e235] * self[e41]),
+            ]) - (other.group0().wwwx() * self.group3().xyz().with_w(self[e41])),
             // e15, e25, e35, e3215
             ((other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx())).with_w(0.0),
         )
@@ -5376,11 +5461,11 @@ impl AntiWedge<AntiFlector> for DipoleInversion {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5        8        0
-    //    simd3        1        4        0
-    //    simd4        2        0        0
+    //      f32        5        7        0
+    //    simd3        1        3        0
+    //    simd4        2        1        0
     // Totals...
-    // yes simd        8       12        0
+    // yes simd        8       11        0
     //  no simd       16       20        0
     fn anti_wedge(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
@@ -5392,7 +5477,7 @@ impl AntiWedge<AntiFlector> for DipoleInversion {
                     - (other[e125] * self[e43])
                     - (other[e321] * self[e45]),
             ) + (other.group0().xyz() * self.group2().www()).with_w(other[e1] * self[e4235])
-                - (self.group3().xyz() * other.group0().www()).with_w(other[e235] * self[e41]),
+                - (other.group0().wwwx() * self.group3().xyz().with_w(self[e41])),
             // e15, e25, e35, e3215
             ((other.group0().yzx() * self.group3().zxy()) - (other.group0().zxy() * self.group3().yzx())).with_w(0.0),
         )
@@ -5437,11 +5522,11 @@ impl AntiWedge<AntiMotor> for DipoleInversion {
             Simd32x4::from(other[e3215]) * self.group3().xyz().with_w(self[e1234]),
             // e1, e2, e3, e5
             Simd32x4::from([
-                (other[e12] * self[e4315]) + (other[e15] * self[e1234]),
-                (other[e23] * self[e4125]) + (other[e25] * self[e1234]),
-                (other[e31] * self[e4235]) + (other[e35] * self[e1234]),
+                (other[e15] * self[e1234]) + (other[e3215] * self[e41]),
+                (other[e25] * self[e1234]) + (other[e3215] * self[e42]),
+                (other[e35] * self[e1234]) + (other[e3215] * self[e43]),
                 -(other[e25] * self[e4315]) - (other[e35] * self[e4125]),
-            ]) + (self.group0() * other.group1().www()).with_w(other[e3215] * self[e45])
+            ]) + (other.group0().zxy() * self.group3().yzx()).with_w(other[e3215] * self[e45])
                 - (self.group3().zxyx() * other.group0().yzx().with_w(other[e15])),
         )
     }
@@ -5586,8 +5671,8 @@ impl AntiWedge<Dipole> for DipoleInversion {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group3().yzxy() * other.group1().zxy().with_w(other[e42]))
-                + (other.group2() * self.group2().www()).with_w(other[e41] * self[e4235]),
+            ]) + (self.group3().yzxx() * other.group1().zxy().with_w(other[e41]))
+                + (other.group2() * self.group2().www()).with_w(other[e42] * self[e4315]),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
         )
@@ -5597,11 +5682,11 @@ impl AntiWedge<DipoleInversion> for DipoleInversion {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5       10        0
-    //    simd3        1        6        0
-    //    simd4       10        8        0
+    //      f32        5        9        0
+    //    simd3        1        5        0
+    //    simd4       10        9        0
     // Totals...
-    // yes simd       16       24        0
+    // yes simd       16       23        0
     //  no simd       48       60        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
@@ -5614,16 +5699,16 @@ impl AntiWedge<DipoleInversion> for DipoleInversion {
             (self.group3().xyzx() * other.group3().www().with_w(other[e41]))
                 + Simd32x3::from(0.0).with_w(
                     (other[e42] * self[e4315]) + (other[e43] * self[e4125]) + (other[e45] * self[e1234])
-                        - (other[e1234] * self[e45])
+                        - (other[e4235] * self[e41])
                         - (other[e4315] * self[e42])
                         - (other[e4125] * self[e43]),
                 )
-                - (other.group3().xyz() * self.group3().www()).with_w(other[e4235] * self[e41]),
+                - (other.group3().xyz() * self.group3().www()).with_w(other[e1234] * self[e45]),
             // e1, e2, e3, e5
-            (other.group3().zxyw() * self.group1().yzxw())
-                + (self.group2().wwwz() * other.group2().xyz().with_w(other[e4125]))
-                + (self.group0() * other.group3().www()).with_w(other[e4235] * self[e15])
-                + (other.group1().zxy() * self.group3().yzx()).with_w(other[e4315] * self[e25])
+            (Simd32x4::from(other[e3215]) * self.group0().with_w(self[e45]))
+                + (other.group3().zxyz() * self.group1().yzx().with_w(self[e35]))
+                + (self.group2().wwwy() * other.group2().xyz().with_w(other[e4315]))
+                + (other.group1().zxy() * self.group3().yzx()).with_w(other[e4235] * self[e15])
                 - (Simd32x4::from(self[e3215]) * other.group0().with_w(other[e45]))
                 - (other.group2().wwwy() * self.group2().xyz().with_w(self[e4315]))
                 - (self.group3().zxyx() * other.group1().yzx().with_w(other[e15]))
@@ -5634,14 +5719,17 @@ impl AntiWedge<DipoleInversion> for DipoleInversion {
 impl AntiWedge<DualNum> for DipoleInversion {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        4        0
+    // Totals...
+    // yes simd        0        5        0
+    //  no simd        0       17        0
     fn anti_wedge(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            other.group0().yy().with_zw(other[e12345], other[e5]) * self.group0().with_w(self[e1234]),
+            other.group0().yy().with_zw(other[e12345], self[e1234] * other[e5]) * self.group0().with_w(1.0),
             // e23, e31, e12, e45
             Simd32x4::from(other[e12345]) * self.group1(),
             // e15, e25, e35, e1234
@@ -5715,7 +5803,7 @@ impl AntiWedge<Line> for DipoleInversion {
             // e41, e42, e43
             Simd32x3::from(self[e1234]) * other.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(self[e1234]) * other.group1()).with_w(-(self[e4235] * other[e415]) - (self[e4315] * other[e425]) - (self[e4125] * other[e435])),
+            (other.group1() * self.group2().www()).with_w(-(self[e4235] * other[e415]) - (self[e4315] * other[e425]) - (self[e4125] * other[e435])),
             // e15, e25, e35, scalar
             Simd32x4::from([
                 (self[e4125] * other[e315]) + (self[e3215] * other[e415]),
@@ -5771,12 +5859,12 @@ impl AntiWedge<MultiVector> for DipoleInversion {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       25       37        0
+    //      f32       25       38        0
     //    simd3        8       17        0
     //    simd4       10        8        0
     // Totals...
-    // yes simd       43       62        0
-    //  no simd       89      120        0
+    // yes simd       43       63        0
+    //  no simd       89      121        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -5796,14 +5884,14 @@ impl AntiWedge<MultiVector> for DipoleInversion {
                 0.0,
             ]),
             // e1, e2, e3, e4
-            (Simd32x4::from(self[e1234]) * other.group3())
-                + (self.group3().yzxy() * other.group5().zxy().with_w(other[e42]))
-                + (self.group0() * other.group9().www()).with_w(self[e4235] * other[e41])
-                + (self.group1().yzx() * other.group9().zxy()).with_w(self[e4125] * other[e43])
-                - (Simd32x4::from(other[e1234]) * self.group2().xyz().with_w(self[e45]))
-                - (other.group9().yzxz() * self.group1().zxy().with_w(self[e43]))
-                - (other.group4() * self.group3().www()).with_w(self[e41] * other[e4235])
-                - (other.group5().yzx() * self.group3().zxy()).with_w(self[e42] * other[e4315]),
+            (self.group3().yzxz() * other.group5().zxy().with_w(other[e43]))
+                + (self.group0() * other.group9().www()).with_w(self[e1234] * other[e45])
+                + (self.group1().yzx() * other.group9().zxy()).with_w(self[e4235] * other[e41])
+                + (other.group3().xyz() * self.group2().www()).with_w(self[e4315] * other[e42])
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234], self[e42] * other[e4315]]) * self.group2().xyz().with_w(1.0))
+                - (other.group9().yzxx() * self.group1().zxy().with_w(self[e41]))
+                - (other.group4() * self.group3().www()).with_w(self[e45] * other[e1234])
+                - (other.group5().yzx() * self.group3().zxy()).with_w(self[e43] * other[e4125]),
             // e5
             (self[e45] * other[e3215]) + (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125])
                 - (self[e4235] * other[e15])
@@ -5817,7 +5905,7 @@ impl AntiWedge<MultiVector> for DipoleInversion {
                 (self[e4315] * other[e235]) + (self[e3215] * other[e435]),
                 -(self[e4315] * other[e425]) - (self[e4125] * other[e435]),
             ]) + (Simd32x4::from(other[e12345]) * self.group2().xyz().with_w(self[e45]))
-                - (other.group8().zxy() * self.group3().yzx()).with_w(self[e4235] * other[e415]),
+                - (self.group3().yzxx() * other.group8().zxy().with_w(other[e415])),
             // e41, e42, e43
             (Simd32x3::from(self[e1234]) * other.group6().xyz()) + (Simd32x3::from(other[e12345]) * self.group0()) + (other.group7().zxy() * self.group3().yzx())
                 - (other.group7().yzx() * self.group3().zxy()),
@@ -6211,14 +6299,17 @@ impl AntiWedge<Dipole> for DualNum {
 impl AntiWedge<DipoleInversion> for DualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        4        0
+    // Totals...
+    // yes simd        0        5        0
+    //  no simd        0       17        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            self.group0().yy().with_zw(self[e12345], self[e5]) * other.group0().with_w(other[e1234]),
+            self.group0().yy().with_zw(self[e12345], other[e1234] * self[e5]) * other.group0().with_w(1.0),
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, e1234
@@ -6467,15 +6558,11 @@ impl AntiWedge<AntiDipoleInversion> for FlatPoint {
 impl AntiWedge<AntiDualNum> for FlatPoint {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        3        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn anti_wedge(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e3215] * self[e45], 1.0]) * Simd32x2::from([1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e3215] * self[e45], 0.0]))
     }
 }
 impl AntiWedge<AntiFlatPoint> for FlatPoint {
@@ -6501,15 +6588,11 @@ impl AntiWedge<AntiFlector> for FlatPoint {
 impl AntiWedge<AntiMotor> for FlatPoint {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        3        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn anti_wedge(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e3215] * self[e45], 1.0]) * Simd32x2::from([1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([other[e3215] * self[e45], 0.0]))
     }
 }
 impl AntiWedge<AntiScalar> for FlatPoint {
@@ -6561,16 +6644,16 @@ impl AntiWedge<DipoleInversion> for FlatPoint {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd4        0        2        0
+    //      f32        3        5        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        3        6        0
-    //  no simd        3       12        0
+    //  no simd        3        9        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(other[e1234]) * self.group0() * Simd32x4::from(-1.0),
+            Simd32x4::from(other[e1234] * -1.0) * self.group0(),
             // e5
             (other[e4235] * self[e15]) + (other[e4315] * self[e25]) + (other[e4125] * self[e35]) + (other[e3215] * self[e45]),
         )
@@ -6615,18 +6698,18 @@ impl AntiWedge<MultiVector> for FlatPoint {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6        8        0
-    //    simd4        0        3        0
+    //      f32        6        9        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        6       11        0
-    //  no simd        6       20        0
+    //  no simd        6       17        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([-(self[e15] * other[e423]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321]), 0.0]),
             // e1, e2, e3, e4
-            Simd32x4::from(other[e1234]) * self.group0() * Simd32x4::from(-1.0),
+            Simd32x4::from(other[e1234] * -1.0) * self.group0(),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215]),
             // e15, e25, e35, e45
@@ -6665,16 +6748,16 @@ impl AntiWedge<Sphere> for FlatPoint {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd4        0        2        0
+    //      f32        3        5        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        3        6        0
-    //  no simd        3       12        0
+    //  no simd        3        9        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(other[e1234]) * self.group0() * Simd32x4::from(-1.0),
+            Simd32x4::from(other[e1234] * -1.0) * self.group0(),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215]),
         )
@@ -6685,10 +6768,10 @@ impl AntiWedge<VersorEven> for FlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        5        0
-    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        3        6        0
-    //  no simd        3        8        0
+    //  no simd        3        9        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -6697,8 +6780,12 @@ impl AntiWedge<VersorEven> for FlatPoint {
             // e23, e31, e12, e45
             Simd32x3::from(0.0).with_w(self[e45] * other[e12345]),
             // e15, e25, e35, scalar
-            (Simd32x3::from(other[e12345]) * self.group0().xyz())
-                .with_w(-(self[e15] * other[e423]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                -(self[e15] * other[e423]) - (self[e25] * other[e431]) - (self[e35] * other[e412]) - (self[e45] * other[e321]),
+            ]) * self.group0().xyz().with_w(1.0),
         )
     }
 }
@@ -6706,16 +6793,16 @@ impl AntiWedge<VersorOdd> for FlatPoint {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd4        0        2        0
+    //      f32        3        5        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        3        6        0
-    //  no simd        3       12        0
+    //  no simd        3        9        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(other[e1234]) * self.group0() * Simd32x4::from(-1.0),
+            Simd32x4::from(other[e1234] * -1.0) * self.group0(),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215]),
         )
@@ -6795,7 +6882,7 @@ impl AntiWedge<AntiDualNum> for Flector {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (self.group1().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group1().xyz()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(other[e3215] * self[e45]),
         )
@@ -6805,16 +6892,17 @@ impl AntiWedge<AntiFlatPoint> for Flector {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
+    //      f32        0        1        0
     //    simd3        1        2        0
-    //    simd4        0        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        3       14        0
+    //  no simd        3       11        0
     fn anti_wedge(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x4::from(other[e321]) * self.group1().xyz().with_w(self[e45]) * Simd32x4::from(-1.0),
+            Simd32x4::from(other[e321] * -1.0) * self.group1().xyz().with_w(self[e45]),
             // e15, e25, e35, e3215
             ((other.group0().yzx() * self.group1().zxy()) - (other.group0().zxy() * self.group1().yzx())).with_w(0.0),
         )
@@ -6876,7 +6964,7 @@ impl AntiWedge<AntiMotor> for Flector {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (self.group1().xyz() * other.group1().www()).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group1().xyz()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(-(other[e25] * self[e4315]) - (other[e35] * self[e4125])) + (other.group0().zxy() * self.group1().yzx()).with_w(other[e3215] * self[e45])
                 - (self.group1().zxyx() * other.group0().yzx().with_w(other[e15])),
@@ -7002,17 +7090,17 @@ impl AntiWedge<DipoleInversion> for Flector {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd3        1        6        0
+    //      f32        4       11        0
+    //    simd3        1        5        0
     //    simd4        6        4        0
     // Totals...
     // yes simd       11       20        0
-    //  no simd       31       44        0
+    //  no simd       31       42        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group1().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group1().xyz(),
             // e415, e425, e435, e321
             ((other.group3().yzx() * self.group1().zxy()) - (other.group3().zxy() * self.group1().yzx())).with_w(other[e1234] * self[e3215] * -1.0),
             // e235, e315, e125, e4
@@ -7134,12 +7222,12 @@ impl AntiWedge<MultiVector> for Flector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       22       36        0
-    //    simd3        4       12        0
-    //    simd4        4        3        0
+    //      f32       22       35        0
+    //    simd3        4        9        0
+    //    simd4        4        5        0
     // Totals...
-    // yes simd       30       51        0
-    //  no simd       50       84        0
+    // yes simd       30       49        0
+    //  no simd       50       82        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -7154,12 +7242,12 @@ impl AntiWedge<MultiVector> for Flector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                -(self[e15] * other[e1234]) - (self[e4125] * other[e31]),
-                -(self[e25] * other[e1234]) - (self[e4235] * other[e12]),
-                -(self[e35] * other[e1234]) - (self[e4315] * other[e23]),
+                -(self[e4125] * other[e31]) - (self[e3215] * other[e41]),
+                -(self[e4235] * other[e12]) - (self[e3215] * other[e42]),
+                -(self[e4315] * other[e23]) - (self[e3215] * other[e43]),
                 (self[e4315] * other[e42]) + (self[e4125] * other[e43]),
             ]) + (self.group1().yzxx() * other.group5().zxy().with_w(other[e41]))
-                - (other.group4() * self.group1().www()).with_w(self[e45] * other[e1234]),
+                - (Simd32x4::from(other[e1234]) * self.group0()),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215])
                 - (self[e4235] * other[e15])
@@ -7173,7 +7261,7 @@ impl AntiWedge<MultiVector> for Flector {
                 (self[e4315] * other[e235]) + (self[e3215] * other[e435]),
                 -(self[e4315] * other[e425]) - (self[e4125] * other[e435]),
             ]) + (Simd32x4::from(other[e12345]) * self.group0())
-                - (other.group8().zxy() * self.group1().yzx()).with_w(self[e4235] * other[e415]),
+                - (self.group1().yzxx() * other.group8().zxy().with_w(other[e415])),
             // e41, e42, e43
             (other.group7().zxy() * self.group1().yzx()) - (other.group7().yzx() * self.group1().zxy()),
             // e23, e31, e12
@@ -7181,7 +7269,7 @@ impl AntiWedge<MultiVector> for Flector {
             // e415, e425, e435, e321
             ((self.group1().zxy() * other.group9().yzx()) - (self.group1().yzx() * other.group9().zxy())).with_w(self[e3215] * other[e1234] * -1.0),
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group1().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group1().xyz(),
             // e235, e315, e125
             (Simd32x3::from(other[e3215]) * self.group1().xyz()) - (Simd32x3::from(self[e3215]) * other.group9().xyz()),
             // e4235, e4315, e4125, e3215
@@ -7233,23 +7321,28 @@ impl AntiWedge<Sphere> for Flector {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        8        0
-    //    simd3        2        8        0
+    //      f32        3        9        0
+    //    simd3        2        6        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5       16        0
-    //  no simd        9       32        0
+    //  no simd        9       31        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group1().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group1().xyz(),
             // e415, e425, e435, e321
             ((self.group1().zxy() * other.group0().yzx()) - (self.group1().yzx() * other.group0().zxy())).with_w(self[e3215] * other[e1234] * -1.0),
             // e235, e315, e125, e4
             ((Simd32x3::from(other[e3215]) * self.group1().xyz()) - (Simd32x3::from(self[e3215]) * other.group0().xyz())).with_w(self[e45] * other[e1234] * -1.0),
             // e1, e2, e3, e5
-            (Simd32x3::from(other[e1234]) * self.group0().xyz() * Simd32x3::from(-1.0))
-                .with_w((self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215])),
+            Simd32x4::from([
+                other[e1234],
+                other[e1234],
+                other[e1234],
+                (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215]),
+            ]) * (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(1.0),
         )
     }
 }
@@ -7292,17 +7385,17 @@ impl AntiWedge<VersorOdd> for Flector {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd3        1        6        0
+    //      f32        4       11        0
+    //    simd3        1        5        0
     //    simd4        6        4        0
     // Totals...
     // yes simd       11       20        0
-    //  no simd       31       44        0
+    //  no simd       31       42        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group1().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group1().xyz(),
             // e415, e425, e435, e321
             ((self.group1().zxy() * other.group3().yzx()) - (self.group1().yzx() * other.group3().zxy())).with_w(self[e3215] * other[e1234] * -1.0),
             // e235, e315, e125, e4
@@ -7374,7 +7467,7 @@ impl AntiWedge<AntiDualNum> for Line {
     // no simd        0        3        0
     fn anti_wedge(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0() * other.group0().xx().with_z(other[e3215])).with_w(0.0))
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (Simd32x3::from(other[e3215]) * self.group0()).with_w(0.0))
     }
 }
 impl AntiWedge<AntiFlatPoint> for Line {
@@ -7390,7 +7483,7 @@ impl AntiWedge<AntiFlatPoint> for Line {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            (Simd32x3::from(other[e321]) * self.group0()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435])),
+            (self.group0() * other.group0().www()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435])),
         )
     }
 }
@@ -7407,7 +7500,7 @@ impl AntiWedge<AntiFlector> for Line {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            (Simd32x3::from(other[e321]) * self.group0()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435])),
+            (self.group0() * other.group0().www()).with_w(-(other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435])),
         )
     }
 }
@@ -7436,7 +7529,7 @@ impl AntiWedge<AntiMotor> for Line {
             // e23, e31, e12, scalar
             Simd32x3::from(0.0).with_w(-(other[e23] * self[e415]) - (other[e31] * self[e425]) - (other[e12] * self[e435])),
             // e15, e25, e35, e3215
-            (self.group0() * other.group1().www()).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group0()).with_w(0.0),
         )
     }
 }
@@ -7502,16 +7595,16 @@ impl AntiWedge<CircleRotor> for Line {
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
-            (self.group0() * other.group2().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group0()).with_w(0.0),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group1()).with_w(-(other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435])),
+            (self.group1() * other.group2().www()).with_w(-(other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435])),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e321] * self[e415]),
                 (other[e423] * self[e125]) + (other[e321] * self[e425]),
                 (other[e431] * self[e235]) + (other[e321] * self[e435]),
-                -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
-            ]) - (other.group0().yzx() * self.group1().zxy()).with_w(other[e235] * self[e415]),
+                -(other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
+            ]) - (other.group0().yzx() * self.group1().zxy()).with_w(other[e415] * self[e235]),
         )
     }
 }
@@ -7544,7 +7637,7 @@ impl AntiWedge<DipoleInversion> for Line {
             // e41, e42, e43
             Simd32x3::from(other[e1234]) * self.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(other[e1234]) * self.group1()).with_w(-(other[e4235] * self[e415]) - (other[e4315] * self[e425]) - (other[e4125] * self[e435])),
+            (self.group1() * other.group2().www()).with_w(-(other[e4235] * self[e415]) - (other[e4315] * self[e425]) - (other[e4125] * self[e435])),
             // e15, e25, e35, scalar
             Simd32x4::from([
                 (other[e4125] * self[e315]) + (other[e3215] * self[e415]),
@@ -7616,24 +7709,28 @@ impl AntiWedge<Motor> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            (self.group0() * other.group0().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group0()).with_w(0.0),
             // e235, e315, e125, e5
-            (Simd32x3::from(other[e12345]) * self.group1()).with_w(
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
                 -(self[e415] * other[e235])
                     - (self[e425] * other[e315])
                     - (self[e435] * other[e125])
                     - (self[e235] * other[e415])
                     - (self[e315] * other[e425])
                     - (self[e125] * other[e435]),
-            ),
+            ]) * self.group1().with_w(1.0),
         )
     }
 }
@@ -7686,7 +7783,7 @@ impl AntiWedge<MultiVector> for Line {
             // e23, e31, e12
             Simd32x3::from(other[e1234]) * self.group1(),
             // e415, e425, e435, e321
-            (self.group0() * other.group0().yy().with_z(other[e12345])).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group0()).with_w(0.0),
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e235, e315, e125
@@ -7725,17 +7822,23 @@ impl AntiWedge<Sphere> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        3        0
-    //    simd3        2        5        0
+    //    simd3        2        4        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        4        8        0
-    //  no simd        8       18        0
+    //  no simd        8       19        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[e1234]) * self.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(other[e1234]) * self.group1()).with_w(-(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125])),
+            Simd32x4::from([
+                other[e1234],
+                other[e1234],
+                other[e1234],
+                -(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125]),
+            ]) * self.group1().with_w(1.0),
             // e15, e25, e35
             (Simd32x3::from(other[e3215]) * self.group0()) + (self.group1().yzx() * other.group0().zxy()) - (self.group1().zxy() * other.group0().yzx()),
         )
@@ -7746,20 +7849,25 @@ impl AntiWedge<VersorEven> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        0        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd       10       18        0
-    //  no simd       13       24        0
+    //  no simd       13       25        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
-            (self.group0() * other.group0().www()).with_w(0.0),
+            (Simd32x3::from(other[e12345]) * self.group0()).with_w(0.0),
             // e235, e315, e125, e4
-            (Simd32x3::from(other[e12345]) * self.group1()).with_w(-(self[e415] * other[e423]) - (self[e425] * other[e431]) - (self[e435] * other[e412])),
+            Simd32x4::from([
+                other[e12345],
+                other[e12345],
+                other[e12345],
+                -(self[e415] * other[e423]) - (self[e425] * other[e431]) - (self[e435] * other[e412]),
+            ]) * self.group1().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (self[e415] * other[e321]) + (self[e315] * other[e412]),
@@ -7775,18 +7883,23 @@ impl AntiWedge<VersorOdd> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        0        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd       10       18        0
-    //  no simd       13       24        0
+    //  no simd       13       25        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(other[e1234]) * self.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(other[e1234]) * self.group1()).with_w(-(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125])),
+            Simd32x4::from([
+                other[e1234],
+                other[e1234],
+                other[e1234],
+                -(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125]),
+            ]) * self.group1().with_w(1.0),
             // e15, e25, e35, scalar
             Simd32x4::from([
                 (self[e415] * other[e3215]) + (self[e315] * other[e4125]),
@@ -7808,11 +7921,11 @@ impl AntiWedge<AntiCircleRotor> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        6        7        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        6       10        0
-    //  no simd        6       17        0
+    //  no simd        6       18        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -7821,7 +7934,10 @@ impl AntiWedge<AntiCircleRotor> for Motor {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2().xyz()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 (other[scalar] * self[e12345])
                     - (other[e41] * self[e235])
                     - (other[e42] * self[e315])
@@ -7829,7 +7945,7 @@ impl AntiWedge<AntiCircleRotor> for Motor {
                     - (other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435]),
-            ),
+            ]) * other.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -7838,11 +7954,11 @@ impl AntiWedge<AntiDipoleInversion> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       16        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       12       21        0
-    //  no simd       18       33        0
+    //  no simd       18       34        0
     fn anti_wedge(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -7851,8 +7967,12 @@ impl AntiWedge<AntiDipoleInversion> for Motor {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2().xyz())
-                .with_w((other[e4] * self[e12345]) - (other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                (other[e4] * self[e12345]) - (other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435]),
+            ]) * other.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e321] * self[e415]) + (other[e1] * self[e12345]),
@@ -7932,17 +8052,23 @@ impl AntiWedge<AntiLine> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        3        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        2        5        0
-    //  no simd        2        9        0
+    //  no simd        2       10        0
     fn anti_wedge(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e12345]) * other.group0()).with_w(-(other[e23] * self[e415]) - (other[e31] * self[e425]) - (other[e12] * self[e435])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                -(other[e23] * self[e415]) - (other[e31] * self[e425]) - (other[e12] * self[e435]),
+            ]) * other.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (other.group1() * self.group0().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group1()).with_w(0.0),
         )
     }
 }
@@ -7951,16 +8077,21 @@ impl AntiWedge<AntiMotor> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        5        0
-    //    simd3        1        3        0
+    //    simd3        1        2        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        4        8        0
-    //  no simd        6       14        0
+    //  no simd        6       15        0
     fn anti_wedge(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e12345]) * other.group0().xyz())
-                .with_w((other[scalar] * self[e12345]) - (other[e23] * self[e415]) - (other[e31] * self[e425]) - (other[e12] * self[e435])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                (other[scalar] * self[e12345]) - (other[e23] * self[e415]) - (other[e31] * self[e425]) - (other[e12] * self[e435]),
+            ]) * other.group0().xyz().with_w(1.0),
             // e15, e25, e35, e3215
             ((Simd32x3::from(other[e3215]) * self.group0().xyz()) + (Simd32x3::from(self[e12345]) * other.group1().xyz())).with_w(other[e3215] * self[e12345]),
         )
@@ -7997,12 +8128,12 @@ impl AntiWedge<Circle> for Motor {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        1        0
+    //      f32        9       14        0
+    //    simd3        0        1        0
+    //    simd4        1        3        0
     // Totals...
-    // yes simd       10       19        0
-    //  no simd       13       28        0
+    // yes simd       10       18        0
+    //  no simd       13       29        0
     fn anti_wedge(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -8011,14 +8142,19 @@ impl AntiWedge<Circle> for Motor {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(-(other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                -(other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435]),
+            ]) * other.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e321] * self[e415]),
                 (other[e423] * self[e125]) + (other[e321] * self[e425]),
                 (other[e431] * self[e235]) + (other[e321] * self[e435]),
-                -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
-            ]) - (other.group0().yzx() * self.group1().zxy()).with_w(other[e235] * self[e415]),
+                -(other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
+            ]) - (self.group1().zxyx() * other.group0().yzx().with_w(other[e415])),
         )
     }
 }
@@ -8066,11 +8202,11 @@ impl AntiWedge<Dipole> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        5        9        0
-    //  no simd        5       16        0
+    //  no simd        5       17        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -8079,14 +8215,17 @@ impl AntiWedge<Dipole> for Motor {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e41] * self[e235])
                     - (other[e42] * self[e315])
                     - (other[e43] * self[e125])
                     - (other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435]),
-            ),
+            ]) * other.group2().with_w(1.0),
         )
     }
 }
@@ -8191,24 +8330,28 @@ impl AntiWedge<Line> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            (other.group0() * self.group0().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group0()).with_w(0.0),
             // e235, e315, e125, e5
-            (Simd32x3::from(self[e12345]) * other.group1()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e415] * self[e235])
                     - (other[e425] * self[e315])
                     - (other[e435] * self[e125])
                     - (other[e235] * self[e415])
                     - (other[e315] * self[e425])
                     - (other[e125] * self[e435]),
-            ),
+            ]) * other.group1().with_w(1.0),
         )
     }
 }
@@ -8245,11 +8388,11 @@ impl AntiWedge<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       22       37        0
-    //    simd3        4       11        0
-    //    simd4        4        3        0
+    //      f32       22       36        0
+    //    simd3        4       10        0
+    //    simd4        4        4        0
     // Totals...
-    // yes simd       30       51        0
+    // yes simd       30       50        0
     //  no simd       50       82        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
@@ -8267,11 +8410,11 @@ impl AntiWedge<MultiVector> for Motor {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (self[e415] * other[e321]) + (self[e12345] * other[e1]),
-                (self[e425] * other[e321]) + (self[e12345] * other[e2]),
-                (self[e435] * other[e321]) + (self[e12345] * other[e3]),
+                (self[e12345] * other[e1]) + (self[e315] * other[e412]),
+                (self[e12345] * other[e2]) + (self[e125] * other[e423]),
+                (self[e12345] * other[e3]) + (self[e235] * other[e431]),
                 -(self[e425] * other[e431]) - (self[e435] * other[e412]),
-            ]) + (other.group7().zxy() * self.group1().yzx()).with_w(self[e12345] * other[e4])
+            ]) + (self.group0() * other.group6().www().with_w(other[e4]))
                 - (other.group7().yzx() * self.group1().zxy()).with_w(self[e415] * other[e423]),
             // e5
             (self[e12345] * other[e5]) + (self[e5] * other[e12345])
@@ -8359,18 +8502,23 @@ impl AntiWedge<Sphere> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        4        0
-    //    simd3        2        4        0
-    //    simd4        0        2        0
+    //    simd3        2        3        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        4       10        0
-    //  no simd        8       24        0
+    //  no simd        8       25        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(other[e1234]) * self.group0().xyz().with_w(self[e5]),
             // e23, e31, e12, e45
-            (Simd32x3::from(other[e1234]) * self.group1().xyz()).with_w(-(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125])),
+            Simd32x4::from([
+                other[e1234],
+                other[e1234],
+                other[e1234],
+                -(self[e415] * other[e4235]) - (self[e425] * other[e4315]) - (self[e435] * other[e4125]),
+            ]) * self.group1().xyz().with_w(1.0),
             // e15, e25, e35, e1234
             ((Simd32x3::from(other[e3215]) * self.group0().xyz()) + (self.group1().yzx() * other.group0().zxy()) - (self.group1().zxy() * other.group0().yzx()))
                 .with_w(self[e12345] * other[e1234]),
@@ -8469,11 +8617,11 @@ impl AntiWedge<AntiCircleRotor> for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       17       24        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       19       29        0
-    //  no simd       25       41        0
+    //  no simd       25       42        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -8498,8 +8646,8 @@ impl AntiWedge<AntiCircleRotor> for MultiVector {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group9().yzxx() * other.group1().zxy().with_w(other[e41]))
-                + (Simd32x3::from(self[e1234]) * other.group2().xyz()).with_w(other[e42] * self[e4315]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e42] * self[e4315]]) * other.group2().xyz().with_w(1.0))
+                + (self.group9().yzxx() * other.group1().zxy().with_w(other[e41])),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
             // e15, e25, e35, e45
@@ -8525,11 +8673,11 @@ impl AntiWedge<AntiDipoleInversion> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       36       48        0
-    //    simd3        4       10        0
-    //    simd4        4        3        0
+    //      f32       36       49        0
+    //    simd3        4       11        0
+    //    simd4        4        2        0
     // Totals...
-    // yes simd       44       61        0
+    // yes simd       44       62        0
     //  no simd       64       90        0
     fn anti_wedge(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
@@ -8551,11 +8699,11 @@ impl AntiWedge<AntiDipoleInversion> for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (other[e412] * self[e315]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]),
-                (other[e423] * self[e125]) + (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e125] * self[e423]),
-                (other[e431] * self[e235]) + (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e235] * self[e431]),
+                (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]) + (other[e1] * self[e12345]),
+                (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e125] * self[e423]) + (other[e2] * self[e12345]),
+                (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e235] * self[e431]) + (other[e3] * self[e12345]),
                 -(other[e412] * self[e435]) - (other[e415] * self[e423]) - (other[e425] * self[e431]) - (other[e435] * self[e412]),
-            ]) + (Simd32x4::from(self[e12345]) * other.group3().xyz().with_w(other[e4]))
+            ]) + (other.group0().zxy() * self.group8().yzx()).with_w(other[e4] * self[e12345])
                 - (other.group0().yzx() * self.group8().zxy()).with_w(other[e423] * self[e415])
                 - (self.group7().yzx() * other.group2().zxy()).with_w(other[e431] * self[e425]),
             // e5
@@ -8605,11 +8753,11 @@ impl AntiWedge<AntiDualNum> for MultiVector {
             // scalar, e12345
             Simd32x2::from([(other[e3215] * self[e4]) + (other[scalar] * self[e12345]), 0.0]),
             // e1, e2, e3, e4
-            (self.group4() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group4()).with_w(0.0),
             // e5
             other[e3215] * self[e45],
             // e15, e25, e35, e45
-            (self.group6().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group6().xyz()).with_w(0.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12
@@ -8743,7 +8891,7 @@ impl AntiWedge<AntiLine> for MultiVector {
             // e5
             -(other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
             // e15, e25, e35, e45
-            (other.group1() * self.group0().yy().with_z(self[e12345])).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group1()).with_w(0.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12
@@ -8826,7 +8974,7 @@ impl AntiWedge<AntiPlane> for MultiVector {
             // scalar, e12345
             Simd32x2::from([(other[e1] * self[e4235]) + (other[e2] * self[e4315]) + (other[e3] * self[e4125]) + (other[e5] * self[e1234]), 0.0]),
             // e1, e2, e3, e4
-            (other.group0().xyz() * self.group0().yy().with_z(self[e12345])).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group0().xyz()).with_w(0.0),
             // e5
             other[e5] * self[e12345],
             // e15, e25, e35, e45
@@ -9030,11 +9178,11 @@ impl AntiWedge<Dipole> for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       16       23        0
-    //    simd3        0        3        0
-    //    simd4        2        2        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       18       28        0
-    //  no simd       24       40        0
+    //  no simd       24       41        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -9058,8 +9206,8 @@ impl AntiWedge<Dipole> for MultiVector {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group9().yzxy() * other.group1().zxy().with_w(other[e42]))
-                + (Simd32x3::from(self[e1234]) * other.group2()).with_w(other[e41] * self[e4235]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e42] * self[e4315]]) * other.group2().with_w(1.0))
+                + (self.group9().yzxx() * other.group1().zxy().with_w(other[e41])),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
             // e15, e25, e35, e45
@@ -9085,12 +9233,12 @@ impl AntiWedge<DipoleInversion> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       25       37        0
+    //      f32       25       38        0
     //    simd3        8       17        0
     //    simd4       10        8        0
     // Totals...
-    // yes simd       43       62        0
-    //  no simd       89      120        0
+    // yes simd       43       63        0
+    //  no simd       89      121        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -9110,14 +9258,14 @@ impl AntiWedge<DipoleInversion> for MultiVector {
                 0.0,
             ]),
             // e1, e2, e3, e4
-            (Simd32x4::from(self[e1234]) * other.group2().xyz().with_w(other[e45]))
-                + (self.group9().yzxz() * other.group1().zxy().with_w(other[e43]))
-                + (self.group4() * other.group3().www()).with_w(other[e41] * self[e4235])
-                + (self.group5().yzx() * other.group3().zxy()).with_w(other[e42] * self[e4315])
-                - (Simd32x4::from(other[e1234]) * self.group3())
-                - (other.group3().yzxy() * self.group5().zxy().with_w(self[e42]))
-                - (other.group0() * self.group9().www()).with_w(other[e4235] * self[e41])
-                - (other.group1().yzx() * self.group9().zxy()).with_w(other[e4125] * self[e43]),
+            (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e42] * self[e4315]]) * other.group2().xyz().with_w(1.0))
+                + (self.group9().yzxx() * other.group1().zxy().with_w(other[e41]))
+                + (self.group4() * other.group3().www()).with_w(other[e45] * self[e1234])
+                + (self.group5().yzx() * other.group3().zxy()).with_w(other[e43] * self[e4125])
+                - (other.group3().yzxz() * self.group5().zxy().with_w(self[e43]))
+                - (other.group0() * self.group9().www()).with_w(other[e1234] * self[e45])
+                - (other.group1().yzx() * self.group9().zxy()).with_w(other[e4235] * self[e41])
+                - (self.group3().xyz() * other.group2().www()).with_w(other[e4315] * self[e42]),
             // e5
             (other[e4235] * self[e15]) + (other[e4315] * self[e25]) + (other[e4125] * self[e35]) + (other[e3215] * self[e45])
                 - (other[e45] * self[e3215])
@@ -9131,7 +9279,7 @@ impl AntiWedge<DipoleInversion> for MultiVector {
                 (other[e4315] * self[e235]) + (other[e3215] * self[e435]),
                 -(other[e4315] * self[e425]) - (other[e4125] * self[e435]),
             ]) + (Simd32x4::from(self[e12345]) * other.group2().xyz().with_w(other[e45]))
-                - (self.group8().zxy() * other.group3().yzx()).with_w(other[e4235] * self[e415]),
+                - (other.group3().yzxx() * self.group8().zxy().with_w(self[e415])),
             // e41, e42, e43
             (Simd32x3::from(other[e1234]) * self.group6().xyz()) + (Simd32x3::from(self[e12345]) * other.group0()) + (self.group7().zxy() * other.group3().yzx())
                 - (self.group7().yzx() * other.group3().zxy()),
@@ -9230,11 +9378,11 @@ impl AntiWedge<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       22       35        0
-    //    simd3        4       11        0
-    //    simd4        4        3        0
+    //      f32       22       33        0
+    //    simd3        4        9        0
+    //    simd4        4        5        0
     // Totals...
-    // yes simd       30       49        0
+    // yes simd       30       47        0
     //  no simd       50       80        0
     fn anti_wedge(self, other: Flector) -> Self::Output {
         use crate::elements::*;
@@ -9250,11 +9398,11 @@ impl AntiWedge<Flector> for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (other[e15] * self[e1234]) + (other[e4125] * self[e31]),
-                (other[e25] * self[e1234]) + (other[e4235] * self[e12]),
-                (other[e35] * self[e1234]) + (other[e4315] * self[e23]),
+                (other[e4125] * self[e31]) + (other[e3215] * self[e41]),
+                (other[e4235] * self[e12]) + (other[e3215] * self[e42]),
+                (other[e4315] * self[e23]) + (other[e3215] * self[e43]),
                 -(other[e4315] * self[e42]) - (other[e4125] * self[e43]),
-            ]) + (self.group4() * other.group1().www()).with_w(other[e45] * self[e1234])
+            ]) + (Simd32x4::from(self[e1234]) * other.group0())
                 - (other.group1().yzxx() * self.group5().zxy().with_w(self[e41])),
             // e5
             (other[e4235] * self[e15]) + (other[e4315] * self[e25]) + (other[e4125] * self[e35]) + (other[e3215] * self[e45])
@@ -9269,7 +9417,7 @@ impl AntiWedge<Flector> for MultiVector {
                 (other[e4315] * self[e235]) + (other[e3215] * self[e435]),
                 -(other[e4315] * self[e425]) - (other[e4125] * self[e435]),
             ]) + (Simd32x4::from(self[e12345]) * other.group0())
-                - (self.group8().zxy() * other.group1().yzx()).with_w(other[e4235] * self[e415]),
+                - (other.group1().yzxx() * self.group8().zxy().with_w(self[e415])),
             // e41, e42, e43
             (self.group7().zxy() * other.group1().yzx()) - (self.group7().yzx() * other.group1().zxy()),
             // e23, e31, e12
@@ -9336,7 +9484,7 @@ impl AntiWedge<Line> for MultiVector {
             // e23, e31, e12
             Simd32x3::from(self[e1234]) * other.group1(),
             // e415, e425, e435, e321
-            (other.group0() * self.group0().yy().with_z(self[e12345])).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group0()).with_w(0.0),
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e235, e315, e125
@@ -9352,11 +9500,11 @@ impl AntiWedge<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       22       37        0
-    //    simd3        4       11        0
-    //    simd4        4        3        0
+    //      f32       22       36        0
+    //    simd3        4       10        0
+    //    simd4        4        4        0
     // Totals...
-    // yes simd       30       51        0
+    // yes simd       30       50        0
     //  no simd       50       82        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
@@ -9374,11 +9522,11 @@ impl AntiWedge<Motor> for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (other[e415] * self[e321]) + (other[e12345] * self[e1]),
-                (other[e425] * self[e321]) + (other[e12345] * self[e2]),
-                (other[e435] * self[e321]) + (other[e12345] * self[e3]),
+                (other[e12345] * self[e1]) + (other[e315] * self[e412]),
+                (other[e12345] * self[e2]) + (other[e125] * self[e423]),
+                (other[e12345] * self[e3]) + (other[e235] * self[e431]),
                 -(other[e425] * self[e431]) - (other[e435] * self[e412]),
-            ]) + (self.group7().zxy() * other.group1().yzx()).with_w(other[e12345] * self[e4])
+            ]) + (other.group0() * self.group6().www().with_w(self[e4]))
                 - (self.group7().yzx() * other.group1().zxy()).with_w(other[e415] * self[e423]),
             // e5
             (other[e12345] * self[e5]) + (other[e5] * self[e12345])
@@ -9418,11 +9566,11 @@ impl AntiWedge<MultiVector> for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       71       93        0
-    //    simd3       20       34        0
-    //    simd4       20       12        0
+    //    simd3       20       32        0
+    //    simd4       20       14        0
     // Totals...
     // yes simd      111      139        0
-    //  no simd      211      243        0
+    //  no simd      211      245        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -9464,22 +9612,22 @@ impl AntiWedge<MultiVector> for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (other[e15] * self[e1234]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e4125] * self[e31]),
-                (other[e25] * self[e1234]) + (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e4235] * self[e12]),
-                (other[e35] * self[e1234]) + (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e4315] * self[e23]),
-                -(other[e415] * self[e423]) - (other[e425] * self[e431]) - (other[e435] * self[e412]) - (other[e1234] * self[e45]),
+                (other[e412] * self[e315]) + (other[e315] * self[e412]) + (other[e4125] * self[e31]) + (other[e3215] * self[e41]),
+                (other[e423] * self[e125]) + (other[e125] * self[e423]) + (other[e4235] * self[e12]) + (other[e3215] * self[e42]),
+                (other[e431] * self[e235]) + (other[e235] * self[e431]) + (other[e4315] * self[e23]) + (other[e3215] * self[e43]),
+                -(other[e4235] * self[e41]) - (other[e4315] * self[e42]) - (other[e4125] * self[e43]) - (other[e1234] * self[e45]),
             ]) + (Simd32x4::from(other[e12345]) * self.group1())
                 + (Simd32x4::from(self[e12345]) * other.group1())
+                + (Simd32x4::from(self[e1234]) * other.group3())
                 + (self.group9().yzxx() * other.group5().zxy().with_w(other[e41]))
-                + (self.group4() * other.group9().www()).with_w(other[e45] * self[e1234])
-                + (other.group7().zxy() * self.group8().yzx()).with_w(other[e42] * self[e4315])
-                + (other.group8().yzx() * self.group7().zxy()).with_w(other[e43] * self[e4125])
-                - (other.group9().yzxy() * self.group5().zxy().with_w(self[e42]))
-                - (Simd32x3::from(other[e1234]) * self.group3().xyz()).with_w(other[e4125] * self[e43])
-                - (other.group4() * self.group9().www()).with_w(other[e423] * self[e415])
-                - (other.group5().yzx() * self.group9().zxy()).with_w(other[e431] * self[e425])
-                - (other.group7().yzx() * self.group8().zxy()).with_w(other[e412] * self[e435])
-                - (other.group8().zxy() * self.group7().yzx()).with_w(other[e4235] * self[e41]),
+                + (other.group6().xyz() * self.group6().www()).with_w(other[e42] * self[e4315])
+                + (self.group6().xyz() * other.group6().www()).with_w(other[e43] * self[e4125])
+                - (Simd32x4::from([other[e1234], other[e1234], other[e1234] * self[e35], other[e412] * self[e435]]) * self.group3().xy().with_zw(1.0, 1.0))
+                - (other.group4() * self.group9().www()).with_w(other[e415] * self[e423])
+                - (other.group5().yzx() * self.group9().zxy()).with_w(other[e425] * self[e431])
+                - (other.group7().yzx() * self.group8().zxy()).with_w(other[e435] * self[e412])
+                - (other.group8().zxy() * self.group7().yzx()).with_w(other[e423] * self[e415])
+                - (self.group5().zxy() * other.group9().yzx()).with_w(other[e431] * self[e425]),
             // e5
             (other[e12345] * self[e5])
                 + (other[e5] * self[e12345])
@@ -9527,7 +9675,7 @@ impl AntiWedge<MultiVector> for MultiVector {
                 - (Simd32x3::from(self[e321]) * other.group9().xyz()),
             // e415, e425, e435, e321
             (Simd32x4::from(other[e12345]) * self.group6()) + (Simd32x4::from(self[e12345]) * other.group6()) + (other.group9().yzxw() * self.group9().zxy().with_w(self[e1234]))
-                - (other.group9().zxy() * self.group9().yzx()).with_w(other[e1234] * self[e3215]),
+                - (self.group9().yzxw() * other.group9().zxy().with_w(other[e1234])),
             // e423, e431, e412
             (Simd32x3::from(other[e12345]) * self.group7()) + (Simd32x3::from(self[e12345]) * other.group7()) + (Simd32x3::from(self[e1234]) * other.group9().xyz())
                 - (Simd32x3::from(other[e1234]) * self.group9().xyz()),
@@ -9643,11 +9791,11 @@ impl AntiWedge<Sphere> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       15       28        0
-    //    simd3        6       12        0
-    //    simd4        4        4        0
+    //      f32       15       26        0
+    //    simd3        6       10        0
+    //    simd4        4        6        0
     // Totals...
-    // yes simd       25       44        0
+    // yes simd       25       42        0
     //  no simd       49       80        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
@@ -9662,9 +9810,9 @@ impl AntiWedge<Sphere> for MultiVector {
                 (self[e41] * other[e3215]) + (self[e31] * other[e4125]),
                 (self[e42] * other[e3215]) + (self[e12] * other[e4235]),
                 (self[e43] * other[e3215]) + (self[e23] * other[e4315]),
-                -(self[e45] * other[e1234]) - (self[e43] * other[e4125]),
-            ]) - (other.group0().yzxx() * self.group5().zxy().with_w(self[e41]))
-                - (Simd32x3::from(other[e1234]) * self.group3().xyz()).with_w(self[e42] * other[e4315]),
+                -(self[e42] * other[e4315]) - (self[e43] * other[e4125]),
+            ]) - (Simd32x4::from(other[e1234]) * self.group3())
+                - (other.group0().yzxx() * self.group5().zxy().with_w(self[e41])),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215]),
             // e15, e25, e35, e45
@@ -9679,7 +9827,7 @@ impl AntiWedge<Sphere> for MultiVector {
             // e23, e31, e12
             (Simd32x3::from(other[e3215]) * self.group7()) + (Simd32x3::from(other[e1234]) * self.group8()) - (Simd32x3::from(self[e321]) * other.group0().xyz()),
             // e415, e425, e435, e321
-            (self.group9().zxy() * other.group0().yzx()).with_w(self[e1234] * other[e3215]) - (self.group9().yzxw() * other.group0().zxy().with_w(other[e1234])),
+            (other.group0().yzxw() * self.group9().zxy().with_w(self[e1234])) - (self.group9().yzxw() * other.group0().zxy().with_w(other[e1234])),
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group0().xyz()) - (Simd32x3::from(other[e1234]) * self.group9().xyz()),
             // e235, e315, e125
@@ -9695,11 +9843,11 @@ impl AntiWedge<VersorEven> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       38       53        0
-    //    simd3        8       15        0
-    //    simd4        7        6        0
+    //      f32       38       51        0
+    //    simd3        8       13        0
+    //    simd4        7        8        0
     // Totals...
-    // yes simd       53       74        0
+    // yes simd       53       72        0
     //  no simd       90      122        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
@@ -9726,14 +9874,14 @@ impl AntiWedge<VersorEven> for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (self[e1] * other[e12345]) + (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e315] * other[e412]),
-                (self[e2] * other[e12345]) + (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e125] * other[e423]),
-                (self[e3] * other[e12345]) + (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e235] * other[e431]),
-                -(self[e415] * other[e423]) - (self[e425] * other[e431]) - (self[e435] * other[e412]) - (self[e412] * other[e435]),
+                (self[e415] * other[e321]) + (self[e321] * other[e415]) + (self[e412] * other[e315]) + (self[e315] * other[e412]),
+                (self[e425] * other[e321]) + (self[e321] * other[e425]) + (self[e423] * other[e125]) + (self[e125] * other[e423]),
+                (self[e435] * other[e321]) + (self[e321] * other[e435]) + (self[e431] * other[e235]) + (self[e235] * other[e431]),
+                -(self[e435] * other[e412]) - (self[e423] * other[e415]) - (self[e431] * other[e425]) - (self[e412] * other[e435]),
             ]) + (Simd32x4::from(self[e12345]) * other.group3())
-                + (self.group7().zxy() * other.group2().yzx()).with_w(self[e4] * other[e12345])
-                - (self.group7().yzx() * other.group2().zxy()).with_w(self[e423] * other[e415])
-                - (self.group8().zxy() * other.group0().yzx()).with_w(self[e431] * other[e425]),
+                + (Simd32x4::from(other[e12345]) * self.group1())
+                - (other.group0().yzxy() * self.group8().zxy().with_w(self[e425]))
+                - (self.group7().yzx() * other.group2().zxy()).with_w(self[e415] * other[e423]),
             // e5
             (self[e12345] * other[e5]) + (self[e5] * other[e12345])
                 - (self[e415] * other[e235])
@@ -9773,11 +9921,11 @@ impl AntiWedge<VersorOdd> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       26       39        0
-    //    simd3        8       18        0
-    //    simd4       10        7        0
+    //      f32       26       37        0
+    //    simd3        8       16        0
+    //    simd4       10        9        0
     // Totals...
-    // yes simd       44       64        0
+    // yes simd       44       62        0
     //  no simd       90      121        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
@@ -9807,10 +9955,10 @@ impl AntiWedge<VersorOdd> for MultiVector {
                 + (self.group9().yzxz() * other.group1().zxy().with_w(other[e43]))
                 + (self.group4() * other.group3().www()).with_w(self[e4235] * other[e41])
                 + (self.group5().yzx() * other.group3().zxy()).with_w(self[e4315] * other[e42])
+                - (Simd32x4::from(other[e1234]) * self.group3())
                 - (other.group3().yzxx() * self.group5().zxy().with_w(self[e41]))
-                - (self.group9().zxy() * other.group1().yzx()).with_w(self[e43] * other[e4125])
-                - (self.group3().xyz() * other.group2().www()).with_w(self[e42] * other[e4315])
-                - (other.group0().xyz() * self.group9().www()).with_w(self[e45] * other[e1234]),
+                - (self.group9().zxy() * other.group1().yzx()).with_w(self[e42] * other[e4315])
+                - (other.group0().xyz() * self.group9().www()).with_w(self[e43] * other[e4125]),
             // e5
             (self[e15] * other[e4235]) + (self[e25] * other[e4315]) + (self[e35] * other[e4125]) + (self[e45] * other[e3215])
                 - (self[e4235] * other[e15])
@@ -9832,7 +9980,7 @@ impl AntiWedge<VersorOdd> for MultiVector {
             (Simd32x3::from(self[e12345]) * other.group1().xyz()) + (Simd32x3::from(other[e1234]) * self.group8()) + (Simd32x3::from(other[e3215]) * self.group7())
                 - (Simd32x3::from(self[e321]) * other.group3().xyz()),
             // e415, e425, e435, e321
-            (self.group9().zxy() * other.group3().yzx()).with_w(self[e1234] * other[e3215]) - (self.group9().yzxw() * other.group3().zxy().with_w(other[e1234])),
+            (other.group3().yzxw() * self.group9().zxy().with_w(self[e1234])) - (self.group9().yzxw() * other.group3().zxy().with_w(other[e1234])),
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group3().xyz()) - (Simd32x3::from(other[e1234]) * self.group9().xyz()),
             // e235, e315, e125
@@ -9915,20 +10063,23 @@ impl AntiWedge<AntiDualNum> for Plane {
     // no simd        0        3        0
     fn anti_wedge(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
-        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0().xyz() * other.group0().xx().with_z(other[e3215])).with_w(0.0))
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (Simd32x3::from(other[e3215]) * self.group0().xyz()).with_w(0.0))
     }
 }
 impl AntiWedge<AntiFlatPoint> for Plane {
     type Output = AntiLine;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        4        0
-    // no simd        3       12        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd3        1        3        0
+    // Totals...
+    // yes simd        1        4        0
+    //  no simd        3       10        0
     fn anti_wedge(self, other: AntiFlatPoint) -> Self::Output {
         use crate::elements::*;
         AntiLine::from_groups(
             // e23, e31, e12
-            Simd32x3::from(other[e321]) * self.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e321] * -1.0) * self.group0().xyz(),
             // e15, e25, e35
             (other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx()),
         )
@@ -9989,7 +10140,7 @@ impl AntiWedge<AntiMotor> for Plane {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            (self.group0().xyz() * other.group1().www()).with_w(0.0),
+            (Simd32x3::from(other[e3215]) * self.group0().xyz()).with_w(0.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 other[e12] * self[e4315],
@@ -10106,17 +10257,17 @@ impl AntiWedge<DipoleInversion> for Plane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2       15        0
-    //    simd3        1        4        0
+    //      f32        2       16        0
+    //    simd3        1        3        0
     //    simd4        3        3        0
     // Totals...
     // yes simd        6       22        0
-    //  no simd       17       39        0
+    //  no simd       17       37        0
     fn anti_wedge(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group0().xyz(),
             // e415, e425, e435, e321
             ((other.group3().yzx() * self.group0().zxy()) - (other.group3().zxy() * self.group0().yzx())).with_w(other[e1234] * self[e3215] * -1.0),
             // e235, e315, e125, e4
@@ -10236,12 +10387,12 @@ impl AntiWedge<MultiVector> for Plane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       14       26        0
-    //    simd3        4       10        0
+    //      f32       14       27        0
+    //    simd3        4        9        0
     //    simd4        2        3        0
     // Totals...
     // yes simd       20       39        0
-    //  no simd       34       68        0
+    //  no simd       34       66        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -10270,7 +10421,7 @@ impl AntiWedge<MultiVector> for Plane {
             // e415, e425, e435, e321
             ((other.group9().yzx() * self.group0().zxy()) - (other.group9().zxy() * self.group0().yzx())).with_w(other[e1234] * self[e3215] * -1.0),
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group0().xyz(),
             // e235, e315, e125
             (Simd32x3::from(other[e3215]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * other.group9().xyz()),
             // e4235, e4315, e4125, e3215
@@ -10313,16 +10464,16 @@ impl AntiWedge<Sphere> for Plane {
     type Output = Circle;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        2        6        0
+    //      f32        0        3        0
+    //    simd3        2        5        0
     // Totals...
     // yes simd        2        8        0
-    //  no simd        6       20        0
+    //  no simd        6       18        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         Circle::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group0().xyz(),
             // e415, e425, e435, e321
             ((self.group0().zxy() * other.group0().yzx()) - (self.group0().yzx() * other.group0().zxy())).with_w(self[e3215] * other[e1234] * -1.0),
             // e235, e315, e125
@@ -10369,17 +10520,17 @@ impl AntiWedge<VersorOdd> for Plane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2       15        0
-    //    simd3        1        4        0
+    //      f32        2       16        0
+    //    simd3        1        3        0
     //    simd4        3        3        0
     // Totals...
     // yes simd        6       22        0
-    //  no simd       17       39        0
+    //  no simd       17       37        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            Simd32x3::from(other[e1234]) * self.group0().xyz() * Simd32x3::from(-1.0),
+            Simd32x3::from(other[e1234] * -1.0) * self.group0().xyz(),
             // e415, e425, e435, e321
             ((self.group0().zxy() * other.group3().yzx()) - (self.group0().yzx() * other.group3().zxy())).with_w(self[e3215] * other[e1234] * -1.0),
             // e235, e315, e125, e4
@@ -10678,11 +10829,10 @@ impl AntiWedge<AntiCircleRotor> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7       13        0
-    //    simd3        0        1        0
-    //    simd4        2        1        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        9       15        0
-    //  no simd       15       20        0
+    //  no simd       15       21        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
@@ -10692,8 +10842,8 @@ impl AntiWedge<AntiCircleRotor> for Sphere {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group0().yzxx() * other.group1().zxy().with_w(other[e41]))
-                + (Simd32x3::from(self[e1234]) * other.group2().xyz()).with_w(other[e42] * self[e4315]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e42] * self[e4315]]) * other.group2().xyz().with_w(1.0))
+                + (self.group0().yzxx() * other.group1().zxy().with_w(other[e41])),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
         )
@@ -10764,11 +10914,11 @@ impl AntiWedge<AntiFlector> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2       10        0
-    //    simd3        1        3        0
-    //    simd4        1        0        0
+    //    simd3        1        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd        4       13        0
-    //  no simd        9       19        0
+    //  no simd        9       20        0
     fn anti_wedge(self, other: AntiFlector) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
@@ -10778,7 +10928,7 @@ impl AntiWedge<AntiFlector> for Sphere {
                 other[e321] * self[e4315] * -1.0,
                 other[e321] * self[e4125] * -1.0,
                 (other[e2] * self[e4315]) + (other[e3] * self[e4125]) + (other[e5] * self[e1234]),
-            ]) + (Simd32x3::from(self[e1234]) * other.group0().xyz()).with_w(other[e1] * self[e4235]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e1] * self[e4235]]) * other.group0().xyz().with_w(1.0)),
             // e15, e25, e35, e3215
             ((other.group0().yzx() * self.group0().zxy()) - (other.group0().zxy() * self.group0().yzx())).with_w(0.0),
         )
@@ -10924,11 +11074,10 @@ impl AntiWedge<Dipole> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7       13        0
-    //    simd3        0        1        0
-    //    simd4        2        1        0
+    //    simd4        2        2        0
     // Totals...
     // yes simd        9       15        0
-    //  no simd       15       20        0
+    //  no simd       15       21        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
@@ -10938,8 +11087,8 @@ impl AntiWedge<Dipole> for Sphere {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group0().yzxy() * other.group1().zxy().with_w(other[e42]))
-                + (Simd32x3::from(self[e1234]) * other.group2()).with_w(other[e41] * self[e4235]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234], other[e42] * self[e4315]]) * other.group2().with_w(1.0))
+                + (self.group0().yzxx() * other.group1().zxy().with_w(other[e41])),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
         )
@@ -11027,10 +11176,11 @@ impl AntiWedge<Flector> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        6        0
-    //    simd3        2        6        0
+    //    simd3        2        5        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5       12        0
-    //  no simd        9       24        0
+    //  no simd        9       25        0
     fn anti_wedge(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -11041,8 +11191,12 @@ impl AntiWedge<Flector> for Sphere {
             // e235, e315, e125, e4
             ((Simd32x3::from(other[e3215]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * other.group1().xyz())).with_w(other[e45] * self[e1234]),
             // e1, e2, e3, e5
-            (Simd32x3::from(self[e1234]) * other.group0().xyz())
-                .with_w(-(other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]) - (other[e45] * self[e3215])),
+            Simd32x4::from([
+                self[e1234],
+                self[e1234],
+                self[e1234],
+                -(other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]) - (other[e45] * self[e3215]),
+            ]) * other.group0().xyz().with_w(1.0),
         )
     }
 }
@@ -11051,17 +11205,23 @@ impl AntiWedge<Line> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        3        0
-    //    simd3        2        5        0
+    //    simd3        2        4        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        4        8        0
-    //  no simd        8       18        0
+    //  no simd        8       19        0
     fn anti_wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e1234]) * other.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(self[e1234]) * other.group1()).with_w(-(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125])),
+            Simd32x4::from([
+                self[e1234],
+                self[e1234],
+                self[e1234],
+                -(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125]),
+            ]) * other.group1().with_w(1.0),
             // e15, e25, e35
             (Simd32x3::from(self[e3215]) * other.group0()) + (other.group1().yzx() * self.group0().zxy()) - (other.group1().zxy() * self.group0().yzx()),
         )
@@ -11072,18 +11232,23 @@ impl AntiWedge<Motor> for Sphere {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        4        0
-    //    simd3        2        4        0
-    //    simd4        0        2        0
+    //    simd3        2        3        0
+    //    simd4        0        3        0
     // Totals...
     // yes simd        4       10        0
-    //  no simd        8       24        0
+    //  no simd        8       25        0
     fn anti_wedge(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(self[e1234]) * other.group0().xyz().with_w(other[e5]),
             // e23, e31, e12, e45
-            (Simd32x3::from(self[e1234]) * other.group1().xyz()).with_w(-(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125])),
+            Simd32x4::from([
+                self[e1234],
+                self[e1234],
+                self[e1234],
+                -(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125]),
+            ]) * other.group1().xyz().with_w(1.0),
             // e15, e25, e35, e1234
             ((Simd32x3::from(self[e3215]) * other.group0().xyz()) + (other.group1().yzx() * self.group0().zxy()) - (other.group1().zxy() * self.group0().yzx()))
                 .with_w(other[e12345] * self[e1234]),
@@ -11096,11 +11261,11 @@ impl AntiWedge<MultiVector> for Sphere {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       15       28        0
-    //    simd3        6       12        0
-    //    simd4        4        4        0
+    //      f32       15       26        0
+    //    simd3        6       10        0
+    //    simd4        4        6        0
     // Totals...
-    // yes simd       25       44        0
+    // yes simd       25       42        0
     //  no simd       49       80        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
@@ -11115,9 +11280,9 @@ impl AntiWedge<MultiVector> for Sphere {
                 -(other[e41] * self[e3215]) - (other[e31] * self[e4125]),
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
-                (other[e45] * self[e1234]) + (other[e43] * self[e4125]),
-            ]) + (self.group0().yzxx() * other.group5().zxy().with_w(other[e41]))
-                + (Simd32x3::from(self[e1234]) * other.group3().xyz()).with_w(other[e42] * self[e4315]),
+                (other[e42] * self[e4315]) + (other[e43] * self[e4125]),
+            ]) + (Simd32x4::from(self[e1234]) * other.group3())
+                + (self.group0().yzxx() * other.group5().zxy().with_w(other[e41])),
             // e5
             -(other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]) - (other[e45] * self[e3215]),
             // e15, e25, e35, e45
@@ -11132,7 +11297,7 @@ impl AntiWedge<MultiVector> for Sphere {
             // e23, e31, e12
             (Simd32x3::from(self[e3215]) * other.group7()) + (Simd32x3::from(self[e1234]) * other.group8()) - (Simd32x3::from(other[e321]) * self.group0().xyz()),
             // e415, e425, e435, e321
-            (other.group9().yzxw() * self.group0().zxy().with_w(self[e1234])) - (other.group9().zxy() * self.group0().yzx()).with_w(other[e1234] * self[e3215]),
+            (other.group9().yzxw() * self.group0().zxy().with_w(self[e1234])) - (self.group0().yzxw() * other.group9().zxy().with_w(other[e1234])),
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group9().xyz()) - (Simd32x3::from(other[e1234]) * self.group0().xyz()),
             // e235, e315, e125
@@ -11182,11 +11347,10 @@ impl AntiWedge<Sphere> for Sphere {
     type Output = Circle;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        2        5        0
-    //    simd4        1        1        0
+    //    simd3        2        4        0
+    //    simd4        1        2        0
     // Totals...
-    // yes simd        3        7        0
+    // yes simd        3        6        0
     //  no simd       10       20        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
@@ -11194,7 +11358,7 @@ impl AntiWedge<Sphere> for Sphere {
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group0().xyz()) - (Simd32x3::from(other[e1234]) * self.group0().xyz()),
             // e415, e425, e435, e321
-            (other.group0().yzxw() * self.group0().zxy().with_w(self[e1234])) - (other.group0().zxy() * self.group0().yzx()).with_w(other[e1234] * self[e3215]),
+            (other.group0().yzxw() * self.group0().zxy().with_w(self[e1234])) - (self.group0().yzxw() * other.group0().zxy().with_w(other[e1234])),
             // e235, e315, e125
             (Simd32x3::from(other[e3215]) * self.group0().xyz()) - (Simd32x3::from(self[e3215]) * other.group0().xyz()),
         )
@@ -11204,12 +11368,12 @@ impl AntiWedge<VersorEven> for Sphere {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6       19        0
-    //    simd3        2        4        0
-    //    simd4        3        3        0
+    //      f32        6       20        0
+    //    simd3        2        3        0
+    //    simd4        3        4        0
     // Totals...
-    // yes simd       11       26        0
-    //  no simd       24       43        0
+    // yes simd       11       27        0
+    //  no simd       24       45        0
     fn anti_wedge(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
@@ -11219,8 +11383,8 @@ impl AntiWedge<VersorEven> for Sphere {
                 self[e4235] * other[e412] * -1.0,
                 self[e4315] * other[e423] * -1.0,
                 (self[e4125] * other[e3]) + (self[e3215] * other[e4]) + (self[e1234] * other[e5]),
-            ]) + (self.group0().yzxx() * other.group0().zxy().with_w(other[e1]))
-                + (Simd32x3::from(self[e1234]) * other.group1().xyz()).with_w(self[e4315] * other[e2]),
+            ]) + (Simd32x4::from([self[e1234], self[e1234], self[e1234] * other[e435], self[e4315] * other[e2]]) * other.group1().xy().with_zw(1.0, 1.0))
+                + (self.group0().yzxx() * other.group0().zxy().with_w(other[e1])),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (self[e3215] * other[e423]) + (self[e1234] * other[e235]),
@@ -11240,11 +11404,11 @@ impl AntiWedge<VersorOdd> for Sphere {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6       18        0
-    //    simd3        1        3        0
-    //    simd4        4        4        0
+    //      f32        6       17        0
+    //    simd3        1        2        0
+    //    simd4        4        5        0
     // Totals...
-    // yes simd       11       25        0
+    // yes simd       11       24        0
     //  no simd       25       43        0
     fn anti_wedge(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
@@ -11252,7 +11416,7 @@ impl AntiWedge<VersorOdd> for Sphere {
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group3().xyz()) - (Simd32x3::from(other[e1234]) * self.group0().xyz()),
             // e415, e425, e435, e321
-            (self.group0().zxy() * other.group3().yzx()).with_w(self[e1234] * other[e3215]) - (self.group0().yzxw() * other.group3().zxy().with_w(other[e1234])),
+            (other.group3().yzxw() * self.group0().zxy().with_w(self[e1234])) - (self.group0().yzxw() * other.group3().zxy().with_w(other[e1234])),
             // e235, e315, e125, e4
             Simd32x4::from([
                 self[e3215] * other[e4235] * -1.0,
@@ -11282,11 +11446,11 @@ impl AntiWedge<AntiCircleRotor> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       10       11        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd       10       14        0
-    //  no simd       10       21        0
+    //  no simd       10       22        0
     fn anti_wedge(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -11295,7 +11459,10 @@ impl AntiWedge<AntiCircleRotor> for VersorEven {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2().xyz()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 (other[scalar] * self[e12345])
                     - (other[e41] * self[e235])
                     - (other[e42] * self[e315])
@@ -11307,7 +11474,7 @@ impl AntiWedge<AntiCircleRotor> for VersorEven {
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ),
+            ]) * other.group2().xyz().with_w(1.0),
         )
     }
 }
@@ -11316,11 +11483,11 @@ impl AntiWedge<AntiDipoleInversion> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32       18       25        0
-    //    simd3        0        4        0
-    //    simd4        3        2        0
+    //    simd3        0        3        0
+    //    simd4        3        3        0
     // Totals...
     // yes simd       21       31        0
-    //  no simd       30       45        0
+    //  no simd       30       46        0
     fn anti_wedge(self, other: AntiDipoleInversion) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -11329,7 +11496,10 @@ impl AntiWedge<AntiDipoleInversion> for VersorEven {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2().xyz()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 (other[e4] * self[e12345])
                     - (other[e423] * self[e415])
                     - (other[e431] * self[e425])
@@ -11337,7 +11507,7 @@ impl AntiWedge<AntiDipoleInversion> for VersorEven {
                     - (other[e415] * self[e423])
                     - (other[e425] * self[e431])
                     - (other[e435] * self[e412]),
-            ),
+            ]) * other.group2().xyz().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]) + (other[e1] * self[e12345]),
@@ -11423,24 +11593,28 @@ impl AntiWedge<AntiLine> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       12        0
+    //  no simd        5       13        0
     fn anti_wedge(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            (Simd32x3::from(self[e12345]) * other.group0()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e23] * self[e415])
                     - (other[e31] * self[e425])
                     - (other[e12] * self[e435])
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ),
+            ]) * other.group0().with_w(1.0),
             // e15, e25, e35, e3215
-            (other.group1() * self.group0().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group1()).with_w(0.0),
         )
     }
 }
@@ -11508,12 +11682,12 @@ impl AntiWedge<Circle> for VersorEven {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       17       24        0
-    //    simd3        0        4        0
-    //    simd4        2        1        0
+    //      f32       17       23        0
+    //    simd3        0        2        0
+    //    simd4        2        3        0
     // Totals...
-    // yes simd       19       29        0
-    //  no simd       25       40        0
+    // yes simd       19       28        0
+    //  no simd       25       41        0
     fn anti_wedge(self, other: Circle) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -11522,22 +11696,25 @@ impl AntiWedge<Circle> for VersorEven {
             // e415, e425, e435, e321
             Simd32x4::from(self[e12345]) * other.group1(),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e423] * self[e415])
                     - (other[e431] * self[e425])
                     - (other[e412] * self[e435])
                     - (other[e415] * self[e423])
                     - (other[e425] * self[e431])
                     - (other[e435] * self[e412]),
-            ),
+            ]) * other.group2().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e412] * self[e315]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]),
                 (other[e423] * self[e125]) + (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e125] * self[e423]),
                 (other[e431] * self[e235]) + (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e235] * self[e431]),
-                -(other[e415] * self[e235]) - (other[e425] * self[e315]) - (other[e435] * self[e125]) - (other[e125] * self[e435]),
-            ]) - (other.group0().yzx() * self.group2().zxy()).with_w(other[e235] * self[e415])
-                - (other.group2().zxy() * self.group0().yzx()).with_w(other[e315] * self[e425]),
+                -(other[e435] * self[e125]) - (other[e235] * self[e415]) - (other[e315] * self[e425]) - (other[e125] * self[e435]),
+            ]) - (self.group2().zxyx() * other.group0().yzx().with_w(other[e415]))
+                - (other.group2().zxy() * self.group0().yzx()).with_w(other[e425] * self[e315]),
         )
     }
 }
@@ -11587,11 +11764,11 @@ impl AntiWedge<Dipole> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       10        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        9       13        0
-    //  no simd        9       20        0
+    //  no simd        9       21        0
     fn anti_wedge(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -11600,7 +11777,10 @@ impl AntiWedge<Dipole> for VersorEven {
             // e23, e31, e12, e45
             Simd32x4::from(self[e12345]) * other.group1(),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group2()).with_w(
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
                 -(other[e41] * self[e235])
                     - (other[e42] * self[e315])
                     - (other[e43] * self[e125])
@@ -11611,7 +11791,7 @@ impl AntiWedge<Dipole> for VersorEven {
                     - (other[e15] * self[e423])
                     - (other[e25] * self[e431])
                     - (other[e35] * self[e412]),
-            ),
+            ]) * other.group2().with_w(1.0),
         )
     }
 }
@@ -11690,10 +11870,10 @@ impl AntiWedge<FlatPoint> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        5        0
-    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        3        6        0
-    //  no simd        3        8        0
+    //  no simd        3        9        0
     fn anti_wedge(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -11702,8 +11882,12 @@ impl AntiWedge<FlatPoint> for VersorEven {
             // e23, e31, e12, e45
             Simd32x3::from(0.0).with_w(other[e45] * self[e12345]),
             // e15, e25, e35, scalar
-            (Simd32x3::from(self[e12345]) * other.group0().xyz())
-                .with_w(-(other[e15] * self[e423]) - (other[e25] * self[e431]) - (other[e35] * self[e412]) - (other[e45] * self[e321])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                -(other[e15] * self[e423]) - (other[e25] * self[e431]) - (other[e35] * self[e412]) - (other[e45] * self[e321]),
+            ]) * other.group0().xyz().with_w(1.0),
         )
     }
 }
@@ -11747,20 +11931,25 @@ impl AntiWedge<Line> for VersorEven {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        0        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd       10       18        0
-    //  no simd       13       24        0
+    //  no simd       13       25        0
     fn anti_wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
-            (other.group0() * self.group0().www()).with_w(0.0),
+            (Simd32x3::from(self[e12345]) * other.group0()).with_w(0.0),
             // e235, e315, e125, e4
-            (Simd32x3::from(self[e12345]) * other.group1()).with_w(-(other[e415] * self[e423]) - (other[e425] * self[e431]) - (other[e435] * self[e412])),
+            Simd32x4::from([
+                self[e12345],
+                self[e12345],
+                self[e12345],
+                -(other[e415] * self[e423]) - (other[e425] * self[e431]) - (other[e435] * self[e412]),
+            ]) * other.group1().with_w(1.0),
             // e1, e2, e3, e5
             Simd32x4::from([
                 (other[e415] * self[e321]) + (other[e315] * self[e412]),
@@ -11814,11 +12003,11 @@ impl AntiWedge<MultiVector> for VersorEven {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       38       53        0
-    //    simd3        8       15        0
-    //    simd4        7        6        0
+    //      f32       38       51        0
+    //    simd3        8       13        0
+    //    simd4        7        8        0
     // Totals...
-    // yes simd       53       74        0
+    // yes simd       53       72        0
     //  no simd       90      122        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
@@ -11845,14 +12034,14 @@ impl AntiWedge<MultiVector> for VersorEven {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from([
-                (other[e1] * self[e12345]) + (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e315] * self[e412]),
-                (other[e2] * self[e12345]) + (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e125] * self[e423]),
-                (other[e3] * self[e12345]) + (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e235] * self[e431]),
-                -(other[e415] * self[e423]) - (other[e425] * self[e431]) - (other[e435] * self[e412]) - (other[e412] * self[e435]),
+                (other[e415] * self[e321]) + (other[e321] * self[e415]) + (other[e412] * self[e315]) + (other[e315] * self[e412]),
+                (other[e425] * self[e321]) + (other[e321] * self[e425]) + (other[e423] * self[e125]) + (other[e125] * self[e423]),
+                (other[e435] * self[e321]) + (other[e321] * self[e435]) + (other[e431] * self[e235]) + (other[e235] * self[e431]),
+                -(other[e435] * self[e412]) - (other[e423] * self[e415]) - (other[e431] * self[e425]) - (other[e412] * self[e435]),
             ]) + (Simd32x4::from(other[e12345]) * self.group3())
-                + (other.group7().zxy() * self.group2().yzx()).with_w(other[e4] * self[e12345])
-                - (other.group7().yzx() * self.group2().zxy()).with_w(other[e423] * self[e415])
-                - (other.group8().zxy() * self.group0().yzx()).with_w(other[e431] * self[e425]),
+                + (Simd32x4::from(self[e12345]) * other.group1())
+                - (self.group0().yzxy() * other.group8().zxy().with_w(other[e425]))
+                - (other.group7().yzx() * self.group2().zxy()).with_w(other[e415] * self[e423]),
             // e5
             (other[e12345] * self[e5]) + (other[e5] * self[e12345])
                 - (other[e415] * self[e235])
@@ -11951,12 +12140,12 @@ impl AntiWedge<Sphere> for VersorEven {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6       19        0
-    //    simd3        2        4        0
-    //    simd4        3        3        0
+    //      f32        6       20        0
+    //    simd3        2        3        0
+    //    simd4        3        4        0
     // Totals...
-    // yes simd       11       26        0
-    //  no simd       24       43        0
+    // yes simd       11       27        0
+    //  no simd       24       45        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
@@ -11966,8 +12155,8 @@ impl AntiWedge<Sphere> for VersorEven {
                 other[e4235] * self[e412] * -1.0,
                 other[e4315] * self[e423] * -1.0,
                 (other[e4125] * self[e3]) + (other[e3215] * self[e4]) + (other[e1234] * self[e5]),
-            ]) + (other.group0().yzxx() * self.group0().zxy().with_w(self[e1]))
-                + (Simd32x3::from(other[e1234]) * self.group1().xyz()).with_w(other[e4315] * self[e2]),
+            ]) + (Simd32x4::from([other[e1234], other[e1234], other[e1234] * self[e435], other[e4315] * self[e2]]) * self.group1().xy().with_zw(1.0, 1.0))
+                + (other.group0().yzxx() * self.group0().zxy().with_w(self[e1])),
             // e23, e31, e12, e45
             Simd32x4::from([
                 (other[e3215] * self[e423]) + (other[e1234] * self[e235]),
@@ -12397,8 +12586,8 @@ impl AntiWedge<Dipole> for VersorOdd {
                 -(other[e42] * self[e3215]) - (other[e12] * self[e4235]),
                 -(other[e43] * self[e3215]) - (other[e23] * self[e4315]),
                 (other[e43] * self[e4125]) + (other[e45] * self[e1234]),
-            ]) + (self.group3().yzxy() * other.group1().zxy().with_w(other[e42]))
-                + (other.group2() * self.group2().www()).with_w(other[e41] * self[e4235]),
+            ]) + (self.group3().yzxx() * other.group1().zxy().with_w(other[e41]))
+                + (other.group2() * self.group2().www()).with_w(other[e42] * self[e4315]),
             // e5
             -(other[e45] * self[e3215]) - (other[e15] * self[e4235]) - (other[e25] * self[e4315]) - (other[e35] * self[e4125]),
         )
@@ -12518,18 +12707,23 @@ impl AntiWedge<Line> for VersorOdd {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        9       15        0
-    //    simd3        0        3        0
-    //    simd4        1        0        0
+    //    simd3        0        2        0
+    //    simd4        1        1        0
     // Totals...
     // yes simd       10       18        0
-    //  no simd       13       24        0
+    //  no simd       13       25        0
     fn anti_wedge(self, other: Line) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
             // e41, e42, e43
             Simd32x3::from(self[e1234]) * other.group0(),
             // e23, e31, e12, e45
-            (Simd32x3::from(self[e1234]) * other.group1()).with_w(-(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125])),
+            Simd32x4::from([
+                self[e1234],
+                self[e1234],
+                self[e1234],
+                -(other[e415] * self[e4235]) - (other[e425] * self[e4315]) - (other[e435] * self[e4125]),
+            ]) * other.group1().with_w(1.0),
             // e15, e25, e35, scalar
             Simd32x4::from([
                 (other[e415] * self[e3215]) + (other[e315] * self[e4125]),
@@ -12584,11 +12778,11 @@ impl AntiWedge<MultiVector> for VersorOdd {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       26       39        0
-    //    simd3        8       18        0
-    //    simd4       10        7        0
+    //      f32       26       37        0
+    //    simd3        8       16        0
+    //    simd4       10        9        0
     // Totals...
-    // yes simd       44       64        0
+    // yes simd       44       62        0
     //  no simd       90      121        0
     fn anti_wedge(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
@@ -12614,10 +12808,10 @@ impl AntiWedge<MultiVector> for VersorOdd {
                 0.0,
             ]),
             // e1, e2, e3, e4
-            (self.group3().yzxx() * other.group5().zxy().with_w(other[e41]))
-                + (other.group9().zxy() * self.group1().yzx()).with_w(other[e43] * self[e4125])
-                + (other.group3().xyz() * self.group2().www()).with_w(other[e42] * self[e4315])
-                + (self.group0().xyz() * other.group9().www()).with_w(other[e45] * self[e1234])
+            (Simd32x4::from(self[e1234]) * other.group3())
+                + (self.group3().yzxx() * other.group5().zxy().with_w(other[e41]))
+                + (other.group9().zxy() * self.group1().yzx()).with_w(other[e42] * self[e4315])
+                + (self.group0().xyz() * other.group9().www()).with_w(other[e43] * self[e4125])
                 - (Simd32x4::from(other[e1234]) * self.group2().xyz().with_w(self[e45]))
                 - (other.group9().yzxz() * self.group1().zxy().with_w(self[e43]))
                 - (other.group4() * self.group3().www()).with_w(other[e4235] * self[e41])
@@ -12643,7 +12837,7 @@ impl AntiWedge<MultiVector> for VersorOdd {
             (Simd32x3::from(other[e12345]) * self.group1().xyz()) + (Simd32x3::from(self[e1234]) * other.group8()) + (Simd32x3::from(self[e3215]) * other.group7())
                 - (Simd32x3::from(other[e321]) * self.group3().xyz()),
             // e415, e425, e435, e321
-            (other.group9().yzxw() * self.group3().zxy().with_w(self[e1234])) - (other.group9().zxy() * self.group3().yzx()).with_w(other[e1234] * self[e3215]),
+            (other.group9().yzxw() * self.group3().zxy().with_w(self[e1234])) - (self.group3().yzxw() * other.group9().zxy().with_w(other[e1234])),
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group9().xyz()) - (Simd32x3::from(other[e1234]) * self.group3().xyz()),
             // e235, e315, e125
@@ -12707,11 +12901,11 @@ impl AntiWedge<Sphere> for VersorOdd {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6       15        0
-    //    simd3        1        3        0
-    //    simd4        4        4        0
+    //      f32        6       14        0
+    //    simd3        1        2        0
+    //    simd4        4        5        0
     // Totals...
-    // yes simd       11       22        0
+    // yes simd       11       21        0
     //  no simd       25       40        0
     fn anti_wedge(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
@@ -12719,7 +12913,7 @@ impl AntiWedge<Sphere> for VersorOdd {
             // e423, e431, e412
             (Simd32x3::from(self[e1234]) * other.group0().xyz()) - (Simd32x3::from(other[e1234]) * self.group3().xyz()),
             // e415, e425, e435, e321
-            (other.group0().yzxw() * self.group3().zxy().with_w(self[e1234])) - (other.group0().zxy() * self.group3().yzx()).with_w(other[e1234] * self[e3215]),
+            (other.group0().yzxw() * self.group3().zxy().with_w(self[e1234])) - (self.group3().yzxw() * other.group0().zxy().with_w(other[e1234])),
             // e235, e315, e125, e4
             Simd32x4::from([
                 other[e3215] * self[e4235],

@@ -13,6 +13,19 @@ public extension AntiScalar {
     }
 }
 // Fancy postfix trick
+public Flector operator /(Flector lhs, ConstraintValidPrefixOrPostfix rhs)  {
+    return lhs.constraint_valid();
+    }
+// Fancy prefix trick
+public Flector operator /(ConstraintValidPrefixOrPostfix lhs, Flector rhs) {
+    return rhs.constraint_valid();
+}
+public extension Flector {
+    public Flector constraint_valid() {
+        return this;
+    }
+}
+// Fancy postfix trick
 public Horizon operator /(Horizon lhs, ConstraintValidPrefixOrPostfix rhs)  {
     return lhs.constraint_valid();
     }

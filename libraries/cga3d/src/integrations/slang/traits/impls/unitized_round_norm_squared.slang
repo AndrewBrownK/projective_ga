@@ -9,7 +9,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, AntiCircleR
 }
 public extension AntiCircleRotor {
     public float unitized_round_norm_squared() {
-        return this.e41 * this.e41 * pow(this.e23, 2);
+        return this.e41 * this.e41 * this.e23 * this.e23;
     }
 }
 // Fancy postfix trick
@@ -22,7 +22,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, AntiDipoleI
 }
 public extension AntiDipoleInversion {
     public float unitized_round_norm_squared() {
-        return this.e321 * this.e321 * pow(this.e4, 2);
+        return this.e321 * this.e321 * this.e4 * this.e4;
     }
 }
 // Fancy postfix trick
@@ -35,7 +35,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, Circle rhs)
 }
 public extension Circle {
     public float unitized_round_norm_squared() {
-        return (this.e423 * this.e423 * pow(this.e321, 2)) + (this.e431 * this.e431 * pow(this.e321, 2)) + (this.e412 * this.e412 * pow(this.e321, 2));
+        return (this.e423 * this.e423 * this.e321 * this.e321) + (this.e431 * this.e431 * this.e321 * this.e321) + (this.e412 * this.e412 * this.e321 * this.e321);
     }
 }
 // Fancy postfix trick
@@ -48,7 +48,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, CircleRotor
 }
 public extension CircleRotor {
     public float unitized_round_norm_squared() {
-        return (this.e423 * this.e423 * pow(this.e321, 2)) + (this.e431 * this.e431 * pow(this.e321, 2)) + (this.e412 * this.e412 * pow(this.e321, 2));
+        return (this.e423 * this.e423 * this.e321 * this.e321) + (this.e431 * this.e431 * this.e321 * this.e321) + (this.e412 * this.e412 * this.e321 * this.e321);
     }
 }
 // Fancy postfix trick
@@ -61,7 +61,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, Dipole rhs)
 }
 public extension Dipole {
     public float unitized_round_norm_squared() {
-        return this.e41 * this.e41 * pow(this.e23, 2);
+        return this.e41 * this.e41 * this.e23 * this.e23;
     }
 }
 // Fancy postfix trick
@@ -74,7 +74,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, DipoleInver
 }
 public extension DipoleInversion {
     public float unitized_round_norm_squared() {
-        return this.e41 * this.e41 * pow(this.e23, 2);
+        return this.e41 * this.e41 * this.e23 * this.e23;
     }
 }
 // Fancy postfix trick
@@ -100,7 +100,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, RoundPoint 
 }
 public extension RoundPoint {
     public float unitized_round_norm_squared() {
-        return (this.e1 * this.e1 * pow(this.e4, -2)) + (this.e2 * this.e2 * pow(this.e4, -2)) + (this.e3 * this.e3 * pow(this.e4, -2));
+        return (this.e1 * this.e1 /  (this.e4 * this.e4)) + (this.e2 * this.e2 /  (this.e4 * this.e4)) + (this.e3 * this.e3 /  (this.e4 * this.e4));
     }
 }
 // Fancy postfix trick
@@ -113,7 +113,7 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, VersorEven 
 }
 public extension VersorEven {
     public float unitized_round_norm_squared() {
-        return this.e321 * this.e321 * pow(this.e4, 2);
+        return this.e321 * this.e321 * this.e4 * this.e4;
     }
 }
 // Fancy postfix trick
@@ -126,6 +126,6 @@ public float operator /(UnitizedRoundNormSquaredPrefixOrPostfix lhs, VersorOdd r
 }
 public extension VersorOdd {
     public float unitized_round_norm_squared() {
-        return this.e41 * this.e41 * pow(this.e23, 2);
+        return this.e41 * this.e41 * this.e23 * this.e23;
     }
 }

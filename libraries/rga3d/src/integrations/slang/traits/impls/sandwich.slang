@@ -11,7 +11,7 @@ public extension DualNum {
     public AntiScalar sandwich(AntiScalar other) {
         return AntiScalar(
             /* e1234 */
-            other.e1234 * pow(this.scalar, 2)
+            other.e1234 * this.scalar * this.scalar
         );
     }
 }
@@ -38,9 +38,9 @@ public extension DualNum {
         float geometric_product_g1_w = this.scalar * other.e321;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(this.group0.xx, this.scalar, (geometric_product_g1_w * this.e1234) + (geometric_product_g0[3] * this.scalar)) * float4(geometric_product_g0.xyz, 1.0), 
+            float4(this.scalar, this.scalar, this.scalar, (geometric_product_g1_w * this.e1234) + (geometric_product_g0[3] * this.scalar)) * float4(geometric_product_g0.xyz, 1.0), 
             /* e423, e431, e412, e321 */
-            float4(((float3(this.scalar) * ((float3(this.scalar) * other.group1.xyz) - (float3(this.e1234) * other.group0.xyz))) + (float3(this.e1234) * geometric_product_g0.xyz)), geometric_product_g1_w * this.scalar)
+            float4(((float3(this.e1234) * geometric_product_g0.xyz) + (float3(this.scalar * this.scalar) * other.group1.xyz) - (float3(this.scalar * this.e1234) * other.group0.xyz)), geometric_product_g1_w * this.scalar)
         );
     }
 }
@@ -65,7 +65,7 @@ public extension DualNum {
         float3 geometric_product_g1 = float3(this.scalar) * other.group1.xyz;
         return Line(
             /* e41, e42, e43 */
-            (geometric_product_g1 * float3(this.e1234)) + (float3(this.scalar) * ((float3(this.scalar) * other.group0.xyz) + (float3(this.e1234) * other.group1.xyz))), 
+            (geometric_product_g1 * float3(this.e1234)) + (float3(this.scalar * this.scalar) * other.group0.xyz) + (float3(this.scalar * this.e1234) * other.group1.xyz), 
             /* e23, e31, e12 */
             geometric_product_g1 * float3(this.scalar)
         );
@@ -80,7 +80,7 @@ public extension DualNum {
         float4 geometric_product_g1 = float4(this.scalar) * other.group1;
         return Motor(
             /* e41, e42, e43, e1234 */
-            (geometric_product_g1 * float4(this.e1234)) + (float4(this.scalar) * ((float4(this.scalar) * other.group0) + (float4(this.e1234) * other.group1))), 
+            (geometric_product_g1 * float4(this.e1234)) + (float4(this.scalar * this.scalar) * other.group0) + (float4(this.scalar * this.e1234) * other.group1), 
             /* e23, e31, e12, scalar */
             geometric_product_g1 * float4(this.scalar)
         );
@@ -100,13 +100,13 @@ public extension DualNum {
             /* scalar, e1234 */
             float2(geometric_product_g0_x * this.scalar, (geometric_product_g0_x * this.e1234) + (this.scalar * this.scalar * other.e1234) + (this.scalar * this.e1234 * other.scalar)), 
             /* e1, e2, e3, e4 */
-            float4(this.group0.xx, this.scalar, (geometric_product_g4_w * this.e1234) + (geometric_product_g1[3] * this.scalar)) * float4(geometric_product_g1.xyz, 1.0), 
+            float4(this.scalar, this.scalar, this.scalar, (geometric_product_g4_w * this.e1234) + (geometric_product_g1[3] * this.scalar)) * float4(geometric_product_g1.xyz, 1.0), 
             /* e41, e42, e43 */
-            (geometric_product_g3 * float3(this.e1234)) + (float3(this.scalar) * ((float3(this.scalar) * other.group2.xyz) + (float3(this.e1234) * other.group3.xyz))), 
+            (geometric_product_g3 * float3(this.e1234)) + (float3(this.scalar * this.scalar) * other.group2.xyz) + (float3(this.scalar * this.e1234) * other.group3.xyz), 
             /* e23, e31, e12 */
             geometric_product_g3 * float3(this.scalar), 
             /* e423, e431, e412, e321 */
-            float4(((float3(this.scalar) * ((float3(this.scalar) * other.group4.xyz) - (float3(this.e1234) * other.group1.xyz))) + (float3(this.e1234) * geometric_product_g1.xyz)), geometric_product_g4_w * this.scalar)
+            float4(((float3(this.e1234) * geometric_product_g1.xyz) + (float3(this.scalar * this.scalar) * other.group4.xyz) - (float3(this.scalar * this.e1234) * other.group1.xyz)), geometric_product_g4_w * this.scalar)
         );
     }
 }
@@ -128,23 +128,24 @@ public Plane operator /(SandwichInfixPartial<DualNum> lhs, Plane rhs) {
 }
 public extension DualNum {
     public Plane sandwich(Plane other) {
-        float4 geometric_product_g1 = float4(this.scalar) * other.group0;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(((float3(this.scalar) * geometric_product_g1.xyz) + (float3(this.e1234) * (float4(float3(0.0), this.e1234 * other.e321) * float4(0.0, 0.0, 0.0, -1.0)).xyz)), geometric_product_g1[3] * this.scalar)
+            float4(this.scalar * this.scalar) * other.group0
         );
     }
 }
 // Fancy infix trick (second half)
-public Point operator /(SandwichInfixPartial<DualNum> lhs, Point rhs) {
+public Flector operator /(SandwichInfixPartial<DualNum> lhs, Point rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension DualNum {
-    public Point sandwich(Point other) {
+    public Flector sandwich(Point other) {
         float4 geometric_product_g0 = float4(this.scalar) * other.group0;
-        return Point(
+        return Flector(
             /* e1, e2, e3, e4 */
-            float4(this.group0.xx, this.scalar, geometric_product_g0[3] * this.scalar) * float4(geometric_product_g0.xyz, 1.0)
+            geometric_product_g0 * float4(this.scalar), 
+            /* e423, e431, e412, e321 */
+            float4(((float3(this.e1234) * geometric_product_g0.xyz) + (float3(this.scalar * this.e1234 * -1.0) * other.group0.xyz)), 0.0)
         );
     }
 }
@@ -174,23 +175,24 @@ public extension Flector {
         float3 geometric_product_g1_xyz = float3(other.e1234) * this.group0.xyz;
         return AntiScalar(
             /* e1234 */
-            -(geometric_product_g1_xyz[0] * this.e1) - (geometric_product_g1_xyz[1] * this.e2) - (geometric_product_g1_xyz[2] * this.e3) - (other.e1234 * pow(this.e321, 2))
+            (other.e1234 * this.e321 * this.e321) - (geometric_product_g1_xyz[0] * this.e1) - (geometric_product_g1_xyz[1] * this.e2) - (geometric_product_g1_xyz[2] * this.e3)
         );
     }
 }
 // Fancy infix trick (second half)
-public DualNum operator /(SandwichInfixPartial<Flector> lhs, DualNum rhs) {
+public Motor operator /(SandwichInfixPartial<Flector> lhs, DualNum rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Flector {
-    public DualNum sandwich(DualNum other) {
+    public Motor sandwich(DualNum other) {
         float4 geometric_product_g0 = float4(other.group0.xx, other.scalar, (other.scalar * this.e4) + (other.e1234 * this.e321)) * float4(this.group0.xyz, 1.0);
         float3 geometric_product_g1_xyz = (float3(other.scalar) * this.group1.xyz) + (float3(other.e1234) * this.group0.xyz);
         float geometric_product_g1_w = other.scalar * this.e321;
-        float4 reverse_g1 = this.group1 * float4(-1.0);
-        return DualNum(
-            /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0[3] * reverse_g1[3]) - (geometric_product_g1_w * this.e4) - (geometric_product_g1_xyz[1] * this.e2) - (geometric_product_g1_xyz[2] * this.e3)) + (float2(geometric_product_g0[0]) * float2(this.e1, reverse_g1[0])) + (float2(geometric_product_g0[1]) * float2(this.e2, reverse_g1[1])) + (float2(geometric_product_g0[2]) * float2(this.e3, reverse_g1[2])) - (float2(reverse_g1[3], this.e1) * float4(geometric_product_g1_xyz, geometric_product_g1_w).wx)
+        return Motor(
+            /* e41, e42, e43, e1234 */
+            (float4(geometric_product_g0[3]) * float4(this.group0.xyz, this.e321)) + (float4(this.e2, this.e321, this.e321, geometric_product_g0[1] * this.e431) * float4(geometric_product_g1_xyz.zyz, 1.0)) + (float4(this.e321, this.e3, this.e1, geometric_product_g0[0] * this.e423) * float4(geometric_product_g1_xyz.xxy, 1.0)) + (geometric_product_g0.yzxz * this.group1.zxyz) - (float4(geometric_product_g1_w) * float4(this.group1.xyz, this.e4)) - (float4(this.e4, this.e412, this.e423, geometric_product_g1_xyz[1] * this.e2) * float4(geometric_product_g0.xxy, 1.0)) - (float4(this.e431, this.e4, this.e4, geometric_product_g1_xyz[2] * this.e3) * float4(geometric_product_g0.zyz, 1.0)) - (this.group0.zxyx * float4(geometric_product_g1_xyz.yzx, geometric_product_g1_xyz[0])), 
+            /* e23, e31, e12, scalar */
+            float4(float3(0.0), (geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3) - (geometric_product_g1_w * this.e321))
         );
     }
 }
@@ -200,29 +202,29 @@ public Flector operator /(SandwichInfixPartial<Flector> lhs, Flector rhs) {
 }
 public extension Flector {
     public Flector sandwich(Flector other) {
-        float4 geometric_product_g0 = (float4(other.e321) * float4(this.group1.xyz, this.e4)) + (other.group1.zxyz * this.group0.yzxz) + (float4(this.group0.ww, this.e431, this.e1) * float4(other.group0.xyx, other.e423)) + (float4(this.group1.zx, this.e4, this.e2) * float4(other.group0.yzz, other.e431)) - (other.group0.zxyx * this.group1.yzxx) - (other.group0.wwwy * float4(this.group0.xyz, this.e431)) - (float4(this.group0.zx, this.e321, this.e321) * float4(other.group1.yzz, other.e4)) - (float4(this.group1.ww, this.e2, this.e412) * float4(other.group1.xyx, other.e3));
-        float4 geometric_product_g1 = float4(-(other.e2 * this.e3) - (other.e321 * this.e1), -(other.e3 * this.e1) - (other.e321 * this.e2), -(other.e3 * this.e321) - (other.e321 * this.e3), (other.e2 * this.e2) + (other.e3 * this.e3)) + (other.group0.zxyx * this.group0.yzxx) - (float4(this.group1.ww, this.e2, this.e321) * float4(other.group0.xyx, other.e321));
-        float4 reverse_g1 = this.group1 * float4(-1.0);
+        float4 geometric_product_g0 = (float4(other.e321) * float4(this.group1.xyz, this.e4)) + (other.group1.zxyz * this.group0.yzxz) + (float4(this.group0.ww, this.e431, other.e423 * this.e1) * float4(other.group0.xyx, 1.0)) + (float4(this.group1.zx, this.e4, other.e431 * this.e2) * float4(other.group0.yzz, 1.0)) - (other.group0.zxyx * this.group1.yzxx) - (other.group0.wwwy * float4(this.group0.xyz, this.e431)) - (float4(this.group0.zx, this.e321, other.e4 * this.e321) * float4(other.group1.yzz, 1.0)) - (float4(this.group1.ww, this.e2, other.e3 * this.e412) * float4(other.group1.xyx, 1.0));
+        float4 geometric_product_g1 = float4(-(other.e2 * this.e3) - (other.e321 * this.e1), -(other.e3 * this.e1) - (other.e321 * this.e2), -(other.e3 * this.e321) - (other.e321 * this.e3), (other.e2 * this.e2) + (other.e3 * this.e3)) + (other.group0.zxyx * this.group0.yzxx) - (float4(this.group1.ww, this.e2, other.e321 * this.e321) * float4(other.group0.xyx, 1.0));
         return Flector(
             /* e1, e2, e3, e4 */
-            (this.group0.xyxx * float4(geometric_product_g1.wwy, geometric_product_g0[0])) + (this.group0.yzzy * float4(geometric_product_g1.zxw, geometric_product_g0[1])) + float4(float3(0.0), (geometric_product_g1[3] * this.e4) - (geometric_product_g0[3] * reverse_g1[3]) - (geometric_product_g1[1] * reverse_g1[1]) - (geometric_product_g1[2] * reverse_g1[2])) + float4((geometric_product_g1.xyz * reverse_g1.www), geometric_product_g0[2] * this.e3) - (geometric_product_g1.yzxx * float4(this.group0.zxy, reverse_g1[0])), 
+            (float4(this.e2, this.e321, this.e321, geometric_product_g0[1] * this.e2) * float4(geometric_product_g1.zyz, 1.0)) + (float4(this.e321, this.e3, this.e1, geometric_product_g0[0] * this.e1) * float4(geometric_product_g1.xxy, 1.0)) + (this.group0.xyzz * float4(geometric_product_g1.www, geometric_product_g0[2])) + float4(float3(0.0), (geometric_product_g1[3] * this.e4) - (geometric_product_g1[0] * this.e423) - (geometric_product_g1[1] * this.e431) - (geometric_product_g1[2] * this.e412)) - float4((geometric_product_g1.yzx * this.group0.zxy), geometric_product_g0[3] * this.e321), 
             /* e423, e431, e412, e321 */
-            float4((float3(geometric_product_g1[3]) * reverse_g1.xyz), 0.0) + float4((float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g1.zyz), 0.0) + float4((float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g1.xxy), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * reverse_g1[3]) - (geometric_product_g1.yzxz * float4(reverse_g1.zxy, this.e3)) - (this.group0.xyxx * float4(geometric_product_g0.wwy, geometric_product_g1[0])) - (this.group0.yzzy * float4(geometric_product_g0.zxw, geometric_product_g1[1])) - float4((float3(reverse_g1[3]) * geometric_product_g0.xyz), 0.0)
+            float4((geometric_product_g1[0] * this.e4) + (geometric_product_g1[2] * this.e431) + (geometric_product_g1[3] * this.e423) - (geometric_product_g1[1] * this.e412), (geometric_product_g1[0] * this.e412) + (geometric_product_g1[1] * this.e4) + (geometric_product_g1[3] * this.e431) - (geometric_product_g1[2] * this.e423), (geometric_product_g1[1] * this.e423) + (geometric_product_g1[2] * this.e4) + (geometric_product_g1[3] * this.e412) - (geometric_product_g1[0] * this.e431), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * this.e321) - (float4(this.e2, this.e321, this.e321, geometric_product_g1[1] * this.e2) * float4(geometric_product_g0.zyz, 1.0)) - (float4(this.e321, this.e3, this.e1, geometric_product_g1[0] * this.e1) * float4(geometric_product_g0.xxy, 1.0)) - (this.group0.xyzz * float4(geometric_product_g0.www, geometric_product_g1[2]))
         );
     }
 }
 // Fancy infix trick (second half)
-public Plane operator /(SandwichInfixPartial<Flector> lhs, Horizon rhs) {
+public Flector operator /(SandwichInfixPartial<Flector> lhs, Horizon rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Flector {
-    public Plane sandwich(Horizon other) {
+    public Flector sandwich(Horizon other) {
         float4 geometric_product_g0 = float4(other.e321) * float4(this.group1.xyz, this.e4);
-        float4 geometric_product_g1 = float4(other.e321) * float4(this.group0.xyz, this.e321) * float4(-1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0);
-        return Plane(
+        float4 geometric_product_g1 = float4(other.e321 * -1.0) * float4(this.group0.xyz, this.e321);
+        return Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), (geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3) + (geometric_product_g1[3] * this.e4) - (geometric_product_g0[3] * this.e321) - (geometric_product_g1[0] * this.e423) - (geometric_product_g1[1] * this.e431) - (geometric_product_g1[2] * this.e412)), 
             /* e423, e431, e412, e321 */
-            float4((float3(geometric_product_g1[3]) * reverse_g1.xyz), 0.0) + float4((float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g1.zyz), 0.0) + float4((float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g1.xxy), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * reverse_g1[3]) - (geometric_product_g1.yzxz * float4(reverse_g1.zxy, this.e3)) - (this.group0.xyxx * float4(geometric_product_g0.wwy, geometric_product_g1[0])) - (this.group0.yzzy * float4(geometric_product_g0.zxw, geometric_product_g1[1])) - float4((float3(reverse_g1[3]) * geometric_product_g0.xyz), 0.0)
+            float4((geometric_product_g1[0] * this.e4) + (geometric_product_g1[2] * this.e431) + (geometric_product_g1[3] * this.e423) - (geometric_product_g1[1] * this.e412), (geometric_product_g1[0] * this.e412) + (geometric_product_g1[1] * this.e4) + (geometric_product_g1[3] * this.e431) - (geometric_product_g1[2] * this.e423), (geometric_product_g1[1] * this.e423) + (geometric_product_g1[2] * this.e4) + (geometric_product_g1[3] * this.e412) - (geometric_product_g1[0] * this.e431), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * this.e321) - (float4(this.e2, this.e321, this.e321, geometric_product_g1[1] * this.e2) * float4(geometric_product_g0.zyz, 1.0)) - (float4(this.e321, this.e3, this.e1, geometric_product_g1[0] * this.e1) * float4(geometric_product_g0.xxy, 1.0)) - (this.group0.xyzz * float4(geometric_product_g0.www, geometric_product_g1[2]))
         );
     }
 }
@@ -233,13 +235,12 @@ public Line operator /(SandwichInfixPartial<Flector> lhs, Line rhs) {
 public extension Flector {
     public Line sandwich(Line other) {
         float4 geometric_product_g0 = float4((this.e3 * other.e31) + (this.e321 * other.e23), (this.e1 * other.e12) + (this.e321 * other.e31), (this.e2 * other.e23) + (this.e321 * other.e12), -(this.e2 * other.e42) - (this.e3 * other.e43) - (this.e423 * other.e23) - (this.e431 * other.e31) - (this.e412 * other.e12)) - (this.group0.yzxx * float4(other.group1.zxy, other.e41));
-        float4 geometric_product_g1 = float4((float3((this.e3 * other.e42) + (this.e412 * other.e31), (this.e1 * other.e43) + (this.e423 * other.e12), (this.e2 * other.e41) + (this.e431 * other.e23)) + (float3(this.e4) * other.group1.xyz) + (float3(this.e321) * other.group0.xyz)), this.e3 * other.e12 * -1.0) - (this.group0.yzxx * float4(other.group0.zxy, other.e23)) - float4((other.group1.zxy * this.group1.yzx), this.e2 * other.e31);
-        float4 reverse_g1 = this.group1 * float4(-1.0);
+        float4 geometric_product_g1 = float4((this.e3 * other.e42) + (this.e4 * other.e23) + (this.e412 * other.e31) + (this.e321 * other.e41), (this.e1 * other.e43) + (this.e4 * other.e31) + (this.e423 * other.e12) + (this.e321 * other.e42), (this.e2 * other.e41) + (this.e4 * other.e12) + (this.e431 * other.e23) + (this.e321 * other.e43), this.e3 * other.e12 * -1.0) - (this.group0.yzxx * float4(other.group0.zxy, other.e23)) - float4((other.group1.zxy * this.group1.yzx), this.e2 * other.e31);
         return Line(
             /* e41, e42, e43 */
-            (float3(geometric_product_g0[3]) * this.group0.xyz) + (float3(reverse_g1[3], this.e3, this.e1) * geometric_product_g1.xxy) + (float3(this.e2, reverse_g1[3], reverse_g1[3]) * geometric_product_g1.zyz) + (geometric_product_g0.yzx * reverse_g1.zxy) - (float3(geometric_product_g1[3]) * reverse_g1.xyz) - (float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g0.zyz) - (float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g0.xxy) - (geometric_product_g1.yzx * this.group0.zxy), 
+            (float3(geometric_product_g0[3]) * this.group0.xyz) + (float3(this.e2, this.e321, this.e321) * geometric_product_g1.zyz) + (float3(this.e321, this.e3, this.e1) * geometric_product_g1.xxy) + (geometric_product_g0.yzx * this.group1.zxy) - (float3(geometric_product_g1[3]) * this.group1.xyz) - (float3(this.e4, this.e412, this.e423) * geometric_product_g0.xxy) - (float3(this.e431, this.e4, this.e4) * geometric_product_g0.zyz) - (geometric_product_g1.yzx * this.group0.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g0.yzx * this.group0.zxy) - (float3(geometric_product_g1[3]) * this.group0.xyz) - (float3(reverse_g1[3], this.e3, this.e1) * geometric_product_g0.xxy) - (float3(this.e2, reverse_g1[3], reverse_g1[3]) * geometric_product_g0.zyz)
+            (geometric_product_g0.yzx * this.group0.zxy) - (float3(geometric_product_g1[3]) * this.group0.xyz) - (float3(this.e2, this.e321, this.e321) * geometric_product_g0.zyz) - (float3(this.e321, this.e3, this.e1) * geometric_product_g0.xxy)
         );
     }
 }
@@ -249,14 +250,13 @@ public Motor operator /(SandwichInfixPartial<Flector> lhs, Motor rhs) {
 }
 public extension Flector {
     public Motor sandwich(Motor other) {
-        float4 geometric_product_g0 = (this.group0.xxyw * other.group1.wzxw) + float4((float3(this.e321) * other.group1.xyz), -(this.e2 * other.e42) - (this.e3 * other.e43) - (this.e423 * other.e23) - (this.e431 * other.e31) - (this.e412 * other.e12)) + float4((this.group0.zyz * other.group1.yww), this.e321 * other.e1234) - (this.group0.yzxx * float4(other.group1.zxy, other.e41));
-        float4 geometric_product_g1 = float4((this.group0.xxy * other.group0.wzx), this.e321 * other.scalar) + float4((float3((this.e3 * other.e42) + (this.e412 * other.e31), (this.e2 * other.e1234) + (this.e423 * other.e12), (this.e3 * other.e1234) + (this.e431 * other.e23)) + (float3(this.e4) * other.group1.xyz) + (float3(this.e321) * other.group0.xyz) + (float3(other.scalar) * this.group1.xyz)), this.e3 * other.e12 * -1.0) - (this.group0.yzxx * float4(other.group0.zxy, other.e23)) - (other.group1.zxyy * float4(this.group1.yzx, this.e2));
-        float4 reverse_g1 = this.group1 * float4(-1.0);
+        float4 geometric_product_g0 = float4(this.e321 * other.e23, this.e321 * other.e31, this.e321 * other.e12, -(this.e2 * other.e42) - (this.e3 * other.e43) - (this.e423 * other.e23) - (this.e431 * other.e31) - (this.e412 * other.e12)) + (this.group0.xxyw * other.group1.wzxw) + float4((this.group0.zyz * other.group1.yww), this.e321 * other.e1234) - (this.group0.yzxx * float4(other.group1.zxy, other.e41));
+        float4 geometric_product_g1 = float4((this.e3 * other.e42) + (this.e4 * other.e23) + (this.e423 * other.scalar) + (this.e412 * other.e31) + (this.e321 * other.e41), (this.e2 * other.e1234) + (this.e4 * other.e31) + (this.e423 * other.e12) + (this.e431 * other.scalar) + (this.e321 * other.e42), (this.e3 * other.e1234) + (this.e4 * other.e12) + (this.e431 * other.e23) + (this.e412 * other.scalar) + (this.e321 * other.e43), this.e3 * other.e12 * -1.0) + float4((this.group0.xxy * other.group0.wzx), this.e321 * other.scalar) - (this.group0.yzxx * float4(other.group0.zxy, other.e23)) - (other.group1.zxyy * float4(this.group1.yzx, this.e2));
         return Motor(
             /* e41, e42, e43, e1234 */
-            (float4(reverse_g1[3], this.e3, this.e1, reverse_g1[2]) * float4(geometric_product_g1.xxy, geometric_product_g0[2])) + (float4(this.e2, reverse_g1[3], reverse_g1[3], reverse_g1[3]) * float4(geometric_product_g1.zyz, geometric_product_g0[3])) + (geometric_product_g0.yzxx * reverse_g1.zxyx) + (geometric_product_g0.wwwy * float4(this.group0.xyz, reverse_g1[1])) - (float4(geometric_product_g1[3]) * float4(reverse_g1.xyz, this.e4)) - (float4(reverse_g1[1], this.e4, this.e4, this.e2) * float4(geometric_product_g0.zyz, geometric_product_g1[1])) - (float4(this.e4, reverse_g1[2], reverse_g1[0], this.e1) * float4(geometric_product_g0.xxy, geometric_product_g1[0])) - (geometric_product_g1.yzxz * this.group0.zxyz), 
+            (float4(this.e2, this.e321, this.e321, geometric_product_g0[3] * this.e321) * float4(geometric_product_g1.zyz, 1.0)) + (float4(this.e321, this.e3, this.e1, geometric_product_g0[2] * this.e412) * float4(geometric_product_g1.xxy, 1.0)) + (geometric_product_g0.yzxx * this.group1.zxyx) + (geometric_product_g0.wwwy * float4(this.group0.xyz, this.e431)) - (float4(geometric_product_g1[3]) * float4(this.group1.xyz, this.e4)) - (float4(this.e4, this.e412, this.e423, geometric_product_g1[0] * this.e1) * float4(geometric_product_g0.xxy, 1.0)) - (float4(this.e431, this.e4, this.e4, geometric_product_g1[1] * this.e2) * float4(geometric_product_g0.zyz, 1.0)) - (geometric_product_g1.yzxz * this.group0.zxyz), 
             /* e23, e31, e12, scalar */
-            float4(-(geometric_product_g0[2] * this.e2) - (geometric_product_g1[3] * this.e1), -(geometric_product_g0[1] * reverse_g1[3]) - (geometric_product_g1[3] * this.e2), -(geometric_product_g0[2] * reverse_g1[3]) - (geometric_product_g1[3] * this.e3), (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3)) + (geometric_product_g0.yzxx * this.group0.zxyx) - (float4(reverse_g1[3], this.e3, this.e1, reverse_g1[3]) * float4(geometric_product_g0.xxy, geometric_product_g1[3]))
+            float4(-(geometric_product_g0[2] * this.e2) - (geometric_product_g1[3] * this.e1), -(geometric_product_g0[1] * this.e321) - (geometric_product_g1[3] * this.e2), -(geometric_product_g0[2] * this.e321) - (geometric_product_g1[3] * this.e3), (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3)) + (geometric_product_g0.yzxx * this.group0.zxyx) - (float4(this.e321, this.e3, this.e1, geometric_product_g1[3] * this.e321) * float4(geometric_product_g0.xxy, 1.0))
         );
     }
 }
@@ -267,22 +267,22 @@ public MultiVector operator /(SandwichInfixPartial<Flector> lhs, MultiVector rhs
 public extension Flector {
     public MultiVector sandwich(MultiVector other) {
         float2 geometric_product_g0 = float2(0.0, (this.e4 * other.e321) - (this.e431 * other.e2) - (this.e412 * other.e3) - (this.e321 * other.e4)) + (float2(this.e1) * float2(other.e1, other.e423)) + (float2(this.e2) * float2(other.e2, other.e431)) + (float2(this.e3) * float2(other.e3, other.e412)) - (float2(other.e321, other.e1) * this.group1.wx);
-        float4 geometric_product_g1 = float4(this.e3 * other.e31, this.e1 * other.e12, this.e321 * other.e12, -(this.e2 * other.e42) - (this.e3 * other.e43) - (this.e423 * other.e23) - (this.e431 * other.e31) - (this.e412 * other.e12)) + (float4(other.scalar) * this.group0) + (float4(this.group1.ww, this.e2, this.e321) * float4(other.group3.xyx, other.e1234)) - (this.group0.yzxx * float4(other.group3.zxy, other.e41));
+        float4 geometric_product_g1 = float4(this.e321 * other.e23, this.e321 * other.e31, this.e321 * other.e12, -(this.e2 * other.e42) - (this.e3 * other.e43) - (this.e423 * other.e23) - (this.e431 * other.e31) - (this.e412 * other.e12)) + (float4(other.scalar, other.e12, other.e23, other.scalar) * this.group0.xxyw) + (float4(other.e31, other.scalar, other.scalar, this.e321 * other.e1234) * float4(this.group0.zyz, 1.0)) - (this.group0.yzxx * float4(other.group3.zxy, other.e41));
         float3 geometric_product_g2 = (float3(this.e4) * other.group1.xyz) + (float3(other.e2, other.e321, other.e321) * this.group1.zyz) + (float3(other.e321, other.e3, other.e1) * this.group1.xxy) + (this.group0.yzx * other.group4.zxy) - (float3(this.e321) * other.group4.xyz) - (float3(other.e4, other.e412, other.e423) * this.group0.xxy) - (float3(other.e431, other.e4, other.e4) * this.group0.zyz) - (this.group1.yzx * other.group1.zxy);
         float3 geometric_product_g3 = (this.group0.yzx * other.group1.zxy) - (float3(this.e321) * other.group1.xyz) - (float3(other.e2, other.e321, other.e321) * this.group0.zyz) - (float3(other.e321, other.e3, other.e1) * this.group0.xxy);
-        float4 geometric_product_g4 = (float4(other.scalar) * this.group1) + float4((float3((this.e3 * other.e42) + (this.e412 * other.e31), (this.e1 * other.e43) + (this.e423 * other.e12), (this.e2 * other.e41) + (this.e431 * other.e23)) + (float3(this.e4) * other.group3.xyz) + (float3(this.e321) * other.group2.xyz) + (float3(other.e1234) * this.group0.xyz)), this.e3 * other.e12 * -1.0) - (this.group0.yzxx * float4(other.group2.zxy, other.e23)) - float4((other.group3.zxy * this.group1.yzx), this.e2 * other.e31);
+        float4 geometric_product_g4 = float4((this.e3 * other.e42) + (this.e4 * other.e23) + (this.e423 * other.scalar) + (this.e412 * other.e31) + (this.e321 * other.e41), (this.e2 * other.e1234) + (this.e4 * other.e31) + (this.e423 * other.e12) + (this.e431 * other.scalar) + (this.e321 * other.e42), (this.e3 * other.e1234) + (this.e4 * other.e12) + (this.e431 * other.e23) + (this.e412 * other.scalar) + (this.e321 * other.e43), this.e3 * other.e12 * -1.0) + (float4(other.e1234, other.e43, other.e41, this.e321 * other.scalar) * float4(this.group0.xxy, 1.0)) - (this.group0.yzxx * float4(other.group2.zxy, other.e23)) - float4((other.group3.zxy * this.group1.yzx), this.e2 * other.e31);
         float4 reverse_g1 = this.group1 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
             float2(0.0, (geometric_product_g1[3] * reverse_g1[3]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g1[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g1[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g1[2])) - (float2(reverse_g1[3], this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (float4(geometric_product_g0[0]) * this.group0) + (float4(reverse_g1[3], this.e3, this.e1, this.e1) * float4(geometric_product_g3.xxy, geometric_product_g2[0])) + (float4(this.e2, reverse_g1[3], reverse_g1[3], this.e2) * float4(geometric_product_g3.zyz, geometric_product_g2[1])) + float4(float3(0.0), (geometric_product_g2[2] * this.e3) - (geometric_product_g3[0] * reverse_g1[0]) - (geometric_product_g3[1] * reverse_g1[1]) - (geometric_product_g3[2] * reverse_g1[2])) - float4((geometric_product_g3.yzx * this.group0.zxy), geometric_product_g0[1] * reverse_g1[3]), 
+            (float4(geometric_product_g0[0]) * this.group0) + (float4(reverse_g1[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g1[3], reverse_g1[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + float4(float3(0.0), (geometric_product_g2[2] * this.e3) - (geometric_product_g3[0] * reverse_g1[0]) - (geometric_product_g3[1] * reverse_g1[1]) - (geometric_product_g3[2] * reverse_g1[2])) - float4((geometric_product_g3.yzx * this.group0.zxy), geometric_product_g0[1] * reverse_g1[3]), 
             /* e41, e42, e43 */
-            (float3(reverse_g1[3]) * geometric_product_g4.xyz) + (float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * this.group0.xyx) + (float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * this.group0.yzz) + (geometric_product_g1.yzx * reverse_g1.zxy) - (float3(this.e4) * geometric_product_g1.xyz) - (float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g1.yzz) - (float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g1.xyx) - (geometric_product_g4.yzx * this.group0.zxy), 
+            (float3(geometric_product_g1[3]) * this.group0.xyz) + (float3(reverse_g1[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g1[3], reverse_g1[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g1.zxy) - (float3(geometric_product_g4[3]) * reverse_g1.xyz) - (float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g1.xxy) - (geometric_product_g4.yzx * this.group0.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g1.yzx * this.group0.zxy) - (float3(reverse_g1[3]) * geometric_product_g1.xyz) - (float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * this.group0.yzz) - (float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * this.group0.xyx), 
+            (geometric_product_g1.yzx * this.group0.zxy) - (float3(geometric_product_g4[3]) * this.group0.xyz) - (float3(reverse_g1[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g1[3], reverse_g1[3]) * geometric_product_g1.zyz), 
             /* e423, e431, e412, e321 */
-            (reverse_g1 * float4(geometric_product_g0[0])) + float4((float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group0.zxy), 0.0) - (float4(reverse_g1[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g1[3], reverse_g1[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (this.group0.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g1.zxy), 0.0)
+            float4((geometric_product_g2[1] * this.e3) + (geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g1[1]) - (geometric_product_g3[1] * reverse_g1[2]), (geometric_product_g2[2] * this.e1) + (geometric_product_g3[0] * reverse_g1[2]) + (geometric_product_g3[1] * this.e4) - (geometric_product_g3[2] * reverse_g1[0]), (geometric_product_g2[0] * this.e2) + (geometric_product_g3[1] * reverse_g1[0]) + (geometric_product_g3[2] * this.e4) - (geometric_product_g3[0] * reverse_g1[1]), 0.0) + (reverse_g1 * float4(geometric_product_g0[0])) - (float4(reverse_g1[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g1[3], reverse_g1[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (this.group0.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0]))
         );
     }
 }
@@ -292,7 +292,7 @@ public Origin operator /(SandwichInfixPartial<Flector> lhs, Origin rhs) {
 }
 public extension Flector {
     public Origin sandwich(Origin other) {
-        float4 geometric_product_g0 = float4(other.e4) * float4(this.group0.xyz, this.e321) * float4(-1.0);
+        float4 geometric_product_g0 = float4(other.e4 * -1.0) * float4(this.group0.xyz, this.e321);
         return Origin(
             /* e4 */
             (geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3) + (geometric_product_g0[3] * this.e321)
@@ -300,17 +300,18 @@ public extension Flector {
     }
 }
 // Fancy infix trick (second half)
-public Plane operator /(SandwichInfixPartial<Flector> lhs, Plane rhs) {
+public Flector operator /(SandwichInfixPartial<Flector> lhs, Plane rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Flector {
-    public Plane sandwich(Plane other) {
+    public Flector sandwich(Plane other) {
         float4 geometric_product_g0 = float4(-(this.e3 * other.e431) - (this.e321 * other.e423), -(this.e1 * other.e412) - (this.e321 * other.e431), -(this.e2 * other.e423) - (this.e321 * other.e412), (this.e3 * other.e412) + (this.e4 * other.e321)) + (this.group0.yzxx * other.group0.zxyx) + (other.group0.wwwy * float4(this.group1.xyz, this.e2));
-        float4 geometric_product_g1 = float4(other.e321) * float4(this.group0.xyz, this.e321) * float4(-1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0);
-        return Plane(
+        float4 geometric_product_g1 = float4(other.e321 * -1.0) * float4(this.group0.xyz, this.e321);
+        return Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), (geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3) + (geometric_product_g1[3] * this.e4) - (geometric_product_g0[3] * this.e321) - (geometric_product_g1[0] * this.e423) - (geometric_product_g1[1] * this.e431) - (geometric_product_g1[2] * this.e412)), 
             /* e423, e431, e412, e321 */
-            float4((float3(geometric_product_g1[3]) * reverse_g1.xyz), 0.0) + float4((float3(reverse_g1[1], this.e4, this.e4) * geometric_product_g1.zyz), 0.0) + float4((float3(this.e4, reverse_g1[2], reverse_g1[0]) * geometric_product_g1.xxy), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * reverse_g1[3]) - (geometric_product_g1.yzxz * float4(reverse_g1.zxy, this.e3)) - (this.group0.xyxx * float4(geometric_product_g0.wwy, geometric_product_g1[0])) - (this.group0.yzzy * float4(geometric_product_g0.zxw, geometric_product_g1[1])) - float4((float3(reverse_g1[3]) * geometric_product_g0.xyz), 0.0)
+            float4((geometric_product_g1[0] * this.e4) + (geometric_product_g1[2] * this.e431) + (geometric_product_g1[3] * this.e423) - (geometric_product_g1[1] * this.e412), (geometric_product_g1[0] * this.e412) + (geometric_product_g1[1] * this.e4) + (geometric_product_g1[3] * this.e431) - (geometric_product_g1[2] * this.e423), (geometric_product_g1[1] * this.e423) + (geometric_product_g1[2] * this.e4) + (geometric_product_g1[3] * this.e412) - (geometric_product_g1[0] * this.e431), 0.0) + float4((geometric_product_g0.yzx * this.group0.zxy), geometric_product_g1[3] * this.e321) - (float4(this.e2, this.e321, this.e321, geometric_product_g1[1] * this.e2) * float4(geometric_product_g0.zyz, 1.0)) - (float4(this.e321, this.e3, this.e1, geometric_product_g1[0] * this.e1) * float4(geometric_product_g0.xxy, 1.0)) - (this.group0.xyzz * float4(geometric_product_g0.www, geometric_product_g1[2]))
         );
     }
 }
@@ -322,10 +323,9 @@ public extension Flector {
     public Point sandwich(Point other) {
         float4 geometric_product_g0 = float4((this.e4 * other.e1) + (this.e412 * other.e2), (this.e4 * other.e2) + (this.e423 * other.e3), (this.e4 * other.e3) + (this.e431 * other.e1), -(this.e412 * other.e3) - (this.e321 * other.e4)) - (this.group1.yzxy * other.group0.zxyy) - (other.group0.wwwx * float4(this.group0.xyz, this.e423));
         float4 geometric_product_g1 = float4(-(this.e3 * other.e2) - (this.e321 * other.e1), -(this.e1 * other.e3) - (this.e321 * other.e2), -(this.e2 * other.e1) - (this.e321 * other.e3), (this.e2 * other.e2) + (this.e3 * other.e3)) + (this.group0.yzxx * other.group0.zxyx);
-        float4 reverse_g1 = this.group1 * float4(-1.0);
         return Point(
             /* e1, e2, e3, e4 */
-            (this.group0.xyxx * float4(geometric_product_g1.wwy, geometric_product_g0[0])) + (this.group0.yzzy * float4(geometric_product_g1.zxw, geometric_product_g0[1])) + float4(float3(0.0), (geometric_product_g1[3] * this.e4) - (geometric_product_g0[3] * reverse_g1[3]) - (geometric_product_g1[1] * reverse_g1[1]) - (geometric_product_g1[2] * reverse_g1[2])) + float4((geometric_product_g1.xyz * reverse_g1.www), geometric_product_g0[2] * this.e3) - (geometric_product_g1.yzxx * float4(this.group0.zxy, reverse_g1[0]))
+            (float4(this.e2, this.e321, this.e321, geometric_product_g0[1] * this.e2) * float4(geometric_product_g1.zyz, 1.0)) + (float4(this.e321, this.e3, this.e1, geometric_product_g0[0] * this.e1) * float4(geometric_product_g1.xxy, 1.0)) + (this.group0.xyzz * float4(geometric_product_g1.www, geometric_product_g0[2])) + float4(float3(0.0), (geometric_product_g1[3] * this.e4) - (geometric_product_g1[0] * this.e423) - (geometric_product_g1[1] * this.e431) - (geometric_product_g1[2] * this.e412)) - float4((geometric_product_g1.yzx * this.group0.zxy), geometric_product_g0[3] * this.e321)
         );
     }
 }
@@ -337,10 +337,9 @@ public extension Flector {
     public DualNum sandwich(Scalar other) {
         float4 geometric_product_g0 = float4(other.scalar) * this.group0;
         float4 geometric_product_g1 = float4(other.scalar) * this.group1;
-        float4 reverse_g1 = this.group1 * float4(-1.0);
         return DualNum(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0[3] * reverse_g1[3]) - (geometric_product_g1[1] * this.e2) - (geometric_product_g1[2] * this.e3) - (geometric_product_g1[3] * this.e4)) + (float2(geometric_product_g0[0]) * float2(this.e1, reverse_g1[0])) + (float2(geometric_product_g0[1]) * float2(this.e2, reverse_g1[1])) + (float2(geometric_product_g0[2]) * float2(this.e3, reverse_g1[2])) - (float2(reverse_g1[3], this.e1) * geometric_product_g1.wx)
+            float2(0.0, (geometric_product_g0[3] * this.e321) - (geometric_product_g1[1] * this.e2) - (geometric_product_g1[2] * this.e3) - (geometric_product_g1[3] * this.e4)) + (float2(geometric_product_g0[0]) * float2(this.e1, this.e423)) + (float2(geometric_product_g0[1]) * float2(this.e2, this.e431)) + (float2(geometric_product_g0[2]) * float2(this.e3, this.e412)) - (float2(this.e321, this.e1) * geometric_product_g1.wx)
         );
     }
 }
@@ -356,7 +355,7 @@ public extension Horizon {
     public AntiScalar sandwich(AntiScalar other) {
         return AntiScalar(
             /* e1234 */
-            other.e1234 * pow(this.e321, 2) * -1.0
+            other.e1234 * this.e321 * this.e321 * -1.0
         );
     }
 }
@@ -368,7 +367,7 @@ public extension Horizon {
     public DualNum sandwich(DualNum other) {
         return DualNum(
             /* scalar, e1234 */
-            float2(this.e321 * -1.0) * float2(other.scalar * this.e321, other.e1234 * this.e321) * float2(-1.0, 1.0)
+            float2(this.e321) * float2(other.scalar * this.e321, other.e1234 * this.e321) * float2(1.0, -1.0)
         );
     }
 }
@@ -378,14 +377,14 @@ public Flector operator /(SandwichInfixPartial<Horizon> lhs, Flector rhs) {
 }
 public extension Horizon {
     public Flector sandwich(Flector other) {
-        float4 geometric_product_g0 = float4(this.e321) * float4(other.group1.xyz, other.e4) * float4(-1.0);
-        float4 geometric_product_g1 = float4(this.e321) * float4(other.group0.xyz, other.e321) * float4(-1.0);
+        float4 geometric_product_g0 = float4(this.e321 * -1.0) * float4(other.group1.xyz, other.e4);
+        float4 geometric_product_g1 = float4(this.e321 * -1.0) * float4(other.group0.xyz, other.e321);
         float reverse_g0 = this.e321 * -1.0;
         return Flector(
             /* e1, e2, e3, e4 */
             float4(reverse_g0) * float4(geometric_product_g1.xyz, geometric_product_g0[3]) * float4(1.0, 1.0, 1.0, -1.0), 
             /* e423, e431, e412, e321 */
-            float4(reverse_g0) * float4(geometric_product_g0.xyz, geometric_product_g1[3]) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4(reverse_g0) * float4((geometric_product_g0.xyz * float3(-1.0)), geometric_product_g1[3])
         );
     }
 }
@@ -397,7 +396,7 @@ public extension Horizon {
     public Horizon sandwich(Horizon other) {
         return Horizon(
             /* e321 */
-            other.e321 * pow(this.e321, 2)
+            other.e321 * this.e321 * this.e321
         );
     }
 }
@@ -410,9 +409,9 @@ public extension Horizon {
         float reverse_g0 = this.e321 * -1.0;
         return Line(
             /* e41, e42, e43 */
-            float3(reverse_g0) * float3(this.e321) * other.group0.xyz, 
+            float3(reverse_g0 * this.e321) * other.group0.xyz, 
             /* e23, e31, e12 */
-            float3(reverse_g0) * float3(this.e321) * other.group1.xyz * float3(-1.0)
+            float3(reverse_g0 * this.e321 * -1.0) * other.group1.xyz
         );
     }
 }
@@ -429,7 +428,7 @@ public extension Horizon {
             /* e41, e42, e43, e1234 */
             float4(reverse_g0) * float4(geometric_product_g1.xyz, geometric_product_g0[3]), 
             /* e23, e31, e12, scalar */
-            float4(reverse_g0) * float4(geometric_product_g0.xyz, geometric_product_g1[3]) * float4(-1.0)
+            float4(reverse_g0 * -1.0) * float4(geometric_product_g0.xyz, geometric_product_g1[3])
         );
     }
 }
@@ -439,7 +438,7 @@ public MultiVector operator /(SandwichInfixPartial<Horizon> lhs, MultiVector rhs
 }
 public extension Horizon {
     public MultiVector sandwich(MultiVector other) {
-        float2 geometric_product_g0 = float2(this.e321) * float2(other.e321, other.e4) * float2(-1.0);
+        float2 geometric_product_g0 = float2(this.e321 * -1.0) * float2(other.e321, other.e4);
         float4 geometric_product_g1 = float4(this.e321) * float4(other.group3.xyz, other.e1234);
         float4 geometric_product_g4 = float4(this.e321) * float4(other.group2.xyz, other.scalar);
         float reverse_g0 = this.e321 * -1.0;
@@ -447,13 +446,13 @@ public extension Horizon {
             /* scalar, e1234 */
             float2(reverse_g0) * float2(geometric_product_g4[3], geometric_product_g1[3]) * float2(-1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(reverse_g0) * float4((float3(this.e321) * other.group1.xyz * float3(-1.0)), geometric_product_g0[1]) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(reverse_g0 * -1.0) * float4(this.e321, this.e321, this.e321 * other.e3, geometric_product_g0[1]) * float4(other.group1.xy, 1.0, 1.0), 
             /* e41, e42, e43 */
             float3(reverse_g0) * geometric_product_g4.xyz, 
             /* e23, e31, e12 */
-            float3(reverse_g0) * geometric_product_g1.xyz * float3(-1.0), 
+            float3(reverse_g0 * -1.0) * geometric_product_g1.xyz, 
             /* e423, e431, e412, e321 */
-            float4(reverse_g0) * float4((float3(this.e321) * other.group4.xyz * float3(-1.0)), geometric_product_g0[0]) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4(reverse_g0) * float4(this.e321, this.e321, this.e321 * other.e412, geometric_product_g0[0]) * float4(other.group4.xy, 1.0, 1.0)
         );
     }
 }
@@ -477,7 +476,7 @@ public extension Horizon {
     public Plane sandwich(Plane other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.e321 * -1.0) * float4((float3(this.e321) * other.group0.xyz * float3(-1.0)), this.e321 * other.e321 * -1.0) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4(this.e321) * float4((float3(this.e321 * -1.0) * other.group0.xyz), this.e321 * other.e321 * -1.0) * float4(1.0, 1.0, 1.0, -1.0)
         );
     }
 }
@@ -489,7 +488,7 @@ public extension Horizon {
     public Point sandwich(Point other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(this.e321 * -1.0) * float4((float3(this.e321) * other.group0.xyz * float3(-1.0)), this.e321 * other.e4 * -1.0) * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.e321) * float4((float3(this.e321) * other.group0.xyz), this.e321 * other.e4 * -1.0)
         );
     }
 }
@@ -516,10 +515,9 @@ public AntiScalar operator /(SandwichInfixPartial<Line> lhs, AntiScalar rhs) {
 public extension Line {
     public AntiScalar sandwich(AntiScalar other) {
         float3 geometric_product_g0 = float3(other.e1234) * this.group1.xyz;
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return AntiScalar(
             /* e1234 */
-            -(geometric_product_g0[0] * reverse_g1[0]) - (geometric_product_g0[1] * reverse_g1[1]) - (geometric_product_g0[2] * reverse_g1[2])
+            -(geometric_product_g0[0] * this.e23) - (geometric_product_g0[1] * this.e31) - (geometric_product_g0[2] * this.e12)
         );
     }
 }
@@ -531,11 +529,9 @@ public extension Line {
     public DualNum sandwich(DualNum other) {
         float3 geometric_product_g0 = (float3(other.scalar) * this.group0.xyz) + (float3(other.e1234) * this.group1.xyz);
         float3 geometric_product_g1 = float3(other.scalar) * this.group1.xyz;
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return DualNum(
             /* scalar, e1234 */
-            float2(0.0, -(geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])) - (float2(reverse_g1[0]) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g1[2], geometric_product_g0[2]))
+            float2(0.0, -(geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) - (float2(this.e23) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(this.e31) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(this.e12) * float2(geometric_product_g1[2], geometric_product_g0[2]))
         );
     }
 }
@@ -545,31 +541,29 @@ public Flector operator /(SandwichInfixPartial<Line> lhs, Flector rhs) {
 }
 public extension Line {
     public Flector sandwich(Flector other) {
-        float4 geometric_product_g0 = (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group1.zyz, this.e42)) + (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group1.xxy, this.e41)) + float4(float3(0.0), (other.e3 * this.e43) - (other.e431 * this.e31) - (other.e412 * this.e12)) - float4((this.group1.yzx * other.group0.zxy), other.e423 * this.e23);
-        float4 geometric_product_g1 = float4((other.e3 * this.e42) + (other.e431 * this.e12), (other.e1 * this.e43) + (other.e412 * this.e23), (other.e2 * this.e41) + (other.e423 * this.e31), 0.0) + float4((float3(other.e4) * this.group1.xyz), 0.0) - (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group0.zyz, this.e31)) - (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group0.xxy, this.e23)) - float4((this.group1.yzx * other.group1.zxy), other.e3 * this.e12);
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
+        float4 geometric_product_g0 = (other.group0.yzxx * float4(this.group1.zxy, this.e41)) + float4(float3(0.0), (other.e3 * this.e43) - (other.e431 * this.e31) - (other.e412 * this.e12)) + float4((this.group1.xyz * other.group1.www), other.e2 * this.e42) - float4((this.group1.yzx * other.group0.zxy), other.e423 * this.e23);
+        float4 geometric_product_g1 = float4((other.e3 * this.e42) + (other.e4 * this.e23) + (other.e431 * this.e12), (other.e1 * this.e43) + (other.e4 * this.e31) + (other.e412 * this.e23), (other.e2 * this.e41) + (other.e4 * this.e12) + (other.e423 * this.e31), 0.0) - (other.group0.yzxx * float4(this.group0.zxy, this.e23)) - float4((this.group0.xyz * other.group1.www), other.e3 * this.e12) - float4((this.group1.yzx * other.group1.zxy), other.e2 * this.e31);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4((reverse_g1[0] * geometric_product_g1[3]) + (reverse_g1[1] * geometric_product_g0[2]), (reverse_g1[1] * geometric_product_g1[3]) + (reverse_g1[2] * geometric_product_g0[0]), (reverse_g1[0] * geometric_product_g0[1]) + (reverse_g1[2] * geometric_product_g1[3]), -(reverse_g0[1] * geometric_product_g0[1]) - (reverse_g0[2] * geometric_product_g0[2]) - (reverse_g1[0] * geometric_product_g1[0]) - (reverse_g1[1] * geometric_product_g1[1]) - (reverse_g1[2] * geometric_product_g1[2])) - (geometric_product_g0.yzxx * float4(reverse_g1.zxy, reverse_g0[0])), 
+            float4((geometric_product_g0[2] * this.e31) + (geometric_product_g1[3] * this.e23), (geometric_product_g0[0] * this.e12) + (geometric_product_g1[3] * this.e31), (geometric_product_g0[1] * this.e23) + (geometric_product_g1[3] * this.e12), -(geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43) - (geometric_product_g1[0] * this.e23) - (geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) - (geometric_product_g0.yzxx * float4(this.group1.zxy, this.e41)), 
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g0[2], geometric_product_g0[0], geometric_product_g1[3]) * reverse_g0.yzz) + (float3(geometric_product_g0[3], geometric_product_g0[3], geometric_product_g1[1]) * reverse_g1.xyx) + (float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g0[3]) * reverse_g1.yzz) + (float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g0[1]) * reverse_g0.xyx)), reverse_g1[2] * geometric_product_g0[2] * -1.0) - (geometric_product_g0.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - float4((reverse_g1.zxy * geometric_product_g1.yzx), reverse_g1[1] * geometric_product_g0[1])
+            float4((geometric_product_g0[2] * this.e42) + (geometric_product_g0[3] * this.e23) + (geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[0] * this.e43) + (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e12) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[1] * this.e41) + (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e23) + (geometric_product_g1[3] * this.e43), geometric_product_g0[2] * this.e12 * -1.0) - (geometric_product_g0.yzxx * float4(this.group0.zxy, this.e23)) - float4((this.group1.zxy * geometric_product_g1.yzx), geometric_product_g0[1] * this.e31)
         );
     }
 }
 // Fancy infix trick (second half)
-public Plane operator /(SandwichInfixPartial<Line> lhs, Horizon rhs) {
+public Flector operator /(SandwichInfixPartial<Line> lhs, Horizon rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Line {
-    public Plane sandwich(Horizon other) {
+    public Flector sandwich(Horizon other) {
         float3 geometric_product_g0_xyz = float3(other.e321) * this.group1.xyz;
-        float3 geometric_product_g1_xyz = float3(other.e321) * this.group0.xyz * float3(-1.0);
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
-        return Plane(
+        float3 geometric_product_g1_xyz = float3(other.e321 * -1.0) * this.group0.xyz;
+        return Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), -(geometric_product_g0_xyz[0] * this.e41) - (geometric_product_g0_xyz[1] * this.e42) - (geometric_product_g0_xyz[2] * this.e43) - (geometric_product_g1_xyz[0] * this.e23) - (geometric_product_g1_xyz[1] * this.e31) - (geometric_product_g1_xyz[2] * this.e12)), 
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g0_xyz[2], geometric_product_g0_xyz[0], 0.0) * reverse_g0.yzz) + (float3(geometric_product_g1_xyz[2], geometric_product_g1_xyz[0], 0.0) * reverse_g1.yzz) + (reverse_g0.xyx * float3(float2(0.0), geometric_product_g0_xyz[1])) + (reverse_g1.xyx * float3(float2(0.0), geometric_product_g1_xyz[1]))), geometric_product_g0_xyz[2] * reverse_g1[2] * -1.0) - float4((geometric_product_g0_xyz.yzx * reverse_g0.zxy), 0.0) - float4((geometric_product_g1_xyz.yzx * reverse_g1.zxy), geometric_product_g0_xyz[1] * reverse_g1[1])
+            float4((geometric_product_g0_xyz[2] * this.e42) + (geometric_product_g1_xyz[2] * this.e31), (geometric_product_g0_xyz[0] * this.e43) + (geometric_product_g1_xyz[0] * this.e12), (geometric_product_g0_xyz[1] * this.e41) + (geometric_product_g1_xyz[1] * this.e23), geometric_product_g0_xyz[2] * this.e12 * -1.0) - float4((geometric_product_g0_xyz.yzx * this.group0.zxy), geometric_product_g0_xyz[0] * this.e23) - float4((geometric_product_g1_xyz.yzx * this.group1.zxy), geometric_product_g0_xyz[1] * this.e31)
         );
     }
 }
@@ -599,13 +593,11 @@ public extension Line {
     public Motor sandwich(Motor other) {
         float4 geometric_product_g0 = float4((this.e41 * other.scalar) + (this.e43 * other.e31) + (this.e23 * other.e1234) + (this.e12 * other.e42), (this.e41 * other.e12) + (this.e42 * other.scalar) + (this.e23 * other.e43) + (this.e31 * other.e1234), (this.e42 * other.e23) + (this.e43 * other.scalar) + (this.e31 * other.e41) + (this.e12 * other.e1234), -(this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) - (other.group1.zxyx * float4(this.group0.yzx, this.e41)) - float4((this.group1.yzx * other.group0.zxy), this.e42 * other.e31);
         float4 geometric_product_g1 = float4((this.e23 * other.scalar) + (this.e12 * other.e31), (this.e23 * other.e12) + (this.e31 * other.scalar), (this.e31 * other.e23) + (this.e12 * other.scalar), -(this.e31 * other.e31) - (this.e12 * other.e12)) - (other.group1.zxyx * float4(this.group1.yzx, this.e23));
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((reverse_g0[0] * geometric_product_g1[3]) + (reverse_g0[1] * geometric_product_g1[2]) + (reverse_g1[0] * geometric_product_g0[3]) + (reverse_g1[1] * geometric_product_g0[2]), (reverse_g0[1] * geometric_product_g1[3]) + (reverse_g0[2] * geometric_product_g1[0]) + (reverse_g1[1] * geometric_product_g0[3]) + (reverse_g1[2] * geometric_product_g0[0]), (reverse_g0[0] * geometric_product_g1[1]) + (reverse_g0[2] * geometric_product_g1[3]) + (reverse_g1[0] * geometric_product_g0[1]) + (reverse_g1[2] * geometric_product_g0[3]), -(reverse_g0[2] * geometric_product_g1[2]) - (reverse_g1[0] * geometric_product_g0[0]) - (reverse_g1[1] * geometric_product_g0[1]) - (reverse_g1[2] * geometric_product_g0[2])) - (geometric_product_g1.yzxx * float4(reverse_g0.zxy, reverse_g0[0])) - float4((reverse_g1.zxy * geometric_product_g0.yzx), reverse_g0[1] * geometric_product_g1[1]), 
+            float4((geometric_product_g0[2] * this.e31) + (geometric_product_g0[3] * this.e23) + (geometric_product_g1[2] * this.e42) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[0] * this.e12) + (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e43) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[1] * this.e23) + (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e41) + (geometric_product_g1[3] * this.e43), -(geometric_product_g0[2] * this.e12) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) - (geometric_product_g0.yzxx * float4(this.group1.zxy, this.e23)) - float4((this.group0.zxy * geometric_product_g1.yzx), geometric_product_g0[1] * this.e31), 
             /* e23, e31, e12, scalar */
-            float4((reverse_g1[0] * geometric_product_g1[3]) + (reverse_g1[1] * geometric_product_g1[2]), (reverse_g1[1] * geometric_product_g1[3]) + (reverse_g1[2] * geometric_product_g1[0]), (reverse_g1[0] * geometric_product_g1[1]) + (reverse_g1[2] * geometric_product_g1[3]), -(reverse_g1[1] * geometric_product_g1[1]) - (reverse_g1[2] * geometric_product_g1[2])) - (geometric_product_g1.yzxx * float4(reverse_g1.zxy, reverse_g1[0]))
+            float4((geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e23), (geometric_product_g1[0] * this.e12) + (geometric_product_g1[3] * this.e31), (geometric_product_g1[1] * this.e23) + (geometric_product_g1[3] * this.e12), -(geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) - (geometric_product_g1.yzxx * float4(this.group1.zxy, this.e23))
         );
     }
 }
@@ -616,15 +608,15 @@ public MultiVector operator /(SandwichInfixPartial<Line> lhs, MultiVector rhs) {
 public extension Line {
     public MultiVector sandwich(MultiVector other) {
         float2 geometric_product_g0 = float2(0.0, -(this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) - (float2(other.e23) * float2(this.e23, this.e41)) - (float2(other.e31) * float2(this.e31, this.e42)) - (float2(other.e12) * float2(this.e12, this.e43));
-        float4 geometric_product_g1 = (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group1.zyz, this.e42)) + (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group1.xxy, this.e41)) + float4(float3(0.0), (this.e43 * other.e3) - (this.e31 * other.e431) - (this.e12 * other.e412)) - float4((this.group1.yzx * other.group1.zxy), this.e23 * other.e423);
-        float3 geometric_product_g2 = (float3(other.scalar) * this.group0.xyz) + (float3(other.e1234) * this.group1.xyz) + (this.group0.zxy * other.group3.yzx) + (this.group1.zxy * other.group2.yzx) - (this.group0.yzx * other.group3.zxy) - (this.group1.yzx * other.group2.zxy);
-        float3 geometric_product_g3 = (float3(other.scalar) * this.group1.xyz) + (this.group1.zxy * other.group3.yzx) - (this.group1.yzx * other.group3.zxy);
-        float4 geometric_product_g4 = float4((this.e42 * other.e3) + (this.e12 * other.e431), (this.e43 * other.e1) + (this.e23 * other.e412), (this.e41 * other.e2) + (this.e31 * other.e423), 0.0) + float4((float3(other.e4) * this.group1.xyz), 0.0) - (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group0.zyz, this.e31)) - (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group0.xxy, this.e23)) - float4((this.group1.yzx * other.group4.zxy), this.e12 * other.e3);
+        float4 geometric_product_g1 = (float4(other.e2, other.e321, other.e321, this.e42 * other.e2) * float4(this.group1.zyz, 1.0)) + (float4(other.e321, other.e3, other.e1, this.e41 * other.e1) * float4(this.group1.xxy, 1.0)) + float4(float3(0.0), (this.e43 * other.e3) - (this.e31 * other.e431) - (this.e12 * other.e412)) - float4((this.group1.yzx * other.group1.zxy), this.e23 * other.e423);
+        float3 geometric_product_g2 = (float3(other.scalar, other.e12, other.e23) * this.group0.xxy) + (float3(other.e1234, other.e43, other.e41) * this.group1.xxy) + (float3(other.e42, other.e1234, other.e1234) * this.group1.zyz) + (float3(other.e31, other.scalar, other.scalar) * this.group0.zyz) - (this.group0.yzx * other.group3.zxy) - (this.group1.yzx * other.group2.zxy);
+        float3 geometric_product_g3 = (float3(other.scalar, other.e12, other.e23) * this.group1.xxy) + (float3(other.e31, other.scalar, other.scalar) * this.group1.zyz) - (this.group1.yzx * other.group3.zxy);
+        float4 geometric_product_g4 = float4((this.e42 * other.e3) + (this.e23 * other.e4) + (this.e12 * other.e431), (this.e43 * other.e1) + (this.e23 * other.e412) + (this.e31 * other.e4), (this.e41 * other.e2) + (this.e31 * other.e423) + (this.e12 * other.e4), 0.0) - (float4(other.e2, other.e321, other.e321, this.e31 * other.e2) * float4(this.group0.zyz, 1.0)) - (float4(other.e321, other.e3, other.e1, this.e23 * other.e1) * float4(this.group0.xxy, 1.0)) - float4((this.group1.yzx * other.group4.zxy), this.e12 * other.e3);
         float3 reverse_g0 = this.group0.xyz * float3(-1.0);
         float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, -(geometric_product_g2[0] * reverse_g1[0]) - (geometric_product_g2[1] * reverse_g1[1]) - (geometric_product_g2[2] * reverse_g1[2])) - (float2(geometric_product_g3[0]) * float2(reverse_g1[0], reverse_g0[0])) - (float2(geometric_product_g3[1]) * float2(reverse_g1[1], reverse_g0[1])) - (float2(geometric_product_g3[2]) * float2(reverse_g1[2], reverse_g0[2])), 
+            float2(0.0, -(geometric_product_g3[0] * reverse_g0[0]) - (geometric_product_g3[1] * reverse_g0[1]) - (geometric_product_g3[2] * reverse_g0[2])) - (float2(reverse_g1[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])), 
             /* e1, e2, e3, e4 */
             float4((reverse_g1[0] * geometric_product_g4[3]) + (reverse_g1[1] * geometric_product_g1[2]), (reverse_g1[1] * geometric_product_g4[3]) + (reverse_g1[2] * geometric_product_g1[0]), (reverse_g1[0] * geometric_product_g1[1]) + (reverse_g1[2] * geometric_product_g4[3]), -(reverse_g0[1] * geometric_product_g1[1]) - (reverse_g0[2] * geometric_product_g1[2]) - (reverse_g1[0] * geometric_product_g4[0]) - (reverse_g1[1] * geometric_product_g4[1]) - (reverse_g1[2] * geometric_product_g4[2])) - (geometric_product_g1.yzxx * float4(reverse_g1.zxy, reverse_g0[0])), 
             /* e41, e42, e43 */
@@ -632,7 +624,7 @@ public extension Line {
             /* e23, e31, e12 */
             (reverse_g1 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g1.yzx) - (geometric_product_g3.yzx * reverse_g1.zxy), 
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g0.yzz) + (float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g1.xyx) + (float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g1.yzz) + (float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g0.xyx)), reverse_g1[2] * geometric_product_g1[2] * -1.0) - (geometric_product_g1.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - float4((reverse_g1.zxy * geometric_product_g4.yzx), reverse_g1[1] * geometric_product_g1[1])
+            float4((reverse_g0[0] * geometric_product_g4[3]) + (reverse_g0[1] * geometric_product_g1[2]) + (reverse_g1[0] * geometric_product_g1[3]) + (reverse_g1[1] * geometric_product_g4[2]), (reverse_g0[1] * geometric_product_g4[3]) + (reverse_g0[2] * geometric_product_g1[0]) + (reverse_g1[1] * geometric_product_g1[3]) + (reverse_g1[2] * geometric_product_g4[0]), (reverse_g0[0] * geometric_product_g1[1]) + (reverse_g0[2] * geometric_product_g4[3]) + (reverse_g1[0] * geometric_product_g4[1]) + (reverse_g1[2] * geometric_product_g1[3]), reverse_g1[2] * geometric_product_g1[2] * -1.0) - (geometric_product_g1.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - float4((reverse_g1.zxy * geometric_product_g4.yzx), reverse_g1[1] * geometric_product_g1[1])
         );
     }
 }
@@ -643,10 +635,9 @@ public Origin operator /(SandwichInfixPartial<Line> lhs, Origin rhs) {
 public extension Line {
     public Origin sandwich(Origin other) {
         float3 geometric_product_g0_xyz = float3(other.e4) * this.group1.xyz;
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return Origin(
             /* e4 */
-            -(geometric_product_g0_xyz[0] * reverse_g1[0]) - (geometric_product_g0_xyz[1] * reverse_g1[1]) - (geometric_product_g0_xyz[2] * reverse_g1[2])
+            -(geometric_product_g0_xyz[0] * this.e23) - (geometric_product_g0_xyz[1] * this.e31) - (geometric_product_g0_xyz[2] * this.e12)
         );
     }
 }
@@ -656,14 +647,11 @@ public Plane operator /(SandwichInfixPartial<Line> lhs, Plane rhs) {
 }
 public extension Line {
     public Plane sandwich(Plane other) {
-        float3 geometric_product_g0_xyz = float3(other.e321) * this.group1.xyz;
-        float geometric_product_g0_w = -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412);
+        float4 geometric_product_g0 = float4(other.e321, other.e321, other.e321, -(this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)) * float4(this.group1.xyz, 1.0);
         float4 geometric_product_g1 = float4((this.group1.zxy * other.group0.yzx), 0.0) - float4((float3(other.e321) * this.group0.xyz), 0.0) - float4((this.group1.yzx * other.group0.zxy), 0.0);
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g0_xyz[2], geometric_product_g0_xyz[0], geometric_product_g1[3]) * reverse_g0.yzz) + (float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g0_w) * reverse_g1.yzz) + (reverse_g0.xyx * float3(float2(geometric_product_g1[3]), geometric_product_g0_xyz[1])) + (reverse_g1.xyx * float3(float2(geometric_product_g0_w), geometric_product_g1[1]))), geometric_product_g0_xyz[2] * reverse_g1[2] * -1.0) - float4((geometric_product_g0_xyz.yzx * reverse_g0.zxy), geometric_product_g0_w * reverse_g1[0]) - float4((reverse_g1.zxy * geometric_product_g1.yzx), geometric_product_g0_xyz[1] * reverse_g1[1])
+            float4((geometric_product_g0[2] * this.e42) + (geometric_product_g0[3] * this.e23) + (geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[0] * this.e43) + (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e12) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[1] * this.e41) + (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e23) + (geometric_product_g1[3] * this.e43), geometric_product_g0[2] * this.e12 * -1.0) - (geometric_product_g0.yzxx * float4(this.group0.zxy, this.e23)) - float4((this.group1.zxy * geometric_product_g1.yzx), geometric_product_g0[1] * this.e31)
         );
     }
 }
@@ -673,13 +661,11 @@ public Point operator /(SandwichInfixPartial<Line> lhs, Point rhs) {
 }
 public extension Line {
     public Point sandwich(Point other) {
-        float4 geometric_product_g0 = (float4(this.e31 * other.e3, this.e12 * other.e1, this.e23 * other.e2, (this.e42 * other.e2) + (this.e43 * other.e3)) * float4(-1.0, -1.0, -1.0, 1.0)) + (other.group0.yzxx * float4(this.group1.zxy, this.e41));
+        float4 geometric_product_g0 = float4(this.e31 * other.e3 * -1.0, this.e12 * other.e1 * -1.0, this.e23 * other.e2 * -1.0, (this.e42 * other.e2) + (this.e43 * other.e3)) + (other.group0.yzxx * float4(this.group1.zxy, this.e41));
         float4 geometric_product_g1 = float4((this.e42 * other.e3) + (this.e23 * other.e4), (this.e43 * other.e1) + (this.e31 * other.e4), (this.e41 * other.e2) + (this.e12 * other.e4), -(this.e31 * other.e2) - (this.e12 * other.e3)) - (other.group0.yzxx * float4(this.group0.zxy, this.e23));
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return Point(
             /* e1, e2, e3, e4 */
-            float4((reverse_g1[0] * geometric_product_g1[3]) + (reverse_g1[1] * geometric_product_g0[2]), (reverse_g1[1] * geometric_product_g1[3]) + (reverse_g1[2] * geometric_product_g0[0]), (reverse_g1[0] * geometric_product_g0[1]) + (reverse_g1[2] * geometric_product_g1[3]), -(reverse_g0[1] * geometric_product_g0[1]) - (reverse_g0[2] * geometric_product_g0[2]) - (reverse_g1[0] * geometric_product_g1[0]) - (reverse_g1[1] * geometric_product_g1[1]) - (reverse_g1[2] * geometric_product_g1[2])) - (geometric_product_g0.yzxx * float4(reverse_g1.zxy, reverse_g0[0]))
+            float4((geometric_product_g0[2] * this.e31) + (geometric_product_g1[3] * this.e23), (geometric_product_g0[0] * this.e12) + (geometric_product_g1[3] * this.e31), (geometric_product_g0[1] * this.e23) + (geometric_product_g1[3] * this.e12), -(geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43) - (geometric_product_g1[0] * this.e23) - (geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) - (geometric_product_g0.yzxx * float4(this.group1.zxy, this.e41))
         );
     }
 }
@@ -691,11 +677,9 @@ public extension Line {
     public DualNum sandwich(Scalar other) {
         float3 geometric_product_g0 = float3(other.scalar) * this.group0.xyz;
         float3 geometric_product_g1 = float3(other.scalar) * this.group1.xyz;
-        float3 reverse_g0 = this.group0.xyz * float3(-1.0);
-        float3 reverse_g1 = this.group1.xyz * float3(-1.0);
         return DualNum(
             /* scalar, e1234 */
-            float2(0.0, -(geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])) - (float2(reverse_g1[0]) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g1[2], geometric_product_g0[2]))
+            float2(0.0, -(geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) - (float2(this.e23) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(this.e31) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(this.e12) * float2(geometric_product_g1[2], geometric_product_g0[2]))
         );
     }
 }
@@ -710,10 +694,9 @@ public AntiScalar operator /(SandwichInfixPartial<Motor> lhs, AntiScalar rhs) {
 public extension Motor {
     public AntiScalar sandwich(AntiScalar other) {
         float4 geometric_product_g0 = float4(other.e1234) * this.group1;
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return AntiScalar(
             /* e1234 */
-            (geometric_product_g0[3] * reverse_g1[3]) - (geometric_product_g0[0] * reverse_g1[0]) - (geometric_product_g0[1] * reverse_g1[1]) - (geometric_product_g0[2] * reverse_g1[2])
+            (geometric_product_g0[3] * this.scalar) - (geometric_product_g0[0] * this.e23) - (geometric_product_g0[1] * this.e31) - (geometric_product_g0[2] * this.e12)
         );
     }
 }
@@ -725,11 +708,9 @@ public extension Motor {
     public DualNum sandwich(DualNum other) {
         float4 geometric_product_g0 = (float4(other.scalar) * this.group0) + (float4(other.e1234) * this.group1);
         float4 geometric_product_g1 = float4(other.scalar) * this.group1;
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DualNum(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g1[3] * reverse_g0[3]) - (geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])) + (float2(reverse_g1[3]) * float2(geometric_product_g1[3], geometric_product_g0[3])) - (float2(reverse_g1[0]) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g1[2], geometric_product_g0[2]))
+            float2(0.0, (geometric_product_g1[3] * this.e1234) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) + (float2(this.scalar) * float2(geometric_product_g1[3], geometric_product_g0[3])) - (float2(this.e23) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(this.e31) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(this.e12) * float2(geometric_product_g1[2], geometric_product_g0[2]))
         );
     }
 }
@@ -740,30 +721,28 @@ public Flector operator /(SandwichInfixPartial<Motor> lhs, Flector rhs) {
 public extension Motor {
     public Flector sandwich(Flector other) {
         float4 geometric_product_g0 = (other.group0.xyxx * float4(this.group1.wwy, this.e41)) + (other.group0.yzzy * float4(this.group1.zxw, this.e42)) + float4(float3(0.0), (other.e4 * this.scalar) - (other.e431 * this.e31) - (other.e412 * this.e12) - (other.e321 * this.e1234)) + float4((this.group1.xyz * other.group1.www), other.e3 * this.e43) - (this.group1.yzxx * float4(other.group0.zxy, other.e423));
-        float4 geometric_product_g1 = float4(other.e431 * this.e12, other.e412 * this.e23, other.e423 * this.e31, 0.0) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((float3(this.scalar) * other.group1.xyz), 0.0) + float4((other.group0.zxy * this.group0.yzx), other.e321 * this.scalar) - (other.group0.xyxx * float4(this.group0.wwy, this.e23)) - (other.group0.yzzy * float4(this.group0.zxw, this.e31)) - (this.group1.yzxz * float4(other.group1.zxy, other.e3)) - float4((float3(other.e321) * this.group0.xyz), 0.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 geometric_product_g1 = float4((other.e4 * this.e23) + (other.e423 * this.scalar) + (other.e431 * this.e12) - (other.e321 * this.e41), (other.e4 * this.e31) + (other.e431 * this.scalar) + (other.e412 * this.e23) - (other.e321 * this.e42), (other.e4 * this.e12) + (other.e423 * this.e31) + (other.e412 * this.scalar) - (other.e321 * this.e43), 0.0) + float4((other.group0.zxy * this.group0.yzx), other.e321 * this.scalar) - (other.group0.xyxx * float4(this.group0.wwy, this.e23)) - (other.group0.yzzy * float4(this.group0.zxw, this.e31)) - (this.group1.yzxz * float4(other.group1.zxy, other.e3));
         return Flector(
             /* e1, e2, e3, e4 */
-            (float4(reverse_g1[0], reverse_g1[1], reverse_g1[2], 1.0) * float4(geometric_product_g1.www, -(geometric_product_g0[1] * reverse_g0[1]) - (geometric_product_g0[2] * reverse_g0[2]) - (geometric_product_g1[0] * reverse_g1[0]) - (geometric_product_g1[1] * reverse_g1[1]) - (geometric_product_g1[2] * reverse_g1[2]))) + (geometric_product_g0.xxyw * reverse_g1.wzxw) + float4((geometric_product_g0.zyz * reverse_g1.yww), geometric_product_g1[3] * reverse_g0[3]) - (geometric_product_g0.yzxx * float4(reverse_g1.zxy, reverse_g0[0])), 
+            float4(geometric_product_g1[3] * this.e23, geometric_product_g1[3] * this.e31, geometric_product_g1[3] * this.e12, -(geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43) - (geometric_product_g1[0] * this.e23) - (geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) + (geometric_product_g0.xxyw * this.group1.wzxw) + float4((geometric_product_g0.zyz * this.group1.yww), geometric_product_g1[3] * this.e1234) - (geometric_product_g0.yzxx * float4(this.group1.zxy, this.e41)), 
             /* e423, e431, e412, e321 */
-            float4((geometric_product_g0.xxy * reverse_g0.wzx), geometric_product_g1[3] * reverse_g1[3]) + float4(((float3(geometric_product_g0[3]) * reverse_g1.xyz) + (float3(geometric_product_g1[3]) * reverse_g0.xyz) + (geometric_product_g0.zyz * reverse_g0.yww) + (geometric_product_g1.xxy * reverse_g1.wzx) + (geometric_product_g1.zyz * reverse_g1.yww)), geometric_product_g0[2] * reverse_g1[2] * -1.0) - (geometric_product_g0.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - (reverse_g1.zxyy * float4(geometric_product_g1.yzx, geometric_product_g0[1]))
+            float4((geometric_product_g0[2] * this.e42) + (geometric_product_g0[3] * this.e23) + (geometric_product_g1[0] * this.scalar) + (geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[1] * this.e1234) + (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e12) + (geometric_product_g1[1] * this.scalar) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[2] * this.e1234) + (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e23) + (geometric_product_g1[2] * this.scalar) + (geometric_product_g1[3] * this.e43), geometric_product_g0[2] * this.e12 * -1.0) + float4((geometric_product_g0.xxy * this.group0.wzx), geometric_product_g1[3] * this.scalar) - (geometric_product_g0.yzxx * float4(this.group0.zxy, this.e23)) - (this.group1.zxyy * float4(geometric_product_g1.yzx, geometric_product_g0[1]))
         );
     }
 }
 // Fancy infix trick (second half)
-public Plane operator /(SandwichInfixPartial<Motor> lhs, Horizon rhs) {
+public Flector operator /(SandwichInfixPartial<Motor> lhs, Horizon rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Motor {
-    public Plane sandwich(Horizon other) {
+    public Flector sandwich(Horizon other) {
         float4 geometric_product_g0 = float4(other.e321) * float4(this.group1.xyz, this.e1234) * float4(1.0, 1.0, 1.0, -1.0);
-        float4 geometric_product_g1 = float4(other.e321) * float4(this.group0.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
-        return Plane(
+        float4 geometric_product_g1 = float4(other.e321) * float4((this.group0.xyz * float3(-1.0)), this.scalar);
+        return Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), (geometric_product_g0[3] * this.scalar) + (geometric_product_g1[3] * this.e1234) - (geometric_product_g0[0] * this.e41) - (geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43) - (geometric_product_g1[0] * this.e23) - (geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)), 
             /* e423, e431, e412, e321 */
-            float4((geometric_product_g0.xxy * reverse_g0.wzx), geometric_product_g1[3] * reverse_g1[3]) + float4(((float3(geometric_product_g0[3]) * reverse_g1.xyz) + (float3(geometric_product_g1[3]) * reverse_g0.xyz) + (geometric_product_g0.zyz * reverse_g0.yww) + (geometric_product_g1.xxy * reverse_g1.wzx) + (geometric_product_g1.zyz * reverse_g1.yww)), geometric_product_g0[2] * reverse_g1[2] * -1.0) - (geometric_product_g0.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - (reverse_g1.zxyy * float4(geometric_product_g1.yzx, geometric_product_g0[1]))
+            float4((geometric_product_g0[2] * this.e42) + (geometric_product_g0[3] * this.e23) + (geometric_product_g1[0] * this.scalar) + (geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[1] * this.e1234) + (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e12) + (geometric_product_g1[1] * this.scalar) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[2] * this.e1234) + (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e23) + (geometric_product_g1[2] * this.scalar) + (geometric_product_g1[3] * this.e43), geometric_product_g0[2] * this.e12 * -1.0) + float4((geometric_product_g0.xxy * this.group0.wzx), geometric_product_g1[3] * this.scalar) - (geometric_product_g0.yzxx * float4(this.group0.zxy, this.e23)) - (this.group1.zxyy * float4(geometric_product_g1.yzx, geometric_product_g0[1]))
         );
     }
 }
@@ -793,13 +772,11 @@ public extension Motor {
     public Motor sandwich(Motor other) {
         float4 geometric_product_g0 = float4((other.e1234 * this.e23) + (other.e23 * this.e1234) + (other.e31 * this.e43) + (other.scalar * this.e41), (other.e1234 * this.e31) + (other.e31 * this.e1234) + (other.e12 * this.e41) + (other.scalar * this.e42), (other.e1234 * this.e12) + (other.e23 * this.e42) + (other.e12 * this.e1234) + (other.scalar * this.e43), -(other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) + (other.group0.xyxw * this.group1.wwyw) + float4((other.group0.yzz * this.group1.zxw), other.scalar * this.e1234) - (other.group0.zxyx * this.group1.yzxx) - float4((other.group1.zxy * this.group0.yzx), other.e42 * this.e31);
         float4 geometric_product_g1 = float4((other.e31 * this.e12) + (other.scalar * this.e23), (other.e12 * this.e23) + (other.scalar * this.e31), (other.e12 * this.scalar) + (other.scalar * this.e12), -(other.e31 * this.e31) - (other.e12 * this.e12)) + (other.group1.xyxw * this.group1.wwyw) - (other.group1.zxyx * this.group1.yzxx);
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((geometric_product_g0[3] * reverse_g1[0]) + (geometric_product_g1[0] * reverse_g0[3]) + (geometric_product_g1[2] * reverse_g0[1]) + (geometric_product_g1[3] * reverse_g0[0]), (geometric_product_g0[3] * reverse_g1[1]) + (geometric_product_g1[0] * reverse_g0[2]) + (geometric_product_g1[1] * reverse_g0[3]) + (geometric_product_g1[3] * reverse_g0[1]), (geometric_product_g0[3] * reverse_g1[2]) + (geometric_product_g1[1] * reverse_g0[0]) + (geometric_product_g1[2] * reverse_g0[3]) + (geometric_product_g1[3] * reverse_g0[2]), -(geometric_product_g0[2] * reverse_g1[2]) - (geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])) + (geometric_product_g0.xxyw * reverse_g1.wzxw) + float4((geometric_product_g0.zyz * reverse_g1.yww), geometric_product_g1[3] * reverse_g0[3]) - (geometric_product_g0.yzxx * reverse_g1.zxyx) - float4((geometric_product_g1.yzx * reverse_g0.zxy), geometric_product_g0[1] * reverse_g1[1]), 
+            float4((geometric_product_g0[3] * this.e23) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g1[2] * this.e42) + (geometric_product_g1[3] * this.e41), (geometric_product_g0[3] * this.e31) + (geometric_product_g1[0] * this.e43) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g1[3] * this.e42), (geometric_product_g0[3] * this.e12) + (geometric_product_g1[1] * this.e41) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g1[3] * this.e43), -(geometric_product_g0[2] * this.e12) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) + (geometric_product_g0.xxyw * this.group1.wzxw) + float4((geometric_product_g0.zyz * this.group1.yww), geometric_product_g1[3] * this.e1234) - (geometric_product_g0.yzxx * this.group1.zxyx) - float4((geometric_product_g1.yzx * this.group0.zxy), geometric_product_g0[1] * this.e31), 
             /* e23, e31, e12, scalar */
-            float4((geometric_product_g1[2] * reverse_g1[1]) + (geometric_product_g1[3] * reverse_g1[0]), (geometric_product_g1[1] * reverse_g1[3]) + (geometric_product_g1[3] * reverse_g1[1]), (geometric_product_g1[2] * reverse_g1[3]) + (geometric_product_g1[3] * reverse_g1[2]), -(geometric_product_g1[1] * reverse_g1[1]) - (geometric_product_g1[2] * reverse_g1[2])) + (geometric_product_g1.xxyw * reverse_g1.wzxw) - (geometric_product_g1.yzxx * reverse_g1.zxyx)
+            float4((geometric_product_g1[2] * this.e31) + (geometric_product_g1[3] * this.e23), (geometric_product_g1[1] * this.scalar) + (geometric_product_g1[3] * this.e31), (geometric_product_g1[2] * this.scalar) + (geometric_product_g1[3] * this.e12), -(geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) + (geometric_product_g1.xxyw * this.group1.wzxw) - (geometric_product_g1.yzxx * this.group1.zxyx)
         );
     }
 }
@@ -809,24 +786,22 @@ public MultiVector operator /(SandwichInfixPartial<Motor> lhs, MultiVector rhs) 
 }
 public extension Motor {
     public MultiVector sandwich(MultiVector other) {
-        float2 geometric_product_g0 = float2(0.0, (this.scalar * other.e1234) - (this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12)) + (float2(other.scalar) * float2(this.scalar, this.e1234)) - (float2(this.e23) * float2(other.e23, other.e41)) - (float2(this.e31) * float2(other.e31, other.e42)) - (float2(this.e12) * float2(other.e12, other.e43));
-        float4 geometric_product_g1 = (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group1.zyz, this.e42)) + (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group1.xxy, this.e41)) + (other.group1.xyzz * float4(this.group1.www, this.e43)) + float4(float3(0.0), (this.scalar * other.e4) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)) - float4((this.group1.yzx * other.group1.zxy), this.e1234 * other.e321);
-        float3 geometric_product_g2 = (float3(other.scalar) * this.group0.xyz) + (float3(other.e1234) * this.group1.xyz) + (other.group2.xyx * this.group1.wwy) + (other.group2.yzz * this.group1.zxw) + (other.group3.xyx * this.group0.wwy) + (other.group3.yzz * this.group0.zxw) - (other.group2.zxy * this.group1.yzx) - (other.group3.zxy * this.group0.yzx);
-        float3 geometric_product_g3 = (float3(other.scalar) * this.group1.xyz) + (other.group3.xyx * this.group1.wwy) + (other.group3.yzz * this.group1.zxw) - (other.group3.zxy * this.group1.yzx);
-        float4 geometric_product_g4 = float4((this.e12 * other.e431) - (this.e31 * other.e412), (this.e23 * other.e412) - (this.e12 * other.e423), (this.e31 * other.e423) - (this.e23 * other.e431), 0.0) + float4((float3(this.scalar) * other.group4.xyz), 0.0) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group1.zxy), this.scalar * other.e321) - (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group0.zyz, this.e31)) - (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group0.xxy, this.e23)) - (other.group1.xyzz * float4(this.group0.www, this.e12));
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float2 geometric_product_g0 = float2(0.0, (this.scalar * other.e1234) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) + (float2(other.scalar) * float2(this.scalar, this.e1234)) - (float2(other.e23) * float2(this.e23, this.e41)) - (float2(other.e31) * float2(this.e31, this.e42)) - (float2(other.e12) * float2(this.e12, this.e43));
+        float4 geometric_product_g1 = (float4(other.e2, other.e321, other.e321, this.e42 * other.e2) * float4(this.group1.zyz, 1.0)) + (float4(other.e321, other.e3, other.e1, this.e41 * other.e1) * float4(this.group1.xxy, 1.0)) + (other.group1.xyzz * float4(this.group1.www, this.e43)) + float4(float3(0.0), (this.scalar * other.e4) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)) - float4((this.group1.yzx * other.group1.zxy), this.e1234 * other.e321);
+        float3 geometric_product_g2 = (float3(this.e1234) * other.group3.xyz) + (float3(this.scalar) * other.group2.xyz) + (float3(other.scalar, other.e12, other.e23) * this.group0.xxy) + (float3(other.e1234, other.e43, other.e41) * this.group1.xxy) + (float3(other.e42, other.e1234, other.e1234) * this.group1.zyz) + (float3(other.e31, other.scalar, other.scalar) * this.group0.zyz) - (other.group2.zxy * this.group1.yzx) - (other.group3.zxy * this.group0.yzx);
+        float3 geometric_product_g3 = (float3(this.scalar) * other.group3.xyz) + (float3(other.scalar, other.e12, other.e23) * this.group1.xxy) + (float3(other.e31, other.scalar, other.scalar) * this.group1.zyz) - (other.group3.zxy * this.group1.yzx);
+        float4 geometric_product_g4 = float4((this.e23 * other.e4) + (this.e12 * other.e431) + (this.scalar * other.e423) - (this.e31 * other.e412), (this.e23 * other.e412) + (this.e31 * other.e4) + (this.scalar * other.e431) - (this.e12 * other.e423), (this.e31 * other.e423) + (this.e12 * other.e4) + (this.scalar * other.e412) - (this.e23 * other.e431), 0.0) + float4((this.group0.yzx * other.group1.zxy), this.scalar * other.e321) - (float4(other.e2, other.e321, other.e321, this.e31 * other.e2) * float4(this.group0.zyz, 1.0)) - (float4(other.e321, other.e3, other.e1, this.e23 * other.e1) * float4(this.group0.xxy, 1.0)) - (other.group1.xyzz * float4(this.group0.www, this.e12));
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0[1] * reverse_g1[3]) - (geometric_product_g3[0] * reverse_g0[0]) - (geometric_product_g3[1] * reverse_g0[1]) - (geometric_product_g3[2] * reverse_g0[2])) + (float2(geometric_product_g0[0]) * float2(reverse_g1[3], reverse_g0[3])) - (float2(reverse_g1[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])), 
+            float2(0.0, (geometric_product_g0[1] * this.scalar) - (geometric_product_g3[0] * this.e41) - (geometric_product_g3[1] * this.e42) - (geometric_product_g3[2] * this.e43)) + (float2(geometric_product_g0[0]) * float2(this.scalar, this.e1234)) - (float2(this.e23) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(this.e31) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(this.e12) * float2(geometric_product_g3[2], geometric_product_g2[2])), 
             /* e1, e2, e3, e4 */
-            (reverse_g1.yzzw * float4(geometric_product_g1.zx, geometric_product_g4[3], geometric_product_g1[3])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g4[3]) * float4(reverse_g1.xyx, reverse_g0[3])) + float4((float3(reverse_g1[3]) * geometric_product_g1.xyz), -(geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2]) - (geometric_product_g4[0] * reverse_g1[0]) - (geometric_product_g4[1] * reverse_g1[1]) - (geometric_product_g4[2] * reverse_g1[2])) - (geometric_product_g1.yzxx * float4(reverse_g1.zxy, reverse_g0[0])), 
+            float4(geometric_product_g4[3] * this.e23, geometric_product_g4[3] * this.e31, geometric_product_g4[3] * this.e12, -(geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43) - (geometric_product_g4[0] * this.e23) - (geometric_product_g4[1] * this.e31) - (geometric_product_g4[2] * this.e12)) + (geometric_product_g1.xxyw * this.group1.wzxw) + float4((geometric_product_g1.zyz * this.group1.yww), geometric_product_g4[3] * this.e1234) - (geometric_product_g1.yzxx * float4(this.group1.zxy, this.e41)), 
             /* e41, e42, e43 */
-            (float3(geometric_product_g0[0]) * reverse_g0.xyz) + (float3(geometric_product_g0[1]) * reverse_g1.xyz) + (geometric_product_g2.xxy * reverse_g1.wzx) + (geometric_product_g2.zyz * reverse_g1.yww) + (geometric_product_g3.xxy * reverse_g0.wzx) + (geometric_product_g3.zyz * reverse_g0.yww) - (geometric_product_g2.yzx * reverse_g1.zxy) - (geometric_product_g3.yzx * reverse_g0.zxy), 
+            (float3(geometric_product_g0[0]) * this.group0.xyz) + (float3(geometric_product_g0[1]) * this.group1.xyz) + (geometric_product_g2.xxy * this.group1.wzx) + (geometric_product_g2.zyz * this.group1.yww) + (geometric_product_g3.xxy * this.group0.wzx) + (geometric_product_g3.zyz * this.group0.yww) - (geometric_product_g2.yzx * this.group1.zxy) - (geometric_product_g3.yzx * this.group0.zxy), 
             /* e23, e31, e12 */
-            (float3(geometric_product_g0[0]) * reverse_g1.xyz) + (geometric_product_g3.xxy * reverse_g1.wzx) + (geometric_product_g3.zyz * reverse_g1.yww) - (geometric_product_g3.yzx * reverse_g1.zxy), 
+            (float3(geometric_product_g0[0]) * this.group1.xyz) + (geometric_product_g3.xxy * this.group1.wzx) + (geometric_product_g3.zyz * this.group1.yww) - (geometric_product_g3.yzx * this.group1.zxy), 
             /* e423, e431, e412, e321 */
-            (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g4[3]) * float4(reverse_g0.xyx, reverse_g1[3])) + float4(((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g1.xyx) + (float3(reverse_g0[1], reverse_g0[3], reverse_g1[2]) * geometric_product_g1.zyw) + (float3(reverse_g1[1], reverse_g1[3], reverse_g0[2]) * geometric_product_g4.zyw) + (geometric_product_g1.xxz * reverse_g0.wzw) + (geometric_product_g4.xxz * reverse_g1.wzw)), geometric_product_g1[2] * reverse_g1[2] * -1.0) - (geometric_product_g1.yzxx * float4(reverse_g0.zxy, reverse_g1[0])) - (reverse_g1.zxyy * float4(geometric_product_g4.yzx, geometric_product_g1[1]))
+            float4((geometric_product_g1[2] * this.e42) + (geometric_product_g1[3] * this.e23) + (geometric_product_g4[0] * this.scalar) + (geometric_product_g4[2] * this.e31) + (geometric_product_g4[3] * this.e41), (geometric_product_g1[1] * this.e1234) + (geometric_product_g1[3] * this.e31) + (geometric_product_g4[0] * this.e12) + (geometric_product_g4[1] * this.scalar) + (geometric_product_g4[3] * this.e42), (geometric_product_g1[2] * this.e1234) + (geometric_product_g1[3] * this.e12) + (geometric_product_g4[1] * this.e23) + (geometric_product_g4[2] * this.scalar) + (geometric_product_g4[3] * this.e43), geometric_product_g1[2] * this.e12 * -1.0) + float4((geometric_product_g1.xxy * this.group0.wzx), geometric_product_g4[3] * this.scalar) - (geometric_product_g1.yzxx * float4(this.group0.zxy, this.e23)) - (this.group1.zxyy * float4(geometric_product_g4.yzx, geometric_product_g1[1]))
         );
     }
 }
@@ -837,28 +812,26 @@ public Origin operator /(SandwichInfixPartial<Motor> lhs, Origin rhs) {
 public extension Motor {
     public Origin sandwich(Origin other) {
         float3 geometric_product_g1_xyz = float3(other.e4) * this.group1.xyz;
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Origin(
             /* e4 */
-            (reverse_g1[3] * this.scalar * other.e4) - (geometric_product_g1_xyz[0] * reverse_g1[0]) - (geometric_product_g1_xyz[1] * reverse_g1[1]) - (geometric_product_g1_xyz[2] * reverse_g1[2])
+            (this.scalar * this.scalar * other.e4) - (geometric_product_g1_xyz[0] * this.e23) - (geometric_product_g1_xyz[1] * this.e31) - (geometric_product_g1_xyz[2] * this.e12)
         );
     }
 }
 // Fancy infix trick (second half)
-public Plane operator /(SandwichInfixPartial<Motor> lhs, Plane rhs) {
+public Flector operator /(SandwichInfixPartial<Motor> lhs, Plane rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Motor {
-    public Plane sandwich(Plane other) {
-        float3 geometric_product_g0_xyz = float3(other.e321) * this.group1.xyz;
-        float geometric_product_g0_w = -(this.e1234 * other.e321) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412);
+    public Flector sandwich(Plane other) {
+        float4 geometric_product_g0 = float4(other.e321, other.e321, other.e321, -(this.e1234 * other.e321) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)) * float4(this.group1.xyz, 1.0);
         float3 geometric_product_g1_xyz = (float3(this.scalar) * other.group0.xyz) + (this.group1.zxy * other.group0.yzx) - (float3(other.e321) * this.group0.xyz) - (this.group1.yzx * other.group0.zxy);
         float geometric_product_g1_w = this.scalar * other.e321;
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
-        return Plane(
+        return Flector(
+            /* e1, e2, e3, e4 */
+            float4(float3(0.0), (geometric_product_g1_w * this.e1234) + (geometric_product_g0[3] * this.scalar) - (geometric_product_g1_xyz[0] * this.e23) - (geometric_product_g1_xyz[1] * this.e31) - (geometric_product_g1_xyz[2] * this.e12) - (geometric_product_g0[0] * this.e41) - (geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43)), 
             /* e423, e431, e412, e321 */
-            float4((geometric_product_g0_xyz.xxy * reverse_g0.wzx), geometric_product_g1_w * reverse_g1[3]) + float4(((float3(geometric_product_g0_w) * reverse_g1.xyz) + (float3(geometric_product_g1_w) * reverse_g0.xyz) + (geometric_product_g0_xyz.zyz * reverse_g0.yww) + (geometric_product_g1_xyz.xxy * reverse_g1.wzx) + (geometric_product_g1_xyz.zyz * reverse_g1.yww)), geometric_product_g0_xyz[2] * reverse_g1[2] * -1.0) - (reverse_g1.zxyy * float4(geometric_product_g1_xyz.yzx, geometric_product_g0_xyz[1])) - float4((geometric_product_g0_xyz.yzx * reverse_g0.zxy), geometric_product_g0_w * reverse_g1[0])
+            float4((geometric_product_g1_xyz[0] * this.scalar) + (geometric_product_g1_xyz[2] * this.e31) + (geometric_product_g0[0] * this.e1234) + (geometric_product_g0[2] * this.e42) + (geometric_product_g0[3] * this.e23), (geometric_product_g1_xyz[0] * this.e12) + (geometric_product_g1_xyz[1] * this.scalar) + (geometric_product_g0[0] * this.e43) + (geometric_product_g0[1] * this.e1234) + (geometric_product_g0[3] * this.e31), (geometric_product_g1_xyz[1] * this.e23) + (geometric_product_g1_xyz[2] * this.scalar) + (geometric_product_g0[1] * this.e41) + (geometric_product_g0[2] * this.e1234) + (geometric_product_g0[3] * this.e12), geometric_product_g0[2] * this.e12 * -1.0) + (float4(geometric_product_g1_w) * float4(this.group0.xyz, this.scalar)) - (geometric_product_g0.yzxy * float4(this.group0.zxy, this.e31)) - (this.group1.zxyx * float4(geometric_product_g1_xyz.yzx, geometric_product_g0[0]))
         );
     }
 }
@@ -868,13 +841,11 @@ public Point operator /(SandwichInfixPartial<Motor> lhs, Point rhs) {
 }
 public extension Motor {
     public Point sandwich(Point other) {
-        float4 geometric_product_g0 = (float4(this.e31 * other.e3, this.e12 * other.e1, this.e23 * other.e2, (this.e43 * other.e3) + (this.scalar * other.e4)) * float4(-1.0, -1.0, -1.0, 1.0)) + (other.group0.xyzy * float4(this.group1.www, this.e42)) + (other.group0.yzxx * float4(this.group1.zxy, this.e41));
-        float4 geometric_product_g1 = float4((float3(this.e42 * other.e3, this.e43 * other.e1, this.e41 * other.e2) + (float3(other.e4) * this.group1.xyz)), this.e12 * other.e3 * -1.0) - (other.group0.xyzy * float4(this.group0.www, this.e31)) - (other.group0.yzxx * float4(this.group0.zxy, this.e23));
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
+        float4 geometric_product_g0 = float4(this.e31 * other.e3 * -1.0, this.e12 * other.e1 * -1.0, this.e23 * other.e2 * -1.0, (this.e43 * other.e3) + (this.scalar * other.e4)) + (other.group0.xyzy * float4(this.group1.www, this.e42)) + (other.group0.yzxx * float4(this.group1.zxy, this.e41));
+        float4 geometric_product_g1 = float4((this.e42 * other.e3) + (this.e23 * other.e4), (this.e43 * other.e1) + (this.e31 * other.e4), (this.e41 * other.e2) + (this.e12 * other.e4), this.e12 * other.e3 * -1.0) - (other.group0.xyzy * float4(this.group0.www, this.e31)) - (other.group0.yzxx * float4(this.group0.zxy, this.e23));
         return Point(
             /* e1, e2, e3, e4 */
-            (float4(reverse_g1[0], reverse_g1[1], reverse_g1[2], 1.0) * float4(geometric_product_g1.www, -(geometric_product_g0[1] * reverse_g0[1]) - (geometric_product_g0[2] * reverse_g0[2]) - (geometric_product_g1[0] * reverse_g1[0]) - (geometric_product_g1[1] * reverse_g1[1]) - (geometric_product_g1[2] * reverse_g1[2]))) + (geometric_product_g0.xxyw * reverse_g1.wzxw) + float4((geometric_product_g0.zyz * reverse_g1.yww), geometric_product_g1[3] * reverse_g0[3]) - (geometric_product_g0.yzxx * float4(reverse_g1.zxy, reverse_g0[0]))
+            float4(geometric_product_g1[3] * this.e23, geometric_product_g1[3] * this.e31, geometric_product_g1[3] * this.e12, -(geometric_product_g0[1] * this.e42) - (geometric_product_g0[2] * this.e43) - (geometric_product_g1[0] * this.e23) - (geometric_product_g1[1] * this.e31) - (geometric_product_g1[2] * this.e12)) + (geometric_product_g0.xxyw * this.group1.wzxw) + float4((geometric_product_g0.zyz * this.group1.yww), geometric_product_g1[3] * this.e1234) - (geometric_product_g0.yzxx * float4(this.group1.zxy, this.e41))
         );
     }
 }
@@ -886,11 +857,9 @@ public extension Motor {
     public DualNum sandwich(Scalar other) {
         float4 geometric_product_g0 = float4(other.scalar) * this.group0;
         float4 geometric_product_g1 = float4(other.scalar) * this.group1;
-        float4 reverse_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 reverse_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DualNum(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g1[3] * reverse_g0[3]) - (geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])) + (float2(reverse_g1[3]) * float2(geometric_product_g1[3], geometric_product_g0[3])) - (float2(reverse_g1[0]) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(reverse_g1[1]) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(reverse_g1[2]) * float2(geometric_product_g1[2], geometric_product_g0[2]))
+            float2(0.0, (geometric_product_g1[3] * this.e1234) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43)) + (float2(this.scalar) * float2(geometric_product_g1[3], geometric_product_g0[3])) - (float2(this.e23) * float2(geometric_product_g1[0], geometric_product_g0[0])) - (float2(this.e31) * float2(geometric_product_g1[1], geometric_product_g0[1])) - (float2(this.e12) * float2(geometric_product_g1[2], geometric_product_g0[2]))
         );
     }
 }
@@ -904,17 +873,15 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, AntiScalar 
 }
 public extension MultiVector {
     public MultiVector sandwich(AntiScalar other) {
-        float2 geometric_product_g0 = float2(1.0, other.e1234 * this.scalar) * float2(0.0, 1.0);
+        float geometric_product_g0_y = other.e1234 * this.scalar;
         float geometric_product_g1_w = other.e1234 * this.e321;
         float3 geometric_product_g2 = float3(other.e1234) * this.group3.xyz;
         float3 geometric_product_g4_xyz = float3(other.e1234) * this.group1.xyz;
-        float3 reverse_g3 = this.group3.xyz * float3(-1.0);
-        float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g1_w * reverse_g4[3]) + (geometric_product_g0[0] * this.e1234) + (geometric_product_g0[1] * this.scalar) - (geometric_product_g2[0] * reverse_g3[0]) - (geometric_product_g2[1] * reverse_g3[1]) - (geometric_product_g2[2] * reverse_g3[2]) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)), 
+            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1_w * this.e321) - (geometric_product_g2[0] * this.e23) - (geometric_product_g2[1] * this.e31) - (geometric_product_g2[2] * this.e12) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), (geometric_product_g1_w * this.scalar) + (geometric_product_g0[0] * this.e4) + (geometric_product_g2[0] * this.e1) + (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3) - (geometric_product_g0[1] * reverse_g4[3]) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2])), 
+            float4(float3(0.0), (geometric_product_g1_w * this.scalar) + (geometric_product_g2[0] * this.e1) + (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3) - (geometric_product_g0_y * this.e321) - (geometric_product_g4_xyz[0] * this.e23) - (geometric_product_g4_xyz[1] * this.e31) - (geometric_product_g4_xyz[2] * this.e12)), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
@@ -939,18 +906,17 @@ public extension MultiVector {
         float geometric_product_g4_w = other.scalar * this.e321;
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
-        float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g4_w * this.e4) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)) + (float2(geometric_product_g0_x) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * float4(geometric_product_g4_xyz, geometric_product_g4_w).wx), 
+            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1[3] * this.e321) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)) + (float2(geometric_product_g0_x) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, this.e423)) + (float2(geometric_product_g1[1]) * float2(this.e2, this.e431)) + (float2(geometric_product_g1[2]) * float2(this.e3, this.e412)) - (float2(geometric_product_g4_w) * float2(this.e321, this.e4)) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0_x) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4_w) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4_w, this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(float4(geometric_product_g4_xyz, geometric_product_g4_w).ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0_y * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0_x) * this.group1) + (float4(geometric_product_g4_w) * float4(reverse_g3, this.e1234)) + (float4(this.e2, this.e321, this.e321, geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.e321, this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * this.e431) - (geometric_product_g3[2] * this.e412) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2])) + float4((reverse_g3.yzx * geometric_product_g1.zxy), geometric_product_g2[2] * this.e3) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0_y * this.e321) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * this.e423), 
             /* e41, e42, e43 */
-            float3(0.0), 
+            (reverse_g2 * float3(geometric_product_g0_x)) + (reverse_g3 * float3(geometric_product_g0_y)) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, this.e321, this.e321) * geometric_product_g4_xyz.zyz) + (float3(this.e321, this.e3, this.e1) * geometric_product_g4_xyz.xxy) + (geometric_product_g1.yzx * this.group4.zxy) - (float3(geometric_product_g4_w) * this.group4.xyz) - (float3(this.e4, this.e412, this.e423) * geometric_product_g1.xxy) - (float3(this.e431, this.e4, this.e4) * geometric_product_g1.zyz) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4_xyz.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(0.0)
+            float4((reverse_g2 * float3(geometric_product_g4_w)), 0.0) + float4((reverse_g3 * float3(geometric_product_g1[3])), 0.0) + float4((float3(geometric_product_g0_x) * this.group4.xyz), 0.0) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g4_xyz.zyz), 0.0) + float4((float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g4_xyz.xxy), 0.0) + float4((float3(this.e4, this.e412, this.e423) * geometric_product_g3.xxy), 0.0) + float4((float3(this.e431, this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) + float4((reverse_g2.yzx * geometric_product_g1.zxy), 0.0) - float4((float3(geometric_product_g0_y) * this.group1.xyz), 0.0) - float4((float3(this.e2, this.e321, this.e321) * geometric_product_g2.zyz), 0.0) - float4((float3(this.e321, this.e3, this.e1) * geometric_product_g2.xxy), 0.0) - float4((geometric_product_g3.yzx * this.group4.zxy), 0.0) - float4((geometric_product_g4_xyz.yzx * reverse_g3.zxy), 0.0) - float4((reverse_g2.zxy * geometric_product_g1.yzx), 0.0)
         );
     }
 }
@@ -961,10 +927,10 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, Flector rhs
 public extension MultiVector {
     public MultiVector sandwich(Flector other) {
         float2 geometric_product_g0 = float2(0.0, (other.e321 * this.e4) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321)) + (float2(this.e1) * float2(other.e1, other.e423)) + (float2(this.e2) * float2(other.e2, other.e431)) + (float2(this.e3) * float2(other.e3, other.e412)) - (float2(other.e321, other.e1) * this.group4.wx);
-        float4 geometric_product_g1 = (float4(this.scalar) * other.group0) + (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group3.zyz, this.e42)) + (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group3.xxy, this.e41)) + float4(float3(0.0), (other.e3 * this.e43) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)) - float4((this.group3.yzx * other.group0.zxy), other.e321 * this.e1234);
+        float4 geometric_product_g1 = (other.group0.xyxx * float4(this.group0.xx, this.e31, this.e41)) + (other.group0.yzzy * float4(this.group3.xyz.zx, this.scalar, this.e42)) + float4(float3(0.0), (other.e4 * this.scalar) - (other.e431 * this.e31) - (other.e412 * this.e12) - (other.e321 * this.e1234)) + float4((this.group3.xyz * other.group1.www), other.e3 * this.e43) - float4((this.group3.yzx * other.group0.zxy), other.e423 * this.e23);
         float3 geometric_product_g2 = (float3(other.e321) * this.group4.xyz) + (float3(this.e4, this.e4, this.e431) * other.group0.xyx) + (float3(this.e412, this.e423, this.e4) * other.group0.yzz) + (other.group1.zxy * this.group1.yzx) - (float3(other.e4) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group1.yzz) - (float3(this.e321, this.e321, this.e2) * other.group1.xyx) - (other.group0.zxy * this.group4.yzx);
         float3 geometric_product_g3 = (other.group0.zxy * this.group1.yzx) - (float3(other.e321) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group0.yzz) - (float3(this.e321, this.e321, this.e2) * other.group0.xyx);
-        float4 geometric_product_g4 = float4((other.e3 * this.e42) + (other.e431 * this.e12) - (other.e412 * this.e31), (other.e1 * this.e43) + (other.e412 * this.e23) - (other.e423 * this.e12), (other.e2 * this.e41) + (other.e423 * this.e31) - (other.e431 * this.e23), 0.0) + (float4(this.scalar) * other.group1) + float4((float3(other.e4) * this.group3.xyz), 0.0) - (float4(other.e2, other.e321, other.e321, other.e3) * float4(this.group2.zyz, this.e12)) - (float4(other.e321, other.e3, other.e1, other.e2) * float4(this.group2.xxy, this.e31)) - (other.group0.xyzx * float4(this.group0.yy, this.e1234, this.e23));
+        float4 geometric_product_g4 = float4((other.e4 * this.e23) + (other.e423 * this.scalar) + (other.e431 * this.e12) - (other.e321 * this.e41), (other.e4 * this.e31) + (other.e431 * this.scalar) + (other.e412 * this.e23) - (other.e321 * this.e42), (other.e4 * this.e12) + (other.e423 * this.e31) + (other.e412 * this.scalar) - (other.e321 * this.e43), 0.0) + float4((this.group2.yzx * other.group0.zxy), other.e321 * this.scalar) - (other.group0.xyxx * float4(this.group0.yy, this.e42, this.e23)) - (other.group0.yzzy * float4(this.group2.xyz.zx, this.e1234, this.e31)) - float4((this.group3.yzx * other.group1.zxy), other.e3 * this.e12);
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
@@ -972,13 +938,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4[3]) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4[3], this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.group0.xx, this.scalar, geometric_product_g4[3] * this.e1234) * float4(geometric_product_g1.xyz, 1.0)) + (float4(geometric_product_g1.zx, geometric_product_g4[3], geometric_product_g1[3] * this.scalar) * float4(reverse_g3.yzz, 1.0)) + (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g2[2] * this.e3) * float4(reverse_g3.xyx, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g3.yzx) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (reverse_g3 * float3(geometric_product_g0[0])) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g3.xyx), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g3.yzz), 0.0) + float4((float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g2.xyx), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
+            float4((geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (reverse_g2[0] * geometric_product_g4[3]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (reverse_g3[1] * geometric_product_g4[2]) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g4[0] * this.scalar), (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (reverse_g2[1] * geometric_product_g4[3]) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (reverse_g3[2] * geometric_product_g4[0]) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g4[1] * this.scalar), (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g2[2] * geometric_product_g4[3]) + (reverse_g3[0] * geometric_product_g4[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g4[2] * this.scalar), 0.0) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g2.yzx * this.group1.zxy), geometric_product_g4[3] * this.scalar) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
         );
     }
 }
@@ -991,22 +957,22 @@ public extension MultiVector {
         float2 geometric_product_g0 = float2(other.e321) * float2(this.e321, this.e4) * float2(-1.0, 1.0);
         float4 geometric_product_g1 = float4(other.e321) * float4(this.group3.xyz, this.e1234) * float4(1.0, 1.0, 1.0, -1.0);
         float3 geometric_product_g2 = float3(other.e321) * this.group4.xyz;
-        float3 geometric_product_g3 = float3(other.e321) * this.group1.xyz * float3(-1.0);
-        float4 geometric_product_g4 = float4(other.e321) * float4(this.group2.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0);
+        float3 geometric_product_g3 = float3(other.e321 * -1.0) * this.group1.xyz;
+        float4 geometric_product_g4 = float4(other.e321) * float4((this.group2.xyz * float3(-1.0)), this.scalar);
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0), 
+            float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            float4(0.0), 
+            (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.group0.xx, this.scalar, geometric_product_g4[3] * this.e1234) * float4(geometric_product_g1.xyz, 1.0)) + (float4(geometric_product_g1.zx, geometric_product_g4[3], geometric_product_g1[3] * this.scalar) * float4(reverse_g3.yzz, 1.0)) + (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g2[2] * this.e3) * float4(reverse_g3.xyx, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g3.yzx) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (reverse_g3 * float3(geometric_product_g0[0])) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g3.xyx), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g3.yzz), 0.0) + float4((float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g2.xyx), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
+            float4((geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (reverse_g2[0] * geometric_product_g4[3]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (reverse_g3[1] * geometric_product_g4[2]) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g4[0] * this.scalar), (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (reverse_g2[1] * geometric_product_g4[3]) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (reverse_g3[2] * geometric_product_g4[0]) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g4[1] * this.scalar), (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g2[2] * geometric_product_g4[3]) + (reverse_g3[0] * geometric_product_g4[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g4[2] * this.scalar), 0.0) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g2.yzx * this.group1.zxy), geometric_product_g4[3] * this.scalar) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
         );
     }
 }
@@ -1018,9 +984,9 @@ public extension MultiVector {
     public MultiVector sandwich(Line other) {
         float2 geometric_product_g0 = float2(0.0, -(other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) - (float2(this.e23) * float2(other.e23, other.e41)) - (float2(this.e31) * float2(other.e31, other.e42)) - (float2(this.e12) * float2(other.e12, other.e43));
         float4 geometric_product_g1 = float4((other.e23 * this.e321) + (other.e31 * this.e3), (other.e31 * this.e321) + (other.e12 * this.e1), (other.e23 * this.e2) + (other.e12 * this.e321), -(other.e42 * this.e2) - (other.e43 * this.e3) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) - (this.group1.yzxx * float4(other.group1.zxy, other.e41));
-        float3 geometric_product_g2 = (float3(this.scalar) * other.group0.xyz) + (float3(this.e1234) * other.group1.xyz) + (other.group0.yzx * this.group3.zxy) + (other.group1.yzx * this.group2.zxy) - (other.group0.zxy * this.group3.yzx) - (other.group1.zxy * this.group2.yzx);
-        float3 geometric_product_g3 = (float3(this.scalar) * other.group1.xyz) + (other.group1.yzx * this.group3.zxy) - (other.group1.zxy * this.group3.yzx);
-        float4 geometric_product_g4 = float4((float3((other.e42 * this.e3) + (other.e31 * this.e412), (other.e43 * this.e1) + (other.e12 * this.e423), (other.e41 * this.e2) + (other.e23 * this.e431)) + (float3(this.e4) * other.group1.xyz) + (float3(this.e321) * other.group0.xyz)), other.e12 * this.e3 * -1.0) - (this.group1.yzxx * float4(other.group0.zxy, other.e23)) - float4((other.group1.zxy * this.group4.yzx), other.e31 * this.e2);
+        float3 geometric_product_g2 = (other.group0.xyx * float3(this.group0.xx, this.e31)) + (other.group0.yzz * float3(this.group3.xyz.zx, this.scalar)) + (other.group1.xyx * float3(this.group0.yy, this.e42)) + (other.group1.yzz * float3(this.group2.xyz.zx, this.e1234)) - (other.group0.zxy * this.group3.yzx) - (other.group1.zxy * this.group2.yzx);
+        float3 geometric_product_g3 = (other.group1.xyx * float3(this.group0.xx, this.e31)) + (other.group1.yzz * float3(this.group3.xyz.zx, this.scalar)) - (other.group1.zxy * this.group3.yzx);
+        float4 geometric_product_g4 = float4((other.e41 * this.e321) + (other.e42 * this.e3) + (other.e23 * this.e4) + (other.e31 * this.e412), (other.e42 * this.e321) + (other.e43 * this.e1) + (other.e31 * this.e4) + (other.e12 * this.e423), (other.e41 * this.e2) + (other.e43 * this.e321) + (other.e23 * this.e431) + (other.e12 * this.e4), other.e12 * this.e3 * -1.0) - (this.group1.yzxx * float4(other.group0.zxy, other.e23)) - float4((other.group1.zxy * this.group4.yzx), other.e31 * this.e2);
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
@@ -1030,11 +996,11 @@ public extension MultiVector {
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g3.yzx) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (reverse_g3 * float3(geometric_product_g0[0])) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g3.xyx), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g3.yzz), 0.0) + float4((float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g2.xyx), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
+            float4((geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (reverse_g2[0] * geometric_product_g4[3]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (reverse_g3[1] * geometric_product_g4[2]) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g4[0] * this.scalar), (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (reverse_g2[1] * geometric_product_g4[3]) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (reverse_g3[2] * geometric_product_g4[0]) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g4[1] * this.scalar), (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g2[2] * geometric_product_g4[3]) + (reverse_g3[0] * geometric_product_g4[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g4[2] * this.scalar), 0.0) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g2.yzx * this.group1.zxy), geometric_product_g4[3] * this.scalar) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
         );
     }
 }
@@ -1044,11 +1010,11 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, Motor rhs) 
 }
 public extension MultiVector {
     public MultiVector sandwich(Motor other) {
-        float2 geometric_product_g0 = float2(0.0, (other.scalar * this.e1234) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12)) + (float2(this.scalar) * float2(other.scalar, other.e1234)) - (float2(other.e23) * float2(this.e23, this.e41)) - (float2(other.e31) * float2(this.e31, this.e42)) - (float2(other.e12) * float2(this.e12, this.e43));
-        float4 geometric_product_g1 = (other.group1.yzzw * float4(this.group1.zx, this.e321, this.e4)) + (float4(this.group4.ww, this.e2, this.e321) * float4(other.group1.xyx, other.e1234)) + float4((float3(other.scalar) * this.group1.xyz), -(other.e42 * this.e2) - (other.e43 * this.e3) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) - (this.group1.yzxx * float4(other.group1.zxy, other.e41));
-        float3 geometric_product_g2 = (float3(this.scalar) * other.group0.xyz) + (float3(this.e1234) * other.group1.xyz) + (this.group2.xxy * other.group1.wzx) + (this.group2.zyz * other.group1.yww) + (this.group3.xxy * other.group0.wzx) + (this.group3.zyz * other.group0.yww) - (this.group2.yzx * other.group1.zxy) - (this.group3.yzx * other.group0.zxy);
-        float3 geometric_product_g3 = (float3(this.scalar) * other.group1.xyz) + (this.group3.xxy * other.group1.wzx) + (this.group3.zyz * other.group1.yww) - (this.group3.yzx * other.group1.zxy);
-        float4 geometric_product_g4 = (float4(this.group4.ww, this.e2, this.e321) * float4(other.group0.xyx, other.scalar)) + float4((float3((other.e42 * this.e3) + (other.e31 * this.e412), (other.e43 * this.e1) + (other.e12 * this.e423), (other.e43 * this.e321) + (other.e23 * this.e431)) + (float3(other.e1234) * this.group1.xyz) + (float3(other.scalar) * this.group4.xyz) + (float3(this.e4) * other.group1.xyz)), other.e12 * this.e3 * -1.0) - (other.group1.zxyy * float4(this.group4.yzx, this.e2)) - (this.group1.yzxx * float4(other.group0.zxy, other.e23));
+        float2 geometric_product_g0 = float2(0.0, (other.scalar * this.e1234) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) + (float2(this.scalar) * float2(other.scalar, other.e1234)) - (float2(this.e23) * float2(other.e23, other.e41)) - (float2(this.e31) * float2(other.e31, other.e42)) - (float2(this.e12) * float2(other.e12, other.e43));
+        float4 geometric_product_g1 = float4(other.scalar * this.e1, other.scalar * this.e2, other.scalar * this.e3, -(other.e42 * this.e2) - (other.e43 * this.e3) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) + (other.group1.yzzw * float4(this.group1.zx, this.e321, this.e4)) + (float4(this.group4.ww, this.e2, other.e1234 * this.e321) * float4(other.group1.xyx, 1.0)) - (this.group1.yzxx * float4(other.group1.zxy, other.e41));
+        float3 geometric_product_g2 = (float3(other.e1234) * this.group3.xyz) + (float3(other.scalar) * this.group2.xyz) + (other.group0.xyx * float3(this.group0.xx, this.e31)) + (other.group0.yzz * float3(this.group3.xyz.zx, this.scalar)) + (other.group1.xyx * float3(this.group0.yy, this.e42)) + (other.group1.yzz * float3(this.group2.xyz.zx, this.e1234)) - (this.group2.yzx * other.group1.zxy) - (this.group3.yzx * other.group0.zxy);
+        float3 geometric_product_g3 = (float3(other.scalar) * this.group3.xyz) + (other.group1.xyx * float3(this.group0.xx, this.e31)) + (other.group1.yzz * float3(this.group3.xyz.zx, this.scalar)) - (this.group3.yzx * other.group1.zxy);
+        float4 geometric_product_g4 = float4((other.e42 * this.e3) + (other.e1234 * this.e1) + (other.e23 * this.e4) + (other.e31 * this.e412) + (other.scalar * this.e423), (other.e43 * this.e1) + (other.e1234 * this.e2) + (other.e31 * this.e4) + (other.e12 * this.e423) + (other.scalar * this.e431), (other.e43 * this.e321) + (other.e1234 * this.e3) + (other.e23 * this.e431) + (other.e12 * this.e4) + (other.scalar * this.e412), other.e12 * this.e3 * -1.0) + (float4(this.group4.ww, this.e2, other.scalar * this.e321) * float4(other.group0.xyx, 1.0)) - (other.group1.zxyy * float4(this.group4.yzx, this.e2)) - (this.group1.yzxx * float4(other.group0.zxy, other.e23));
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
@@ -1056,13 +1022,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4[3]) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4[3], this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.group0.xx, this.scalar, geometric_product_g4[3] * this.e1234) * float4(geometric_product_g1.xyz, 1.0)) + (float4(geometric_product_g1.zx, geometric_product_g4[3], geometric_product_g1[3] * this.scalar) * float4(reverse_g3.yzz, 1.0)) + (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g2[2] * this.e3) * float4(reverse_g3.xyx, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g3.yzx) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (reverse_g3 * float3(geometric_product_g0[0])) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g3.xyx), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g3.yzz), 0.0) + float4((float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g2.xyx), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
+            float4((geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (reverse_g2[0] * geometric_product_g4[3]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (reverse_g3[1] * geometric_product_g4[2]) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g4[0] * this.scalar), (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (reverse_g2[1] * geometric_product_g4[3]) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (reverse_g3[2] * geometric_product_g4[0]) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g4[1] * this.scalar), (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g2[2] * geometric_product_g4[3]) + (reverse_g3[0] * geometric_product_g4[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g4[2] * this.scalar), 0.0) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g2.yzx * this.group1.zxy), geometric_product_g4[3] * this.scalar) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
         );
     }
 }
@@ -1073,10 +1039,10 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, MultiVector
 public extension MultiVector {
     public MultiVector sandwich(MultiVector other) {
         float2 geometric_product_g0 = float2(0.0, (other.e1234 * this.scalar) + (other.e321 * this.e4) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) + (float2(other.scalar) * this.group0.xy) + (float2(this.e1) * float2(other.e1, other.e423)) + (float2(this.e2) * float2(other.e2, other.e431)) + (float2(this.e3) * float2(other.e3, other.e412)) - (float2(this.e23) * float2(other.e23, other.e41)) - (float2(this.e31) * float2(other.e31, other.e42)) - (float2(this.e12) * float2(other.e12, other.e43)) - (float2(other.e321, other.e1) * this.group4.wx);
-        float4 geometric_product_g1 = (float4(other.scalar) * this.group1) + (float4(other.e2, other.e321, other.e321, other.e3) * float4(this.group3.zyz, this.e43)) + (float4(other.e321, other.e3, other.e1, other.e2) * float4(this.group3.xxy, this.e42)) + (float4(this.group0.xx, this.scalar, other.e1234) * float4(other.group1.xyz, this.e321)) + (float4(this.group1.zx, this.e321, other.e1) * float4(other.group3.yzz, this.e41)) + (float4(this.group4.ww, this.e2, other.e4) * float4(other.group3.xyx, this.scalar)) + float4(float3(0.0), -(other.e42 * this.e2) - (other.e43 * this.e3) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12)) - float4((other.group3.zxy * this.group1.yzx), other.e321 * this.e1234) - float4((this.group3.yzx * other.group1.zxy), other.e41 * this.e1);
-        float3 geometric_product_g2 = (float3(other.scalar) * this.group2.xyz) + (float3(other.e1234) * this.group3.xyz) + (float3(other.e321) * this.group4.xyz) + (float3(this.scalar) * other.group2.xyz) + (float3(this.e1234) * other.group3.xyz) + (float3(this.e4, this.e4, this.e431) * other.group1.xyx) + (float3(this.e412, this.e423, this.e4) * other.group1.yzz) + (other.group2.yzx * this.group3.zxy) + (other.group3.yzx * this.group2.zxy) + (other.group4.zxy * this.group1.yzx) - (float3(other.e4) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group4.yzz) - (float3(this.e321, this.e321, this.e2) * other.group4.xyx) - (other.group2.zxy * this.group3.yzx) - (other.group3.zxy * this.group2.yzx) - (other.group1.zxy * this.group4.yzx);
-        float3 geometric_product_g3 = (float3(other.scalar) * this.group3.xyz) + (float3(this.scalar) * other.group3.xyz) + (other.group3.yzx * this.group3.zxy) + (other.group1.zxy * this.group1.yzx) - (float3(other.e321) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group1.yzz) - (float3(this.e321, this.e321, this.e2) * other.group1.xyx) - (other.group3.zxy * this.group3.yzx);
-        float4 geometric_product_g4 = float4((other.e3 * this.e42) + (other.e42 * this.e3) + (other.e31 * this.e412) + (other.e431 * this.e12), (other.e1 * this.e43) + (other.e43 * this.e1) + (other.e12 * this.e423) + (other.e412 * this.e23), (other.e2 * this.e41) + (other.e41 * this.e2) + (other.e23 * this.e431) + (other.e423 * this.e31), 0.0) + (float4(other.scalar) * this.group4) + (float4(other.group0.yy, other.e1234, this.scalar) * float4(this.group1.xyz, other.e321)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((float3(this.scalar) * other.group4.xyz), 0.0) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((float3(this.e321) * other.group2.xyz), 0.0) - (float4(other.e2, other.e321, other.e321, other.e2) * float4(this.group2.zyz, this.e31)) - (float4(other.e321, other.e3, other.e1, other.e1) * float4(this.group2.xxy, this.e23)) - (this.group1.yzxy * float4(other.group2.zxy, other.e31)) - (float4(this.group0.yy, this.e1234, other.e23) * float4(other.group1.xyz, this.e1)) - float4((other.group3.zxy * this.group4.yzx), other.e12 * this.e3) - float4((this.group3.yzx * other.group4.zxy), other.e3 * this.e12);
+        float4 geometric_product_g1 = (float4(other.scalar) * this.group1) + (other.group1.yzzx * float4(this.group3.xyz.zx, this.scalar, this.e41)) + (float4(this.group0.xx, this.e31, other.e1234 * this.e321) * float4(other.group1.xyx, 1.0)) + (float4(this.group1.zx, this.e321, other.e3 * this.e43) * float4(other.group3.yzz, 1.0)) + (float4(this.group4.ww, this.e2, other.e2 * this.e42) * float4(other.group3.xyx, 1.0)) + float4(float3(0.0), -(other.e43 * this.e3) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412) - (other.e423 * this.e23) - (other.e431 * this.e31) - (other.e412 * this.e12) - (other.e321 * this.e1234)) + float4((this.group3.xyz * other.group4.www), other.e4 * this.scalar) - (this.group1.yzxy * float4(other.group3.zxy, other.e42)) - float4((this.group3.yzx * other.group1.zxy), other.e41 * this.e1);
+        float3 geometric_product_g2 = (float3(other.scalar) * this.group2.xyz) + (float3(other.e1234) * this.group3.xyz) + (float3(other.e321) * this.group4.xyz) + (float3(this.e4, this.e4, this.e431) * other.group1.xyx) + (float3(this.e412, this.e423, this.e4) * other.group1.yzz) + (other.group2.xyx * float3(this.group0.xx, this.e31)) + (other.group2.yzz * float3(this.group3.xyz.zx, this.scalar)) + (other.group3.xyx * float3(this.group0.yy, this.e42)) + (other.group3.yzz * float3(this.group2.xyz.zx, this.e1234)) + (other.group4.zxy * this.group1.yzx) - (float3(other.e4) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group4.yzz) - (float3(this.e321, this.e321, this.e2) * other.group4.xyx) - (other.group2.zxy * this.group3.yzx) - (other.group3.zxy * this.group2.yzx) - (other.group1.zxy * this.group4.yzx);
+        float3 geometric_product_g3 = (float3(other.scalar) * this.group3.xyz) + (other.group3.xyx * float3(this.group0.xx, this.e31)) + (other.group3.yzz * float3(this.group3.xyz.zx, this.scalar)) + (other.group1.zxy * this.group1.yzx) - (float3(other.e321) * this.group1.xyz) - (float3(this.e3, this.e1, this.e321) * other.group1.yzz) - (float3(this.e321, this.e321, this.e2) * other.group1.xyx) - (other.group3.zxy * this.group3.yzx);
+        float4 geometric_product_g4 = float4((other.e3 * this.e42) + (other.e4 * this.e23) + (other.e41 * this.e321) + (other.e42 * this.e3) + (other.e23 * this.e4) + (other.e31 * this.e412) + (other.e423 * this.scalar) + (other.e431 * this.e12), (other.e1 * this.e43) + (other.e4 * this.e31) + (other.e42 * this.e321) + (other.e43 * this.e1) + (other.e31 * this.e4) + (other.e12 * this.e423) + (other.e431 * this.scalar) + (other.e412 * this.e23), (other.e2 * this.e41) + (other.e4 * this.e12) + (other.e41 * this.e2) + (other.e43 * this.e321) + (other.e23 * this.e431) + (other.e12 * this.e4) + (other.e423 * this.e31) + (other.e412 * this.scalar), 0.0) + (float4(other.scalar) * this.group4) + (float4(other.group0.yy, other.e1234, other.e321 * this.scalar) * float4(this.group1.xyz, 1.0)) - (other.group1.xyxx * float4(this.group0.yy, this.e42, this.e23)) - (other.group1.yzzy * float4(this.group2.xyz.zx, this.e1234, this.e31)) - float4((this.group2.xyz * other.group4.www), other.e12 * this.e3) - float4((other.group2.zxy * this.group1.yzx), other.e3 * this.e12) - float4((other.group3.zxy * this.group4.yzx), other.e23 * this.e1) - float4((this.group3.yzx * other.group4.zxy), other.e31 * this.e2);
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
@@ -1084,13 +1050,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4[3]) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4[3], this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.group0.xx, this.scalar, geometric_product_g4[3] * this.e1234) * float4(geometric_product_g1.xyz, 1.0)) + (float4(geometric_product_g1.zx, geometric_product_g4[3], geometric_product_g1[3] * this.scalar) * float4(reverse_g3.yzz, 1.0)) + (float4(geometric_product_g4.ww, geometric_product_g1[1], geometric_product_g2[2] * this.e3) * float4(reverse_g3.xyx, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g3.zxy * reverse_g3.yzx) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (reverse_g3 * float3(geometric_product_g0[0])) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((float3(this.e1234) * geometric_product_g1.xyz), 0.0) + float4((float3(geometric_product_g1[2], geometric_product_g1[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g1[3], geometric_product_g1[3], geometric_product_g4[1]) * reverse_g3.xyx), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1[3]) * reverse_g3.yzz), 0.0) + float4((float3(geometric_product_g4[3], geometric_product_g4[3], geometric_product_g1[1]) * reverse_g2.xyx), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
+            float4((geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (reverse_g2[0] * geometric_product_g4[3]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (reverse_g3[1] * geometric_product_g4[2]) + (geometric_product_g1[0] * this.e1234) + (geometric_product_g4[0] * this.scalar), (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (reverse_g2[1] * geometric_product_g4[3]) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (reverse_g3[2] * geometric_product_g4[0]) + (geometric_product_g1[1] * this.e1234) + (geometric_product_g4[1] * this.scalar), (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g2[2] * geometric_product_g4[3]) + (reverse_g3[0] * geometric_product_g4[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234) + (geometric_product_g4[2] * this.scalar), 0.0) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g2.yzx * this.group1.zxy), geometric_product_g4[3] * this.scalar) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxy * float4(reverse_g2.zxy, reverse_g3[1])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), reverse_g3[2] * geometric_product_g1[2])
         );
     }
 }
@@ -1100,23 +1066,22 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, Origin rhs)
 }
 public extension MultiVector {
     public MultiVector sandwich(Origin other) {
-        float2 geometric_product_g0 = float2(1.0, this.e321 * other.e4) * float2(0.0, -1.0);
+        float geometric_product_g0_y = this.e321 * other.e4 * -1.0;
         float geometric_product_g1_w = this.scalar * other.e4;
-        float3 geometric_product_g2 = float3(other.e4) * this.group1.xyz * float3(-1.0);
+        float3 geometric_product_g2 = float3(other.e4 * -1.0) * this.group1.xyz;
         float3 geometric_product_g4_xyz = float3(other.e4) * this.group3.xyz;
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
-        float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g1_w * reverse_g4[3]) + (geometric_product_g0[0] * this.e1234) + (geometric_product_g0[1] * this.scalar) - (geometric_product_g2[0] * reverse_g3[0]) - (geometric_product_g2[1] * reverse_g3[1]) - (geometric_product_g2[2] * reverse_g3[2]) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)), 
+            float2(0.0, (geometric_product_g1_w * this.e321) - (geometric_product_g0_y * this.scalar) - (geometric_product_g2[0] * reverse_g3[0]) - (geometric_product_g2[1] * reverse_g3[1]) - (geometric_product_g2[2] * reverse_g3[2]) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), (geometric_product_g1_w * this.scalar) + (geometric_product_g0[0] * this.e4) + (geometric_product_g2[0] * this.e1) + (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3) - (geometric_product_g0[1] * reverse_g4[3]) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2])), 
+            float4(float3(0.0), (geometric_product_g0_y * this.e321) + (geometric_product_g1_w * this.scalar) + (geometric_product_g2[0] * this.e1) + (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2])), 
             /* e41, e42, e43 */
-            float3(0.0), 
+            (float3(geometric_product_g1_w) * this.group1.xyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e2, this.e321, this.e321) * geometric_product_g4_xyz.zyz) + (float3(this.e321, this.e3, this.e1) * geometric_product_g4_xyz.xxy) - (reverse_g3 * float3(geometric_product_g0_y)) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g4_xyz.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(0.0)
+            float4((reverse_g3 * float3(geometric_product_g1_w)), 0.0) + float4((float3(geometric_product_g0_y) * this.group1.xyz), 0.0) + float4((float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g4_xyz.zyz), 0.0) + float4((float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g4_xyz.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) - float4((float3(this.e2, this.e321, this.e321) * geometric_product_g2.zyz), 0.0) - float4((float3(this.e321, this.e3, this.e1) * geometric_product_g2.xxy), 0.0) - float4((geometric_product_g4_xyz.yzx * reverse_g3.zxy), 0.0)
         );
     }
 }
@@ -1126,26 +1091,27 @@ public MultiVector operator /(SandwichInfixPartial<MultiVector> lhs, Plane rhs) 
 }
 public extension MultiVector {
     public MultiVector sandwich(Plane other) {
-        float2 geometric_product_g0 = float2(this.e321 * other.e321, (this.e1 * other.e423) + (this.e2 * other.e431) + (this.e3 * other.e412) + (this.e4 * other.e321)) * float2(-1.0, 1.0);
-        float3 geometric_product_g1_xyz = float3(other.e321) * this.group3.xyz;
-        float geometric_product_g1_w = -(this.e1234 * other.e321) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412);
+        float geometric_product_g0_x = this.e321 * other.e321 * -1.0;
+        float geometric_product_g0_y = (this.e1 * other.e423) + (this.e2 * other.e431) + (this.e3 * other.e412) + (this.e4 * other.e321);
+        float4 geometric_product_g1 = float4(other.e321, other.e321, other.e321, -(this.e1234 * other.e321) - (this.e23 * other.e423) - (this.e31 * other.e431) - (this.e12 * other.e412)) * float4(this.group3.xyz, 1.0);
         float3 geometric_product_g2 = (float3(other.e321) * this.group4.xyz) + (this.group1.yzx * other.group0.zxy) - (float3(this.e321) * other.group0.xyz) - (this.group1.zxy * other.group0.yzx);
-        float3 geometric_product_g3 = float3(other.e321) * this.group1.xyz * float3(-1.0);
-        float4 geometric_product_g4 = float4(((float3(this.scalar) * other.group0.xyz) + (this.group3.zxy * other.group0.yzx) - (float3(other.e321) * this.group2.xyz) - (this.group3.yzx * other.group0.zxy)), this.scalar * other.e321);
+        float3 geometric_product_g3 = float3(other.e321 * -1.0) * this.group1.xyz;
+        float3 geometric_product_g4_xyz = (float3(this.scalar) * other.group0.xyz) + (this.group3.zxy * other.group0.yzx) - (float3(other.e321) * this.group2.xyz) - (this.group3.yzx * other.group0.zxy);
+        float geometric_product_g4_w = this.scalar * other.e321;
         float3 reverse_g2 = this.group2.xyz * float3(-1.0);
         float3 reverse_g3 = this.group3.xyz * float3(-1.0);
         float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0), 
+            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4_xyz[0] * this.e1) - (geometric_product_g4_xyz[1] * this.e2) - (geometric_product_g4_xyz[2] * this.e3)) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(geometric_product_g0_x) * this.group0.xy) - (float2(geometric_product_g4_w) * float2(reverse_g4[3], this.e4)) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])), 
             /* e1, e2, e3, e4 */
-            float4(0.0), 
+            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g4_w) * float4(reverse_g3, this.e1234)) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (geometric_product_g4_xyz[0] * reverse_g3[0]) - (geometric_product_g4_xyz[1] * reverse_g3[1]) - (geometric_product_g4_xyz[2] * reverse_g3[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2])) + float4((reverse_g3.yzx * geometric_product_g1.zxy), geometric_product_g2[2] * this.e3) - (float4(geometric_product_g0_x) * this.group1) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0_y * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
             /* e41, e42, e43 */
-            (geometric_product_g2 * float3(this.scalar)) + (geometric_product_g3 * float3(this.e1234)) + (reverse_g2 * float3(geometric_product_g0[0])) + (reverse_g3 * float3(geometric_product_g0[1])) + (float3(geometric_product_g1_w) * this.group1.xyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4.zyz) + (geometric_product_g1_xyz.yzx * reverse_g4.zxy) + (geometric_product_g2.zxy * reverse_g3.yzx) + (geometric_product_g3.zxy * reverse_g2.yzx) - (float3(geometric_product_g4[3]) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1_xyz.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1_xyz.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4.yzx * this.group1.zxy), 
+            (reverse_g3 * float3(geometric_product_g0_y)) + (float3(geometric_product_g1[3]) * this.group1.xyz) + (float3(reverse_g2[1], this.e1234, this.e1234) * geometric_product_g3.zyz) + (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g2.zyz) + (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g4_xyz.xxy) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g2.xxy) + (float3(this.e1234, reverse_g2[2], reverse_g2[0]) * geometric_product_g3.xxy) + (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g4_xyz.zyz) + (geometric_product_g1.yzx * reverse_g4.zxy) - (reverse_g2 * float3(geometric_product_g0_x)) - (float3(geometric_product_g4_w) * reverse_g4.xyz) - (float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g1.zyz) - (float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g1.xxy) - (geometric_product_g2.yzx * reverse_g3.zxy) - (geometric_product_g3.yzx * reverse_g2.zxy) - (geometric_product_g4_xyz.yzx * this.group1.zxy), 
             /* e23, e31, e12 */
-            (geometric_product_g3 * float3(this.scalar)) + (reverse_g3 * float3(geometric_product_g0[0])) + (geometric_product_g1_xyz.yzx * this.group1.zxy) + (geometric_product_g3.zxy * reverse_g3.yzx) - (float3(geometric_product_g4[3]) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1_xyz.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1_xyz.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
+            (float3(reverse_g3[1], this.scalar, this.scalar) * geometric_product_g3.zyz) + (float3(this.scalar, reverse_g3[2], reverse_g3[0]) * geometric_product_g3.xxy) + (geometric_product_g1.yzx * this.group1.zxy) - (reverse_g3 * float3(geometric_product_g0_x)) - (float3(geometric_product_g4_w) * this.group1.xyz) - (float3(reverse_g4[3], this.e3, this.e1) * geometric_product_g1.xxy) - (float3(this.e2, reverse_g4[3], reverse_g4[3]) * geometric_product_g1.zyz) - (geometric_product_g3.yzx * reverse_g3.zxy), 
             /* e423, e431, e412, e321 */
-            (geometric_product_g4 * float4(this.scalar)) + (reverse_g4 * float4(geometric_product_g0[0])) + float4((geometric_product_g1_xyz * float3(this.e1234)), 0.0) + float4((float3(geometric_product_g1_xyz[2], geometric_product_g1_xyz[0], geometric_product_g4[3]) * reverse_g2.yzz), 0.0) + float4((float3(geometric_product_g4[2], geometric_product_g4[0], geometric_product_g1_w) * reverse_g3.yzz), 0.0) + float4((float3(reverse_g4[1], this.e4, this.e4) * geometric_product_g3.zyz), 0.0) + float4((float3(this.e4, reverse_g4[2], reverse_g4[0]) * geometric_product_g3.xxy), 0.0) + float4((geometric_product_g2.yzx * this.group1.zxy), 0.0) + float4((reverse_g2.xyx * float3(float2(geometric_product_g4[3]), geometric_product_g1_xyz[1])), 0.0) + float4((reverse_g3.xyx * float3(float2(geometric_product_g1_w), geometric_product_g4[1])), 0.0) - (float4(reverse_g4[3], this.e3, this.e1, this.e2) * float4(geometric_product_g2.xxy, geometric_product_g3[1])) - (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e3) * float4(geometric_product_g2.zyz, geometric_product_g3[2])) - (this.group1.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - float4((geometric_product_g1_xyz.yzx * reverse_g2.zxy), geometric_product_g1_w * reverse_g3[1]) - float4((geometric_product_g3.yzx * reverse_g4.zxy), geometric_product_g1_xyz[0] * reverse_g3[0]) - float4((reverse_g3.zxy * geometric_product_g4.yzx), geometric_product_g1_xyz[2] * reverse_g3[2])
+            float4((geometric_product_g2[1] * this.e3) + (geometric_product_g3[0] * this.e4) + (geometric_product_g3[2] * reverse_g4[1]) + (geometric_product_g4_xyz[0] * this.scalar) + (geometric_product_g4_xyz[2] * reverse_g3[1]) + (reverse_g2[1] * geometric_product_g1[2]) + (reverse_g3[0] * geometric_product_g1[3]) + (geometric_product_g1[0] * this.e1234), (geometric_product_g2[2] * this.e1) + (geometric_product_g3[0] * reverse_g4[2]) + (geometric_product_g3[1] * this.e4) + (geometric_product_g4_xyz[0] * reverse_g3[2]) + (geometric_product_g4_xyz[1] * this.scalar) + (reverse_g2[2] * geometric_product_g1[0]) + (reverse_g3[1] * geometric_product_g1[3]) + (geometric_product_g1[1] * this.e1234), (geometric_product_g2[0] * this.e2) + (geometric_product_g3[1] * reverse_g4[0]) + (geometric_product_g3[2] * this.e4) + (geometric_product_g4_xyz[1] * reverse_g3[0]) + (geometric_product_g4_xyz[2] * this.scalar) + (reverse_g2[0] * geometric_product_g1[1]) + (reverse_g3[2] * geometric_product_g1[3]) + (geometric_product_g1[2] * this.e1234), 0.0) + (float4(geometric_product_g4_w) * float4(reverse_g2, this.scalar)) - (reverse_g4 * float4(geometric_product_g0_x)) - (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g3[1] * this.e2) * float4(geometric_product_g2.xxy, 1.0)) - (float4(this.e2, reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * this.e3) * float4(geometric_product_g2.zyz, 1.0)) - (geometric_product_g1.yzxz * float4(reverse_g2.zxy, reverse_g3[2])) - (this.group1.xyzx * float4(float3(geometric_product_g0_y), geometric_product_g3[0])) - float4((geometric_product_g3.yzx * reverse_g4.zxy), reverse_g3[0] * geometric_product_g1[0]) - float4((geometric_product_g4_xyz.yzx * reverse_g3.zxy), reverse_g3[1] * geometric_product_g1[1])
         );
     }
 }
@@ -1157,18 +1123,15 @@ public extension MultiVector {
     public MultiVector sandwich(Point other) {
         float geometric_product_g0_x = (this.e1 * other.e1) + (this.e2 * other.e2) + (this.e3 * other.e3);
         float geometric_product_g0_y = -(this.e423 * other.e1) - (this.e431 * other.e2) - (this.e412 * other.e3) - (this.e321 * other.e4);
-        float4 geometric_product_g1 = (float4(this.e31 * other.e3, this.e12 * other.e1, this.e23 * other.e2, (this.e42 * other.e2) + (this.e43 * other.e3)) * float4(-1.0, -1.0, -1.0, 1.0)) + (float4(this.scalar) * other.group0) + (other.group0.yzxx * float4(this.group3.zxy, this.e41));
+        float4 geometric_product_g1 = float4(this.e31 * other.e3 * -1.0, this.e12 * other.e1 * -1.0, this.e23 * other.e2 * -1.0, (this.e42 * other.e2) + (this.e43 * other.e3)) + (float4(this.scalar) * other.group0) + (other.group0.yzxx * float4(this.group3.zxy, this.e41));
         float3 geometric_product_g2 = (float3(this.e4) * other.group0.xyz) + (this.group4.zxy * other.group0.yzx) - (float3(other.e4) * this.group1.xyz) - (this.group4.yzx * other.group0.zxy);
         float3 geometric_product_g3 = (this.group1.yzx * other.group0.zxy) - (float3(this.e321) * other.group0.xyz) - (this.group1.zxy * other.group0.yzx);
-        float4 geometric_product_g4 = float4((float3(this.e42 * other.e3, this.e43 * other.e1, this.e41 * other.e2) + (float3(other.e4) * this.group3.xyz)), this.e12 * other.e3 * -1.0) - (other.group0.xyzx * float4(this.group0.yy, this.e1234, this.e23)) - (other.group0.yzxy * float4(this.group2.zxy, this.e31));
-        float3 reverse_g2 = this.group2.xyz * float3(-1.0);
-        float3 reverse_g3 = this.group3.xyz * float3(-1.0);
-        float4 reverse_g4 = this.group4 * float4(-1.0);
+        float4 geometric_product_g4 = float4((this.e42 * other.e3) + (this.e23 * other.e4), (this.e43 * other.e1) + (this.e31 * other.e4), (this.e41 * other.e2) + (this.e12 * other.e4), this.e12 * other.e3 * -1.0) - (other.group0.xyzx * float4(this.group0.yy, this.e1234, this.e23)) - (other.group0.yzxy * float4(this.group2.zxy, this.e31));
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0_x) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
+            float2(0.0, (geometric_product_g0_y * this.scalar) + (geometric_product_g1[3] * this.e321) - (geometric_product_g3[0] * this.e41) - (geometric_product_g3[1] * this.e42) - (geometric_product_g3[2] * this.e43) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0_x) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, this.e423)) + (float2(geometric_product_g1[1]) * float2(this.e2, this.e431)) + (float2(geometric_product_g1[2]) * float2(this.e3, this.e412)) - (float2(this.e23) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(this.e31) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(this.e12) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(this.e321, this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0_x) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4[3]) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4[3], this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0_y * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (float4(geometric_product_g0_x) * this.group1) + (float4(geometric_product_g4[3]) * float4(this.group3.xyz, this.e1234)) + (float4(this.scalar, this.e12, this.e23, geometric_product_g2[2] * this.e3) * float4(geometric_product_g1.xxy, 1.0)) + (float4(this.e2, this.e321, this.e321, geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.e31, this.scalar, this.scalar, this.scalar) * geometric_product_g1.zyzw) + (float4(this.e321, this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * this.e431) - (geometric_product_g3[2] * this.e412) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43) - (geometric_product_g4[0] * this.e23) - (geometric_product_g4[1] * this.e31) - (geometric_product_g4[2] * this.e12)) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0_y * this.e321) - float4((this.group3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * this.e423), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
@@ -1189,14 +1152,11 @@ public extension MultiVector {
         float3 geometric_product_g2 = float3(other.scalar) * this.group2.xyz;
         float3 geometric_product_g3 = float3(other.scalar) * this.group3.xyz;
         float4 geometric_product_g4 = float4(other.scalar) * this.group4;
-        float3 reverse_g2 = this.group2.xyz * float3(-1.0);
-        float3 reverse_g3 = this.group3.xyz * float3(-1.0);
-        float4 reverse_g4 = this.group4 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * reverse_g4[3]) - (geometric_product_g3[0] * reverse_g2[0]) - (geometric_product_g3[1] * reverse_g2[1]) - (geometric_product_g3[2] * reverse_g2[2]) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, reverse_g4[0])) + (float2(geometric_product_g1[1]) * float2(this.e2, reverse_g4[1])) + (float2(geometric_product_g1[2]) * float2(this.e3, reverse_g4[2])) - (float2(reverse_g3[0]) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(reverse_g3[1]) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(reverse_g3[2]) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(reverse_g4[3], this.e1) * geometric_product_g4.wx), 
+            float2(0.0, (geometric_product_g0[1] * this.scalar) + (geometric_product_g1[3] * this.e321) - (geometric_product_g3[0] * this.e41) - (geometric_product_g3[1] * this.e42) - (geometric_product_g3[2] * this.e43) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)) + (float2(geometric_product_g0[0]) * this.group0.xy) + (float2(geometric_product_g1[0]) * float2(this.e1, this.e423)) + (float2(geometric_product_g1[1]) * float2(this.e2, this.e431)) + (float2(geometric_product_g1[2]) * float2(this.e3, this.e412)) - (float2(this.e23) * float2(geometric_product_g3[0], geometric_product_g2[0])) - (float2(this.e31) * float2(geometric_product_g3[1], geometric_product_g2[1])) - (float2(this.e12) * float2(geometric_product_g3[2], geometric_product_g2[2])) - (float2(this.e321, this.e1) * geometric_product_g4.wx), 
             /* e1, e2, e3, e4 */
-            (geometric_product_g1 * float4(this.scalar)) + (float4(geometric_product_g0[0]) * this.group1) + (float4(reverse_g4[3], this.e3, this.e1, geometric_product_g4[3]) * float4(geometric_product_g3.xxy, this.e1234)) + (float4(this.e2, reverse_g4[3], reverse_g4[3], this.e1) * float4(geometric_product_g3.zyz, geometric_product_g2[0])) + (float4(geometric_product_g1.zx, geometric_product_g4[3], this.e3) * float4(reverse_g3.yzz, geometric_product_g2[2])) + (float4(geometric_product_g4.ww, geometric_product_g1[1], this.e2) * float4(reverse_g3.xyx, geometric_product_g2[1])) + float4(float3(0.0), -(geometric_product_g3[1] * reverse_g4[1]) - (geometric_product_g3[2] * reverse_g4[2]) - (reverse_g2[0] * geometric_product_g1[0]) - (reverse_g2[1] * geometric_product_g1[1]) - (reverse_g2[2] * geometric_product_g1[2]) - (reverse_g3[0] * geometric_product_g4[0]) - (reverse_g3[1] * geometric_product_g4[1]) - (reverse_g3[2] * geometric_product_g4[2])) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * reverse_g4[3]) - float4((reverse_g3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * reverse_g4[0]), 
+            (float4(geometric_product_g0[0]) * this.group1) + (float4(geometric_product_g4[3]) * float4(this.group3.xyz, this.e1234)) + (float4(this.scalar, this.e12, this.e23, geometric_product_g2[2] * this.e3) * float4(geometric_product_g1.xxy, 1.0)) + (float4(this.e2, this.e321, this.e321, geometric_product_g2[1] * this.e2) * float4(geometric_product_g3.zyz, 1.0)) + (float4(this.e31, this.scalar, this.scalar, this.scalar) * geometric_product_g1.zyzw) + (float4(this.e321, this.e3, this.e1, geometric_product_g2[0] * this.e1) * float4(geometric_product_g3.xxy, 1.0)) + float4(float3(0.0), -(geometric_product_g3[1] * this.e431) - (geometric_product_g3[2] * this.e412) - (geometric_product_g1[0] * this.e41) - (geometric_product_g1[1] * this.e42) - (geometric_product_g1[2] * this.e43) - (geometric_product_g4[0] * this.e23) - (geometric_product_g4[1] * this.e31) - (geometric_product_g4[2] * this.e12)) - float4((geometric_product_g3.yzx * this.group1.zxy), geometric_product_g0[1] * this.e321) - float4((this.group3.zxy * geometric_product_g1.yzx), geometric_product_g3[0] * this.e423), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
@@ -1218,7 +1178,7 @@ public extension Plane {
     public AntiScalar sandwich(AntiScalar other) {
         return AntiScalar(
             /* e1234 */
-            other.e1234 * pow(this.e321, 2) * -1.0
+            other.e1234 * this.e321 * this.e321 * -1.0
         );
     }
 }
@@ -1230,7 +1190,7 @@ public extension Plane {
     public DualNum sandwich(DualNum other) {
         return DualNum(
             /* scalar, e1234 */
-            float2(this.e321) * float2(this.e321 * -1.0) * other.group0.xy * float2(-1.0, 1.0)
+            float2(this.e321 * this.e321) * other.group0.xy * float2(-1.0, 1.0)
         );
     }
 }
@@ -1241,13 +1201,12 @@ public Flector operator /(SandwichInfixPartial<Plane> lhs, Flector rhs) {
 public extension Plane {
     public Flector sandwich(Flector other) {
         float4 geometric_product_g0 = float4((other.e2 * this.e412) + (other.e321 * this.e423), (other.e3 * this.e423) + (other.e321 * this.e431), (other.e1 * this.e431) + (other.e321 * this.e412), -(other.e3 * this.e412) - (other.e4 * this.e321)) - (other.group0.zxyx * this.group0.yzxx) - (this.group0.wwwy * float4(other.group1.xyz, other.e2));
-        float4 geometric_product_g1 = float4(this.e321) * float4(other.group0.xyz, other.e321) * float4(-1.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0);
+        float4 geometric_product_g1 = float4(this.e321 * -1.0) * float4(other.group0.xyz, other.e321);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4((float3(reverse_g0[3]) * geometric_product_g1.xyz), -(geometric_product_g0[3] * reverse_g0[3]) - (geometric_product_g1[0] * reverse_g0[0]) - (geometric_product_g1[1] * reverse_g0[1]) - (geometric_product_g1[2] * reverse_g0[2])), 
+            float4(this.e321, this.e321, this.e321, -(geometric_product_g0[3] * this.e321) - (geometric_product_g1[0] * this.e423) - (geometric_product_g1[1] * this.e431) - (geometric_product_g1[2] * this.e412)) * float4(geometric_product_g1.xyz, 1.0), 
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g1[3]) * reverse_g0.xyz) + (geometric_product_g1.zxy * reverse_g0.yzx) - (float3(reverse_g0[3]) * geometric_product_g0.xyz) - (geometric_product_g1.yzx * reverse_g0.zxy)), geometric_product_g1[3] * reverse_g0[3])
+            float4(((float3(geometric_product_g1[3]) * this.group0.xyz) + (geometric_product_g1.zxy * this.group0.yzx) - (float3(this.e321) * geometric_product_g0.xyz) - (geometric_product_g1.yzx * this.group0.zxy)), geometric_product_g1[3] * this.e321)
         );
     }
 }
@@ -1257,28 +1216,26 @@ public Plane operator /(SandwichInfixPartial<Plane> lhs, Horizon rhs) {
 }
 public extension Plane {
     public Plane sandwich(Horizon other) {
-        float4 geometric_product_g1 = float4(float3(0.0), other.e321 * this.e321) * float4(0.0, 0.0, 0.0, -1.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0);
+        float geometric_product_g1_w = other.e321 * this.e321 * -1.0;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g1[3]) * reverse_g0.xyz) + (geometric_product_g1.zxy * reverse_g0.yzx) - (geometric_product_g1.yzx * reverse_g0.zxy) - (float3(reverse_g0[3]) * float3(other.e321) * this.group0.xyz)), geometric_product_g1[3] * reverse_g0[3])
+            float4(((float3(geometric_product_g1_w) * this.group0.xyz) - (float3(other.e321 * this.e321) * this.group0.xyz)), geometric_product_g1_w * this.e321)
         );
     }
 }
 // Fancy infix trick (second half)
-public Line operator /(SandwichInfixPartial<Plane> lhs, Line rhs) {
+public Motor operator /(SandwichInfixPartial<Plane> lhs, Line rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Plane {
-    public Line sandwich(Line other) {
-        float3 geometric_product_g0_xyz = float3(this.e321) * other.group1.xyz;
+    public Motor sandwich(Line other) {
+        float4 geometric_product_g0 = float4(this.e321, this.e321, this.e321, -(other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) * float4(other.group1.xyz, 1.0);
         float4 geometric_product_g1 = float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((other.group1.yzx * this.group0.zxy), 0.0) - float4((other.group1.zxy * this.group0.yzx), 0.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0);
-        return Line(
-            /* e41, e42, e43 */
-            (float3(reverse_g0[3]) * geometric_product_g1.xyz) + (geometric_product_g0_xyz.yzx * reverse_g0.zxy) - (float3(geometric_product_g1[3]) * reverse_g0.xyz) - (geometric_product_g0_xyz.zxy * reverse_g0.yzx), 
-            /* e23, e31, e12 */
-            geometric_product_g0_xyz * float3(reverse_g0[3]) * float3(-1.0)
+        return Motor(
+            /* e41, e42, e43, e1234 */
+            float4(-(geometric_product_g0[2] * this.e431) - (geometric_product_g1[3] * this.e423), -(geometric_product_g0[0] * this.e412) - (geometric_product_g1[3] * this.e431), -(geometric_product_g0[1] * this.e423) - (geometric_product_g1[3] * this.e412), (geometric_product_g0[2] * this.e412) + (geometric_product_g0[3] * this.e321)) + (geometric_product_g0.yzxx * this.group0.zxyx) + (this.group0.wwwy * float4(geometric_product_g1.xyz, geometric_product_g0[1])), 
+            /* e23, e31, e12, scalar */
+            float4((float3(this.e321 * -1.0) * geometric_product_g0.xyz), 0.0)
         );
     }
 }
@@ -1288,15 +1245,13 @@ public Motor operator /(SandwichInfixPartial<Plane> lhs, Motor rhs) {
 }
 public extension Plane {
     public Motor sandwich(Motor other) {
-        float3 geometric_product_g0_xyz = float3(this.e321) * other.group1.xyz;
-        float geometric_product_g0_w = (other.e1234 * this.e321) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412);
+        float4 geometric_product_g0 = float4(this.e321, this.e321, this.e321, (other.e1234 * this.e321) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) * float4(other.group1.xyz, 1.0);
         float geometric_product_g1_w = other.scalar * this.e321;
-        float4 reverse_g0 = this.group0 * float4(-1.0);
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(-(geometric_product_g1_w * reverse_g0[0]) - (geometric_product_g0_xyz[2] * reverse_g0[1]), -(geometric_product_g1_w * reverse_g0[1]) - (geometric_product_g0_xyz[0] * reverse_g0[2]), -(geometric_product_g1_w * reverse_g0[2]) - (geometric_product_g0_xyz[1] * reverse_g0[0]), (geometric_product_g0_w * reverse_g0[3]) + (geometric_product_g0_xyz[2] * reverse_g0[2])) + (reverse_g0.zxyx * float4(geometric_product_g0_xyz.yzx, geometric_product_g0_w)) + (reverse_g0.wwwy * float4(((float3(other.scalar) * this.group0.xyz) + (float3(this.e321) * other.group0.xyz) + (other.group1.yzx * this.group0.zxy) - (other.group1.zxy * this.group0.yzx)), geometric_product_g0_xyz[1])), 
+            float4(-(geometric_product_g1_w * this.e423) - (geometric_product_g0[2] * this.e431) - (other.group1.zxy[0] * this.group0.yzx[0] * this.e321), -(geometric_product_g1_w * this.e431) - (geometric_product_g0[0] * this.e412) - (other.group1.zxy[1] * this.group0.yzx[1] * this.e321), -(geometric_product_g1_w * this.e412) - (geometric_product_g0[1] * this.e423) - (other.group1.zxy[2] * this.group0.yzx[2] * this.e321), 0.0) + (float4(other.group1.yzx[0] * this.group0.zxy[0], other.group1.yzx[1] * this.group0.zxy[1], other.group1.yzx[2] * this.group0.zxy[2], geometric_product_g0[2]) * this.group0.wwwz) + (geometric_product_g0.yzxx * this.group0.zxyx) + (float4(this.e321, this.e321, this.e321, geometric_product_g0[3]) * this.group0 * float4(other.group1.www, 1.0)) + float4((float3(this.e321 * this.e321) * other.group0.xyz), geometric_product_g0[1] * this.e431), 
             /* e23, e31, e12, scalar */
-            float4(reverse_g0[3]) * float4(geometric_product_g0_xyz, geometric_product_g1_w) * float4(-1.0)
+            float4(this.e321 * -1.0) * float4(geometric_product_g0.xyz, geometric_product_g1_w)
         );
     }
 }
@@ -1306,22 +1261,21 @@ public MultiVector operator /(SandwichInfixPartial<Plane> lhs, MultiVector rhs) 
 }
 public extension Plane {
     public MultiVector sandwich(MultiVector other) {
-        float2 geometric_product_g0 = float2(other.e321 * this.e321, -(other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321)) * float2(-1.0, 1.0);
-        float3 geometric_product_g1_xyz = float3(this.e321) * other.group3.xyz;
-        float3 geometric_product_g3 = float3(this.e321) * other.group1.xyz * float3(-1.0);
+        float geometric_product_g0_x = other.e321 * this.e321 * -1.0;
+        float4 geometric_product_g1 = float4(this.e321, this.e321, this.e321, (other.e1234 * this.e321) - (other.e23 * this.e423) - (other.e31 * this.e431) - (other.e12 * this.e412)) * float4(other.group3.xyz, 1.0);
+        float3 geometric_product_g3 = float3(this.e321 * -1.0) * other.group1.xyz;
         float geometric_product_g4_w = other.scalar * this.e321;
-        float4 reverse_g0 = this.group0 * float4(-1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(geometric_product_g4_w * reverse_g0[3], (geometric_product_g1_xyz[0] * reverse_g0[0]) + (geometric_product_g1_xyz[1] * reverse_g0[1]) + (geometric_product_g1_xyz[2] * reverse_g0[2]) + (reverse_g0[3] * other.e1234 * this.e321) - (reverse_g0[3] * other.e23 * this.e423) - (reverse_g0[3] * other.e31 * this.e431) - (reverse_g0[3] * other.e12 * this.e412)) * float2(-1.0, 1.0), 
+            float2(geometric_product_g4_w * this.e321, (geometric_product_g1[0] * this.e423) + (geometric_product_g1[1] * this.e431) + (geometric_product_g1[2] * this.e412) + (geometric_product_g1[3] * this.e321)) * float2(-1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4((geometric_product_g3 * float3(reverse_g0[3])), -(geometric_product_g0[1] * reverse_g0[3]) - (geometric_product_g3[0] * reverse_g0[0]) - (geometric_product_g3[1] * reverse_g0[1]) - (geometric_product_g3[2] * reverse_g0[2])), 
+            float4(this.e321, this.e321, this.e321, (this.e321 * this.e321 * other.e4) + (other.e1 * this.e423 * this.e321) + (other.e2 * this.e431 * this.e321) + (other.e3 * this.e412 * this.e321) - (geometric_product_g3[0] * this.e423) - (geometric_product_g3[1] * this.e431) - (geometric_product_g3[2] * this.e412)) * float4(geometric_product_g3, 1.0), 
             /* e41, e42, e43 */
-            (float3(reverse_g0[3]) * ((float3(other.scalar) * this.group0.xyz) + (float3(this.e321) * other.group2.xyz) + (other.group3.yzx * this.group0.zxy) - (other.group3.zxy * this.group0.yzx))) + (geometric_product_g1_xyz.yzx * reverse_g0.zxy) - (float3(geometric_product_g4_w) * reverse_g0.xyz) - (geometric_product_g1_xyz.zxy * reverse_g0.yzx), 
+            (float3(this.e321 * this.e321) * other.group2.xyz) + (float3(other.scalar * this.e321) * this.group0.xyz) + (geometric_product_g1.yzx * this.group0.zxy) + (float3(this.e321) * other.group3.yzx * this.group0.zxy) - (float3(geometric_product_g4_w) * this.group0.xyz) - (geometric_product_g1.zxy * this.group0.yzx) - (float3(this.e321) * other.group3.zxy * this.group0.yzx), 
             /* e23, e31, e12 */
-            geometric_product_g1_xyz * float3(reverse_g0[3]) * float3(-1.0), 
+            float3(this.e321 * -1.0) * geometric_product_g1.xyz, 
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g0[0]) * reverse_g0.xyz) + (geometric_product_g3.zxy * reverse_g0.yzx) - (float3(reverse_g0[3]) * ((float3(other.e321) * this.group0.xyz) + (other.group1.yzx * this.group0.zxy) - (float3(this.e321) * other.group4.xyz) - (other.group1.zxy * this.group0.yzx))) - (geometric_product_g3.yzx * reverse_g0.zxy)), geometric_product_g0[0] * reverse_g0[3])
+            float4(((float3(this.e321) * float3(other.group1.zxy[0] * this.group0.yzx[0], other.group1.zxy[1] * this.group0.yzx[1], other.group1.zxy[2] * this.group0.yzx[2])) + (float3(this.e321 * this.e321) * other.group4.xyz) + (geometric_product_g3.zxy * this.group0.yzx) - (float3(geometric_product_g0_x) * this.group0.xyz) - (float3(this.e321) * float3(other.group1.yzx[0] * this.group0.zxy[0], other.group1.yzx[1] * this.group0.zxy[1], other.group1.yzx[2] * this.group0.zxy[2])) - (float3(other.e321 * this.e321) * this.group0.xyz) - (geometric_product_g3.yzx * this.group0.zxy)), geometric_product_g0_x * this.e321 * -1.0)
         );
     }
 }
@@ -1333,7 +1287,7 @@ public extension Plane {
     public Origin sandwich(Origin other) {
         return Origin(
             /* e4 */
-            other.e4 * pow(this.e321, 2) * -1.0
+            other.e4 * this.e321 * this.e321 * -1.0
         );
     }
 }
@@ -1343,25 +1297,26 @@ public Plane operator /(SandwichInfixPartial<Plane> lhs, Plane rhs) {
 }
 public extension Plane {
     public Plane sandwich(Plane other) {
-        float4 geometric_product_g1 = float4(float3(0.0), other.e321 * this.e321) * float4(0.0, 0.0, 0.0, -1.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0);
+        float geometric_product_g1_w = other.e321 * this.e321 * -1.0;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(((float3(geometric_product_g1[3]) * reverse_g0.xyz) + (geometric_product_g1.zxy * reverse_g0.yzx) - (float3(reverse_g0[3]) * ((float3(other.e321) * this.group0.xyz) - (float3(this.e321) * other.group0.xyz))) - (geometric_product_g1.yzx * reverse_g0.zxy)), geometric_product_g1[3] * reverse_g0[3])
+            float4(((float3(geometric_product_g1_w) * this.group0.xyz) + (float3(this.e321 * this.e321) * other.group0.xyz) - (float3(other.e321 * this.e321) * this.group0.xyz)), geometric_product_g1_w * this.e321)
         );
     }
 }
 // Fancy infix trick (second half)
-public Point operator /(SandwichInfixPartial<Plane> lhs, Point rhs) {
+public Flector operator /(SandwichInfixPartial<Plane> lhs, Point rhs) {
     return lhs.a.sandwich(rhs);
 }
 public extension Plane {
-    public Point sandwich(Point other) {
-        float3 geometric_product_g1_xyz = other.group0.xyz * this.group0.www * float3(-1.0);
-        float4 reverse_g0 = this.group0 * float4(-1.0);
-        return Point(
+    public Flector sandwich(Point other) {
+        float4 geometric_product_g0 = float4(this.e412 * other.e2, this.e423 * other.e3, this.e431 * other.e1, -(this.e431 * other.e2) - (this.e412 * other.e3) - (this.e321 * other.e4)) - (this.group0.yzxx * other.group0.zxyx);
+        float3 geometric_product_g1_xyz = float3(this.e321 * -1.0) * other.group0.xyz;
+        return Flector(
             /* e1, e2, e3, e4 */
-            float4((geometric_product_g1_xyz * float3(reverse_g0[3])), (reverse_g0[3] * this.group0.yzxx[3] * other.group0.zxyx[3]) + (reverse_g0[3] * this.e431 * other.e2) + (reverse_g0[3] * this.e412 * other.e3) + (reverse_g0[3] * this.e321 * other.e4) - (geometric_product_g1_xyz[0] * reverse_g0[0]) - (geometric_product_g1_xyz[1] * reverse_g0[1]) - (geometric_product_g1_xyz[2] * reverse_g0[2]))
+            float4(this.e321, this.e321, this.e321, -(geometric_product_g1_xyz[0] * this.e423) - (geometric_product_g1_xyz[1] * this.e431) - (geometric_product_g1_xyz[2] * this.e412) - (geometric_product_g0[3] * this.e321)) * float4(geometric_product_g1_xyz, 1.0), 
+            /* e423, e431, e412, e321 */
+            float4((geometric_product_g1_xyz.zxy * this.group0.yzx), 0.0) - float4((float3(this.e321) * geometric_product_g0.xyz), 0.0) - float4((geometric_product_g1_xyz.yzx * this.group0.zxy), 0.0)
         );
     }
 }
@@ -1401,7 +1356,7 @@ public DualNum operator /(SandwichInfixPartial<Point> lhs, DualNum rhs) {
 public extension Point {
     public DualNum sandwich(DualNum other) {
         float4 geometric_product_g0 = float4(other.scalar) * this.group0;
-        float3 geometric_product_g1_xyz = this.group0.xyz * float3(other.group0.yy, other.e1234);
+        float3 geometric_product_g1_xyz = float3(other.e1234) * this.group0.xyz;
         return DualNum(
             /* scalar, e1234 */
             float2((geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3), -(geometric_product_g1_xyz[0] * this.e1) - (geometric_product_g1_xyz[1] * this.e2) - (geometric_product_g1_xyz[2] * this.e3))
@@ -1418,9 +1373,9 @@ public extension Point {
         float4 geometric_product_g1 = float4(-(other.e2 * this.e3) - (other.e321 * this.e1), -(other.e3 * this.e1) - (other.e321 * this.e2), -(other.e1 * this.e2) - (other.e321 * this.e3), (other.e2 * this.e2) + (other.e3 * this.e3)) + (other.group0.zxyx * this.group0.yzxx);
         return Flector(
             /* e1, e2, e3, e4 */
-            (this.group0.xyzy * float4(geometric_product_g1.www, geometric_product_g0[1])) + (this.group0.yzxx * float4(geometric_product_g1.zxy, geometric_product_g0[0])) + float4((geometric_product_g1.yzx * this.group0.zxy * float3(-1.0)), (geometric_product_g0[2] * this.e3) + (geometric_product_g1[3] * this.e4)), 
+            float4(geometric_product_g1[1] * this.e3 * -1.0, geometric_product_g1[2] * this.e1 * -1.0, geometric_product_g1[0] * this.e2 * -1.0, (geometric_product_g0[2] * this.e3) + (geometric_product_g1[3] * this.e4)) + (this.group0.xyzy * float4(geometric_product_g1.www, geometric_product_g0[1])) + (this.group0.yzxx * float4(geometric_product_g1.zxy, geometric_product_g0[0])), 
             /* e423, e431, e412, e321 */
-            float4(((float3(this.e4) * geometric_product_g1.xyz) + (geometric_product_g0.yzx * this.group0.zxy)), geometric_product_g1[2] * this.e3 * -1.0) - (this.group0.xyzy * float4(geometric_product_g0.www, geometric_product_g1[1])) - (this.group0.yzxx * float4(geometric_product_g0.zxy, geometric_product_g1[0]))
+            float4((geometric_product_g0[1] * this.e3) + (geometric_product_g1[0] * this.e4), (geometric_product_g0[2] * this.e1) + (geometric_product_g1[1] * this.e4), (geometric_product_g0[0] * this.e2) + (geometric_product_g1[2] * this.e4), geometric_product_g1[2] * this.e3 * -1.0) - (this.group0.xyzy * float4(geometric_product_g0.www, geometric_product_g1[1])) - (this.group0.yzxx * float4(geometric_product_g0.zxy, geometric_product_g1[0]))
         );
     }
 }
@@ -1430,10 +1385,10 @@ public Plane operator /(SandwichInfixPartial<Point> lhs, Horizon rhs) {
 }
 public extension Point {
     public Plane sandwich(Horizon other) {
-        float3 geometric_product_g1_xyz = float3(other.e321) * this.group0.xyz * float3(-1.0);
+        float3 geometric_product_g1_xyz = float3(other.e321 * -1.0) * this.group0.xyz;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4((geometric_product_g1_xyz * float3(this.e4)), geometric_product_g1_xyz[2] * this.e3 * -1.0) - (this.group0.xyzy * float4(float3(other.e321 * this.e4), geometric_product_g1_xyz[1])) - (this.group0.yzxx * float4(float3(0.0), geometric_product_g1_xyz[0]))
+            float4(geometric_product_g1_xyz[0] * this.e4, geometric_product_g1_xyz[1] * this.e4, geometric_product_g1_xyz[2] * this.e4, -(geometric_product_g1_xyz[1] * this.e2) - (geometric_product_g1_xyz[2] * this.e3)) - (this.group0.xyzx * float4(float3(other.e321 * this.e4), geometric_product_g1_xyz[0]))
         );
     }
 }
@@ -1459,7 +1414,7 @@ public Motor operator /(SandwichInfixPartial<Point> lhs, Motor rhs) {
 }
 public extension Point {
     public Motor sandwich(Motor other) {
-        float4 geometric_product_g0 = (other.group1.yzxw * this.group0.zxyw) + float4((float3(other.scalar) * this.group0.xyz), -(other.e42 * this.e2) - (other.e43 * this.e3)) - (this.group0.yzxx * float4(other.group1.zxy, other.e41));
+        float4 geometric_product_g0 = float4(other.scalar * this.e1, other.scalar * this.e2, other.scalar * this.e3, -(other.e42 * this.e2) - (other.e43 * this.e3)) + (other.group1.yzxw * this.group0.zxyw) - (this.group0.yzxx * float4(other.group1.zxy, other.e41));
         float4 geometric_product_g1 = float4((other.e42 * this.e3) + (other.e1234 * this.e1) + (other.e23 * this.e4), (other.e43 * this.e1) + (other.e1234 * this.e2) + (other.e31 * this.e4), (other.e41 * this.e2) + (other.e1234 * this.e3) + (other.e12 * this.e4), -(other.e31 * this.e2) - (other.e12 * this.e3)) - (this.group0.yzxx * float4(other.group0.zxy, other.e23));
         return Motor(
             /* e41, e42, e43, e1234 */
@@ -1475,7 +1430,7 @@ public MultiVector operator /(SandwichInfixPartial<Point> lhs, MultiVector rhs) 
 }
 public extension Point {
     public MultiVector sandwich(MultiVector other) {
-        float2 geometric_product_g0 = (float2(1.0, other.e321 * this.e4) * float2(0.0, 1.0)) + (float2(this.e1) * float2(other.e1, other.e423)) + (float2(this.e2) * float2(other.e2, other.e431)) + (float2(this.e3) * float2(other.e3, other.e412));
+        float2 geometric_product_g0 = float2(0.0, other.e321 * this.e4) + (float2(this.e1) * float2(other.e1, other.e423)) + (float2(this.e2) * float2(other.e2, other.e431)) + (float2(this.e3) * float2(other.e3, other.e412));
         float4 geometric_product_g1 = float4(other.e31 * this.e3, other.e12 * this.e1, other.e23 * this.e2, -(other.e42 * this.e2) - (other.e43 * this.e3)) + (float4(other.scalar) * this.group0) - (this.group0.yzxx * float4(other.group3.zxy, other.e41));
         float3 geometric_product_g2 = (float3(this.e4) * other.group1.xyz) + (other.group4.zxy * this.group0.yzx) - (float3(other.e4) * this.group0.xyz) - (other.group4.yzx * this.group0.zxy);
         float3 geometric_product_g3 = (other.group1.zxy * this.group0.yzx) - (float3(other.e321) * this.group0.xyz) - (other.group1.yzx * this.group0.zxy);
@@ -1484,13 +1439,13 @@ public extension Point {
             /* scalar, e1234 */
             float2((geometric_product_g1[0] * this.e1) + (geometric_product_g1[1] * this.e2) + (geometric_product_g1[2] * this.e3), -(geometric_product_g4[0] * this.e1) - (geometric_product_g4[1] * this.e2) - (geometric_product_g4[2] * this.e3) - (geometric_product_g4[3] * this.e4)), 
             /* e1, e2, e3, e4 */
-            (float4(geometric_product_g0[0]) * this.group0) + (this.group0.yzxx * float4(geometric_product_g3.zxy, geometric_product_g2[0])) + float4((geometric_product_g3.yzx * this.group0.zxy * float3(-1.0)), (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3)), 
+            float4(geometric_product_g3[1] * this.e3 * -1.0, geometric_product_g3[2] * this.e1 * -1.0, geometric_product_g3[0] * this.e2 * -1.0, (geometric_product_g2[1] * this.e2) + (geometric_product_g2[2] * this.e3)) + (float4(geometric_product_g0[0]) * this.group0) + (this.group0.yzxx * float4(geometric_product_g3.zxy, geometric_product_g2[0])), 
             /* e41, e42, e43 */
             (float3(geometric_product_g1[3]) * this.group0.xyz) + (geometric_product_g4.zxy * this.group0.yzx) - (float3(this.e4) * geometric_product_g1.xyz) - (geometric_product_g4.yzx * this.group0.zxy), 
             /* e23, e31, e12 */
             (geometric_product_g1.yzx * this.group0.zxy) - (float3(geometric_product_g4[3]) * this.group0.xyz) - (geometric_product_g1.zxy * this.group0.yzx), 
             /* e423, e431, e412, e321 */
-            float4(((geometric_product_g3 * float3(this.e4)) + (geometric_product_g2.yzx * this.group0.zxy)), geometric_product_g3[2] * this.e3 * -1.0) - (this.group0.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - (this.group0.yzxy * float4(geometric_product_g2.zxy, geometric_product_g3[1]))
+            float4((geometric_product_g2[1] * this.e3) + (geometric_product_g3[0] * this.e4), (geometric_product_g2[2] * this.e1) + (geometric_product_g3[1] * this.e4), (geometric_product_g2[0] * this.e2) + (geometric_product_g3[2] * this.e4), geometric_product_g3[2] * this.e3 * -1.0) - (this.group0.xyzx * float4(geometric_product_g0.yy, geometric_product_g0[1], geometric_product_g3[0])) - (this.group0.yzxy * float4(geometric_product_g2.zxy, geometric_product_g3[1]))
         );
     }
 }
@@ -1500,7 +1455,7 @@ public Origin operator /(SandwichInfixPartial<Point> lhs, Origin rhs) {
 }
 public extension Point {
     public Origin sandwich(Origin other) {
-        float3 geometric_product_g0 = float3(other.e4) * this.group0.xyz * float3(-1.0);
+        float3 geometric_product_g0 = float3(other.e4 * -1.0) * this.group0.xyz;
         return Origin(
             /* e4 */
             (geometric_product_g0[0] * this.e1) + (geometric_product_g0[1] * this.e2) + (geometric_product_g0[2] * this.e3)
@@ -1513,11 +1468,11 @@ public Plane operator /(SandwichInfixPartial<Point> lhs, Plane rhs) {
 }
 public extension Point {
     public Plane sandwich(Plane other) {
-        float4 geometric_product_g0 = (float4(other.e431 * this.e3, other.e412 * this.e1, other.e423 * this.e2, (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4)) * float4(-1.0, -1.0, -1.0, 1.0)) + (other.group0.zxyx * this.group0.yzxx);
-        float3 geometric_product_g1_xyz = this.group0.xyz * other.group0.www * float3(-1.0);
+        float4 geometric_product_g0 = float4(other.e431 * this.e3 * -1.0, other.e412 * this.e1 * -1.0, other.e423 * this.e2 * -1.0, (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4)) + (other.group0.zxyx * this.group0.yzxx);
+        float3 geometric_product_g1_xyz = float3(other.e321 * -1.0) * this.group0.xyz;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(((geometric_product_g1_xyz * float3(this.e4)) + (geometric_product_g0.yzx * this.group0.zxy)), geometric_product_g1_xyz[2] * this.e3 * -1.0) - (this.group0.xyzy * float4(geometric_product_g0.www, geometric_product_g1_xyz[1])) - (this.group0.yzxx * float4(geometric_product_g0.zxy, geometric_product_g1_xyz[0]))
+            float4((geometric_product_g1_xyz[0] * this.e4) + (geometric_product_g0[1] * this.e3), (geometric_product_g1_xyz[1] * this.e4) + (geometric_product_g0[2] * this.e1), (geometric_product_g1_xyz[2] * this.e4) + (geometric_product_g0[0] * this.e2), geometric_product_g1_xyz[2] * this.e3 * -1.0) - (this.group0.xyzy * float4(geometric_product_g0.www, geometric_product_g1_xyz[1])) - (this.group0.yzxx * float4(geometric_product_g0.zxy, geometric_product_g1_xyz[0]))
         );
     }
 }
@@ -1528,10 +1483,10 @@ public Point operator /(SandwichInfixPartial<Point> lhs, Point rhs) {
 public extension Point {
     public Point sandwich(Point other) {
         float3 geometric_product_g0_xyz = (float3(this.e4) * other.group0.xyz) - (float3(other.e4) * this.group0.xyz);
-        float4 geometric_product_g1 = (float4(other.e2 * this.e3, other.e3 * this.e1, other.e1 * this.e2, (other.e2 * this.e2) + (other.e3 * this.e3)) * float4(-1.0, -1.0, -1.0, 1.0)) + (other.group0.zxyx * this.group0.yzxx);
+        float4 geometric_product_g1 = float4(other.e2 * this.e3 * -1.0, other.e3 * this.e1 * -1.0, other.e1 * this.e2 * -1.0, (other.e2 * this.e2) + (other.e3 * this.e3)) + (other.group0.zxyx * this.group0.yzxx);
         return Point(
             /* e1, e2, e3, e4 */
-            (this.group0.xyzy * float4(geometric_product_g1.www, geometric_product_g0_xyz[1])) + (this.group0.yzxx * float4(geometric_product_g1.zxy, geometric_product_g0_xyz[0])) + float4((geometric_product_g1.yzx * this.group0.zxy * float3(-1.0)), (geometric_product_g0_xyz[2] * this.e3) + (geometric_product_g1[3] * this.e4))
+            float4(geometric_product_g1[1] * this.e3 * -1.0, geometric_product_g1[2] * this.e1 * -1.0, geometric_product_g1[0] * this.e2 * -1.0, (geometric_product_g0_xyz[2] * this.e3) + (geometric_product_g1[3] * this.e4)) + (this.group0.xyzy * float4(geometric_product_g1.www, geometric_product_g0_xyz[1])) + (this.group0.yzxx * float4(geometric_product_g1.zxy, geometric_product_g0_xyz[0]))
         );
     }
 }
@@ -1560,7 +1515,7 @@ public extension Scalar {
     public AntiScalar sandwich(AntiScalar other) {
         return AntiScalar(
             /* e1234 */
-            other.e1234 * pow(this.scalar, 2)
+            other.e1234 * this.scalar * this.scalar
         );
     }
 }
@@ -1572,7 +1527,7 @@ public extension Scalar {
     public DualNum sandwich(DualNum other) {
         return DualNum(
             /* scalar, e1234 */
-            float2(this.scalar) * float2(other.scalar * this.scalar, other.e1234 * this.scalar)
+            float2(this.scalar * this.scalar) * other.group0.xy
         );
     }
 }
@@ -1584,9 +1539,9 @@ public extension Scalar {
     public Flector sandwich(Flector other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            float4_pow(float4(this.scalar), 2) * other.group0, 
+            float4(this.scalar * this.scalar) * other.group0, 
             /* e423, e431, e412, e321 */
-            float4_pow(float4(this.scalar), 2) * other.group1
+            float4(this.scalar * this.scalar) * other.group1
         );
     }
 }
@@ -1598,7 +1553,7 @@ public extension Scalar {
     public Horizon sandwich(Horizon other) {
         return Horizon(
             /* e321 */
-            other.e321 * pow(this.scalar, 2)
+            other.e321 * this.scalar * this.scalar
         );
     }
 }
@@ -1610,9 +1565,9 @@ public extension Scalar {
     public Line sandwich(Line other) {
         return Line(
             /* e41, e42, e43 */
-            float3_pow(float3(this.scalar), 2) * other.group0.xyz, 
+            float3(this.scalar * this.scalar) * other.group0.xyz, 
             /* e23, e31, e12 */
-            float3_pow(float3(this.scalar), 2) * other.group1.xyz
+            float3(this.scalar * this.scalar) * other.group1.xyz
         );
     }
 }
@@ -1624,9 +1579,9 @@ public extension Scalar {
     public Motor sandwich(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4_pow(float4(this.scalar), 2) * other.group0, 
+            float4(this.scalar * this.scalar) * other.group0, 
             /* e23, e31, e12, scalar */
-            float4_pow(float4(this.scalar), 2) * other.group1
+            float4(this.scalar * this.scalar) * other.group1
         );
     }
 }
@@ -1638,15 +1593,15 @@ public extension Scalar {
     public MultiVector sandwich(MultiVector other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2_pow(float2(this.scalar), 2) * other.group0.xy, 
+            float2(this.scalar * this.scalar) * other.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4_pow(float4(this.scalar), 2) * other.group1, 
+            float4(this.scalar * this.scalar) * other.group1, 
             /* e41, e42, e43 */
-            float3_pow(float3(this.scalar), 2) * other.group2.xyz, 
+            float3(this.scalar * this.scalar) * other.group2.xyz, 
             /* e23, e31, e12 */
-            float3_pow(float3(this.scalar), 2) * other.group3.xyz, 
+            float3(this.scalar * this.scalar) * other.group3.xyz, 
             /* e423, e431, e412, e321 */
-            float4_pow(float4(this.scalar), 2) * other.group4
+            float4(this.scalar * this.scalar) * other.group4
         );
     }
 }
@@ -1658,7 +1613,7 @@ public extension Scalar {
     public Origin sandwich(Origin other) {
         return Origin(
             /* e4 */
-            other.e4 * pow(this.scalar, 2)
+            other.e4 * this.scalar * this.scalar
         );
     }
 }
@@ -1670,7 +1625,7 @@ public extension Scalar {
     public Plane sandwich(Plane other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.scalar) * float4(other.e423 * this.scalar, other.e431 * this.scalar, other.e412 * this.scalar, other.e321 * this.scalar)
+            float4(this.scalar * this.scalar) * other.group0
         );
     }
 }
@@ -1682,7 +1637,7 @@ public extension Scalar {
     public Point sandwich(Point other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(this.scalar) * float4(other.e1 * this.scalar, other.e2 * this.scalar, other.e3 * this.scalar, other.e4 * this.scalar)
+            float4(this.scalar * this.scalar) * other.group0
         );
     }
 }
@@ -1694,7 +1649,7 @@ public extension Scalar {
     public Scalar sandwich(Scalar other) {
         return Scalar(
             /* scalar */
-            other.scalar * pow(this.scalar, 2)
+            other.scalar * this.scalar * this.scalar
         );
     }
 }

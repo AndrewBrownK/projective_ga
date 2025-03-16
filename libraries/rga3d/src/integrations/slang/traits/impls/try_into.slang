@@ -684,9 +684,9 @@ public extension Motor {
         }
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(multi_vector.group2.xyz, multi_vector.e1234), 
+            float4(multi_vector.e41, multi_vector.e42, multi_vector.e43, multi_vector.e1234), 
             /* e23, e31, e12, scalar */
-            float4(multi_vector.group3.xyz, multi_vector.scalar)
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.scalar)
         );
     }
 }

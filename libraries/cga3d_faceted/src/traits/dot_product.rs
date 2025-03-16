@@ -7,14 +7,4 @@ use crate::simd::*;
 pub trait DotProduct<T> {
     fn dot_product(self, other: T) -> Scalar;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static dot_product: DotProductInfix = DotProductInfix;
-pub struct DotProductInfix;
-pub struct DotProductInfixPartial<A>(A);
-impl<A: DotProduct<B>, B> std::ops::Div<B> for DotProductInfixPartial<A> {
-    type Output = Scalar;
-    fn div(self, rhs: B) -> Self::Output {
-        self.0.dot_product(rhs)
-    }
-}
 include!("./impls/dot_product.rs");

@@ -7,13 +7,4 @@ use crate::simd::*;
 pub trait AntiConstraintValid {
     fn anti_constraint_valid(self) -> Self;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static anti_constraint_valid: AntiConstraintValidPrefixOrPostfix = AntiConstraintValidPrefixOrPostfix;
-pub struct AntiConstraintValidPrefixOrPostfix;
-impl<A: AntiConstraintValid> std::ops::Div<A> for AntiConstraintValidPrefixOrPostfix {
-    type Output = A;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.anti_constraint_valid()
-    }
-}
 include!("./impls/anti_constraint_valid.rs");

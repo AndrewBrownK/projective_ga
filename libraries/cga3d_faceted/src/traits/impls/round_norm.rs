@@ -3,27 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 23
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         5       0       0
+//   Median:         4       0       0
 //  Average:         4       0       0
-//  Maximum:        15       2       0
+//  Maximum:        13       0       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         5       0       0
 //  Average:         4       0       0
-//  Maximum:        15       6       0
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiCircleOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
+//  Maximum:        14       0       0
 impl RoundNorm for AntiCircleOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -57,12 +51,6 @@ impl RoundNorm for AntiCircleOnOrigin {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiCircleRotor {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for AntiCircleRotor {
@@ -100,12 +88,6 @@ impl RoundNorm for AntiCircleRotor {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for AntiCircleRotorAligningOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -141,24 +123,20 @@ impl RoundNorm for AntiCircleRotorAligningOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiCircleRotorOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for AntiCircleRotorOnOrigin {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        5        0        0
+    //           add/sub      mul      div
+    //      f32        3        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        4        0        0
+    //  no simd        5        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
-                self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43],
-            ]),
+            Simd32x2::from([self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12], self[e42] * self[e42] + self[e43] * self[e43]])
+                + Simd32x2::powi(self.group0().wx(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -180,57 +158,9 @@ impl RoundNorm for AntiCircleRotorOnOrigin {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiDipoleInversion {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for AntiDipoleInversion {
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
-    fn round_norm(self) -> MultiVector {
-        use crate::elements::*;
-        let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
-        MultiVector::from_groups(
-            // scalar, e12345
-            Simd32x2::from([
-                self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
-                wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3],
-            ]),
-            // e1, e2, e3, e4
-            Simd32x4::from(0.0),
-            // e5
-            0.0,
-            // e41, e42, e43, e45
-            Simd32x4::from(0.0),
-            // e15, e25, e35
-            Simd32x3::from(0.0),
-            // e23, e31, e12
-            Simd32x3::from(0.0),
-            // e415, e425, e435, e321
-            Simd32x4::from(0.0),
-            // e423, e431, e412
-            Simd32x3::from(0.0),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-            // e1234, e4235, e4315, e4125
-            Simd32x4::from(0.0),
-            // e3215
-            0.0,
-        )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
-impl RoundNorm for AntiDipoleInversionOnOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
     // f32        6        0        0
@@ -265,10 +195,42 @@ impl RoundNorm for AntiDipoleInversionOnOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiDipoleOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
+impl RoundNorm for AntiDipoleInversionOnOrigin {
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div
+    //      f32        2        0        0
+    //    simd2        2        0        0
+    // Totals...
+    // yes simd        4        0        0
+    //  no simd        6        0        0
+    fn round_norm(self) -> MultiVector {
+        use crate::elements::*;
+        MultiVector::from_groups(
+            // scalar, e12345
+            Simd32x2::from([self[e2] * self[e2] + self[e3] * self[e3], self[e431] * self[e431] + self[e412] * self[e412]])
+                + Simd32x2::powi(self.group1().yx(), 2)
+                + Simd32x2::powi(self.group0().wx(), 2),
+            // e1, e2, e3, e4
+            Simd32x4::from(0.0),
+            // e5
+            0.0,
+            // e41, e42, e43, e45
+            Simd32x4::from(0.0),
+            // e15, e25, e35
+            Simd32x3::from(0.0),
+            // e23, e31, e12
+            Simd32x3::from(0.0),
+            // e415, e425, e435, e321
+            Simd32x4::from(0.0),
+            // e423, e431, e412
+            Simd32x3::from(0.0),
+            // e235, e315, e125
+            Simd32x3::from(0.0),
+            // e1234, e4235, e4315, e4125
+            Simd32x4::from(0.0),
+            // e3215
+            0.0,
+        )
     }
 }
 impl RoundNorm for AntiDipoleOnOrigin {
@@ -303,12 +265,6 @@ impl RoundNorm for AntiDipoleOnOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiDualNum {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for AntiDualNum {
     fn round_norm(self) -> MultiVector {
         MultiVector::from_groups(
@@ -335,12 +291,6 @@ impl RoundNorm for AntiDualNum {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiSphereOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for AntiSphereOnOrigin {
@@ -375,24 +325,21 @@ impl RoundNorm for AntiSphereOnOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for AntiVersorEvenOnOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for AntiVersorEvenOnOrigin {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        2        0        0
+    //    simd2        2        0        0
+    // Totals...
+    // yes simd        4        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
-                self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
-            ]),
+            Simd32x2::from([self[e31] * self[e31] + self[e12] * self[e12], self[e42] * self[e42] + self[e43] * self[e43]])
+                + Simd32x2::powi(self.group0().wx(), 2)
+                + Simd32x2::powi(self.group1().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -414,12 +361,6 @@ impl RoundNorm for AntiVersorEvenOnOrigin {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for Circle {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for Circle {
@@ -454,12 +395,6 @@ impl RoundNorm for Circle {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for CircleOrthogonalOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for CircleOrthogonalOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -492,12 +427,6 @@ impl RoundNorm for CircleOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for CircleRotor {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for CircleRotor {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -528,12 +457,6 @@ impl RoundNorm for CircleRotor {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for Dipole {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for Dipole {
@@ -571,12 +494,6 @@ impl RoundNorm for Dipole {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for DipoleInversion {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for DipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -610,12 +527,6 @@ impl RoundNorm for DipoleInversion {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for DipoleInversionOrthogonalOrigin {
@@ -653,12 +564,6 @@ impl RoundNorm for DipoleInversionOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for DipoleOrthogonalOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for DipoleOrthogonalOrigin {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div
@@ -694,51 +599,34 @@ impl RoundNorm for DipoleOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for MultiVector {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
-impl std::ops::DivAssign<RoundNormPrefixOrPostfix> for MultiVector {
-    fn div_assign(&mut self, _rhs: RoundNormPrefixOrPostfix) {
-        *self = self.round_norm()
-    }
-}
 impl RoundNorm for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       15        0        0
-    //    simd2        0        1        0
-    //    simd4        0        1        0
+    //      f32       12        0        0
+    //    simd2        1        0        0
     // Totals...
-    // yes simd       15        2        0
-    //  no simd       15        6        0
+    // yes simd       13        0        0
+    //  no simd       14        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
-        let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
-        let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[scalar] * self[scalar]
-                    + self[e1] * self[e1]
                     + self[e2] * self[e2]
                     + self[e3] * self[e3]
                     + self[e23] * self[e23]
                     + self[e31] * self[e31]
                     + self[e12] * self[e12]
                     + self[e321] * self[e321],
-                wedge_g0[1] * wedge_g0[1]
-                    + wedge_g9[1] * wedge_g9[1]
-                    + wedge_g9[2] * wedge_g9[2]
-                    + wedge_g9[3] * wedge_g9[3]
-                    + self[e4] * self[e4]
-                    + self[e41] * self[e41]
+                self[e41] * self[e41]
                     + self[e42] * self[e42]
                     + self[e43] * self[e43]
-                    - wedge_g0[0] * wedge_g0[0],
-            ]),
+                    + self[e423] * self[e423]
+                    + self[e431] * self[e431]
+                    + self[e412] * self[e412]
+                    + self[e1234] * self[e1234],
+            ]) + Simd32x2::powi(self.group1().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -760,12 +648,6 @@ impl RoundNorm for MultiVector {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for RoundPoint {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for RoundPoint {
@@ -800,24 +682,22 @@ impl RoundNorm for RoundPoint {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorEven {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for VersorEven {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        4        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        5        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
-                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4],
-            ]),
+                self[e321] * self[e321] + self[e2] * self[e2] + self[e3] * self[e3],
+                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412],
+            ]) + Simd32x2::powi(self.group3().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -839,26 +719,23 @@ impl RoundNorm for VersorEven {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for VersorEvenOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        2        0        0
+    //    simd2        2        0        0
+    // Totals...
+    // yes simd        4        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([
-                self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3],
-                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4],
-            ]),
+            Simd32x2::from([self[e2] * self[e2] + self[e3] * self[e3], self[e431] * self[e431] + self[e412] * self[e412]])
+                + Simd32x2::powi(self.group0().wx(), 2)
+                + Simd32x2::powi(self.group2().xw(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -880,26 +757,24 @@ impl RoundNorm for VersorEvenOrthogonalOrigin {
             // e3215
             0.0,
         )
-    }
-}
-impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorOdd {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
     }
 }
 impl RoundNorm for VersorOdd {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        4        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        5        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
-                self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
-            ]),
+                self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
+                self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
+            ]) + Simd32x2::powi(self.group0().wx(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
@@ -923,24 +798,22 @@ impl RoundNorm for VersorOdd {
         )
     }
 }
-impl std::ops::Div<RoundNormPrefixOrPostfix> for VersorOddOrthogonalOrigin {
-    type Output = MultiVector;
-    fn div(self, _rhs: RoundNormPrefixOrPostfix) -> Self::Output {
-        self.round_norm()
-    }
-}
 impl RoundNorm for VersorOddOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        6        0        0
+    //           add/sub      mul      div
+    //      f32        4        0        0
+    //    simd2        1        0        0
+    // Totals...
+    // yes simd        5        0        0
+    //  no simd        6        0        0
     fn round_norm(self) -> MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
-                self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
-            ]),
+                self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
+                self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234],
+            ]) + Simd32x2::powi(self.group0().wx(), 2),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5

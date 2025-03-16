@@ -1666,7 +1666,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(circle.group2.xyz, circle.e321)
+            float4(circle.e235, circle.e315, circle.e125, circle.e321)
         );
     }
 }
@@ -1704,7 +1704,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(circle.group2.xyz, circle.e321), 
+            float4(circle.e235, circle.e315, circle.e125, circle.e321), 
             /* e1, e2, e3, e5 */
             float4(0.0)
         );
@@ -2180,7 +2180,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(dipole.group2.xyz, dipole.e45)
+            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45)
         );
     }
 }
@@ -2218,7 +2218,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(dipole.group2.xyz, dipole.e45), 
+            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45), 
             /* e4235, e4315, e4125, e3215 */
             float4(0.0)
         );
@@ -3596,7 +3596,7 @@ public extension AntiCircleRotor {
             /* e41, e42, e43 */
             multi_vector.group4.xyz, 
             /* e23, e31, e12, e45 */
-            float4(multi_vector.group5.xyz, multi_vector.e45), 
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.e45), 
             /* e15, e25, e35, scalar */
             float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.scalar)
         );
@@ -3684,7 +3684,7 @@ public extension AntiDipoleInversion {
             /* e415, e425, e435, e321 */
             multi_vector.group6, 
             /* e235, e315, e125, e4 */
-            float4(multi_vector.group8.xyz, multi_vector.e4), 
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e4), 
             /* e1, e2, e3, e5 */
             float4(multi_vector.e1, multi_vector.e2, multi_vector.e3, multi_vector.e5)
         );
@@ -3946,7 +3946,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(multi_vector.group8.xyz, multi_vector.e321)
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e321)
         );
     }
 }
@@ -4056,7 +4056,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(multi_vector.group8.xyz, multi_vector.e321), 
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e321), 
             /* e1, e2, e3, e5 */
             float4(multi_vector.e1, multi_vector.e2, multi_vector.e3, multi_vector.e5)
         );
@@ -4288,7 +4288,7 @@ public extension AntiMotor {
         }
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(multi_vector.group5.xyz, multi_vector.scalar), 
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.scalar), 
             /* e15, e25, e35, e3215 */
             float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e3215)
         );
@@ -4762,7 +4762,7 @@ public extension CircleRotor {
             /* e415, e425, e435, e321 */
             multi_vector.group6, 
             /* e235, e315, e125, e12345 */
-            float4(multi_vector.group8.xyz, multi_vector.e12345)
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e12345)
         );
     }
 }
@@ -4866,7 +4866,7 @@ public extension Dipole {
             /* e41, e42, e43 */
             multi_vector.group4.xyz, 
             /* e23, e31, e12, e45 */
-            float4(multi_vector.group5.xyz, multi_vector.e45), 
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.e45), 
             /* e15, e25, e35 */
             multi_vector.group3.xyz
         );
@@ -4952,7 +4952,7 @@ public extension DipoleInversion {
             /* e41, e42, e43 */
             multi_vector.group4.xyz, 
             /* e23, e31, e12, e45 */
-            float4(multi_vector.group5.xyz, multi_vector.e45), 
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.e45), 
             /* e15, e25, e35, e1234 */
             float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e1234), 
             /* e4235, e4315, e4125, e3215 */
@@ -5560,7 +5560,7 @@ public extension Motor {
             /* e415, e425, e435, e12345 */
             float4(multi_vector.e415, multi_vector.e425, multi_vector.e435, multi_vector.e12345), 
             /* e235, e315, e125, e5 */
-            float4(multi_vector.group8.xyz, multi_vector.e5)
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e5)
         );
     }
 }
@@ -6150,11 +6150,11 @@ public extension VersorEven {
         }
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(multi_vector.group7.xyz, multi_vector.e12345), 
+            float4(multi_vector.e423, multi_vector.e431, multi_vector.e412, multi_vector.e12345), 
             /* e415, e425, e435, e321 */
             multi_vector.group6, 
             /* e235, e315, e125, e5 */
-            float4(multi_vector.group8.xyz, multi_vector.e5), 
+            float4(multi_vector.e235, multi_vector.e315, multi_vector.e125, multi_vector.e5), 
             /* e1, e2, e3, e4 */
             multi_vector.group1
         );
@@ -6234,9 +6234,9 @@ public extension VersorOdd {
         }
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(multi_vector.group4.xyz, multi_vector.scalar), 
+            float4(multi_vector.e41, multi_vector.e42, multi_vector.e43, multi_vector.scalar), 
             /* e23, e31, e12, e45 */
-            float4(multi_vector.group5.xyz, multi_vector.e45), 
+            float4(multi_vector.e23, multi_vector.e31, multi_vector.e12, multi_vector.e45), 
             /* e15, e25, e35, e1234 */
             float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e1234), 
             /* e4235, e4315, e4125, e3215 */

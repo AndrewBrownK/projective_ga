@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 9
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       3       0
-//  Average:         1       3       0
+//  Average:         1       2       0
 //  Maximum:         7       8       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       8       0
-//  Average:         1       9       0
-//  Maximum:         7      26       1
+//  Average:         2       7       0
+//  Maximum:         8      19       1
 impl std::ops::Div<InversePrefixOrPostfix> for DualNum {
     type Output = DualNum;
     fn div(self, _rhs: InversePrefixOrPostfix) -> Self::Output {
@@ -31,12 +31,11 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for DualNum {
 }
 impl Inverse for DualNum {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //      add/sub      mul      div
+    // f32        0        0        1
     fn inverse(self) -> Self {
         use crate::elements::*;
-        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(f32::powi(self[scalar], -2)) * self.group0())
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([1.0 / self[scalar], self[e1234] / (self[scalar] * self[scalar])]))
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Flector {
@@ -53,11 +52,11 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for Flector {
 impl Inverse for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //      f32        3        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        3        3        0
-    //  no simd        3       12        0
+    //  no simd        3        9        0
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3] + self[e321] * self[e321];
@@ -65,7 +64,7 @@ impl Inverse for Flector {
             // e1, e2, e3, e4
             Simd32x4::from(other_g0) * self.group0(),
             // e423, e431, e412, e321
-            Simd32x4::from(other_g0) * self.group1() * Simd32x4::from(-1.0),
+            Simd32x4::from(other_g0 * -1.0) * self.group1(),
         )
     }
 }
@@ -86,7 +85,7 @@ impl Inverse for Horizon {
     // f32        0        1        1
     fn inverse(self) -> Self {
         use crate::elements::*;
-        Horizon::from_groups(/* e321 */ 1.0 / self[e321] * -1.0)
+        Horizon::from_groups(/* e321 */ -1.0 / self[e321])
     }
 }
 impl std::ops::Div<InversePrefixOrPostfix> for Line {
@@ -103,19 +102,19 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for Line {
 impl Inverse for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        4        0
+    //      f32        2        2        0
+    //    simd3        0        2        0
     // Totals...
     // yes simd        2        4        0
-    //  no simd        2       12        0
+    //  no simd        2        8        0
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12];
         Line::from_groups(
             // e41, e42, e43
-            Simd32x3::from(other_g0) * self.group0() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(other_g0) * self.group1() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group1(),
         )
     }
 }
@@ -163,13 +162,13 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for MultiVector {
 impl Inverse for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        7        0        0
+    //      f32        7        3        0
     //    simd2        0        1        0
-    //    simd3        0        4        0
-    //    simd4        0        3        0
+    //    simd3        0        2        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        7        8        0
-    //  no simd        7       26        0
+    //  no simd        7       19        0
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[scalar] * self[scalar]
@@ -186,11 +185,11 @@ impl Inverse for MultiVector {
             // e1, e2, e3, e4
             Simd32x4::from(other_g0) * self.group1(),
             // e41, e42, e43
-            Simd32x3::from(other_g0) * self.group2() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group2(),
             // e23, e31, e12
-            Simd32x3::from(other_g0) * self.group3() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group3(),
             // e423, e431, e412, e321
-            Simd32x4::from(other_g0) * self.group4() * Simd32x4::from(-1.0),
+            Simd32x4::from(other_g0 * -1.0) * self.group4(),
         )
     }
 }
@@ -208,16 +207,21 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for Plane {
 impl Inverse for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        4        0
+    //      f32        0        0        1
     //    simd4        0        1        0
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0        8        0
+    // yes simd        0        1        1
+    //  no simd        0        4        1
     fn inverse(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(f32::powi(self[e321], -2)) * Simd32x4::from([self[e423] * -1.0, self[e431] * -1.0, self[e412] * -1.0, self[e321] * -1.0]),
+            Simd32x4::from([
+                self[e423] / (self[e321] * self[e321]),
+                self[e431] / (self[e321] * self[e321]),
+                self[e412] / (self[e321] * self[e321]),
+                1.0 / self[e321],
+            ]) * Simd32x4::from(-1.0),
         )
     }
 }
@@ -235,16 +239,18 @@ impl std::ops::DivAssign<InversePrefixOrPostfix> for Point {
 impl Inverse for Point {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
+    //      f32        0        1        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    // yes simd        2        3        0
+    //  no simd        8        9        0
     fn inverse(self) -> Self {
         use crate::elements::*;
         Point::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
+            Simd32x4::from([f32::powi(self[e1], 3), f32::powi(self[e2], 3), f32::powi(self[e3], 3), self[e3] * self[e3] * self[e4]])
+                + (Simd32x4::powi(self.group0().yxxx(), 2) * self.group0())
+                + (Simd32x4::powi(self.group0().zzyy(), 2) * self.group0()),
         )
     }
 }

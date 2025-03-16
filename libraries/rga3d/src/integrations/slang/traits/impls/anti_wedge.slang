@@ -481,7 +481,7 @@ public extension Horizon {
             /* e41, e42, e43, e1234 */
             float4(0.0), 
             /* e23, e31, e12, scalar */
-            float4(this.e321) * float4(other.group1.xyz, other.e4) * float4(-1.0)
+            float4(this.e321 * -1.0) * float4(other.group1.xyz, other.e4)
         );
     }
 }
@@ -519,13 +519,13 @@ public extension Horizon {
     public MultiVector anti_wedge(MultiVector other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2(this.e321 * other.e4, 1.0) * float2(-1.0, 0.0), 
+            float2(this.e321 * other.e4, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4((float3(this.e321) * other.group2.xyz), 0.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
-            float3(this.e321) * other.group4.xyz * float3(-1.0), 
+            float3(this.e321 * -1.0) * other.group4.xyz, 
             /* e423, e431, e412, e321 */
             float4(float3(0.0), this.e321 * other.e1234)
         );
@@ -553,7 +553,7 @@ public extension Horizon {
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
-            float3(this.e321) * other.group0.xyz * float3(-1.0)
+            float3(this.e321 * -1.0) * other.group0.xyz
         );
     }
 }
@@ -645,9 +645,9 @@ public extension Line {
     public Motor anti_wedge(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((this.group0.xyz * other.group0.www), 0.0), 
+            float4((float3(other.e1234) * this.group0.xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4((float3(other.e1234) * this.group1.xyz), -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43))
+            float4(other.e1234, other.e1234, other.e1234, -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) * float4(this.group1.xyz, 1.0)
         );
     }
 }
@@ -751,9 +751,9 @@ public extension Motor {
     public Motor anti_wedge(Line other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((other.group0.xyz * this.group0.www), 0.0), 
+            float4((float3(this.e1234) * other.group0.xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4((float3(this.e1234) * other.group1.xyz), -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43))
+            float4(this.e1234, this.e1234, this.e1234, -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) * float4(other.group1.xyz, 1.0)
         );
     }
 }
@@ -913,7 +913,7 @@ public extension MultiVector {
     public MultiVector anti_wedge(Horizon other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2(other.e321 * this.e4, 1.0) * float2(1.0, 0.0), 
+            float2(other.e321 * this.e4, 0.0), 
             /* e1, e2, e3, e4 */
             float4((float3(other.e321) * this.group2.xyz), 0.0), 
             /* e41, e42, e43 */
@@ -993,7 +993,7 @@ public extension MultiVector {
     public MultiVector anti_wedge(Origin other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2(this.e321 * other.e4, 1.0) * float2(-1.0, 0.0), 
+            float2(this.e321 * other.e4, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(float3(0.0), this.e1234 * other.e4), 
             /* e41, e42, e43 */
@@ -1129,7 +1129,7 @@ public extension Origin {
     public MultiVector anti_wedge(MultiVector other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2(other.e321 * this.e4, 1.0) * float2(1.0, 0.0), 
+            float2(other.e321 * this.e4, 0.0), 
             /* e1, e2, e3, e4 */
             float4(float3(0.0), other.e1234 * this.e4), 
             /* e41, e42, e43 */

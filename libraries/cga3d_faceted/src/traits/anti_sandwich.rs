@@ -8,14 +8,4 @@ pub trait AntiSandwich<T> {
     type Output;
     fn anti_sandwich(self, other: T) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static anti_sandwich: AntiSandwichInfix = AntiSandwichInfix;
-pub struct AntiSandwichInfix;
-pub struct AntiSandwichInfixPartial<A>(A);
-impl<A: AntiSandwich<B>, B> std::ops::Div<B> for AntiSandwichInfixPartial<A> {
-    type Output = <A as AntiSandwich<B>>::Output;
-    fn div(self, rhs: B) -> Self::Output {
-        self.0.anti_sandwich(rhs)
-    }
-}
 include!("./impls/anti_sandwich.rs");

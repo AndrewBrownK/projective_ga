@@ -107,7 +107,7 @@ public float operator /(UnitizedRadiusNormSquaredPrefixOrPostfix lhs, RoundPoint
 }
 public extension RoundPoint {
     public float unitized_radius_norm_squared() {
-        return (this.e1 * this.e1 * pow(this.e4, -2)) + (this.e2 * this.e2 * pow(this.e4, -2)) + (this.e3 * this.e3 * pow(this.e4, -2)) - 2.0 * (this.e5 / (this.e4));
+        return (this.e1 * this.e1 /  (this.e4 * this.e4)) + (this.e2 * this.e2 /  (this.e4 * this.e4)) + (this.e3 * this.e3 /  (this.e4 * this.e4)) - 2.0 * (this.e5 / this.e4);
     }
 }
 // Fancy postfix trick
@@ -120,7 +120,7 @@ public float operator /(UnitizedRadiusNormSquaredPrefixOrPostfix lhs, Sphere rhs
 }
 public extension Sphere {
     public float unitized_radius_norm_squared() {
-        return 2.0*(this.e3215 / (this.e1234)) - (this.e4235 * this.e4235 * pow(this.e1234, -2)) - (this.e4315 * this.e4315 * pow(this.e1234, -2)) - (this.e4125 * this.e4125 * pow(this.e1234, -2));
+        return 2.0*(this.e3215 / this.e1234) - (this.e4235 * this.e4235 /  (this.e1234 * this.e1234)) - (this.e4315 * this.e4315 /  (this.e1234 * this.e1234)) - (this.e4125 * this.e4125 /  (this.e1234 * this.e1234));
     }
 }
 // Fancy postfix trick

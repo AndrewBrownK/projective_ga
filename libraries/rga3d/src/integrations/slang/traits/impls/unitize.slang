@@ -27,7 +27,7 @@ public extension DualNum {
     public DualNum unitize() {
         return DualNum(
             /* scalar, e1234 */
-            float2(1.0/this.e1234) * this.group0.xy
+            float2(this.scalar / this.e1234, 1.0)
         );
     }
 }
@@ -141,7 +141,7 @@ public extension Plane {
     public Plane unitize() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412) * this.group0
+            float4(pow(this.e423, 3), pow(this.e431, 3), pow(this.e412, 3), this.e412 * this.e412 * this.e321) + (float4_pow(this.group0.yxxx, 2) * this.group0) + (float4_pow(this.group0.zzyy, 2) * this.group0)
         );
     }
 }
@@ -157,7 +157,7 @@ public extension Point {
     public Point unitize() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(1.0/this.e4) * this.group0
+            float4((this.group0.xyz / this.group0.www), 1.0)
         );
     }
 }

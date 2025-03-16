@@ -35,7 +35,7 @@ public extension AntiDipoleInversion {
             /* e415, e425, e435, e321 */
             this.group1, 
             /* e235, e315, e125, e4 */
-            this.group2 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group2.xyz, this.e4 * -1.0), 
             /* e1, e2, e3, e5 */
             this.group3 * float4(-1.0)
         );
@@ -182,7 +182,7 @@ public extension CircleRotor {
             /* e415, e425, e435, e321 */
             this.group1, 
             /* e235, e315, e125, e12345 */
-            this.group2 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group2.xyz, this.e12345 * -1.0)
         );
     }
 }
@@ -303,9 +303,9 @@ public extension Motor {
     public Motor conjugation() {
         return Motor(
             /* e415, e425, e435, e12345 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e12345 * -1.0), 
             /* e235, e315, e125, e5 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group1.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -414,11 +414,11 @@ public extension VersorEven {
     public VersorEven conjugation() {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e12345 * -1.0), 
             /* e415, e425, e435, e321 */
             this.group1, 
             /* e235, e315, e125, e5 */
-            this.group2 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group2.xyz, this.e5 * -1.0), 
             /* e1, e2, e3, e4 */
             this.group3 * float4(-1.0)
         );

@@ -33,9 +33,9 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz + other.group1.xyz), other.e321), 
+            other.group1 + float4(this.group0.xyz, 0.0), 
             /* e235, e315, e125, e4 */
-            float4((this.group1.xyz + other.group2.xyz), other.e4), 
+            other.group2 + float4(this.group1.xyz, 0.0), 
             /* e1, e2, e3, e5 */
             other.group3
         );
@@ -181,7 +181,7 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz + other.group1.xyz), other.e321), 
+            other.group1 + float4(this.group0.xyz, 0.0), 
             /* e235, e315, e125 */
             other.group2.xyz + this.group1.xyz
         );
@@ -193,9 +193,9 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz + other.group1.xyz), other.e321), 
+            other.group1 + float4(this.group0.xyz, 0.0), 
             /* e235, e315, e125, e12345 */
-            float4((this.group1.xyz + other.group2.xyz), other.e12345)
+            other.group2 + float4(this.group1.xyz, 0.0)
         );
     }
 }
@@ -209,7 +209,7 @@ public extension Line {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.group2.xyz, other.e45), 
+            float4(other.e15, other.e25, other.e35, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -335,9 +335,9 @@ public extension Line {
     public Motor operator +(Motor other) {
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((this.group0.xyz + other.group0.xyz), other.e12345), 
+            other.group0 + float4(this.group0.xyz, 0.0), 
             /* e235, e315, e125, e5 */
-            float4((this.group1.xyz + other.group1.xyz), other.e5)
+            other.group1 + float4(this.group1.xyz, 0.0)
         );
     }
 }
@@ -357,7 +357,7 @@ public extension Line {
             /* e23, e31, e12 */
             other.group5.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz + other.group6.xyz), other.e321), 
+            other.group6 + float4(this.group0.xyz, 0.0), 
             /* e423, e431, e412 */
             other.group7.xyz, 
             /* e235, e315, e125 */
@@ -473,9 +473,9 @@ public extension Line {
             /* e423, e431, e412, e12345 */
             other.group0, 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz + other.group1.xyz), other.e321), 
+            other.group1 + float4(this.group0.xyz, 0.0), 
             /* e235, e315, e125, e5 */
-            float4((this.group1.xyz + other.group2.xyz), other.e5), 
+            other.group2 + float4(this.group1.xyz, 0.0), 
             /* e1, e2, e3, e4 */
             other.group3
         );
@@ -507,6 +507,136 @@ public extension Line {
             /* e1234 */
             other.e1234
         );
+    }
+}
+// Fancy infix trick (first half)
+public BitXorInfixPartial<Line> operator /(Line lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<Line>(lhs);
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<Line> lhs, AntiCircleRotor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Motor bit_xor(AntiCircleRotor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, AntiDipoleInversion rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(AntiDipoleInversion other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<Line> lhs, AntiDualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Line bit_xor(AntiDualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, AntiFlector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(AntiFlector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<Line> lhs, AntiLine rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public AntiScalar bit_xor(AntiLine other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<Line> lhs, AntiMotor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Motor bit_xor(AntiMotor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, AntiPlane rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(AntiPlane other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<Line> lhs, Dipole rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public AntiScalar bit_xor(Dipole other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<Line> lhs, DipoleInversion rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public AntiScalar bit_xor(DipoleInversion other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<Line> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public MultiVector bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, RoundPoint rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(RoundPoint other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<Line> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Line bit_xor(Scalar other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, VersorEven rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(VersorEven other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<Line> lhs, VersorOdd rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Motor bit_xor(VersorOdd other) {
+        return this.wedge(other);
     }
 }
 public extension Line {
@@ -653,13 +783,13 @@ public extension Line {
     public MultiVector operator -(AntiCircleRotor other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 1.0) * float2(-1.0, 0.0), 
+            float2(other.scalar, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.group2.xyz, other.e45) * float4(-1.0), 
+            float4((other.group2.xyz * float3(-1.0)), other.e45 * -1.0), 
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */
@@ -683,9 +813,9 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz - other.group1.xyz), other.e321) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group1.xyz), other.e321 * -1.0), 
             /* e235, e315, e125, e4 */
-            float4((this.group1.xyz - other.group2.xyz), other.e4) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group1.xyz - other.group2.xyz), other.e4 * -1.0), 
             /* e1, e2, e3, e5 */
             other.group3 * float4(-1.0)
         );
@@ -695,7 +825,7 @@ public extension Line {
     public MultiVector operator -(AntiDualNum other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 1.0) * float2(-1.0, 0.0), 
+            float2(other.scalar, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -713,7 +843,7 @@ public extension Line {
             /* e235, e315, e125 */
             this.group1.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e3215 * -1.0), 
             /* e1234 */
             0.0
         );
@@ -777,7 +907,7 @@ public extension Line {
     public MultiVector operator -(AntiMotor other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 1.0) * float2(-1.0, 0.0), 
+            float2(other.scalar, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -795,7 +925,7 @@ public extension Line {
             /* e235, e315, e125 */
             this.group1.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e3215 * -1.0), 
             /* e1234 */
             0.0
         );
@@ -831,7 +961,7 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz - other.group1.xyz), other.e321) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group1.xyz), other.e321 * -1.0), 
             /* e235, e315, e125 */
             this.group1.xyz - other.group2.xyz
         );
@@ -843,9 +973,9 @@ public extension Line {
             /* e423, e431, e412 */
             other.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz - other.group1.xyz), other.e321) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group1.xyz), other.e321 * -1.0), 
             /* e235, e315, e125, e12345 */
-            float4((this.group1.xyz - other.group2.xyz), other.e12345) * float4(1.0, 1.0, 1.0, -1.0)
+            float4((this.group1.xyz - other.group2.xyz), other.e12345 * -1.0)
         );
     }
 }
@@ -859,7 +989,7 @@ public extension Line {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.group2.xyz, other.e45) * float4(-1.0), 
+            float4((other.group2.xyz * float3(-1.0)), other.e45 * -1.0), 
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */
@@ -887,7 +1017,7 @@ public extension Line {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.group2.xyz, other.e45) * float4(-1.0), 
+            float4((other.group2.xyz * float3(-1.0)), other.e45 * -1.0), 
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */
@@ -985,9 +1115,9 @@ public extension Line {
     public Motor operator -(Motor other) {
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4((this.group0.xyz - other.group0.xyz), other.e12345) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group0.xyz), other.e12345 * -1.0), 
             /* e235, e315, e125, e5 */
-            float4((this.group1.xyz - other.group1.xyz), other.e5) * float4(1.0, 1.0, 1.0, -1.0)
+            float4((this.group1.xyz - other.group1.xyz), other.e5 * -1.0)
         );
     }
 }
@@ -1007,7 +1137,7 @@ public extension Line {
             /* e23, e31, e12 */
             other.group5.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz - other.group6.xyz), other.e321) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group6.xyz), other.e321 * -1.0), 
             /* e423, e431, e412 */
             other.group7.xyz * float3(-1.0), 
             /* e235, e315, e125 */
@@ -1057,7 +1187,7 @@ public extension Line {
             /* e235, e315, e125, e4 */
             float4(this.group1.xyz, other.e4 * -1.0), 
             /* e1, e2, e3, e5 */
-            float4(other.group0.xyz, other.e5) * float4(-1.0)
+            float4((other.group0.xyz * float3(-1.0)), other.e5 * -1.0)
         );
     }
 }
@@ -1065,7 +1195,7 @@ public extension Line {
     public MultiVector operator -(Scalar other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 1.0) * float2(-1.0, 0.0), 
+            float2(other.scalar, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -1123,9 +1253,9 @@ public extension Line {
             /* e423, e431, e412, e12345 */
             other.group0 * float4(-1.0), 
             /* e415, e425, e435, e321 */
-            float4((this.group0.xyz - other.group1.xyz), other.e321) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group1.xyz), other.e321 * -1.0), 
             /* e235, e315, e125, e5 */
-            float4((this.group1.xyz - other.group2.xyz), other.e5) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group1.xyz - other.group2.xyz), other.e5 * -1.0), 
             /* e1, e2, e3, e4 */
             other.group3 * float4(-1.0)
         );
@@ -1135,13 +1265,13 @@ public extension Line {
     public MultiVector operator -(VersorOdd other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 1.0) * float2(-1.0, 0.0), 
+            float2(other.scalar, 0.0) * float2(-1.0, 0.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.group2.xyz, other.e45) * float4(-1.0), 
+            float4((other.group2.xyz * float3(-1.0)), other.e45 * -1.0), 
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12 */

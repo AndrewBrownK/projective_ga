@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 24
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         2       5       0
+//  Average:         0       0       0
+//  Maximum:         0       4       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         0       5       0
-//  Maximum:         8      17       0
+//   Median:         0       1       0
+//  Average:         0       1       0
+//  Maximum:         0       9       0
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiCircleRotor {
     type Output = Sphere;
     fn div(self, _rhs: SupportPrefixOrPostfix) -> Self::Output {
@@ -26,18 +26,9 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiCircleRotor {
 }
 impl Support for AntiCircleRotor {
     type Output = Sphere;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        Sphere::from_groups(
-            // e4235, e4315, e4125, e3215
-            (self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(0.0),
-            // e1234
-            self[e45],
-        )
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group2().xyz().with_w(0.0), /* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiDipoleInversion {
@@ -49,19 +40,15 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiDipoleInversion {
 impl Support for AntiDipoleInversion {
     type Output = CircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
-    // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
         CircleRotor::from_groups(
             // e423, e431, e412
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
+            self.group1().xyz(),
             // e415, e425, e435, e321
-            (self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(0.0),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(self[e5] * -1.0),
         )
@@ -88,17 +75,8 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlatPoint {
 }
 impl Support for AntiFlatPoint {
     type Output = Line;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
-        Line::from_groups(
-            // e415, e425, e435
-            (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
-            // e235, e315, e125
-            Simd32x3::from(0.0),
-        )
+        Line::from_groups(/* e415, e425, e435 */ self.group0().xyz(), /* e235, e315, e125 */ Simd32x3::from(0.0))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlector {
@@ -110,15 +88,13 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlector {
 impl Support for AntiFlector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g1 = self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
+        use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            (Simd32x3::from(0.0).with_w(1.0).wwwx() * (self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(right_anti_dual_g1[0]))
-                + Simd32x3::from(0.0).with_w(right_anti_dual_g1[3]),
+            self.group0().xyz().with_w(self[e5] * -1.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
         )
@@ -148,17 +124,13 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiMotor {
 }
 impl Support for AntiMotor {
     type Output = Flector;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
+        use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x3::from(0.0).with_w(right_anti_dual_g1[3]),
+            Simd32x3::from(0.0).with_w(self[e3215]),
             // e4235, e4315, e4125, e3215
-            right_anti_dual_g1.xyz().with_w(0.0),
+            self.group1().xyz().with_w(0.0),
         )
     }
 }
@@ -207,14 +179,10 @@ impl std::ops::DivAssign<SupportPrefixOrPostfix> for Circle {
 }
 impl Support for Circle {
     type Output = Circle;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
         Circle::from_groups(
             // e423, e431, e412
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
+            self.group1().xyz(),
             // e415, e425, e435, e321
             self.group2().with_w(0.0),
             // e235, e315, e125
@@ -231,18 +199,17 @@ impl std::ops::Div<SupportPrefixOrPostfix> for CircleRotor {
 impl Support for CircleRotor {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g2 = self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
+        use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
+            self.group1().xyz(),
             // e415, e425, e435, e321
-            right_anti_dual_g2.xyz().with_w(0.0),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e4
-            Simd32x3::from(0.0).with_w(right_anti_dual_g2[3]),
+            Simd32x3::from(0.0).with_w(self[e12345] * -1.0),
             // e1, e2, e3, e5
             Simd32x4::from(0.0),
         )
@@ -278,22 +245,17 @@ impl std::ops::DivAssign<SupportPrefixOrPostfix> for DipoleInversion {
 }
 impl Support for DipoleInversion {
     type Output = DipoleInversion;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        let right_anti_dual_g3 = self.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         DipoleInversion::from_groups(
             // e41, e42, e43
-            right_anti_dual_g3.xyz(),
+            self.group3().xyz(),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(right_anti_dual_g3[3]),
+            Simd32x3::from(0.0).with_w(self[e3215]),
             // e15, e25, e35, e1234
             Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
-            (self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(0.0),
+            self.group2().xyz().with_w(0.0),
         )
     }
 }
@@ -305,21 +267,17 @@ impl std::ops::Div<SupportPrefixOrPostfix> for DualNum {
 }
 impl Support for DualNum {
     type Output = VersorEven;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x2::from(-1.0);
+        use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[0]),
+            Simd32x3::from(0.0).with_w(self[e5]),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[1]),
+            Simd32x3::from(0.0).with_w(self[e12345]),
         )
     }
 }
@@ -331,13 +289,9 @@ impl std::ops::Div<SupportPrefixOrPostfix> for FlatPoint {
 }
 impl Support for FlatPoint {
     type Output = Sphere;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ right_anti_dual_g0.xyz().with_w(0.0), /* e1234 */ right_anti_dual_g0[3])
+        use crate::elements::*;
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(0.0), /* e1234 */ self[e45])
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for Flector {
@@ -348,22 +302,17 @@ impl std::ops::Div<SupportPrefixOrPostfix> for Flector {
 }
 impl Support for Flector {
     type Output = DipoleInversion;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
-        let right_anti_dual_g1 = self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
+        use crate::elements::*;
         DipoleInversion::from_groups(
             // e41, e42, e43
-            right_anti_dual_g1.xyz(),
+            self.group1().xyz(),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(right_anti_dual_g1[3]),
+            Simd32x3::from(0.0).with_w(self[e3215]),
             // e15, e25, e35, e1234
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[3]),
+            Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
-            right_anti_dual_g0.xyz().with_w(0.0),
+            self.group0().xyz().with_w(0.0),
         )
     }
 }
@@ -395,21 +344,19 @@ impl std::ops::Div<SupportPrefixOrPostfix> for Motor {
 impl Support for Motor {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
-        let right_anti_dual_g1 = self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
+        use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            right_anti_dual_g0.xyz().with_w(right_anti_dual_g1[3]),
+            self.group0().xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435, e321
-            right_anti_dual_g1.xyz().with_w(0.0),
+            self.group1().xyz().with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[3]),
+            Simd32x3::from(0.0).with_w(self[e12345] * -1.0),
         )
     }
 }
@@ -428,9 +375,9 @@ impl Support for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //      f32        0        1        0
+    //    simd2        0        1        0
+    //    simd3        0        2        0
     // Totals...
     // yes simd        0        4        0
     //  no simd        0        9        0
@@ -438,7 +385,7 @@ impl Support for MultiVector {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([0.0, self[e5] * -1.0]),
+            Simd32x2::from([0.0, self[e5]]) * Simd32x2::from([0.0, -1.0]),
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(self.group0().yx()[0] * -1.0),
             // e5
@@ -446,7 +393,7 @@ impl Support for MultiVector {
             // e15, e25, e35, e45
             Simd32x3::from(0.0).with_w(self[e3215]),
             // e41, e42, e43
-            (self.group9().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz(),
+            self.group9().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e415, e425, e435, e321
@@ -470,17 +417,13 @@ impl std::ops::Div<SupportPrefixOrPostfix> for Plane {
 }
 impl Support for Plane {
     type Output = Dipole;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn support(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
+        use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
-            right_anti_dual_g0.xyz(),
+            self.group0().xyz(),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[3]),
+            Simd32x3::from(0.0).with_w(self[e3215]),
             // e15, e25, e35
             Simd32x3::from(0.0),
         )
@@ -512,13 +455,13 @@ impl Support for Sphere {
     type Output = Dipole;
     // Operative Statistics for this implementation:
     //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //   simd3        0        1        0
+    // no simd        0        3        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
-            (self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz(),
+            self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
             Simd32x3::from(0.0).with_w(self[e3215]),
             // e15, e25, e35
@@ -540,22 +483,15 @@ impl std::ops::DivAssign<SupportPrefixOrPostfix> for VersorEven {
 impl Support for VersorEven {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        2        4        0
-    // Totals...
-    // yes simd        2        5        0
-    //  no simd        8       17        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        let right_anti_dual_g3 = self.group3().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            (Simd32x3::from(0.0).with_w(1.0).wwwy() * (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(right_anti_dual_g3[1]))
-                + Simd32x3::from(0.0).with_w(right_anti_dual_g3[0])
-                + Simd32x3::from(0.0).with_w(right_anti_dual_g3[3]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435, e321
-            (self.group2().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(0.0),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
@@ -573,20 +509,19 @@ impl Support for VersorOdd {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
     //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //   simd3        0        2        0
+    // no simd        0        6        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
-        let right_anti_dual_g2 = self.group2().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         DipoleInversion::from_groups(
             // e41, e42, e43
-            (self.group3().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz(),
+            self.group3().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(right_anti_dual_g2[3]),
+            Simd32x3::from(0.0).with_w(self[e3215]),
             // e15, e25, e35, e1234
             Simd32x3::from(0.0).with_w(self[e45]),
             // e4235, e4315, e4125, e3215
-            right_anti_dual_g2.xyz().with_w(0.0),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
         )
     }
 }

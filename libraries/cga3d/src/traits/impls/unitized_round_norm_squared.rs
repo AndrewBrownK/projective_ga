@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 10
 //
@@ -27,7 +27,7 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for AntiCircleRotor 
 impl UnitizedRoundNormSquared for AntiCircleRotor {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -39,7 +39,7 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for AntiDipoleInvers
 impl UnitizedRoundNormSquared for AntiDipoleInversion {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e321] * self[e321] * f32::powi(self[e4], 2)
+        self[e321] * self[e321] * self[e4] * self[e4]
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for Circle {
@@ -54,7 +54,7 @@ impl UnitizedRoundNormSquared for Circle {
     // f32        2        0        0
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e423] * self[e423] * f32::powi(self[e321], 2)) + (self[e431] * self[e431] * f32::powi(self[e321], 2)) + (self[e412] * self[e412] * f32::powi(self[e321], 2))
+        (self[e423] * self[e423] * self[e321] * self[e321]) + (self[e431] * self[e431] * self[e321] * self[e321]) + (self[e412] * self[e412] * self[e321] * self[e321])
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -69,7 +69,7 @@ impl UnitizedRoundNormSquared for CircleRotor {
     // f32        2        0        0
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e423] * self[e423] * f32::powi(self[e321], 2)) + (self[e431] * self[e431] * f32::powi(self[e321], 2)) + (self[e412] * self[e412] * f32::powi(self[e321], 2))
+        (self[e423] * self[e423] * self[e321] * self[e321]) + (self[e431] * self[e431] * self[e321] * self[e321]) + (self[e412] * self[e412] * self[e321] * self[e321])
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for Dipole {
@@ -81,7 +81,7 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for Dipole {
 impl UnitizedRoundNormSquared for Dipole {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -93,7 +93,7 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for DipoleInversion 
 impl UnitizedRoundNormSquared for DipoleInversion {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for MultiVector {
@@ -119,7 +119,7 @@ impl UnitizedRoundNormSquared for RoundPoint {
     // f32        2        0        0
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e1] * self[e1] * f32::powi(self[e4], -2)) + (self[e2] * self[e2] * f32::powi(self[e4], -2)) + (self[e3] * self[e3] * f32::powi(self[e4], -2))
+        (self[e1] * self[e1] / (self[e4] * self[e4])) + (self[e2] * self[e2] / (self[e4] * self[e4])) + (self[e3] * self[e3] / (self[e4] * self[e4]))
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for VersorEven {
@@ -131,7 +131,7 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for VersorEven {
 impl UnitizedRoundNormSquared for VersorEven {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e321] * self[e321] * f32::powi(self[e4], 2)
+        self[e321] * self[e321] * self[e4] * self[e4]
     }
 }
 impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -143,6 +143,6 @@ impl std::ops::Div<UnitizedRoundNormSquaredPrefixOrPostfix> for VersorOdd {
 impl UnitizedRoundNormSquared for VersorOdd {
     fn unitized_round_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }

@@ -65,9 +65,9 @@ public extension Line {
     public Motor operator +(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((this.group0.xyz + other.group0.xyz), other.e1234), 
+            other.group0 + float4(this.group0.xyz, 0.0), 
             /* e23, e31, e12, scalar */
-            float4((this.group1.xyz + other.group1.xyz), other.scalar)
+            other.group1 + float4(this.group1.xyz, 0.0)
         );
     }
 }
@@ -143,6 +143,82 @@ public extension Line {
             /* e23, e31, e12, scalar */
             float4(this.group1.xyz, other.scalar)
         );
+    }
+}
+// Fancy infix trick (first half)
+public BitXorInfixPartial<Line> operator /(Line lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<Line>(lhs);
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<Line> lhs, DualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Line bit_xor(DualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, Flector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(Flector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<Line> lhs, Line rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public AntiScalar bit_xor(Line other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<Line> lhs, Motor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Motor bit_xor(Motor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<Line> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public MultiVector bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, Origin rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(Origin other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<Line> lhs, Point rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Plane bit_xor(Point other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<Line> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension Line {
+    public Line bit_xor(Scalar other) {
+        return this.wedge(other);
     }
 }
 public extension Line {
@@ -263,7 +339,7 @@ public extension Line {
             /* e23, e31, e12 */
             this.group1.xyz, 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0)
+            float4(float3(0.0), other.e321 * -1.0)
         );
     }
 }
@@ -281,9 +357,9 @@ public extension Line {
     public Motor operator -(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((this.group0.xyz - other.group0.xyz), other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group0.xyz), other.e1234 * -1.0), 
             /* e23, e31, e12, scalar */
-            float4((this.group1.xyz - other.group1.xyz), other.scalar) * float4(1.0, 1.0, 1.0, -1.0)
+            float4((this.group1.xyz - other.group1.xyz), other.scalar * -1.0)
         );
     }
 }
@@ -309,7 +385,7 @@ public extension Line {
             /* scalar, e1234 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), other.e4) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e4 * -1.0), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */

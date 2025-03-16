@@ -11,7 +11,7 @@ public extension AntiScalar {
     public AntiScalar anti_inverse() {
         return AntiScalar(
             /* e1234 */
-            1.0/this.e1234
+            1.0 / this.e1234
         );
     }
 }
@@ -27,7 +27,7 @@ public extension DualNum {
     public DualNum anti_inverse() {
         return DualNum(
             /* scalar, e1234 */
-            float2(pow(this.e1234, -2)) * this.group0.xy
+            float2(this.scalar /  (this.e1234 * this.e1234), 1.0 / this.e1234)
         );
     }
 }
@@ -44,7 +44,7 @@ public extension Flector {
         float other_g0 = this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(other_g0) * this.group0 * float4(-1.0), 
+            float4(other_g0 * -1.0) * this.group0, 
             /* e423, e431, e412, e321 */
             float4(other_g0) * this.group1
         );
@@ -63,9 +63,9 @@ public extension Line {
         float other_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43;
         return Line(
             /* e41, e42, e43 */
-            float3(other_g0) * this.group0.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group0.xyz, 
             /* e23, e31, e12 */
-            float3(other_g0) * this.group1.xyz * float3(-1.0)
+            float3(other_g0 * -1.0) * this.group1.xyz
         );
     }
 }
@@ -103,11 +103,11 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(other_g0) * this.group0.xy, 
             /* e1, e2, e3, e4 */
-            float4(other_g0) * this.group1 * float4(-1.0), 
+            float4(other_g0 * -1.0) * this.group1, 
             /* e41, e42, e43 */
-            float3(other_g0) * this.group2.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group2.xyz, 
             /* e23, e31, e12 */
-            float3(other_g0) * this.group3.xyz * float3(-1.0), 
+            float3(other_g0 * -1.0) * this.group3.xyz, 
             /* e423, e431, e412, e321 */
             float4(other_g0) * this.group4
         );
@@ -125,7 +125,7 @@ public extension Origin {
     public Origin anti_inverse() {
         return Origin(
             /* e4 */
-            1.0/this.e4 * -1.0
+            -1.0 / this.e4
         );
     }
 }
@@ -141,7 +141,7 @@ public extension Plane {
     public Plane anti_inverse() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412) * this.group0
+            float4(pow(this.e423, 3), pow(this.e431, 3), pow(this.e412, 3), this.e412 * this.e412 * this.e321) + (float4_pow(this.group0.yxxx, 2) * this.group0) + (float4_pow(this.group0.zzyy, 2) * this.group0)
         );
     }
 }
@@ -157,7 +157,7 @@ public extension Point {
     public Point anti_inverse() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(pow(this.e4, -2)) * float4(this.e1 * -1.0, this.e2 * -1.0, this.e3 * -1.0, this.e4 * -1.0)
+            float4(this.e1 /  (this.e4 * this.e4), this.e2 /  (this.e4 * this.e4), this.e3 /  (this.e4 * this.e4), 1.0 / this.e4) * float4(-1.0)
         );
     }
 }

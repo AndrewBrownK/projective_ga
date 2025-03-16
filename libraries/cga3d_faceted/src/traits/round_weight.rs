@@ -8,13 +8,4 @@ pub trait RoundWeight {
     type Output;
     fn round_weight(self) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static round_weight: RoundWeightPrefixOrPostfix = RoundWeightPrefixOrPostfix;
-pub struct RoundWeightPrefixOrPostfix;
-impl<A: RoundWeight> std::ops::Div<A> for RoundWeightPrefixOrPostfix {
-    type Output = <A as RoundWeight>::Output;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.round_weight()
-    }
-}
 include!("./impls/round_weight.rs");

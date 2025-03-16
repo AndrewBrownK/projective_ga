@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 95
 //
@@ -15,15 +15,9 @@
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         0       5       0
-//  Maximum:         0      22       0
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleOnOrigin {
-    type Output = CircleOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
+//   Median:         0       3       0
+//  Average:         0       4       0
+//  Maximum:         0      21       0
 impl RightAntiDual for AntiCircleOnOrigin {
     type Output = CircleOnOrigin;
     // Operative Statistics for this implementation:
@@ -37,12 +31,6 @@ impl RightAntiDual for AntiCircleOnOrigin {
             // e415, e425, e435
             self.group1() * Simd32x3::from(-1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleRotor {
-    type Output = CircleRotor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiCircleRotor {
@@ -65,12 +53,6 @@ impl RightAntiDual for AntiCircleRotor {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleRotorAligningOrigin {
-    type Output = CircleRotorAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiCircleRotorAligningOrigin {
     type Output = CircleRotorAligningOrigin;
     // Operative Statistics for this implementation:
@@ -91,12 +73,6 @@ impl RightAntiDual for AntiCircleRotorAligningOrigin {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleRotorAligningOriginAtInfinity {
-    type Output = CircleRotorAligningOriginAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiCircleRotorAligningOriginAtInfinity {
     type Output = CircleRotorAligningOriginAtInfinity;
     // Operative Statistics for this implementation:
@@ -115,12 +91,6 @@ impl RightAntiDual for AntiCircleRotorAligningOriginAtInfinity {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleRotorAtInfinity {
-    type Output = CircleRotorAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiCircleRotorAtInfinity {
     type Output = CircleRotorAtInfinity;
     // Operative Statistics for this implementation:
@@ -134,12 +104,6 @@ impl RightAntiDual for AntiCircleRotorAtInfinity {
             // e235, e315, e125, e12345
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiCircleRotorOnOrigin {
-    type Output = CircleRotorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiCircleRotorOnOrigin {
@@ -160,130 +124,92 @@ impl RightAntiDual for AntiCircleRotorOnOrigin {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDipoleInversion {
-    type Output = DipoleInversion;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiDipoleInversion {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //      add/sub      mul      div
+    // f32        0        3        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35, e1234
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e4] * -1.0),
             // e4235, e4315, e4125, e3215
-            self.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group3().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDipoleInversionAtInfinity {
-    type Output = DipoleInversionAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiDipoleInversionAtInfinity {
     type Output = DipoleInversionAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         DipoleInversionAtInfinity::from_groups(
             // e23, e31, e12, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35
             self.group1(),
             // e4235, e4315, e4125, e3215
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDipoleInversionOnOrigin {
-    type Output = DipoleInversionOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiDipoleInversionOnOrigin {
     type Output = DipoleInversionOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e1234, e4235, e4315, e4125
             self.group1() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]),
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
-    type Output = DipoleInversionOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiDipoleInversionOrthogonalOrigin {
     type Output = DipoleInversionOrthogonalOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e5] * -1.0),
             // e23, e31, e12
             self.group1(),
             // e15, e25, e35, e1234
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e4] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDipoleOnOrigin {
-    type Output = DipoleOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiDipoleOnOrigin {
     type Output = DipoleOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiDualNum {
-    type Output = DualNum;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        DipoleOnOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0().xyz().with_w(self[e321] * -1.0))
     }
 }
 impl RightAntiDual for AntiDualNum {
     type Output = DualNum;
     fn right_anti_dual(self) -> Self::Output {
         DualNum::from_groups(/* e4, e12345 */ self.group0())
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiFlatOrigin {
-    type Output = FlatOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiFlatOrigin {
@@ -296,47 +222,29 @@ impl RightAntiDual for AntiFlatOrigin {
         FlatOrigin::from_groups(/* e45 */ self[e321] * -1.0)
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiFlatPoint {
-    type Output = FlatPoint;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiFlatPoint {
     type Output = FlatPoint;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiFlector {
-    type Output = Flector;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0().xyz().with_w(self[e321] * -1.0))
     }
 }
 impl RightAntiDual for AntiFlector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e4235, e4315, e4125, e3215
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiFlectorOnOrigin {
-    type Output = FlectorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiFlectorOnOrigin {
@@ -347,12 +255,6 @@ impl RightAntiDual for AntiFlectorOnOrigin {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         FlectorOnOrigin::from_groups(/* e45, e4235, e4315, e4125 */ self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiLine {
-    type Output = Line;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiLine {
@@ -370,12 +272,6 @@ impl RightAntiDual for AntiLine {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiLineOnOrigin {
-    type Output = LineOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiLineOnOrigin {
     type Output = LineOnOrigin;
     // Operative Statistics for this implementation:
@@ -384,12 +280,6 @@ impl RightAntiDual for AntiLineOnOrigin {
     // no simd        0        3        0
     fn right_anti_dual(self) -> Self::Output {
         LineOnOrigin::from_groups(/* e415, e425, e435 */ self.group0() * Simd32x3::from(-1.0))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiMotor {
-    type Output = Motor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiMotor {
@@ -407,12 +297,6 @@ impl RightAntiDual for AntiMotor {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiMotorOnOrigin {
-    type Output = MotorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiMotorOnOrigin {
     type Output = MotorOnOrigin;
     // Operative Statistics for this implementation:
@@ -421,12 +305,6 @@ impl RightAntiDual for AntiMotorOnOrigin {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         MotorOnOrigin::from_groups(/* e415, e425, e435, e12345 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiMysteryCircleRotor {
-    type Output = MysteryCircleRotor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiMysteryCircleRotor {
@@ -445,59 +323,35 @@ impl RightAntiDual for AntiMysteryCircleRotor {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiMysteryDipoleInversion {
-    type Output = MysteryDipoleInversion;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiMysteryDipoleInversion {
     type Output = MysteryDipoleInversion;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         MysteryDipoleInversion::from_groups(
             // e23, e31, e12, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e4235, e4315, e4125
             self.group1(),
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiPlane {
-    type Output = Plane;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiPlane {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiPlaneOnOrigin {
-    type Output = PlaneOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(self[e5] * -1.0))
     }
 }
 impl RightAntiDual for AntiPlaneOnOrigin {
     type Output = PlaneOnOrigin;
     fn right_anti_dual(self) -> Self::Output {
         PlaneOnOrigin::from_groups(/* e4235, e4315, e4125 */ self.group0())
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiScalar {
-    type Output = Scalar;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for AntiScalar {
@@ -510,26 +364,14 @@ impl RightAntiDual for AntiScalar {
         Scalar::from_groups(/* scalar */ self[e12345] * -1.0)
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiSphereOnOrigin {
-    type Output = SphereOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for AntiSphereOnOrigin {
     type Output = SphereOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for AntiVersorEvenOnOrigin {
-    type Output = VersorEvenOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ self.group0().xyz().with_w(self[e4] * -1.0))
     }
 }
 impl RightAntiDual for AntiVersorEvenOnOrigin {
@@ -547,33 +389,21 @@ impl RightAntiDual for AntiVersorEvenOnOrigin {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Circle {
-    type Output = Dipole;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Circle {
     type Output = Dipole;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35
             self.group2(),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleAligningOrigin {
-    type Output = DipoleOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for CircleAligningOrigin {
@@ -582,31 +412,14 @@ impl RightAntiDual for CircleAligningOrigin {
         DipoleOrthogonalOrigin::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ self.group1(), /* e15, e25, e35 */ self.group2())
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleAtInfinity {
-    type Output = DipoleAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for CircleAtInfinity {
     type Output = DipoleAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        DipoleAtInfinity::from_groups(
-            // e23, e31, e12, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-            // e15, e25, e35
-            self.group1(),
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleAtOrigin {
-    type Output = DipoleAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        DipoleAtInfinity::from_groups(/* e23, e31, e12, e45 */ self.group0().xyz().with_w(self[e321] * -1.0), /* e15, e25, e35 */ self.group1())
     }
 }
 impl RightAntiDual for CircleAtOrigin {
@@ -615,152 +428,94 @@ impl RightAntiDual for CircleAtOrigin {
         DipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0(), /* e15, e25, e35 */ self.group1())
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleOnOrigin {
-    type Output = AntiCircleOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for CircleOnOrigin {
     type Output = AntiCircleOnOrigin;
     fn right_anti_dual(self) -> Self::Output {
         AntiCircleOnOrigin::from_groups(/* e41, e42, e43 */ self.group0(), /* e23, e31, e12 */ self.group1())
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleOrthogonalOrigin {
-    type Output = DipoleAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for CircleOrthogonalOrigin {
     type Output = DipoleAligningOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        DipoleAligningOrigin::from_groups(
-            // e41, e42, e43, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-            // e15, e25, e35
-            self.group1(),
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleRotor {
-    type Output = AntiCircleRotor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        DipoleAligningOrigin::from_groups(/* e41, e42, e43, e45 */ self.group0().xyz().with_w(self[e321] * -1.0), /* e15, e25, e35 */ self.group1())
     }
 }
 impl RightAntiDual for CircleRotor {
     type Output = AntiCircleRotor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35, scalar
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e12345] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleRotorAligningOrigin {
-    type Output = AntiCircleRotorAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for CircleRotorAligningOrigin {
     type Output = AntiCircleRotorAligningOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiCircleRotorAligningOrigin::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12
             self.group1(),
             // e15, e25, e35, scalar
-            self.group2() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e12345] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleRotorAligningOriginAtInfinity {
-    type Output = AntiCircleRotorAligningOriginAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for CircleRotorAligningOriginAtInfinity {
     type Output = AntiCircleRotorAligningOriginAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiCircleRotorAligningOriginAtInfinity::from_groups(
             // e23, e31, e12
             self.group0(),
             // e15, e25, e35, scalar
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e12345] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleRotorAtInfinity {
-    type Output = AntiCircleRotorAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for CircleRotorAtInfinity {
     type Output = AntiCircleRotorAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiCircleRotorAtInfinity::from_groups(
             // e23, e31, e12, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35, scalar
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e12345] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for CircleRotorOnOrigin {
-    type Output = AntiCircleRotorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for CircleRotorOnOrigin {
     type Output = AntiCircleRotorOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        AntiCircleRotorOnOrigin::from_groups(
-            // e41, e42, e43, scalar
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-            // e23, e31, e12
-            self.group1(),
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Dipole {
-    type Output = Circle;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        AntiCircleRotorOnOrigin::from_groups(/* e41, e42, e43, scalar */ self.group0().xyz().with_w(self[e12345] * -1.0), /* e23, e31, e12 */ self.group1())
     }
 }
 impl RightAntiDual for Dipole {
@@ -783,12 +538,6 @@ impl RightAntiDual for Dipole {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleAligningOrigin {
-    type Output = CircleOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DipoleAligningOrigin {
     type Output = CircleOrthogonalOrigin;
     // Operative Statistics for this implementation:
@@ -805,12 +554,6 @@ impl RightAntiDual for DipoleAligningOrigin {
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleAtInfinity {
-    type Output = CircleAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleAtInfinity {
@@ -831,12 +574,6 @@ impl RightAntiDual for DipoleAtInfinity {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleAtOrigin {
-    type Output = CircleAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DipoleAtOrigin {
     type Output = CircleAtOrigin;
     // Operative Statistics for this implementation:
@@ -850,12 +587,6 @@ impl RightAntiDual for DipoleAtOrigin {
             // e235, e315, e125
             self.group1() * Simd32x3::from(-1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversion {
-    type Output = AntiDipoleInversion;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleInversion {
@@ -880,34 +611,25 @@ impl RightAntiDual for DipoleInversion {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversionAligningOrigin {
-    type Output = VersorEvenOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DipoleInversionAligningOrigin {
     type Output = VersorEvenOrthogonalOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       10        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorEvenOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
-            self.group1().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e3215]),
             // e1, e2, e3, e4
-            self.group2().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversionAtInfinity {
-    type Output = AntiDipoleInversionAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleInversionAtInfinity {
@@ -930,32 +652,20 @@ impl RightAntiDual for DipoleInversionAtInfinity {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversionAtOrigin {
-    type Output = VersorEvenAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DipoleInversionAtOrigin {
     type Output = VersorEvenAtOrigin;
     // Operative Statistics for this implementation:
     //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //   simd3        0        2        0
+    // no simd        0        6        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
-            self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e235, e315, e125, e5
-            self.group1().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e3215]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversionOnOrigin {
-    type Output = AntiDipoleInversionOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleInversionOnOrigin {
@@ -971,12 +681,6 @@ impl RightAntiDual for DipoleInversionOnOrigin {
             // e4, e1, e2, e3
             self.group1() * Simd32x4::from([1.0, -1.0, -1.0, -1.0]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
-    type Output = AntiDipoleInversionOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleInversionOrthogonalOrigin {
@@ -999,12 +703,6 @@ impl RightAntiDual for DipoleInversionOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleOnOrigin {
-    type Output = AntiDipoleOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DipoleOnOrigin {
     type Output = AntiDipoleOnOrigin;
     // Operative Statistics for this implementation:
@@ -1013,12 +711,6 @@ impl RightAntiDual for DipoleOnOrigin {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         AntiDipoleOnOrigin::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DipoleOrthogonalOrigin {
-    type Output = CircleAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for DipoleOrthogonalOrigin {
@@ -1038,12 +730,6 @@ impl RightAntiDual for DipoleOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for DualNum {
-    type Output = AntiDualNum;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for DualNum {
     type Output = AntiDualNum;
     // Operative Statistics for this implementation:
@@ -1054,23 +740,11 @@ impl RightAntiDual for DualNum {
         AntiDualNum::from_groups(/* e1234, scalar */ self.group0() * Simd32x2::from(-1.0))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for FlatOrigin {
-    type Output = AntiFlatOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for FlatOrigin {
     type Output = AntiFlatOrigin;
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         AntiFlatOrigin::from_groups(/* e321 */ self[e45])
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for FlatPoint {
-    type Output = AntiFlatPoint;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for FlatPoint {
@@ -1083,12 +757,6 @@ impl RightAntiDual for FlatPoint {
         AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for FlatPointAtInfinity {
-    type Output = LineAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for FlatPointAtInfinity {
     type Output = LineAtInfinity;
     // Operative Statistics for this implementation:
@@ -1097,12 +765,6 @@ impl RightAntiDual for FlatPointAtInfinity {
     // no simd        0        3        0
     fn right_anti_dual(self) -> Self::Output {
         LineAtInfinity::from_groups(/* e235, e315, e125 */ self.group0() * Simd32x3::from(-1.0))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Flector {
-    type Output = AntiFlector;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for Flector {
@@ -1120,12 +782,6 @@ impl RightAntiDual for Flector {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for FlectorAtInfinity {
-    type Output = MotorAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for FlectorAtInfinity {
     type Output = MotorAtInfinity;
     // Operative Statistics for this implementation:
@@ -1134,12 +790,6 @@ impl RightAntiDual for FlectorAtInfinity {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         MotorAtInfinity::from_groups(/* e235, e315, e125, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for FlectorOnOrigin {
-    type Output = AntiFlectorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for FlectorOnOrigin {
@@ -1152,23 +802,11 @@ impl RightAntiDual for FlectorOnOrigin {
         AntiFlectorOnOrigin::from_groups(/* e321, e1, e2, e3 */ self.group0() * Simd32x4::from([1.0, -1.0, -1.0, -1.0]))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Horizon {
-    type Output = Infinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Horizon {
     type Output = Infinity;
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         Infinity::from_groups(/* e5 */ self[e3215])
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Infinity {
-    type Output = Horizon;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for Infinity {
@@ -1181,22 +819,10 @@ impl RightAntiDual for Infinity {
         Horizon::from_groups(/* e3215 */ self[e5] * -1.0)
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Line {
-    type Output = AntiLine;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Line {
     type Output = AntiLine;
     fn right_anti_dual(self) -> Self::Output {
         AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ self.group1())
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for LineAtInfinity {
-    type Output = FlatPointAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for LineAtInfinity {
@@ -1205,80 +831,45 @@ impl RightAntiDual for LineAtInfinity {
         FlatPointAtInfinity::from_groups(/* e15, e25, e35 */ self.group0())
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for LineOnOrigin {
-    type Output = AntiLineOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for LineOnOrigin {
     type Output = AntiLineOnOrigin;
     fn right_anti_dual(self) -> Self::Output {
         AntiLineOnOrigin::from_groups(/* e23, e31, e12 */ self.group0())
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Motor {
-    type Output = AntiMotor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Motor {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e15, e25, e35, e3215
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MotorAtInfinity {
-    type Output = FlectorAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for MotorAtInfinity {
     type Output = FlectorAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MotorOnOrigin {
-    type Output = AntiMotorOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        FlectorAtInfinity::from_groups(/* e15, e25, e35, e3215 */ self.group0().xyz().with_w(self[e5] * -1.0))
     }
 }
 impl RightAntiDual for MotorOnOrigin {
     type Output = AntiMotorOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MultiVector {
-    type Output = MultiVector;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
-impl std::ops::DivAssign<RightAntiDualPrefixOrPostfix> for MultiVector {
-    fn div_assign(&mut self, _rhs: RightAntiDualPrefixOrPostfix) {
-        *self = self.right_anti_dual()
+        use crate::elements::*;
+        AntiMotorOnOrigin::from_groups(/* e23, e31, e12, scalar */ self.group0().xyz().with_w(self[e12345] * -1.0))
     }
 }
 impl RightAntiDual for MultiVector {
@@ -1287,11 +878,11 @@ impl RightAntiDual for MultiVector {
     //           add/sub      mul      div
     //      f32        0        2        0
     //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        3        0
+    //    simd3        0        3        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        0        8        0
-    //  no simd        0       22        0
+    //  no simd        0       21        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1308,7 +899,7 @@ impl RightAntiDual for MultiVector {
             // e23, e31, e12
             self.group6().xyz(),
             // e415, e425, e435, e321
-            self.group5().with_w(self[e45]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group5() * Simd32x3::from(-1.0)).with_w(self[e45]),
             // e423, e431, e412
             self.group3().xyz() * Simd32x3::from(-1.0),
             // e235, e315, e125
@@ -1320,51 +911,24 @@ impl RightAntiDual for MultiVector {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryCircle {
-    type Output = MysteryDipole;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for MysteryCircle {
     type Output = MysteryDipole;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryCircleRotor {
-    type Output = AntiMysteryCircleRotor;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        MysteryDipole::from_groups(/* e23, e31, e12, e45 */ self.group0().xyz().with_w(self[e321] * -1.0))
     }
 }
 impl RightAntiDual for MysteryCircleRotor {
     type Output = AntiMysteryCircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        AntiMysteryCircleRotor::from_groups(
-            // e23, e31, e12, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-            // scalar
-            self[e12345] * -1.0,
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryDipole {
-    type Output = MysteryCircle;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        AntiMysteryCircleRotor::from_groups(/* e23, e31, e12, e45 */ self.group0().xyz().with_w(self[e321] * -1.0), /* scalar */ self[e12345] * -1.0)
     }
 }
 impl RightAntiDual for MysteryDipole {
@@ -1375,12 +939,6 @@ impl RightAntiDual for MysteryDipole {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         MysteryCircle::from_groups(/* e415, e425, e435, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryDipoleInversion {
-    type Output = AntiMysteryDipoleInversion;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for MysteryDipoleInversion {
@@ -1401,31 +959,23 @@ impl RightAntiDual for MysteryDipoleInversion {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryVersorEven {
-    type Output = MysteryVersorOdd;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for MysteryVersorEven {
     type Output = MysteryVersorOdd;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div
+    //      f32        0        1        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        2        0
+    //  no simd        0        5        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         MysteryVersorOdd::from_groups(
             // scalar, e4235, e4315, e4125
             self.group0() * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for MysteryVersorOdd {
-    type Output = MysteryVersorEven;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for MysteryVersorOdd {
@@ -1443,22 +993,10 @@ impl RightAntiDual for MysteryVersorOdd {
         )
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for NullCircleAtOrigin {
-    type Output = NullDipoleAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for NullCircleAtOrigin {
     type Output = NullDipoleAtOrigin;
     fn right_anti_dual(self) -> Self::Output {
         NullDipoleAtOrigin::from_groups(/* e41, e42, e43 */ self.group0())
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for NullDipoleAtOrigin {
-    type Output = NullCircleAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for NullDipoleAtOrigin {
@@ -1471,12 +1009,6 @@ impl RightAntiDual for NullDipoleAtOrigin {
         NullCircleAtOrigin::from_groups(/* e423, e431, e412 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for NullDipoleInversionAtOrigin {
-    type Output = NullVersorEvenAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for NullDipoleInversionAtOrigin {
     type Output = NullVersorEvenAtOrigin;
     // Operative Statistics for this implementation:
@@ -1487,12 +1019,6 @@ impl RightAntiDual for NullDipoleInversionAtOrigin {
         NullVersorEvenAtOrigin::from_groups(/* e423, e431, e412, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for NullSphereAtOrigin {
-    type Output = Origin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for NullSphereAtOrigin {
     type Output = Origin;
     fn right_anti_dual(self) -> Self::Output {
@@ -1500,26 +1026,14 @@ impl RightAntiDual for NullSphereAtOrigin {
         Origin::from_groups(/* e4 */ self[e1234])
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for NullVersorEvenAtOrigin {
-    type Output = NullDipoleInversionAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for NullVersorEvenAtOrigin {
     type Output = NullDipoleInversionAtOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div
+    // f32        0        1        0
     fn right_anti_dual(self) -> Self::Output {
-        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Origin {
-    type Output = NullSphereAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        use crate::elements::*;
+        NullDipoleInversionAtOrigin::from_groups(/* e41, e42, e43, e1234 */ self.group0().xyz().with_w(self[e4] * -1.0))
     }
 }
 impl RightAntiDual for Origin {
@@ -1532,12 +1046,6 @@ impl RightAntiDual for Origin {
         NullSphereAtOrigin::from_groups(/* e1234 */ self[e4] * -1.0)
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Plane {
-    type Output = AntiPlane;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Plane {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
@@ -1546,12 +1054,6 @@ impl RightAntiDual for Plane {
     // no simd        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for PlaneOnOrigin {
-    type Output = AntiPlaneOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for PlaneOnOrigin {
@@ -1564,35 +1066,14 @@ impl RightAntiDual for PlaneOnOrigin {
         AntiPlaneOnOrigin::from_groups(/* e1, e2, e3 */ self.group0() * Simd32x3::from(-1.0))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for RoundPoint {
-    type Output = Sphere;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for RoundPoint {
     type Output = Sphere;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        Sphere::from_groups(
-            // e4235, e4315, e4125, e3215
-            self.group0().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
-            // e1234
-            self[e4] * -1.0,
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for RoundPointAtOrigin {
-    type Output = SphereAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0().xyz().with_w(self[e5] * -1.0), /* e1234 */ self[e4] * -1.0)
     }
 }
 impl RightAntiDual for RoundPointAtOrigin {
@@ -1605,12 +1086,6 @@ impl RightAntiDual for RoundPointAtOrigin {
         SphereAtOrigin::from_groups(/* e3215, e1234 */ self.group0().yx() * Simd32x2::from(-1.0))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Scalar {
-    type Output = AntiScalar;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Scalar {
     type Output = AntiScalar;
     fn right_anti_dual(self) -> Self::Output {
@@ -1618,44 +1093,21 @@ impl RightAntiDual for Scalar {
         AntiScalar::from_groups(/* e12345 */ self[scalar])
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for Sphere {
-    type Output = RoundPoint;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for Sphere {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
     //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //   simd3        0        1        0
+    // no simd        0        3        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
-        RoundPoint::from_groups(
-            // e1, e2, e3, e4
-            self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
-            // e5
-            self[e3215],
-        )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for SphereAtOrigin {
-    type Output = RoundPointAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]), /* e5 */ self[e3215])
     }
 }
 impl RightAntiDual for SphereAtOrigin {
     type Output = RoundPointAtOrigin;
     fn right_anti_dual(self) -> Self::Output {
         RoundPointAtOrigin::from_groups(/* e4, e5 */ self.group0().yx())
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for SphereOnOrigin {
-    type Output = AntiSphereOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for SphereOnOrigin {
@@ -1668,159 +1120,119 @@ impl RightAntiDual for SphereOnOrigin {
         AntiSphereOnOrigin::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEven {
-    type Output = VersorOdd;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
-    }
-}
 impl RightAntiDual for VersorEven {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //      add/sub      mul      div
+    // f32        0        4        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35, e1234
-            self.group2().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e4] * -1.0),
             // e4235, e4315, e4125, e3215
-            self.group3().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group3().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEvenAligningOrigin {
-    type Output = VersorOddOrthogonalOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorEvenAligningOrigin {
     type Output = VersorOddOrthogonalOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //      add/sub      mul      div
+    // f32        0        3        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e23, e31, e12, e3215
-            self.group1().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
             // e15, e25, e35, e1234
-            self.group2().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e4] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEvenAtInfinity {
-    type Output = VersorOddAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorEvenAtInfinity {
     type Output = VersorOddAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div
+    //      f32        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0        6        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorOddAtInfinity::from_groups(
             // scalar, e15, e25, e35
             Simd32x4::from([self[e12345], self[e235], self[e315], self[e125]]) * Simd32x4::from([-1.0, 1.0, 1.0, 1.0]),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e321] * -1.0),
             // e4235, e4315, e4125, e3215
-            self.group0().yzw().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            Simd32x4::from([self[e1], self[e2], self[e3], self[e5] * -1.0]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEvenAtOrigin {
-    type Output = DipoleInversionAtOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorEvenAtOrigin {
     type Output = DipoleInversionAtOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
-            self.group0().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e5] * -1.0),
             // e15, e25, e35, e1234
-            self.group1().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e4] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEvenOnOrigin {
-    type Output = AntiVersorEvenOnOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorEvenOnOrigin {
     type Output = AntiVersorEvenOnOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //      add/sub      mul      div
+    // f32        0        2        0
     fn right_anti_dual(self) -> Self::Output {
+        use crate::elements::*;
         AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e23, e31, e12, e1234
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e4] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorEvenOrthogonalOrigin {
-    type Output = DipoleInversionAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorEvenOrthogonalOrigin {
     type Output = DipoleInversionAligningOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //      add/sub      mul      div
+    // f32        0        3        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e321] * -1.0),
             // e15, e25, e35, e1234
-            self.group1().xyz().with_w(self[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e4] * -1.0),
             // e4235, e4315, e4125, e3215
-            self.group2().xyz().with_w(self[e5]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group2().xyz().with_w(self[e5] * -1.0),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorOdd {
-    type Output = VersorEven;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorOdd {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        4        0
+    //  no simd        0       14        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
@@ -1829,24 +1241,21 @@ impl RightAntiDual for VersorOdd {
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
-            self.group2().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e3215]),
             // e1, e2, e3, e4
-            self.group3().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group3().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorOddAtInfinity {
-    type Output = VersorEvenAtInfinity;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorOddAtInfinity {
     type Output = VersorEvenAtInfinity;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div
+    //    simd3        0        1        0
+    //    simd4        0        2        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       11        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorEvenAtInfinity::from_groups(
@@ -1855,31 +1264,28 @@ impl RightAntiDual for VersorOddAtInfinity {
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
-            self.group0().yzw().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0().yzw() * Simd32x3::from(-1.0)).with_w(self[e3215]),
         )
-    }
-}
-impl std::ops::Div<RightAntiDualPrefixOrPostfix> for VersorOddOrthogonalOrigin {
-    type Output = VersorEvenAligningOrigin;
-    fn div(self, _rhs: RightAntiDualPrefixOrPostfix) -> Self::Output {
-        self.right_anti_dual()
     }
 }
 impl RightAntiDual for VersorOddOrthogonalOrigin {
     type Output = VersorEvenAligningOrigin;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div
+    //    simd3        0        2        0
+    //    simd4        0        1        0
+    // Totals...
+    // yes simd        0        3        0
+    //  no simd        0       10        0
     fn right_anti_dual(self) -> Self::Output {
         use crate::elements::*;
         VersorEvenAligningOrigin::from_groups(
             // e423, e431, e412, e12345
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e415, e425, e435, e4
-            self.group1().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e235, e315, e125, e5
-            self.group2().xyz().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e3215]),
         )
     }
 }

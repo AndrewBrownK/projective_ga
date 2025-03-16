@@ -36,7 +36,7 @@ public extension VersorOdd {
     public static VersorOdd from(AntiCircleRotor from_anti_circle_rotor) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(from_anti_circle_rotor.group0.xyz, from_anti_circle_rotor.scalar), 
+            float4(from_anti_circle_rotor.e41, from_anti_circle_rotor.e42, from_anti_circle_rotor.e43, from_anti_circle_rotor.scalar), 
             /* e23, e31, e12, e45 */
             from_anti_circle_rotor.group1, 
             /* e15, e25, e35, e1234 */
@@ -856,7 +856,7 @@ public extension VersorEven {
     public static VersorEven from(CircleRotor from_circle_rotor) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(from_circle_rotor.group0.xyz, from_circle_rotor.e12345), 
+            float4(from_circle_rotor.e423, from_circle_rotor.e431, from_circle_rotor.e412, from_circle_rotor.e12345), 
             /* e415, e425, e435, e321 */
             from_circle_rotor.group1, 
             /* e235, e315, e125, e5 */
@@ -917,7 +917,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_dipole.group2.xyz, from_dipole.e45), 
+            float4(from_dipole.e15, from_dipole.e25, from_dipole.e35, from_dipole.e45), 
             /* e41, e42, e43 */
             from_dipole.group0.xyz, 
             /* e23, e31, e12 */

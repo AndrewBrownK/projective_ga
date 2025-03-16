@@ -7,13 +7,4 @@ use crate::simd::*;
 pub trait AntiReverse {
     fn anti_reverse(self) -> Self;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static anti_reverse: AntiReversePrefixOrPostfix = AntiReversePrefixOrPostfix;
-pub struct AntiReversePrefixOrPostfix;
-impl<A: AntiReverse> std::ops::Div<A> for AntiReversePrefixOrPostfix {
-    type Output = A;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.anti_reverse()
-    }
-}
 include!("./impls/anti_reverse.rs");

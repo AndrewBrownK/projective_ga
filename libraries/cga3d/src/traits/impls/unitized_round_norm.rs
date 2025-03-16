@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 10
 //
@@ -27,7 +27,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiCircleRotor {
 impl UnitizedRoundNorm for AntiCircleRotor {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -39,7 +39,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for AntiDipoleInversion {
 impl UnitizedRoundNorm for AntiDipoleInversion {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e321] * self[e321] * f32::powi(self[e4], 2)
+        self[e321] * self[e321] * self[e4] * self[e4]
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Circle {
@@ -81,7 +81,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for Dipole {
 impl UnitizedRoundNorm for Dipole {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
@@ -93,7 +93,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for DipoleInversion {
 impl UnitizedRoundNorm for DipoleInversion {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for MultiVector {
@@ -119,7 +119,7 @@ impl UnitizedRoundNorm for RoundPoint {
     // f32        2        0        3
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        (self[e1] * self[e1] / (self[e4])) + (self[e2] * self[e2] / (self[e4])) + (self[e3] * self[e3] / (self[e4]))
+        (self[e1] * self[e1] / self[e4]) + (self[e2] * self[e2] / self[e4]) + (self[e3] * self[e3] / self[e4])
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
@@ -131,7 +131,7 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorEven {
 impl UnitizedRoundNorm for VersorEven {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e321] * self[e321] * f32::powi(self[e4], 2)
+        self[e321] * self[e321] * self[e4] * self[e4]
     }
 }
 impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
@@ -143,6 +143,6 @@ impl std::ops::Div<UnitizedRoundNormPrefixOrPostfix> for VersorOdd {
 impl UnitizedRoundNorm for VersorOdd {
     fn unitized_round_norm(self) -> f32 {
         use crate::elements::*;
-        self[e41] * self[e41] * f32::powi(self[e23], 2)
+        self[e41] * self[e41] * self[e23] * self[e23]
     }
 }

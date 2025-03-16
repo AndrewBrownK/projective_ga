@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 4
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       1       0
+//   Median:         0       0       0
 //  Average:         0       0       0
-//  Maximum:         2       1       1
+//  Maximum:         2       3       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         0       2       0
-//  Maximum:         2       4       1
+//   Median:         0       0       0
+//  Average:         2       2       0
+//  Maximum:         8       9       3
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: AntiFixPrefixOrPostfix) -> Self::Output {
@@ -64,16 +64,18 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Plane {
 impl AntiFix for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
+    //      f32        0        1        0
+    //    simd4        2        2        0
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    // yes simd        2        3        0
+    //  no simd        8        9        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
+            Simd32x4::from([f32::powi(self[e423], 3), f32::powi(self[e431], 3), f32::powi(self[e412], 3), self[e412] * self[e412] * self[e321]])
+                + (Simd32x4::powi(self.group0().yxxx(), 2) * self.group0())
+                + (Simd32x4::powi(self.group0().zzyy(), 2) * self.group0()),
         )
     }
 }
@@ -90,14 +92,10 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Point {
 }
 impl AntiFix for Point {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        4        1
+    //          add/sub      mul      div
+    //   simd3        0        0        1
+    // no simd        0        0        3
     fn anti_fix(self) -> Self {
-        use crate::elements::*;
-        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0())
+        Point::from_groups(/* e1, e2, e3, e4 */ (self.group0().xyz() / self.group0().www()).with_w(1.0))
     }
 }

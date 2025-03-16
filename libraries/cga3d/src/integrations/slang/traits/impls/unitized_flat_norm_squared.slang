@@ -10,7 +10,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, AntiCircleRo
 public extension AntiCircleRotor {
     public float unitized_flat_norm_squared() {
         float3 wedge_g0 = this.group2.xyz;
-        return -(wedge_g0[0] * wedge_g0[0] * pow(this.e45, -2)) - (wedge_g0[1] * wedge_g0[1] * pow(this.e45, -2)) - (wedge_g0[2] * wedge_g0[2] * pow(this.e45, -2));
+        return -(wedge_g0[0] * wedge_g0[0] /  (this.e45 * this.e45)) - (wedge_g0[1] * wedge_g0[1] /  (this.e45 * this.e45)) - (wedge_g0[2] * wedge_g0[2] /  (this.e45 * this.e45));
     }
 }
 // Fancy postfix trick
@@ -23,7 +23,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, AntiDipoleIn
 }
 public extension AntiDipoleInversion {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e5, 2);
+        return this.e415 * this.e415 * this.e5 * this.e5;
     }
 }
 // Fancy postfix trick
@@ -36,7 +36,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Circle rhs) 
 }
 public extension Circle {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e235, 2);
+        return this.e415 * this.e415 * this.e235 * this.e235 * -1.0;
     }
 }
 // Fancy postfix trick
@@ -49,7 +49,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, CircleRotor 
 }
 public extension CircleRotor {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e235, 2);
+        return this.e415 * this.e415 * this.e235 * this.e235 * -1.0;
     }
 }
 // Fancy postfix trick
@@ -62,8 +62,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Dipole rhs) 
 }
 public extension Dipole {
     public float unitized_flat_norm_squared() {
-        float3 wedge_g0 = this.group2.xyz;
-        return -(wedge_g0[0] * wedge_g0[0] * pow(this.e45, -2)) - (wedge_g0[1] * wedge_g0[1] * pow(this.e45, -2)) - (wedge_g0[2] * wedge_g0[2] * pow(this.e45, -2));
+        return -(this.e15 * this.e15 /  (this.e45 * this.e45)) - (this.e25 * this.e25 /  (this.e45 * this.e45)) - (this.e35 * this.e35 /  (this.e45 * this.e45));
     }
 }
 // Fancy postfix trick
@@ -76,7 +75,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, DipoleInvers
 }
 public extension DipoleInversion {
     public float unitized_flat_norm_squared() {
-        return this.e45 * this.e45 * float4(float3(0.0), 1.0).wwwx[0] * this.e15 * -1.0;
+        return (this.e45 * this.e45 * this.e15) * -1.0;
     }
 }
 // Fancy postfix trick
@@ -89,7 +88,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, DualNum rhs)
 }
 public extension DualNum {
     public float unitized_flat_norm_squared() {
-        return this.e5 * this.e5 * pow(this.e12345, -2);
+        return this.e5 * this.e5 /  (this.e12345 * this.e12345);
     }
 }
 // Fancy postfix trick
@@ -103,7 +102,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, FlatPoint rh
 public extension FlatPoint {
     public float unitized_flat_norm_squared() {
         float3 wedge_g0 = this.group0.xyz;
-        return -(wedge_g0[0] * wedge_g0[0] * pow(this.e45, -2)) - (wedge_g0[1] * wedge_g0[1] * pow(this.e45, -2)) - (wedge_g0[2] * wedge_g0[2] * pow(this.e45, -2));
+        return -(wedge_g0[0] * wedge_g0[0] /  (this.e45 * this.e45)) - (wedge_g0[1] * wedge_g0[1] /  (this.e45 * this.e45)) - (wedge_g0[2] * wedge_g0[2] /  (this.e45 * this.e45));
     }
 }
 // Fancy postfix trick
@@ -116,7 +115,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Flector rhs)
 }
 public extension Flector {
     public float unitized_flat_norm_squared() {
-        return this.e45 * this.e45 * float4(float3(0.0), 1.0).wwwx[0] * this.e15 * -1.0;
+        return (this.e45 * this.e45 * this.e15) * -1.0;
     }
 }
 // Fancy postfix trick
@@ -129,7 +128,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e235, 2);
+        return this.e415 * this.e415 * this.e235 * this.e235 * -1.0;
     }
 }
 // Fancy postfix trick
@@ -142,7 +141,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e5, 2);
+        return this.e415 * this.e415 * this.e5 * this.e5;
     }
 }
 // Fancy postfix trick
@@ -168,7 +167,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public float unitized_flat_norm_squared() {
-        return -(this.e4235 * this.e4235 * pow(this.e3215, 2)) - (this.e4315 * this.e4315 * pow(this.e3215, 2)) - (this.e4125 * this.e4125 * pow(this.e3215, 2));
+        return -(this.e4235 * this.e4235 * this.e3215 * this.e3215) - (this.e4315 * this.e4315 * this.e3215 * this.e3215) - (this.e4125 * this.e4125 * this.e3215 * this.e3215);
     }
 }
 // Fancy postfix trick
@@ -181,7 +180,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, Sphere rhs) 
 }
 public extension Sphere {
     public float unitized_flat_norm_squared() {
-        return -(this.e4235 * this.e4235 * pow(this.e3215, 2)) - (this.e4315 * this.e4315 * pow(this.e3215, 2)) - (this.e4125 * this.e4125 * pow(this.e3215, 2));
+        return -(this.e4235 * this.e4235 * this.e3215 * this.e3215) - (this.e4315 * this.e4315 * this.e3215 * this.e3215) - (this.e4125 * this.e4125 * this.e3215 * this.e3215);
     }
 }
 // Fancy postfix trick
@@ -194,7 +193,7 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, VersorEven r
 }
 public extension VersorEven {
     public float unitized_flat_norm_squared() {
-        return this.e415 * this.e415 * pow(this.e5, 2);
+        return this.e415 * this.e415 * this.e5 * this.e5;
     }
 }
 // Fancy postfix trick
@@ -207,6 +206,6 @@ public float operator /(UnitizedFlatNormSquaredPrefixOrPostfix lhs, VersorOdd rh
 }
 public extension VersorOdd {
     public float unitized_flat_norm_squared() {
-        return this.e45 * this.e45 * float4(float3(0.0), 1.0).wwwx[0] * this.e15 * -1.0;
+        return (this.e45 * this.e45 * this.e15) * -1.0;
     }
 }

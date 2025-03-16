@@ -196,13 +196,11 @@ macro_rules! nicer_swizzles {
 
 impl Simd32x2 {
     pub fn powi(mut self, exponent: i32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powi(self[0], exponent);
         self[1] = f32::powi(self[1], exponent);
         self
     }
     pub fn powf(mut self, exponent: f32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powf(self[0], exponent);
         self[1] = f32::powf(self[1], exponent);
         self
@@ -248,14 +246,12 @@ impl Simd32x2 {
 
 impl Simd32x3 {
     pub fn powi(mut self, exponent: i32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powi(self[0], exponent);
         self[1] = f32::powi(self[1], exponent);
         self[2] = f32::powi(self[2], exponent);
         self
     }
     pub fn powf(mut self, exponent: f32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powf(self[0], exponent);
         self[1] = f32::powf(self[1], exponent);
         self[2] = f32::powf(self[2], exponent);
@@ -342,7 +338,6 @@ impl Simd32x3 {
 
 impl Simd32x4 {
     pub fn powi(mut self, exponent: i32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powi(self[0], exponent);
         self[1] = f32::powi(self[1], exponent);
         self[2] = f32::powi(self[2], exponent);
@@ -350,7 +345,6 @@ impl Simd32x4 {
         self
     }
     pub fn powf(mut self, exponent: f32) -> Self {
-        // TODO simd-ify
         self[0] = f32::powf(self[0], exponent);
         self[1] = f32::powf(self[1], exponent);
         self[2] = f32::powf(self[2], exponent);
