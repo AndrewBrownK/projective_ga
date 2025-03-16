@@ -125,6 +125,7 @@ include!("traits/definitions.rs");
 include!("traits/names.rs");
 include!("traits/ops.rs");
 include!("traits/register.rs");
+include!("traits/debug.rs");
 include!("traits/builder.rs");
 
 

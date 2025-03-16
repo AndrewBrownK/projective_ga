@@ -3,7 +3,6 @@
 
 use crate::ast::expressions::{FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
-use crate::ast::traits::Register11;
 use crate::build_scripts::common_traits::AntiConstraintViolation;
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;

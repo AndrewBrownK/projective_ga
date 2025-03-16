@@ -85,11 +85,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits22.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits22.get(&key).await.expect("Created during registration");
@@ -136,11 +136,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits11.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                td.register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                td.register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits11.get(&key).await.expect("Created during registration");
@@ -237,9 +237,28 @@ pub fn progress_style() -> indicatif::ProgressStyle {
         .expect("Template should be good or you gotta fix it")
         .progress_chars("#>-")
 }
+pub fn tokio_rt() -> tokio::runtime::Runtime {
+    tokio::runtime::Runtime::new().expect("Tokio should work")
+}
+pub fn tokio_joinset<T>() -> JoinSet<T> {
+    JoinSet::new()
+}
+pub fn indicatif_multi_progress() -> Arc<MultiProgress> {
+    Arc::new(MultiProgress::new())
+}
+pub fn indicatif_progress_bar(s: u64) -> indicatif::ProgressBar {
+    indicatif::ProgressBar::new(s)
+}
+pub fn indicatif_and_leave() -> ProgressFinish {
+    ProgressFinish::AndLeave
+}
+
+pub struct RegisterTrait<T>(pub T);
+
+
 
 #[async_trait]
-pub trait Register10: TraitDef_1_Type_0_Args {
+pub trait Register10 {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tr: TraitImplRegistry,
@@ -249,7 +268,7 @@ pub trait Register10: TraitDef_1_Type_0_Args {
     );
 }
 #[async_trait]
-impl<T: TraitDef_1_Type_0_Args> Register10 for T {
+impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -258,8 +277,8 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits10.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits10.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let mut pb = None;
@@ -285,7 +304,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
                 .expect_get_or_create((trait_key, mv_a), async move {
                     let variables = Arc::new(Mutex::new(HashMap::new()));
                     let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_2, false, variables, vec![]);
-                    let result = self.general_implementation(b, mv_a.clone()).await;
+                    let result = self.0.general_implementation(b, mv_a.clone()).await;
                     match result {
                         None => None,
                         Some(result) => result.into_trait10(mv_a),
@@ -311,8 +330,9 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for T {
         }
     }
 }
+
 #[async_trait]
-pub trait Register11: TraitDef_1_Type_1_Arg {
+pub trait Register11 {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -321,6 +341,7 @@ pub trait Register11: TraitDef_1_Type_1_Arg {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
 
+    // TODO separate this
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -329,11 +350,8 @@ pub trait Register11: TraitDef_1_Type_1_Arg {
     ) -> Option<Arc<RawTraitImplementation>>;
 }
 
-// TODO wrap these in some generic type so that register methods are not exposed when defining
-//  common_traits or whatever and check for other API clutter there too. In fact, split up
-//  Register<T>(T) and Trace<T>(T)
 #[async_trait]
-impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
+impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -342,8 +360,8 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits11.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits11.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let mut pb = None;
@@ -375,7 +393,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
                         expr_type: mv_a.clone(),
                         decl: declare_self,
                     };
-                    let result = self.general_implementation(b, var_self).await;
+                    let result = self.0.general_implementation(b, var_self).await;
                     match result {
                         None => None,
                         Some(result) => result.into_trait11(mv_a),
@@ -413,12 +431,12 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         let declare_self = param_self();
         variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
         let var_self: Variable<MultiVector> = Variable { expr_type: mv_a.clone(), decl: declare_self };
-        let def = self.def();
+        let def = self.0.def();
 
         // let n = def.names.trait_key.as_upper_camel();
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
         // TODO add tracing in general implementation too.
-        let b = self.general_implementation(b, var_self).await?;
+        let b = self.0.general_implementation(b, var_self).await?;
 
         tracing_subscriber::fmt()
             .with_max_level(filter)
@@ -427,8 +445,9 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         b.into_trait11(mv_a)
     }
 }
+
 #[async_trait]
-pub trait Register21: TraitDef_2_Types_1_Arg {
+pub trait Register21 {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -438,7 +457,7 @@ pub trait Register21: TraitDef_2_Types_1_Arg {
     );
 }
 #[async_trait]
-impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
+impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -447,8 +466,8 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits21.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits21.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
@@ -492,7 +511,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
                                 expr_type: mv_a.clone(),
                                 decl: declare_self,
                             };
-                            let result = self.general_implementation(b, var_self, mv_b.clone()).await;
+                            let result = self.0.general_implementation(b, var_self, mv_b.clone()).await;
                             match result {
                                 None => None,
                                 Some(result) => result.into_trait21(mv_a, mv_b),
@@ -525,8 +544,9 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for T {
         }
     }
 }
+
 #[async_trait]
-pub trait Register22: TraitDef_2_Types_2_Args {
+pub trait Register22 {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -536,7 +556,7 @@ pub trait Register22: TraitDef_2_Types_2_Args {
     );
 }
 #[async_trait]
-impl<T: TraitDef_2_Types_2_Args> Register22 for T {
+impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -545,8 +565,8 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits22.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits22.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
@@ -596,7 +616,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
                                 expr_type: mv_b.clone(),
                                 decl: declare_other,
                             };
-                            let result = self.general_implementation(b, var_self, var_other).await;
+                            let result = self.0.general_implementation(b, var_self, var_other).await;
                             match result {
                                 None => None,
                                 Some(result) => result.into_trait22(mv_a, mv_b),
@@ -629,8 +649,9 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for T {
         }
     }
 }
+
 #[async_trait]
-pub trait Register12f: TraitDef_1_Type_2_Args_f32 {
+pub trait Register12f {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -640,7 +661,7 @@ pub trait Register12f: TraitDef_1_Type_2_Args_f32 {
     );
 }
 #[async_trait]
-impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
+impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -649,8 +670,8 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits12f.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits12f.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
@@ -690,7 +711,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
                         expr_type: Float,
                         decl: declare_other,
                     };
-                    let result = self.general_implementation(b, var_self, var_other).await;
+                    let result = self.0.general_implementation(b, var_self, var_other).await;
                     match result {
                         None => None,
                         Some(result) => result.into_trait12f(mv_a),
@@ -716,8 +737,9 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for T {
         }
     }
 }
+
 #[async_trait]
-pub trait Register12i: TraitDef_1_Type_2_Args_i32 {
+pub trait Register12i {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -727,7 +749,7 @@ pub trait Register12i: TraitDef_1_Type_2_Args_i32 {
     );
 }
 #[async_trait]
-impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
+impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
     async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
         self,
         tir: TraitImplRegistry,
@@ -736,8 +758,8 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
         let ga = mv_repo.ga();
-        let trait_key = self.trait_names().trait_key;
-        let def = tir.defs.traits12i.expect_get_or_create(trait_key.clone(), async move { self.def() }).await;
+        let trait_key = self.0.trait_names().trait_key;
+        let def = tir.defs.traits12i.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
@@ -777,7 +799,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
                         expr_type: Integer,
                         decl: declare_other,
                     };
-                    let result = self.general_implementation(b, var_self, var_other).await;
+                    let result = self.0.general_implementation(b, var_self, var_other).await;
                     match result {
                         None => None,
                         Some(result) => result.into_trait12i(mv_a),
@@ -802,22 +824,6 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for T {
             pb.finish_and_clear();
         }
     }
-}
-
-pub fn tokio_rt() -> tokio::runtime::Runtime {
-    tokio::runtime::Runtime::new().expect("Tokio should work")
-}
-pub fn tokio_joinset<T>() -> JoinSet<T> {
-    JoinSet::new()
-}
-pub fn indicatif_multi_progress() -> Arc<MultiProgress> {
-    Arc::new(MultiProgress::new())
-}
-pub fn indicatif_progress_bar(s: u64) -> indicatif::ProgressBar {
-    indicatif::ProgressBar::new(s)
-}
-pub fn indicatif_and_leave() -> ProgressFinish {
-    ProgressFinish::AndLeave
 }
 
 #[macro_export]
@@ -852,7 +858,7 @@ macro_rules! register_all {
                 let mp = multi_progress.clone();
                 let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t.register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                    $crate::ast::traits::RegisterTrait($t).register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
@@ -865,7 +871,7 @@ macro_rules! register_all {
                 let mp = multi_progress.clone();
                 let overall_pb_2 = overall_pb.clone();
                 js.spawn(async move {
-                    $t2.register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                    $crate::ast::traits::RegisterTrait($t2).register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
                 });
                 )+
                 while let Some(_) = js.join_next().await {}
