@@ -58,6 +58,7 @@ impl TrackOperations for FloatExpr {
                 result
             },
             FloatExpr::Product(v, last_factor) => {
+                // TODO update this branch to better reflect the code generation (and simd products)
                 let mut result = VectoredOperationsTracker::zero();
                 for (i, (f, exp)) in v.iter().enumerate() {
                     result += f.count_operations(lookup);

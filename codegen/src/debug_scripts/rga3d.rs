@@ -123,6 +123,9 @@ fn single_expression_simplification_debugger() {
 
 }
 
+// TODO impl AntiConstraintViolation for MultiVector {
+//   - (self.group1().xwzw()[0] * self[e423])
+
 #[tokio::test]
 async fn multi_line_simplification_debugger() {
     let rga3d = crate::ga! { e1234;

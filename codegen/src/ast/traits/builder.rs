@@ -725,6 +725,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         // TODO so.... now we've done a lot of fancy simplification...
         //  but dare we go even further? First distribute down... then factor out? Ugh.
         //  See impl UnitizedRadiusNormSquared for MultiVector
+        //  Or  impl AntiConstraintViolation for Line
         //  The reason this is difficult/annoying is because simplification requires
         //  distributing things out, so that terms can cancel. But this means performing
         //  factorization to reduce the number of operations will go against the grain

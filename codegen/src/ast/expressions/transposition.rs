@@ -888,6 +888,62 @@ fn vec4_product_extract(
     // The final power we will use when extracting
     let power = x_power.clone();
 
+    // TODO impl AntiProjectOrthogonallyOnto<Line> for Motor {
+    //  // e41, e42, e43, e1234
+    //  Before:
+    //  (Simd32x3::from(anti_wedge_g1_w) * other.group0())
+    //       .with_w(-(anti_wedge_g0_xyz[0] * other[e23]) - (anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12])),
+    //  After:
+    //  (Simd32x2::from(anti_wedge_g1_w) * other.group0().xy()).with_zw(
+    //      anti_wedge_g1_w * other[e43],
+    //      -(anti_wedge_g0_xyz[0] * other[e23]) - (anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12]),
+    //  ),
+
+    // TODO we really need a simd dot product thing
+    //  impl AntiProjectViaHorizonOnto<Plane> for Flector {
+    //  Before:
+    //  Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0())
+    //  After:
+    //  Plane::from_groups(
+    //      // e423, e431, e412, e321
+    //      Simd32x4::from(self[e321]) * Simd32x4::from([other[e423] * other[e321], other[e431] * other[e321], other[e412] * other[e321], other[e321] * other[e321]]),
+    //  )
+
+    // TODO impl AntiProjectViaHorizonOnto<Point> for Horizon {
+    //  Simd32x4::from([
+    //      other[e4],
+    //      other[e4],
+    //      other[e4],
+    //      -(anti_wedge_g1[0] * other[e1]) - (anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]),
+    //  ]) * anti_wedge_g1.with_w(1.0),
+
+    // TODO impl AntiProjectViaHorizonOnto<Line> for Motor {
+    //  // e41, e42, e43, e1234
+    //  Before:
+    //  (Simd32x3::from(anti_wedge_g1_w) * other.group0())
+    //      .with_w(-(anti_wedge_g0_xyz[0] * other[e23]) - (anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12])),
+    //  After:
+    //  (Simd32x2::from(anti_wedge_g1_w) * other.group0().xy()).with_zw(
+    //      anti_wedge_g1_w * other[e43],
+    //      -(anti_wedge_g0_xyz[0] * other[e23]) - (anti_wedge_g0_xyz[1] * other[e31]) - (anti_wedge_g0_xyz[2] * other[e12]),
+    //  ),
+
+    // TODO impl AntiProjectViaHorizonOnto<Line> for MultiVector {
+    //  let anti_wedge_g1 = Simd32x4::from([
+    //      self[e321],
+    //      self[e321],
+    //      self[e321],
+    //      -(right_dual_g0[0] * self[e423]) - (right_dual_g0[1] * self[e431]) - (right_dual_g0[2] * self[e412]),
+    //  ]) * right_dual_g0.with_w(1.0);
+
+    // TODO impl Sandwich<Flector> for DualNum {
+    //  Simd32x4::from([
+    //      self[scalar],
+    //      self[scalar],
+    //      self[scalar],
+    //      (geometric_product_g1_w * self[e1234]) + (geometric_product_g0[3] * self[scalar]),
+    //  ]) * geometric_product_g0.xyz().with_w(1.0),
+
     //
     // Begin extractions!
     //

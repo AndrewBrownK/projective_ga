@@ -937,6 +937,9 @@ impl Vec2Expr {
                 //     -2.0 * self[e41] * self[e41] - 2.0 * self[e42] * self[e42] - 2.0 * self[e43] * self[e43],
                 //  ]))
 
+                // TODO impl Wedge<Plane> for Flector {
+                //  Simd32x2::from([0.0, self[e321] * other[e4]]) * Simd32x2::from([0.0, -1.0]),
+
                 if product.is_empty() {
                     panic!("Please use Vec2Expr::product so you can find out where you constructed something wrong");
                 }
@@ -1128,6 +1131,9 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Sum(ref mut sum, last_addend) => {
+                // TODO impl std::ops::Sub<Scalar> for MultiVector {
+                //  self.group0() + (Simd32x2::from([other[scalar], 0.0]) * Simd32x2::from([-1.0, 0.0])),
+
                 let span = tracing::trace_span!("match_Sum");
                 let _enter = span.enter();
                 if sum.is_empty() {
@@ -2205,6 +2211,24 @@ impl Vec4Expr {
                 // Do I really want to do more here?
             }
             Vec4Expr::Gather4(f0, f1, f2, f3) => {
+                // TODO rare instance of latest simplification updates making code less optimal
+                //  impl AntiProjectOrthogonallyOnto<Flector> for DualNum {
+                //  impl AntiProjectOrthogonallyOnto<Motor> for AntiScalar {
+                //  From:
+                //  (anti_wedge_g0 * Simd32x4::from(other[scalar]))
+                //      + Simd32x3::from(0.0).with_w(-(anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12])),
+                //  To:
+                //  Simd32x4::from([
+                //      other[scalar],
+                //      other[scalar],
+                //      other[scalar],
+                //      (anti_wedge_g0[3] * other[scalar]) - (anti_wedge_g0[0] * other[e23]) - (anti_wedge_g0[1] * other[e31]) - (anti_wedge_g0[2] * other[e12]),
+                //  ]) * anti_wedge_g0.xyz().with_w(1.0),
+
+                // TODO maybe extend3to4 would be useful here
+                //  impl AntiProjectOrthogonallyOnto<Point> for Horizon {
+                //  impl AntiProjectOrthogonallyOnto<Flector> for Line {
+
                 let span = tracing::trace_span!("match_Gather4");
                 let _enter = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
@@ -2789,6 +2813,20 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Extend3to4(v3, f1) => {
+                // TODO impl AntiProjectViaHorizonOnto<Flector> for DualNum {
+                //  // e41, e42, e43, e1234
+                //  Before:
+                //  (other.group0().wwwx() * Simd32x3::from(0.0).with_w(anti_wedge_g1_xyz[0]))
+                //      + Simd32x3::from(0.0).with_w((anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3]) - (anti_wedge_g0_w * other[e321]))
+                //      - (Simd32x3::from(0.0).with_w(anti_wedge_g0_w).wwwx() * other.group0().xyz().with_w(other[e423])),
+                //  After:
+                //  Simd32x4::from([
+                //      anti_wedge_g0_w * other[e1],
+                //      anti_wedge_g0_w * other[e2],
+                //      anti_wedge_g0_w * other[e3],
+                //      (anti_wedge_g1_xyz[0] * other[e1]) + (anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3]) - (anti_wedge_g0_w * other[e321]),
+                //  ]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+
                 let span = tracing::trace_span!("match_Extend3to4");
                 let _enter = span.enter();
                 // println!("simplify Vec4Expr::Extend3to4 BEFORE: {v3:?} {f1:?}");
