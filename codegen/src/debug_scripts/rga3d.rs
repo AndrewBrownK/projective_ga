@@ -10,6 +10,7 @@ use tracing::Level;
 use tracing_subscriber::fmt::format::Format;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
+use crate::ast::traits::{Debug11, DebugTrait};
 
 crate::multi_vecs! { e1234;
 
@@ -49,5 +50,5 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    AntiConstraintViolation.trace_implementation(Level::DEBUG, repo, &Line).await;
+    DebugTrait(AntiConstraintViolation).trace_implementation(Level::DEBUG, repo, &Line).await;
 }

@@ -176,3 +176,58 @@ macro_rules! variants {
         }
     };
 }
+
+
+#[macro_export]
+macro_rules! register_all {
+    ( $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)*) => {
+        {
+            // TODO handle toggling of progress bars
+            let useProgressBars = true;
+            use $crate::build_scripts::common_traits::*;
+            let tir = $crate::ast::traits::TraitImplRegistry::new();
+            use $crate::ast::traits::{Register10, Register11, Register21, Register22, Register12f, Register12i};
+            let rt = $crate::ast::traits::tokio_rt();
+
+            let multi_progress = $crate::ast::traits::indicatif_multi_progress();
+            let _: () = rt.block_on(async {
+                let mut overall_pb = None;
+                if useProgressBars {
+                    let opb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
+                    opb.set_style($crate::ast::traits::progress_style());
+                    opb.set_message("AST: Trait Implementations");
+                    overall_pb = Some(opb);
+                }
+                let mut js = $crate::ast::traits::tokio_joinset();
+                $(
+                let tir_c = tir.clone();
+                let mv_repo_c = $mv_repo.clone();
+                let mp = multi_progress.clone();
+                let overall_pb_2 = overall_pb.clone();
+                js.spawn(async move {
+                    $crate::ast::traits::RegisterTrait($t).register::<$anti_scalar>(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                });
+                )+
+                while let Some(_) = js.join_next().await {}
+
+                $(
+                let mut js = $crate::ast::traits::tokio_joinset();
+                $(
+                let tir_c = tir.clone();
+                let mv_repo_c = $mv_repo.clone();
+                let mp = multi_progress.clone();
+                let overall_pb_2 = overall_pb.clone();
+                js.spawn(async move {
+                    $crate::ast::traits::RegisterTrait($t2).register::<$anti_scalar>(tir_c, mv_repo_c, mp, overall_pb_2).await;
+                });
+                )+
+                while let Some(_) = js.join_next().await {}
+                )*
+                if let Some(opb) = overall_pb {
+                    opb.finish();
+                }
+            });
+            tir
+        }
+    };
+}

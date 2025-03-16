@@ -55,7 +55,7 @@ impl TraitImplRegistry {
     }
 
     // TODO allow 12f and 12i as well
-    pub fn set_binary_operator<TD: TraitDef_2_Types_2_Args, const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    pub fn set_binary_operator<TD: TraitDef_2_Types_2_Args, const AntiScalar: BasisElement>(
         &self, repo: Arc<MultiVecRepository<AntiScalar>>,
         op: BinaryOps,
         td: TD
@@ -85,11 +85,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits22.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits22.get(&key).await.expect("Created during registration");
@@ -102,11 +102,11 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
-            if ProgressBars { overall_pb.finish_and_clear(); }
+            overall_pb.finish_and_clear();
         });
     }
 
-    pub fn set_unary_operator<TD: TraitDef_1_Type_1_Arg, const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    pub fn set_unary_operator<TD: TraitDef_1_Type_1_Arg, const AntiScalar: BasisElement>(
         &self, repo: Arc<MultiVecRepository<AntiScalar>>,
         op: UnaryOps,
         td: TD
@@ -136,11 +136,11 @@ impl TraitImplRegistry {
             let orig_td = tdr.traits11.get(&orig_key).await;
             let key = if orig_td.is_none() {
                 let td = OvertDelegate::new(op_key, InlineOnly::new(orig_key.final_name, td));
-                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             } else {
                 let td = OvertDelegate::new(op_key, td);
-                RegisterTrait(td).register::<AntiScalar, ProgressBars, TraceLogging>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
+                RegisterTrait(td).register::<AntiScalar>(slf, repo, multi_progress, Some(overall_pb.clone())).await;
                 td.trait_names().trait_key
             };
             let def = tdr.traits11.get(&key).await.expect("Created during registration");
@@ -153,7 +153,7 @@ impl TraitImplRegistry {
                 );
             }
             *the_op = Some(op);
-            if ProgressBars { overall_pb.finish_and_clear(); }
+            overall_pb.finish_and_clear();
         });
     }
 
@@ -256,10 +256,12 @@ pub fn indicatif_and_leave() -> ProgressFinish {
 pub struct RegisterTrait<T>(pub T);
 
 
+// TODO make the toggling of progress bars easier but not generics params because that's dumb
+
 
 #[async_trait]
 pub trait Register10 {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tr: TraitImplRegistry,
         mvs: Arc<MultiVecRepository<AntiScalar>>,
@@ -269,20 +271,21 @@ pub trait Register10 {
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits10.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
             prog_bar.set_style(progress_style());
@@ -311,7 +314,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
                     }
                 })
                 .await;
-            if ProgressBars && let Some(pb) = &pb {
+            if progress_bars && let Some(pb) = &pb {
                 qty_done += 1;
                 pb.inc(1);
                 if qty_done % update_period == 0 && let Some(op) = &overall_progress {
@@ -324,7 +327,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        if ProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+        if progress_bars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
             op.inc(qty % update_period);
             pb.finish_and_clear();
         }
@@ -333,39 +336,32 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
 
 #[async_trait]
 pub trait Register11 {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     );
-
-    // TODO separate this
-    async fn trace_implementation<const AntiScalar: BasisElement>(
-        &self,
-        filter: Level,
-        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
-        mv_a: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
-    ) -> Option<Arc<RawTraitImplementation>>;
 }
 
 #[async_trait]
 impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits11.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
 
         let qty = mv_repo.qty_classes() as u64;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
             prog_bar.set_style(progress_style());
@@ -400,7 +396,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
                     }
                 })
                 .await;
-            if ProgressBars && let Some(pb) = &pb {
+            if progress_bars && let Some(pb) = &pb {
                 qty_done += 1;
                 pb.inc(1);
                 if qty_done % update_period == 0 && let Some(op) = &overall_progress{
@@ -413,42 +409,16 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        if ProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+        if progress_bars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
             op.inc(qty % update_period);
             pb.finish_and_clear();
         }
-    }
-
-    // TODO make a similar method for the other RegisterXX traits
-    async fn trace_implementation<const AntiScalar: BasisElement>(
-        &self,
-        filter: Level,
-        mv_repo: Arc<MultiVecRepository<AntiScalar>>,
-        mv_a: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
-    ) -> Option<Arc<RawTraitImplementation>> {
-        let mv_a = MultiVector::from(mv_a);
-        let mut variables = HashMap::new();
-        let declare_self = param_self();
-        variables.entry(declare_self.name.clone()).or_insert(Arc::downgrade(&declare_self));
-        let var_self: Variable<MultiVector> = Variable { expr_type: mv_a.clone(), decl: declare_self };
-        let def = self.0.def();
-
-        // let n = def.names.trait_key.as_upper_camel();
-        let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, var_self).await?;
-
-        tracing_subscriber::fmt()
-            .with_max_level(filter)
-            .event_format(DebuggableCopyPasta::new())
-            .init();
-        b.into_trait11(mv_a)
     }
 }
 
 #[async_trait]
 pub trait Register21 {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
@@ -458,13 +428,14 @@ pub trait Register21 {
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits21.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
@@ -472,7 +443,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(big_qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
             prog_bar.set_style(progress_style());
@@ -518,7 +489,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
                             }
                         })
                         .await;
-                    if ProgressBars && let Some(pb) = &pb_2 {
+                    if progress_bars && let Some(pb) = &pb_2 {
                         pb.inc(1);
                         qty_done += 1;
                         if qty_done % update_period == 0 && let Some(op) = &overall_progress_2 {
@@ -531,7 +502,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
                     TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
                     TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
                 }
-                if ProgressBars && let Some(op) = &overall_progress_2 {
+                if progress_bars && let Some(op) = &overall_progress_2 {
                     op.inc(qty % update_period);
                 }
             });
@@ -539,7 +510,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        if ProgressBars && let Some(pb) = &pb {
+        if progress_bars && let Some(pb) = &pb {
             pb.finish_and_clear();
         }
     }
@@ -547,7 +518,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
 
 #[async_trait]
 pub trait Register22 {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
@@ -557,13 +528,14 @@ pub trait Register22 {
 }
 #[async_trait]
 impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits22.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
@@ -571,7 +543,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
         let qty = mv_repo.qty_classes() as u64;
         let big_qty = qty * qty;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(big_qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(big_qty)));
             prog_bar.set_style(progress_style());
@@ -623,7 +595,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
                             }
                         })
                         .await;
-                    if ProgressBars && let Some(pb) = &pb_2 {
+                    if progress_bars && let Some(pb) = &pb_2 {
                         pb.inc(1);
                         qty_done += 1;
                         if qty_done % update_period == 0 && let Some(op) = &overall_progress_2 {
@@ -636,7 +608,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
                     TraitTypeConsensus::add_vote(&def_2.owner, owner_type, true);
                     TraitTypeConsensus::add_vote(&def_2.output, return_type, owner_type == return_type);
                 }
-                if ProgressBars && let Some(op) = &overall_progress_2 {
+                if progress_bars && let Some(op) = &overall_progress_2 {
                     op.inc(qty % update_period);
                 }
             });
@@ -644,7 +616,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
         while let Some(result) = js.join_next().await {
             let _: () = result.expect("async machinery should work");
         }
-        if ProgressBars && let Some(pb) = &pb {
+        if progress_bars && let Some(pb) = &pb {
             pb.finish_and_clear();
         }
     }
@@ -652,7 +624,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
 
 #[async_trait]
 pub trait Register12f {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
@@ -662,13 +634,14 @@ pub trait Register12f {
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits12f.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
@@ -676,7 +649,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
             prog_bar.set_style(progress_style());
@@ -718,7 +691,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
                     }
                 })
                 .await;
-            if ProgressBars && let Some(pb) = &pb {
+            if progress_bars && let Some(pb) = &pb {
                 qty_done += 1;
                 pb.inc(1);
                 if qty_done % update_period == 0 && let Some(op) = &overall_progress {
@@ -731,7 +704,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        if ProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+        if progress_bars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
             op.inc(qty % update_period);
             pb.finish_and_clear();
         }
@@ -740,7 +713,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
 
 #[async_trait]
 pub trait Register12i {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
@@ -750,13 +723,14 @@ pub trait Register12i {
 }
 #[async_trait]
 impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
-    async fn register<const AntiScalar: BasisElement, const ProgressBars: bool, const TraceLogging: bool>(
+    async fn register<const AntiScalar: BasisElement>(
         self,
         tir: TraitImplRegistry,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         progress: Arc<MultiProgress>,
         overall_progress: Option<Arc<indicatif::ProgressBar>>,
     ) {
+        let progress_bars = overall_progress.is_some();
         let ga = mv_repo.ga();
         let trait_key = self.0.trait_names().trait_key;
         let def = tir.defs.traits12i.expect_get_or_create(trait_key.clone(), async move { self.0.def() }).await;
@@ -764,7 +738,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
         let qty = mv_repo.qty_classes() as u64;
         let qty = qty * qty;
         let mut pb = None;
-        if ProgressBars && let Some(op) = &overall_progress {
+        if progress_bars && let Some(op) = &overall_progress {
             op.inc_length(qty);
             let prog_bar = Arc::new(progress.add(indicatif::ProgressBar::new(qty)));
             prog_bar.set_style(progress_style());
@@ -806,7 +780,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
                     }
                 })
                 .await;
-            if ProgressBars && let Some(pb) = &pb {
+            if progress_bars && let Some(pb) = &pb {
                 qty_done += 1;
                 pb.inc(1);
                 if qty_done % update_period == 0 && let Some(op) = &overall_progress {
@@ -819,68 +793,9 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
             TraitTypeConsensus::add_vote(&def.owner, owner_type, true);
             TraitTypeConsensus::add_vote(&def.output, return_type, owner_type == return_type);
         }
-        if ProgressBars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
+        if progress_bars && let (Some(pb), Some(op)) = (&pb, &overall_progress) {
             op.inc(qty % update_period);
             pb.finish_and_clear();
         }
     }
-}
-
-#[macro_export]
-macro_rules! register_all {
-    ( $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)* ) => {
-        $crate::register_all!(true false $anti_scalar $mv_repo; $($t )* $(| $($t2 )* )*)
-    };
-    ( debug $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)* ) => {
-        $crate::register_all!(false true $anti_scalar $mv_repo; $($t )* $(| $($t2 )* )*)
-    };
-
-    ( $useProgressBars:literal $debug:literal $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)*) => {
-        {
-            use $crate::build_scripts::common_traits::*;
-            let tir = $crate::ast::traits::TraitImplRegistry::new();
-            use $crate::ast::traits::{Register10, Register11, Register21, Register22, Register12f, Register12i};
-            let rt = $crate::ast::traits::tokio_rt();
-
-            let multi_progress = $crate::ast::traits::indicatif_multi_progress();
-            let _: () = rt.block_on(async {
-                let mut overall_pb = None;
-                if $useProgressBars {
-                    let opb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
-                    opb.set_style($crate::ast::traits::progress_style());
-                    opb.set_message("AST: Trait Implementations");
-                    overall_pb = Some(opb);
-                }
-                let mut js = $crate::ast::traits::tokio_joinset();
-                $(
-                let tir_c = tir.clone();
-                let mv_repo_c = $mv_repo.clone();
-                let mp = multi_progress.clone();
-                let overall_pb_2 = overall_pb.clone();
-                js.spawn(async move {
-                    $crate::ast::traits::RegisterTrait($t).register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
-                });
-                )+
-                while let Some(_) = js.join_next().await {}
-
-                $(
-                let mut js = $crate::ast::traits::tokio_joinset();
-                $(
-                let tir_c = tir.clone();
-                let mv_repo_c = $mv_repo.clone();
-                let mp = multi_progress.clone();
-                let overall_pb_2 = overall_pb.clone();
-                js.spawn(async move {
-                    $crate::ast::traits::RegisterTrait($t2).register::<$anti_scalar, $useProgressBars, $debug>(tir_c, mv_repo_c, mp, overall_pb_2).await;
-                });
-                )+
-                while let Some(_) = js.join_next().await {}
-                )*
-                if let Some(opb) = overall_pb {
-                    opb.finish();
-                }
-            });
-            tir
-        }
-    };
 }
