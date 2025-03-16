@@ -63,7 +63,7 @@ fn main() {
         e5 => eP + eM;
     };
     let repo = base_documentation(register_multi_vecs(cga3d)).finished();
-    let traits = codegen::register_all! { repo;
+    let traits = codegen::register_all! { e12345 repo;
         Zero One AntiOne Unit
         Grade AntiGrade Into TryInto
         RightDual RightAntiDual Reverse AntiReverse
@@ -124,13 +124,13 @@ fn main() {
         Support AntiSupport
         Unitize
     };
-    codegen::operators! { repo, traits;
+    codegen::operators! { e12345 repo, traits;
         fancy_infix => Div;
 
         binary
         Add => Addition,
         Sub => Subtraction,
-        // BitXor => Wedge,
+        BitXor => Wedge,
         Mul => GeometricProduct;
 
         unary

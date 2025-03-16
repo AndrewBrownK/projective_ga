@@ -61,7 +61,7 @@ fn main() {
         e5 => eP + eM;
     };
     let repo = generate_variants(base_documentation(register_multi_vecs(cga3d))).finished();
-    let traits = codegen::register_all! { repo;
+    let traits = codegen::register_all! { e12345 repo;
         Zero One AntiOne Unit
         Grade AntiGrade Into TryInto
         RightDual RightAntiDual Reverse AntiReverse
@@ -122,39 +122,7 @@ fn main() {
         Support AntiSupport
         Unitize
     };
-    codegen::operators! { repo, traits;
-        fancy_infix => Div;
-
-        binary
-        Add => Addition,
-        Sub => Subtraction,
-        // BitXor => Wedge,
-        Mul => GeometricProduct;
-
-        unary
-        Neg => Negation,
-        Not => RightDual;
-    }
     let traits = traits.finish();
-
-    // At the time of this commit, this wgsl file weighs in at 72.2 MB.
-    // I'm going to gitignore it and also comment it out, since
-    // I don't think I want to be using it anyway.
-
-    // let mut wgsl = codegen::Wgsl::new();
-    // wgsl.write_shader_file(
-    //     "libraries/cga3d_faceted/src/",
-    //     "cga3d_faceted",
-    //     1,
-    //     0,
-    //     0,
-    //     "",
-    //     "Latest generation test case",
-    //     "https://github.com/AndrewBrownK/projective_ga/",
-    //     &[],
-    //     repo.clone(),
-    //     traits.clone(),
-    // );
 
     let mut rust = codegen::Rust::new(true).all_features();
     rust.sql = false;
@@ -187,7 +155,7 @@ fn base_documentation(mut declarations: DeclareMultiVecs<e12345>) -> DeclareMult
 }
 
 fn generate_variants(mut declarations: DeclareMultiVecs<e12345>) -> DeclareMultiVecs<e12345> {
-    use codegen::algebra::basis::filter::{allow_all_signatures, SigFilter, signatures_containing};
+    use codegen::algebra::basis::filter::{allow_all_signatures, signatures_containing, SigFilter};
     use codegen::elements::*;
 
     let origin = signatures_containing(e4);
@@ -278,10 +246,10 @@ pub mod custom_traits {
 
     use codegen::algebra::basis::BasisElement;
     use codegen::ast::impls::Elaborated;
-    use codegen::build_scripts::common_traits::{anti_support, support, unitize};
-    use codegen::build_scripts::common_traits::conformal::*;
     use codegen::build_scripts::common_traits::conformal::impls::*;
+    use codegen::build_scripts::common_traits::conformal::*;
     use codegen::build_scripts::common_traits::impls::{AntiSupportImpl, SupportImpl, UnitizeImpl};
+    use codegen::build_scripts::common_traits::{anti_support, support, unitize};
 
     const origin: BasisElement = codegen::elements::e4;
     const infinity: BasisElement = codegen::elements::e5;
