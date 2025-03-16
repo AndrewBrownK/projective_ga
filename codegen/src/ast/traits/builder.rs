@@ -559,15 +559,21 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 });
                 copy_pasta.push_str(" = ");
                 copy_pasta = format!("{copy_pasta}{return_expr:?}");
-                copy_pasta.push_str(";");
+                copy_pasta.push_str(";\n");
                 copy_pasta
             }};
         }
+        macro_rules! do_copy_pasta {
+            () => {
+                tracing::event!(Level::DEBUG, "Debuggable Copy-Pasta:");
+                tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!());
+            };
+        }
 
-        tracing::event!(Level::DEBUG, "Debuggable Copy-Pasta:");
-        tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!());
+        do_copy_pasta!();
 
         'outer: loop {
+            let span = tracing::span!(Level::DEBUG, "Inlining Variables");
             'inner: loop {
                 // Scan through the lines in reverse, drop unused variables
 
@@ -624,7 +630,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     break 'inner
                 }
             }
-
+            drop(span);
+            do_copy_pasta!();
 
             // Destructuring simplification of variables that are not used in whole
             let mut dv = DestructurableVariables::new();
@@ -634,6 +641,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             // let mut ili2 = 0;
             let mut did_destructure = false;
             let mut i = 0;
+
+            let span = tracing::span!(Level::DEBUG, "Destructuring Variables");
             'inner: while i < lines.len() {
                 // Foo i=2 j=0
                 // Bar i=1 j=1
@@ -703,8 +712,10 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 // Baz_z i=0 j=4
                 i += l;
             }
+            drop(span);
 
             if did_destructure {
+                do_copy_pasta!();
                 continue 'outer
             } else {
                 break 'outer;
