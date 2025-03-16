@@ -69,7 +69,7 @@ fn main() {
         binary
         Add => Addition,
         Sub => Subtraction,
-        // BitXor => Wedge,
+        BitXor => Wedge,
         Mul => GeometricProduct;
 
         unary

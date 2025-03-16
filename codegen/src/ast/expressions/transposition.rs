@@ -23,6 +23,7 @@ impl ExtractionStrength {
         WholeGroups,
         Gather1,
         Swizzle,
+        // TODO distinction between "natural extensions" and "truncated extensions"
         ExtendAndTruncate,
     ];
 }
@@ -123,6 +124,7 @@ fn vec2_product_transpose(
         // Revert to flat access, from the extraction-converted group access
         float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -146,6 +148,7 @@ fn vec2_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec2_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -192,6 +195,7 @@ fn vec2_product_extract(
     }
     x.undo_flat_access();
     y.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?})");
     match (x, y) {
         (
             AccessVec2(box v0, 0),
@@ -258,6 +262,7 @@ fn vec2_sum_transpose(
     }
 
     if vec2_sum.is_empty() && coalesce_sum_literal == [0.0; 2] {
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -281,6 +286,7 @@ fn vec2_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec2_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -327,6 +333,7 @@ fn vec2_sum_extract(
     }
     x.undo_flat_access();
     y.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?})");
     match (x, y) {
         (
             AccessVec2(box v0, 0),
@@ -401,6 +408,7 @@ fn vec3_product_transpose(
         float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -430,6 +438,7 @@ fn vec3_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec3_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -493,6 +502,7 @@ fn vec3_product_extract(
     x.undo_flat_access();
     y.undo_flat_access();
     z.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?})");
     match (x, y, z) {
         (
             AccessVec3(box v0, 0),
@@ -549,7 +559,7 @@ fn vec3_product_extract(
             Sum(v0, a0),
             Sum(v1, a1),
             z,
-        ) if extraction_strength >= ExtendAndTruncate && xyz => {
+        ) if extraction_strength >= ExtendAndTruncate && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), power));
@@ -586,6 +596,7 @@ fn vec3_sum_transpose(
     }
 
     if vec3_sum.is_empty() && coalesce_sum_literal == [0.0; 3] {
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -615,6 +626,7 @@ fn vec3_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec3_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -673,6 +685,7 @@ fn vec3_sum_extract(
     x.undo_flat_access();
     y.undo_flat_access();
     z.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?})");
     match (x, y, z) {
         (
             AccessVec3(box v0, 0),
@@ -776,6 +789,7 @@ fn vec4_product_transpose(
         float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         float_product_3.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -811,6 +825,7 @@ fn vec4_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec4_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -893,6 +908,7 @@ fn vec4_product_extract(
     y.undo_flat_access();
     z.undo_flat_access();
     w.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?}, {w:?})");
     match (x, y, z, w) {
         (
             AccessVec4(box v0, 0),
@@ -954,7 +970,7 @@ fn vec4_product_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyzw && eqs!(v0, v1) => {
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
             vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), power));
             true
         }
@@ -974,7 +990,7 @@ fn vec4_product_extract(
             Sum(v1, a1),
             Sum(v2, a2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyzw => {
+        ) if extraction_strength >= ExtendAndTruncate && xyz_w => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
             vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), power));
@@ -985,7 +1001,7 @@ fn vec4_product_extract(
             Sum(v1, a1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyzw => {
+        ) if extraction_strength >= ExtendAndTruncate && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), power));
@@ -1027,6 +1043,7 @@ fn vec4_sum_transpose(
     }
 
     if vec4_sum.is_empty() && coalesce_sum_literal == [0.0; 4] {
+        tracing::trace!("no extractions");
         return None;
     }
     let mut keep_remaining = false;
@@ -1062,6 +1079,7 @@ fn vec4_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     result.vec4_simplify(false, false);
+    tracing::trace!("Transpose result: {result:?}");
     Some(result)
 }
 
@@ -1132,6 +1150,7 @@ fn vec4_sum_extract(
     y.undo_flat_access();
     z.undo_flat_access();
     w.undo_flat_access();
+    tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?}, {w:?})");
     match (x, y, z, w) {
         (
             AccessVec4(box v0, 0),

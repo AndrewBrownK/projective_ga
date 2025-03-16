@@ -210,25 +210,7 @@ impl Ops {
 #[macro_export]
 macro_rules! operators {
     (
-        $anti_scalar:ident $mv_repo:expr, $tir:ident
-        $(; fancy_infix => $itr:ident)?
-        $(; binary $($bop:ident => $btr:ident),+)?
-        $(; unary $($uop:ident => $utr:ident),+ )?
-        $(;)?
-    ) => {
-        $crate::operators!(true false $anti_scalar $mv_repo, $tir $(; fancy_infix => $itr)? $(; binary $($bop => $btr),*)? $(; unary $($uop => $utr),*)?)
-    };
-    (
-        debug $anti_scalar:ident $mv_repo:expr, $tir:ident
-        $(; fancy_infix => $itr:ident)?
-        $(; binary $($bop:ident => $btr:ident),+)?
-        $(; unary $($uop:ident => $utr:ident),+ )?
-        $(;)?
-    ) => {
-        $crate::operators!(false true $anti_scalar $mv_repo, $tir $(; fancy_infix => $itr)? $(; binary $($bop => $btr),*)? $(; unary $($uop => $utr),*)?)
-    };
-    (
-        $useProgressBars:literal $debug:literal $anti_scalar:ident
+        $anti_scalar:ident
         $mv_repo:expr, $tir:ident
         $(; fancy_infix => $itr:ident)?
         $(; binary $($bop:ident => $btr:ident),+)?
@@ -241,10 +223,10 @@ macro_rules! operators {
             use $crate::ast::traits::UnaryOps::*;
             $($tir.generate_infix_trick($itr);)?
             $($(
-                $tir.set_binary_operator::<_, $anti_scalar, $useProgressBars, $debug>($mv_repo.clone(), $bop, $btr);
+                $tir.set_binary_operator::<_, $anti_scalar>($mv_repo.clone(), $bop, $btr);
             )+)?
             $($(
-                $tir.set_unary_operator::<_, $anti_scalar, $useProgressBars, $debug>($mv_repo.clone(), $uop, $utr);
+                $tir.set_unary_operator::<_, $anti_scalar>($mv_repo.clone(), $uop, $utr);
             )+)?
         }
     };

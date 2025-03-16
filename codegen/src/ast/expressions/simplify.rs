@@ -77,6 +77,8 @@ impl IntExpr {
     fn int_simplify(&mut self, insides_already_done: bool) {
         match self {
             IntExpr::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -111,6 +113,8 @@ impl FloatExpr {
     fn float_simplify(&mut self, insides_already_done: bool) {
         match self {
             FloatExpr::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -127,6 +131,8 @@ impl FloatExpr {
             }
             FloatExpr::Literal(_) => {}
             FloatExpr::FromInt(a) => {
+                let span = tracing::trace_span!("match_FromInt");
+                let _enter = span.enter();
                 if !insides_already_done {
                     a.int_simplify(insides_already_done);
                 }
@@ -140,6 +146,8 @@ impl FloatExpr {
                 }
             },
             FloatExpr::AccessVec2(av2, idx_in_vec) => {
+                let span = tracing::trace_span!("match_AccessVec2");
+                let _enter = span.enter();
                 if !insides_already_done {
                     av2.vec2_simplify(insides_already_done, true);
                 }
@@ -192,6 +200,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::AccessVec3(av3, idx_in_vec) => {
+                let span = tracing::trace_span!("match_AccessVec3");
+                let _enter = span.enter();
                 if !insides_already_done {
                     av3.vec3_simplify(insides_already_done, true);
                 }
@@ -254,6 +264,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::AccessVec4(av4, idx_in_vec) => {
+                let span = tracing::trace_span!("match_AccessVec4");
+                let _enter = span.enter();
                 if !insides_already_done {
                     av4.vec4_simplify(insides_already_done, true);
                 }
@@ -331,6 +343,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::AccessMultiVecGroup(mve, idx) => {
+                let span = tracing::trace_span!("match_AccessMultiVecGroup");
+                let _enter = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -365,6 +379,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::AccessMultiVecFlat(mve, idx) => {
+                let span = tracing::trace_span!("match_AccessMultiVecFlat");
+                let _enter = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -413,11 +429,15 @@ impl FloatExpr {
                 }
             }
             FloatExpr::TraitInvoke11ToFloat(_t, owner) => {
+                let span = tracing::trace_span!("match_TraitInvoke11ToFloat");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             FloatExpr::Product(product, last_factor) => {
+                let span = tracing::trace_span!("match_Product");
+                let _enter = span.enter();
                 // TODO smells like nested products in impl AntiConstraintViolation for DualNum
 
                 if product.is_empty() {
@@ -548,6 +568,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::Sum(sum, last_addend) => {
+                let span = tracing::trace_span!("match_Sum");
+                let _enter = span.enter();
                 if sum.is_empty() {
                     panic!("Please use FloatExpr::sum so you can find out where you constructed something wrong");
                 }
@@ -632,6 +654,8 @@ impl FloatExpr {
                 }
             }
             FloatExpr::Exp(base_expression, exponent_expression, exponent_literal) => {
+                let span = tracing::trace_span!("match_Exp");
+                let _enter = span.enter();
                 if !insides_already_done {
                     base_expression.float_simplify(insides_already_done);
                 }
@@ -705,6 +729,8 @@ impl Vec2Expr {
     fn vec2_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec2Expr::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -720,12 +746,16 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Gather1(ref mut f) => {
+                let span = tracing::trace_span!("match_Gather1");
+                let _enter = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
                 // Do I really want to do more here?
             }
             Vec2Expr::Gather2(ref mut f0, ref mut f1) => {
+                let span = tracing::trace_span!("match_Gather2");
+                let _enter = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
                     f0.float_simplify(insides_already_done);
@@ -850,6 +880,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
+                let span = tracing::trace_span!("match_AccessMultiVecGroup");
+                let _enter = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -879,6 +911,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Product(ref mut product, last_factor) => {
+                let span = tracing::trace_span!("match_Product");
+                let _enter = span.enter();
                 // TODO not sure if this should be fixed here in simplification, or in code emission:
                 //  impl AntiProjectOrthogonallyOnto<Scalar> for DualNum
                 //  Before:    DualNum::from_groups(/* scalar, e1234 */ Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0())
@@ -997,14 +1031,16 @@ impl Vec2Expr {
                 }
                 macro_rules! mul_coefficient {
                     ($float_expr:expr, $k:expr) => {
-                        match &mut $float_expr {
-                            FloatExpr::Product(v, c) => {
-                                c.mul_assign($k);
-                            }
-                            otherwise => {
-                                let f = $float_expr.take_as_owned();
-                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                $float_expr.float_simplify(true);
+                        if $k != 1.0 {
+                            match &mut $float_expr {
+                                FloatExpr::Product(v, c) => {
+                                    c.mul_assign($k);
+                                }
+                                otherwise => {
+                                    let f = $float_expr.take_as_owned();
+                                    $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                    $float_expr.float_simplify(true);
+                                }
                             }
                         }
                     }
@@ -1092,6 +1128,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Sum(ref mut sum, last_addend) => {
+                let span = tracing::trace_span!("match_Sum");
+                let _enter = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec2Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -1192,6 +1230,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::SwizzleVec2(v2, i0, i1) => {
+                let span = tracing::trace_span!("match_SwizzleVec2");
+                let _enter = span.enter();
                 if *i0 > 1 || *i1 > 1 {
                     panic!("Please use Vec2Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
@@ -1214,6 +1254,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Truncate3to2(box v3) => {
+                let span = tracing::trace_span!("match_Truncate3to2");
+                let _enter = span.enter();
                 if !insides_already_done {
                     v3.vec3_simplify(insides_already_done, transpose_simd);
                 }
@@ -1243,6 +1285,8 @@ impl Vec2Expr {
                 }
             }
             Vec2Expr::Truncate4to2(box v4) => {
+                let span = tracing::trace_span!("match_Truncate4to2");
+                let _enter = span.enter();
                 if !insides_already_done {
                     v4.vec4_simplify(insides_already_done, transpose_simd);
                 }
@@ -1298,6 +1342,8 @@ impl Vec3Expr {
     fn vec3_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec3Expr::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -1313,12 +1359,16 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::Gather1(ref mut f) => {
+                let span = tracing::trace_span!("match_Gather1");
+                let _enter = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
                 // Do I really want to do more here?
             }
             Vec3Expr::Gather3(ref mut f0, ref mut f1, ref mut f2) => {
+                let span = tracing::trace_span!("match_Gather3");
+                let _enter = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
                     f0.float_simplify(insides_already_done);
@@ -1599,6 +1649,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::Extend2to3(v2, f1) => {
+                let span = tracing::trace_span!("match_Extend2to3");
+                let _enter = span.enter();
                 if !insides_already_done {
                     v2.vec2_simplify(insides_already_done, transpose_simd);
                     f1.float_simplify(insides_already_done);
@@ -1618,6 +1670,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
+                let span = tracing::trace_span!("match_AccessMultiVecGroup");
+                let _enter = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -1647,6 +1701,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::Product(ref mut product, last_factor) => {
+                let span = tracing::trace_span!("match_Product");
+                let _enter = span.enter();
                 if product.is_empty() {
                     panic!("Please use Vec3Expr::product so you can find out where you constructed something wrong");
                 }
@@ -1762,19 +1818,20 @@ impl Vec3Expr {
                 }
                 macro_rules! mul_coefficient {
                     ($float_expr:expr, $k:expr) => {
-                        match &mut $float_expr {
-                            FloatExpr::Product(v, c) => {
-                                c.mul_assign($k);
-                            }
-                            otherwise => {
-                                let f = $float_expr.take_as_owned();
-                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                $float_expr.float_simplify(true);
+                        if $k != 1.0 {
+                            match &mut $float_expr {
+                                FloatExpr::Product(v, c) => {
+                                    c.mul_assign($k);
+                                }
+                                otherwise => {
+                                    let f = $float_expr.take_as_owned();
+                                    $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                    $float_expr.float_simplify(true);
+                                }
                             }
                         }
                     }
                 }
-
                 if eqs!(x, y, z) && !gather1.is_empty() {
                     let gather1 = swap_take!(gather1, vec![]);
                     let mut f = FloatExpr::product(gather1, x);
@@ -1801,6 +1858,7 @@ impl Vec3Expr {
                     (true, true, false) if !extend2to3_xy.is_empty() => {
                         let z = swap_take!(gather3_z, vec![]);
                         leftover_z = FloatExpr::product(z, 1.0);
+                        leftover_z.float_simplify(true);
                     }
                     _ => {}
                 }
@@ -1913,6 +1971,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::Sum(ref mut sum, last_addend) => {
+                let span = tracing::trace_span!("match_Sum");
+                let _enter = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec3Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -2036,6 +2096,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::SwizzleVec3(v3, i0, i1, i2) => {
+                let span = tracing::trace_span!("match_SwizzleVec3");
+                let _enter = span.enter();
                 if *i0 > 2 || *i1 > 2 || *i2 > 2 {
                     panic!("Please use Vec3Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
@@ -2064,6 +2126,8 @@ impl Vec3Expr {
                 }
             }
             Vec3Expr::Truncate4to3(box v4) => {
+                let span = tracing::trace_span!("match_Truncate4to3");
+                let _enter = span.enter();
                 if !insides_already_done {
                     v4.vec4_simplify(insides_already_done, transpose_simd);
                 }
@@ -2114,6 +2178,8 @@ impl Vec4Expr {
     fn vec4_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
         match self {
             Vec4Expr::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 // TODO convert all the strong_count uses to into_inner instead
                 //  Arc::into_inner(decl)
@@ -2131,12 +2197,16 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Gather1(f) => {
+                let span = tracing::trace_span!("match_Gather1");
+                let _enter = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
                 // Do I really want to do more here?
             }
             Vec4Expr::Gather4(f0, f1, f2, f3) => {
+                let span = tracing::trace_span!("match_Gather4");
+                let _enter = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 // println!("simplify Vec4Expr::Gather4 BEFORE: {f0:?} {f1:?} {f2:?} {f3:?}");
                 if !insides_already_done {
@@ -2697,6 +2767,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Extend2to4(v2, f1, f2) => {
+                let span = tracing::trace_span!("match_Extend2to4");
+                let _enter = span.enter();
                 if !insides_already_done {
                     v2.vec2_simplify(insides_already_done, transpose_simd);
                     f1.float_simplify(insides_already_done);
@@ -2717,6 +2789,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Extend3to4(v3, f1) => {
+                let span = tracing::trace_span!("match_Extend3to4");
+                let _enter = span.enter();
                 // println!("simplify Vec4Expr::Extend3to4 BEFORE: {v3:?} {f1:?}");
                 if !insides_already_done {
                     v3.vec3_simplify(insides_already_done, transpose_simd);
@@ -2748,6 +2822,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::AccessMultiVecGroup(mve, idx) => {
+                let span = tracing::trace_span!("match_AccessMultiVecGroup");
+                let _enter = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -2777,6 +2853,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Product(product, last_factor) => {
+                let span = tracing::trace_span!("match_Product");
+                let _enter = span.enter();
                 if product.is_empty() {
                     panic!("Please use Vec4Expr::product so you can find out where you constructed something wrong");
                 }
@@ -2917,14 +2995,16 @@ impl Vec4Expr {
                 }
                 macro_rules! mul_coefficient {
                     ($float_expr:expr, $k:expr) => {
-                        match &mut $float_expr {
-                            FloatExpr::Product(v, c) => {
-                                c.mul_assign($k);
-                            }
-                            otherwise => {
-                                let f = $float_expr.take_as_owned();
-                                $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                $float_expr.float_simplify(true);
+                        if $k != 1.0 {
+                            match &mut $float_expr {
+                                FloatExpr::Product(v, c) => {
+                                    c.mul_assign($k);
+                                }
+                                otherwise => {
+                                    let f = $float_expr.take_as_owned();
+                                    $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
+                                    $float_expr.float_simplify(true);
+                                }
                             }
                         }
                     }
@@ -2972,10 +3052,13 @@ impl Vec4Expr {
                         let w = swap_take!(gather4_w, vec![]);
                         leftover_z = FloatExpr::product(z, 1.0);
                         leftover_w = FloatExpr::product(w, 1.0);
+                        leftover_z.float_simplify(true);
+                        leftover_w.float_simplify(true);
                     }
                     (true, true, true, false) if !extend3to4_xyz.is_empty() => {
                         let w = swap_take!(gather4_w, vec![]);
                         leftover_w = FloatExpr::product(w, 1.0);
+                        leftover_w.float_simplify(true);
                     }
                     _ => {}
                 }
@@ -3131,6 +3214,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Sum(sum, last_addend) => {
+                let span = tracing::trace_span!("match_Sum");
+                let _enter = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec4Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -3274,6 +3359,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::SwizzleVec4(v4, i0, i1, i2, i3) => {
+                let span = tracing::trace_span!("match_SwizzleVec4");
+                let _enter = span.enter();
                 if *i0 > 3 || *i1 > 3 || *i2 > 3 {
                     panic!("Please use Vec4Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
@@ -3399,6 +3486,8 @@ impl MultiVectorExpr {
     pub(crate) fn multivec_simplify(&mut self, insides_already_done: bool) {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
+                let span = tracing::trace_span!("match_Variable");
+                let _enter = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -3414,6 +3503,8 @@ impl MultiVectorExpr {
                 }
             }
             MultiVectorVia::Construct(groups) => {
+                let span = tracing::trace_span!("match_Construct");
+                let _enter = span.enter();
                 if !insides_already_done {
                     for group in groups.iter_mut() {
                         group.group_simplify(insides_already_done);
@@ -3453,28 +3544,38 @@ impl MultiVectorExpr {
                 }
             }
             MultiVectorVia::TraitInvoke11ToClass(_t, owner) => {
+                let span = tracing::trace_span!("match_TraitInvoke11ToClass");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke21ToClass(_t, owner, _other) => {
+                let span = tracing::trace_span!("match_TraitInvoke21ToClass");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke22ToClass(_t, owner, other) => {
+                let span = tracing::trace_span!("match_TraitInvoke22ToClass");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.multivec_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke12iToClass(_t, owner, other) => {
+                let span = tracing::trace_span!("match_TraitInvoke12iToClass");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.int_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke12fToClass(_t, owner, other) => {
+                let span = tracing::trace_span!("match_TraitInvoke12fToClass");
+                let _enter = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.float_simplify(insides_already_done);

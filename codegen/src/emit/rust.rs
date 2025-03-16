@@ -580,7 +580,7 @@ postgres-types = "0.2.7""#
                 writeln!(&mut file, "// This is due to varying hardware capabilities and compiler optimizations. ")?;
                 writeln!(&mut file, "// As always, where performance is a concern, there is no substitute for ")?;
                 writeln!(&mut file, "// real measurements on real work-loads on real hardware.")?;
-                writeln!(&mut file, "// Disclaimer aside, enjoy the fun information =)")?;
+                writeln!(&mut file, "// Disclaimer aside, enjoy the fun information 😁")?;
 
                 if qty_impls > 1 {
                     let qty_impls = qty_impls as usize;
