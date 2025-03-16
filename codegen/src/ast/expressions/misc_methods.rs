@@ -198,6 +198,13 @@ impl MultiVectorExpr {
             })
             .flatten()
     }
+
+    pub fn new<MV: Into<MultiVector>>(mv: MV, via: MultiVectorVia) -> Self {
+        MultiVectorExpr {
+            mv_class: mv.into(),
+            expr: Box::new(via),
+        }
+    }
 }
 
 
@@ -218,7 +225,7 @@ impl IntExpr {
             IntExpr::TraitInvoke10ToInt(_, _) => false,
         };
         if result {
-            self.simplify_nuanced(true);
+            self.int_simplify(true);
         }
         result
     }
@@ -291,7 +298,7 @@ impl FloatExpr {
             FloatExpr::FromInt(a) => a.deep_inline_variables(),
         };
         if result {
-            self.simplify_nuanced(true);
+            self.float_simplify(true);
         }
         result
     }
@@ -368,7 +375,7 @@ impl Vec2Expr {
         };
         if result {
             self.slice_to_floats();
-            self.simplify_nuanced(false, false);
+            self.vec2_simplify(false, false);
         }
         result
     }
@@ -495,7 +502,7 @@ impl Vec3Expr {
         };
         if result {
             self.slice_to_floats();
-            self.simplify_nuanced(false, false);
+            self.vec3_simplify(false, false);
         }
         result
     }
@@ -633,7 +640,7 @@ impl Vec4Expr {
         };
         if result {
             self.slice_to_floats();
-            self.simplify_nuanced(false, false);
+            self.vec4_simplify(false, false);
         }
         result
     }
@@ -733,7 +740,7 @@ impl MultiVectorGroupExpr {
             MultiVectorGroupExpr::Vec4(v) => v.deep_inline_variables(),
         };
         if result {
-            self.simplify_nuanced(true);
+            self.group_simplify(true);
         }
         result
     }
@@ -800,7 +807,7 @@ impl MultiVectorExpr {
             MultiVectorVia::TraitInvoke12fToClass(_, _, _) => false,
         };
         if result {
-            self.simplify_nuanced(true);
+            self.multivec_simplify(true);
         }
         result
     }

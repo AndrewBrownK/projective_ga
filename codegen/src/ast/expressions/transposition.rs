@@ -99,7 +99,7 @@ impl FloatExpr {
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec2_product(
+fn vec2_product_transpose(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     mut coalesce_product_literal: [f32; 2]
@@ -145,7 +145,7 @@ fn transpose_vec2_product(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec2_simplify(false, false);
     Some(result)
 }
 
@@ -228,7 +228,7 @@ fn vec2_product_extract(
             Sum(v1, a1)
         ) if xy => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec2_product.push((transposed, power));
             true
         }
@@ -237,7 +237,7 @@ fn vec2_product_extract(
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec2_sum(
+fn vec2_sum_transpose(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     mut coalesce_sum_literal: [f32; 2]
@@ -280,7 +280,7 @@ fn transpose_vec2_sum(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec2_simplify(false, false);
     Some(result)
 }
 
@@ -362,7 +362,7 @@ fn vec2_sum_extract(
             Product(v1, a1)
         ) if xy => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
             vec2_sum.push((transposed, coefficient));
             true
         }
@@ -371,7 +371,7 @@ fn vec2_sum_extract(
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec3_product(
+fn vec3_product_transpose(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     float_product_2: &mut Vec<(FloatExpr, f32)>,
@@ -429,7 +429,7 @@ fn transpose_vec3_product(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec3_simplify(false, false);
     Some(result)
 }
 
@@ -541,7 +541,7 @@ fn vec3_product_extract(
             Sum(v2, a2)
         ) if xyz => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = transpose_vec3_sum(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
             vec3_product.push((transposed, power));
             true
         }
@@ -551,7 +551,7 @@ fn vec3_product_extract(
             z,
         ) if extraction_strength >= ExtendAndTruncate && xyz => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), power));
             true
         }
@@ -560,7 +560,7 @@ fn vec3_product_extract(
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec3_sum(
+fn vec3_sum_transpose(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     float_sum_2: &mut Vec<(FloatExpr, f32)>,
@@ -614,7 +614,7 @@ fn transpose_vec3_sum(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec3_simplify(false, false);
     Some(result)
 }
 
@@ -721,7 +721,7 @@ fn vec3_sum_extract(
             Product(v2, a2),
         ) if xyz => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = transpose_vec3_product(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_product_transpose(v0, v1, v2, a) else { return false };
             vec3_sum.push((transposed, coefficient));
             true
         }
@@ -731,7 +731,7 @@ fn vec3_sum_extract(
             z,
         ) if extraction_strength >= ExtendAndTruncate && xy_z => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
             vec3_sum.push((Vec3Expr::Extend2to3(transposed, z.clone()), coefficient));
             true
         }
@@ -740,7 +740,7 @@ fn vec3_sum_extract(
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec4_product(
+fn vec4_product_transpose(
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     float_product_2: &mut Vec<(FloatExpr, f32)>,
@@ -810,7 +810,7 @@ fn transpose_vec4_product(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec4_simplify(false, false);
     Some(result)
 }
 
@@ -965,7 +965,7 @@ fn vec4_product_extract(
             Sum(v3, a3),
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
-            let Some(transposed) = transpose_vec4_sum(v0, v1, v2, v3, a) else { return false };
+            let Some(transposed) = vec4_sum_transpose(v0, v1, v2, v3, a) else { return false };
             vec4_product.push((transposed, power));
             true
         }
@@ -976,7 +976,7 @@ fn vec4_product_extract(
             w
         ) if extraction_strength >= ExtendAndTruncate && xyzw => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = transpose_vec3_sum(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
             vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), power));
             true
         }
@@ -987,7 +987,7 @@ fn vec4_product_extract(
             w
         ) if extraction_strength >= ExtendAndTruncate && xyzw => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_sum(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), power));
             true
         }
@@ -996,7 +996,7 @@ fn vec4_product_extract(
 }
 
 #[tracing::instrument(level = "trace", skip_all)]
-fn transpose_vec4_sum(
+fn vec4_sum_transpose(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     float_sum_2: &mut Vec<(FloatExpr, f32)>,
@@ -1061,7 +1061,7 @@ fn transpose_vec4_sum(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    result.simplify_nuanced(false, false);
+    result.vec4_simplify(false, false);
     Some(result)
 }
 
@@ -1204,7 +1204,7 @@ fn vec4_sum_extract(
             Product(v3, a3),
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
-            let Some(transposed) = transpose_vec4_product(v0, v1, v2, v3, a) else { return false };
+            let Some(transposed) = vec4_product_transpose(v0, v1, v2, v3, a) else { return false };
             vec4_sum.push((transposed, coefficient));
             true
         }
@@ -1215,7 +1215,7 @@ fn vec4_sum_extract(
             w
         ) if extraction_strength >= ExtendAndTruncate && xyz_w => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = transpose_vec3_product(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_product_transpose(v0, v1, v2, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend3to4(transposed, w.clone()), coefficient));
             true
         }
@@ -1226,7 +1226,7 @@ fn vec4_sum_extract(
             w
         ) if extraction_strength >= ExtendAndTruncate && xy_zw => {
             let a = [*a0, *a1];
-            let Some(transposed) = transpose_vec2_product(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), coefficient));
             true
         }

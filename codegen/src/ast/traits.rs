@@ -14,6 +14,7 @@ use std::sync::atomic::Ordering::{Acquire, Release};
 use std::sync::{Arc, Weak};
 use tokio::task::JoinSet;
 use tracing::Level;
+use tracing::level_filters::LevelFilter;
 use crate::algebra::basis::{BasisElement, BasisSignature};
 use crate::algebra::multivector::{DynamicMultiVector, MultiVecRepository};
 use crate::algebra::GeometricAlgebra;
@@ -23,7 +24,7 @@ use crate::ast::impls::{Elaborated, InlineOnly, OvertDelegate};
 use crate::ast::operations_tracker::{TrackOperations, TraitOperationsLookup, VectoredOperationsTracker};
 use crate::ast::{RawVariableDeclaration, RawVariableInvocation, Variable};
 use crate::utility::AsyncMap;
-
+use crate::utility::tracing::DebuggableCopyPasta;
 // TODO split up this file using include!()s, it is getting annoying to navigate
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1817,6 +1818,7 @@ pub trait Register11: TraitDef_1_Type_1_Arg {
 
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
+        filter: Level,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         mv_a: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
     ) -> Option<Arc<RawTraitImplementation>>;
@@ -1897,6 +1899,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
     // TODO make a similar method for the other RegisterXX traits
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
+        filter: Level,
         mv_repo: Arc<MultiVecRepository<AntiScalar>>,
         mv_a: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
     ) -> Option<Arc<RawTraitImplementation>> {
@@ -1912,9 +1915,10 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for T {
         // TODO add tracing in general implementation too.
         let b = self.general_implementation(b, var_self).await?;
 
-        // let collector = tracing_subscriber::fmt()
-        //     .with_max_level(Level::TRACE)
-        //     .finish();
+        tracing_subscriber::fmt()
+            .with_max_level(filter)
+            .event_format(DebuggableCopyPasta::new())
+            .init();
         b.into_trait11(mv_a)
     }
 }
@@ -2873,7 +2877,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         self.into_trait_xx(owner, Param::TypeAndDataParam ,vec![(ExpressionType::Float(Float), Param::DataParam)])
     }
 
-    #[tracing::instrument(level = "trace", skip(self))]
+    #[tracing::instrument(level = "debug", skip_all)]
     fn into_trait_xx(
         self,
         owner: MultiVector,
@@ -2893,10 +2897,11 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         // This shouldn't be a problem because of type level state and function visibilities
         let mut return_expr = self.return_expr.expect("Must have return expression in order to register");
         let mut lines = self.lines.into_inner();
+        let return_type = return_expr.expression_type();
 
         let trait_key = self.trait_def.names.trait_key;
         let copy_pasta_preamble = once_cell::unsync::Lazy::<String, _>::new(|| {
-            let mut copy_pasta = format!("// impl {}", trait_key.final_name);
+            let mut copy_pasta = format!("// Debuggable Copy-Pasta: impl {}", trait_key.final_name);
             let mut open_brace = false;
             for (ty, param) in other_params.iter() {
                 if param.is_type_param() {
@@ -2914,12 +2919,14 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     });
                 }
             }
-            if !open_brace { copy_pasta.push('>') }
+            if open_brace { copy_pasta.push('>') }
             copy_pasta.push_str(" for ");
             copy_pasta.push_str(owner.name());
             copy_pasta.push('\n');
             if owner_param.is_data_param() {
-                copy_pasta.push_str("let slf = multivec_var(\"self\");\n");
+                copy_pasta.push_str("let slf = multivec_var(\"self\", &");
+                copy_pasta.push_str(owner.name());
+                copy_pasta.push_str(");\n");
             }
             let mut qty_other = 0;
             for (other_ty, other_param) in other_params.iter() {
@@ -2954,20 +2961,29 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             copy_pasta
         });
         macro_rules! create_copy_pasta {
-            () => {
-                let mut copy_pasta: Sring = copy_pasta_preamble.clone();
+            () => {{
+                let mut copy_pasta: String = copy_pasta_preamble.clone();
                 for line in lines.iter() {
                     copy_pasta = format!("{copy_pasta}{line:?}\n");
                 }
-                copy_pasta.push_str("let the_return = ");
+                copy_pasta.push_str("let the_return: ");
+                copy_pasta.push_str(match return_type {
+                    ExpressionType::Int(Integer) => "IntExpr",
+                    ExpressionType::Float(Float) => "FloatExpr",
+                    ExpressionType::Vec2(Vec2) => "Vec2Expr",
+                    ExpressionType::Vec3(Vec3) => "Vec3Expr",
+                    ExpressionType::Vec4(Vec4) => "Vec4Expr",
+                    ExpressionType::Class(MultiVector) => "MultiVectorExpr",
+                });
+                copy_pasta.push_str(" = ");
                 copy_pasta = format!("{copy_pasta}{return_expr:?}");
-                copy_pasta.push_str(";\n");
+                copy_pasta.push_str(";");
                 copy_pasta
-            };
+            }};
         }
 
-        // let debuggable_copy_pasta = create_copy_pasta!();
-        tracing::event!(Level::TRACE, name = "debuggable_copy_pasta");
+        tracing::event!(Level::DEBUG, "Debuggable Copy-Pasta:");
+        tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!());
 
         'outer: loop {
             'inner: loop {

@@ -1,16 +1,16 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused)]
 
-use tracing::Level;
-use tracing_subscriber::fmt::format::Format;
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::util::SubscriberInitExt;
-use crate::ast::expressions::Vec4Expr;
+use crate::ast::expressions::{FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
 use crate::ast::traits::Register11;
 use crate::build_scripts::common_traits::AntiConstraintViolation;
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
+use tracing::Level;
+use tracing_subscriber::fmt::format::Format;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 
 crate::multi_vecs! { e1234;
 
@@ -33,13 +33,13 @@ crate::multi_vecs! { e1234;
 
 #[test]
 fn single_expression_simplification_debugger() {
-    let slf = multivec_var("self", &Motor);
-    let other_g0 = float_var("other_g0");
-    let anti_reverse_g0 = Vec4Expr::Product(vec![(Vec4Expr::AccessMultiVecGroup(slf.into(), 0), 1.0)], [-1.0, -1.0, -1.0, 1.0]);
-    let mut term = Vec4Expr::Product(vec![(anti_reverse_g0, 1.0), (Vec4Expr::Gather1(other_g0.into()), 1.0)], [1.0; 4]);
-    println!("{:?}", term);
-    term.simplify();
-    println!("{:?}", term);
+    // Debuggable Copy-Pasta: impl AntiConstraintViolation for Line
+    let slf = multivec_var("self", &Line);
+    let anti_reverse = /* AnyExpression */ MultiVectorExpr::new(&Line, MultiVectorVia::Construct(vec![/* e41, e42, e43 */ MultiVectorGroupExpr::Vec3(Vec3Expr::Product(vec![(Vec3Expr::AccessMultiVecGroup(slf.clone().into(), 0), 1.0), ], [-1.0, -1.0, -1.0])), /* e23, e31, e12 */ MultiVectorGroupExpr::Vec3(Vec3Expr::Product(vec![(Vec3Expr::AccessMultiVecGroup(slf.clone().into(), 1), 1.0), ], [-1.0, -1.0, -1.0]))]));
+    let geometric_anti_product = /* AnyExpression */ MultiVectorExpr::new(&DualNum, MultiVectorVia::Construct(vec![/* scalar, e1234 */ MultiVectorGroupExpr::Vec2(Vec2Expr::Sum(vec![(Vec2Expr::Gather2(FloatExpr::Sum(vec![(FloatExpr::Product(vec![(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 3), 1.0), (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 0), 1.0), ], 1.0), -1.0), (FloatExpr::Product(vec![(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 4), 1.0), (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 1), 1.0), ], 1.0), -1.0), (FloatExpr::Product(vec![(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 5), 1.0), (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 2), 1.0), ], 1.0), -1.0), ], 0.0), FloatExpr::Literal(0.0)), 1.0), (Vec2Expr::Product(vec![(Vec2Expr::Gather1(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 0)), 1.0), (Vec2Expr::Gather2(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), FloatExpr::AccessMultiVecFlat(slf.clone().into(), 0)), 1.0), ], [1.0, 1.0]), -1.0), (Vec2Expr::Product(vec![(Vec2Expr::Gather1(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 1)), 1.0), (Vec2Expr::Gather2(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 4), FloatExpr::AccessMultiVecFlat(slf.clone().into(), 1)), 1.0), ], [1.0, 1.0]), -1.0), (Vec2Expr::Product(vec![(Vec2Expr::Gather1(FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 2)), 1.0), (Vec2Expr::Gather2(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 5), FloatExpr::AccessMultiVecFlat(slf.clone().into(), 2)), 1.0), ], [1.0, 1.0]), -1.0), ], [0.0, 0.0]))]));
+    // This comment is an unused variable that will get removed
+    let subtraction = /* AnyExpression */ MultiVectorExpr::new(&Scalar, MultiVectorVia::Construct(vec![/* scalar */ MultiVectorGroupExpr::JustFloat(FloatExpr::AccessMultiVecFlat(geometric_anti_product.clone().into(), 0))]));
+    let the_return: MultiVectorExpr = /* AnyExpression */ subtraction.clone().into();
 }
 
 // TODO this has outright wrongness in it: impl AntiConstraintViolation for Line
@@ -50,12 +50,5 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-
-    tracing_subscriber::fmt()
-        .with_max_level(Level::TRACE)
-        // .with(DebuggableCopyPasta::<Format>::new())
-        .init();
-
-    AntiConstraintViolation.trace_implementation(repo, &Line).await;
+    AntiConstraintViolation.trace_implementation(Level::DEBUG, repo, &Line).await;
 }
-

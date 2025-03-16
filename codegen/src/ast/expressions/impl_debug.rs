@@ -51,7 +51,7 @@ impl Debug for FloatExpr {
         write!(f, "FloatExpr::")?;
         match self {
             FloatExpr::Variable(_) => {}
-            FloatExpr::Literal(l) => write!(f, "Literal({l})")?,
+            FloatExpr::Literal(l) => write!(f, "Literal({l:?})")?,
             FloatExpr::FromInt(i) => write!(f, "FromInt({i:?})")?,
             FloatExpr::AccessVec2(v, i) => write!(f, "access_vec_2({}, {i})", *v)?,
             FloatExpr::AccessVec3(v, i) => write!(f, "access_vec_3({}, {i})", *v)?,
@@ -62,14 +62,14 @@ impl Debug for FloatExpr {
             FloatExpr::Product(v, l) => {
                 write!(f, "Product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp}), ")?;
+                    write!(f, "({e:?}, {exp:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
             FloatExpr::Sum(v, l) => {
                 write!(f, "Sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe}), ")?;
+                    write!(f, "({e:?}, {coe:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
@@ -105,14 +105,14 @@ impl Debug for Vec2Expr {
             Vec2Expr::Product(v, l) => {
                 write!(f, "Product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp}), ")?;
+                    write!(f, "({e:?}, {exp:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
             Vec2Expr::Sum(v, l) => {
                 write!(f, "Sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe}), ")?;
+                    write!(f, "({e:?}, {coe:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
@@ -143,14 +143,14 @@ impl Debug for Vec3Expr {
             Vec3Expr::Product(v, l) => {
                 write!(f, "Product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp}), ")?;
+                    write!(f, "({e:?}, {exp:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
             Vec3Expr::Sum(v, l) => {
                 write!(f, "Sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe}), ")?;
+                    write!(f, "({e:?}, {coe:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
@@ -181,14 +181,14 @@ impl Debug for Vec4Expr {
             Vec4Expr::Product(v, l) => {
                 write!(f, "Product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp}), ")?;
+                    write!(f, "({e:?}, {exp:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
             Vec4Expr::Sum(v, l) => {
                 write!(f, "Sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe}), ")?;
+                    write!(f, "({e:?}, {coe:?}), ")?;
                 }
                 write!(f, "], {l:?})")?;
             }
@@ -217,7 +217,6 @@ impl Debug for MultiVectorGroupExpr {
 impl Debug for MultiVectorExpr {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let n = self.mv_class.name();
-        write!(f, "{n}(")?;
         let via = self.expr.as_ref();
         if let MultiVectorVia::Variable(v) = &via {
             let (n, i) = &v.decl.name;
@@ -228,11 +227,12 @@ impl Debug for MultiVectorExpr {
             }
             return write!(f, ".clone().into()");
         }
+        write!(f, "MultiVectorExpr::new(&{n}, MultiVectorVia::")?;
         match via {
             MultiVectorVia::Variable(_) => {}
             MultiVectorVia::Construct(v) => {
+                write!(f, "Construct(vec![")?;
                 let mut gs = self.mv_class.groups().into_iter();
-                write!(f, "vec![")?;
                 for (i, expr) in v.iter().enumerate() {
                     let group = gs.next().expect("zipping");
                     if i > 0 {
@@ -253,10 +253,9 @@ impl Debug for MultiVectorExpr {
                         G4(be0, be1, be2, be3) => {
                             write!(f, "/* {be0}, {be1}, {be2}, {be3} */ {expr:?}")?;
                         }
-                        _ => unreachable!("mv construction groups must match")
                     }
                 }
-                write!(f, "]")?;
+                write!(f, "])")?;
             }
             // TODO make these trait invoke debugs more similar (see FloatExpr and IntExpr too)
             MultiVectorVia::TraitInvoke11ToClass(t, mv) => {
