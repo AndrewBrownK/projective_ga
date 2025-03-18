@@ -70,7 +70,7 @@ impl AnyExpression {
 }
 
 impl Vec2Expr {
-    fn slice_to_floats(&mut self) {
+    pub(crate) fn slice_to_floats(&mut self) {
         match self {
             Vec2Expr::Variable(v) => {
                 let x = FloatExpr::access_vec_2(Vec2Expr::Variable(v.clone()), 0);
@@ -117,6 +117,16 @@ impl Vec2Expr {
                 );
             }
             Vec2Expr::SwizzleVec2(box v, ix, iy) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, false);
+                *self = Vec2Expr::Gather2(x, y);
+            }
+            Vec2Expr::SwizzleVec3(box v, ix, iy) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, false);
+                *self = Vec2Expr::Gather2(x, y);
+            }
+            Vec2Expr::SwizzleVec4(box v, ix, iy) => {
                 let x = v.get_slice_of_float(*ix, true);
                 let y = v.get_slice_of_float(*iy, false);
                 *self = Vec2Expr::Gather2(x, y);
@@ -168,13 +178,25 @@ impl Vec2Expr {
                 };
                 v.get_slice_of_float(idx, use_clone_not_take)
             }
+            Vec2Expr::SwizzleVec3(box v, ix, iy) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
+            Vec2Expr::SwizzleVec4(box v, ix, iy) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
             Vec2Expr::Truncate3to2(box v) => v.get_slice_of_float(idx, use_clone_not_take),
             Vec2Expr::Truncate4to2(box v) => v.get_slice_of_float(idx, use_clone_not_take),
         }
     }
 }
 impl Vec3Expr {
-    fn slice_to_floats(&mut self) {
+    pub(crate) fn slice_to_floats(&mut self) {
         match self {
             Vec3Expr::Variable(v) => {
                 let x = FloatExpr::access_vec_3(Vec3Expr::Variable(v.clone()), 0);
@@ -229,7 +251,19 @@ impl Vec3Expr {
                     FloatExpr::Sum(zs, l[2]),
                 );
             }
+            Vec3Expr::SwizzleVec2(v, ix, iy, iz) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, true);
+                let z = v.get_slice_of_float(*iz, false);
+                *self = Vec3Expr::Gather3(x, y, z);
+            }
             Vec3Expr::SwizzleVec3(box v, ix, iy, iz) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, true);
+                let z = v.get_slice_of_float(*iz, false);
+                *self = Vec3Expr::Gather3(x, y, z);
+            }
+            Vec3Expr::SwizzleVec4(box v, ix, iy, iz) => {
                 let x = v.get_slice_of_float(*ix, true);
                 let y = v.get_slice_of_float(*iy, true);
                 let z = v.get_slice_of_float(*iz, false);
@@ -277,7 +311,19 @@ impl Vec3Expr {
                 }
                 FloatExpr::Sum(fs, l[idx])
             }
+            Vec3Expr::SwizzleVec2(v, ix, iy, iz) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, 2 => *iz, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
             Vec3Expr::SwizzleVec3(box v, ix, iy, iz) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, 2 => *iz, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
+            Vec3Expr::SwizzleVec4(box v, ix, iy, iz) => {
                 let idx = match idx {
                     0 => *ix, 1 => *iy, 2 => *iz, _ => unreachable!("see assert at start of function")
                 };
@@ -294,7 +340,7 @@ impl Vec3Expr {
     }
 }
 impl Vec4Expr {
-    fn slice_to_floats(&mut self) {
+    pub(crate) fn slice_to_floats(&mut self) {
         match self {
             Vec4Expr::Variable(v) => {
                 let x = FloatExpr::access_vec_4(Vec4Expr::Variable(v.clone()), 0);
@@ -358,6 +404,20 @@ impl Vec4Expr {
                     FloatExpr::Sum(ws, l[3]),
                 );
             }
+            Vec4Expr::SwizzleVec2(v, ix, iy, iz, iw) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, true);
+                let z = v.get_slice_of_float(*iz, true);
+                let w = v.get_slice_of_float(*iw, false);
+                *self = Vec4Expr::Gather4(x, y, z, w);
+            }
+            Vec4Expr::SwizzleVec3(v, ix, iy, iz, iw) => {
+                let x = v.get_slice_of_float(*ix, true);
+                let y = v.get_slice_of_float(*iy, true);
+                let z = v.get_slice_of_float(*iz, true);
+                let w = v.get_slice_of_float(*iw, false);
+                *self = Vec4Expr::Gather4(x, y, z, w);
+            }
             Vec4Expr::SwizzleVec4(box v, ix, iy, iz, iw) => {
                 let x = v.get_slice_of_float(*ix, true);
                 let y = v.get_slice_of_float(*iy, true);
@@ -407,6 +467,18 @@ impl Vec4Expr {
                 }
                 FloatExpr::Sum(fs, l[idx])
             }
+            Vec4Expr::SwizzleVec2(v, ix, iy, iz, iw) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, 2 => *iz, 3 => *iw, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
+            Vec4Expr::SwizzleVec3(v, ix, iy, iz, iw) => {
+                let idx = match idx {
+                    0 => *ix, 1 => *iy, 2 => *iz, 3 => *iw, _ => unreachable!("see assert at start of function")
+                };
+                v.get_slice_of_float(idx, use_clone_not_take)
+            }
             Vec4Expr::SwizzleVec4(box v, ix, iy, iz, iw) => {
                 let idx = match idx {
                     0 => *ix, 1 => *iy, 2 => *iz, 3 => *iw, _ => unreachable!("see assert at start of function")
@@ -432,7 +504,7 @@ impl Vec4Expr {
     }
 }
 impl MultiVectorExpr {
-    fn slice_to_floats(&mut self) {
+    pub(crate) fn slice_to_floats(&mut self) {
         match &mut *self.expr {
             MultiVectorVia::Variable(_) => {}
             MultiVectorVia::Construct(gs) => {

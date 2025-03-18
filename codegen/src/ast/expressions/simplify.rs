@@ -36,6 +36,17 @@ use std::sync::atomic::Ordering::Acquire;
 //  let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
 //  let anti_wedge_g1 = Simd32x4::from(self[e1234]) * other.group0().xyz().with_w(0.0) * Simd32x4::from([1.0, 1.0, 1.0, 0.0]);
 
+macro_rules! max {
+    ($x:expr) => { $x };
+    ($x:expr, $y:expr) => { usize::max($x, $y) };
+    ($x:expr, $($rest:expr),+) => { usize::max($x, max!($($rest),+)) };
+}
+macro_rules! min {
+    ($x:expr) => { $x };
+    ($x:expr, $y:expr) => { usize::min($x, $y) };
+    ($x:expr, $($rest:expr),+) => { usize::min($x, min!($($rest),+)) };
+}
+
 
 
 trait SortVecDespiteF32 {
@@ -78,7 +89,7 @@ impl IntExpr {
         match self {
             IntExpr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -114,7 +125,7 @@ impl FloatExpr {
         match self {
             FloatExpr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -132,7 +143,7 @@ impl FloatExpr {
             FloatExpr::Literal(_) => {}
             FloatExpr::FromInt(a) => {
                 let span = tracing::trace_span!("match_FromInt");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     a.int_simplify(insides_already_done);
                 }
@@ -147,7 +158,7 @@ impl FloatExpr {
             },
             FloatExpr::AccessVec2(av2, idx_in_vec) => {
                 let span = tracing::trace_span!("match_AccessVec2");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     av2.vec2_simplify(insides_already_done, true);
                 }
@@ -201,7 +212,7 @@ impl FloatExpr {
             }
             FloatExpr::AccessVec3(av3, idx_in_vec) => {
                 let span = tracing::trace_span!("match_AccessVec3");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     av3.vec3_simplify(insides_already_done, true);
                 }
@@ -265,7 +276,7 @@ impl FloatExpr {
             }
             FloatExpr::AccessVec4(av4, idx_in_vec) => {
                 let span = tracing::trace_span!("match_AccessVec4");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     av4.vec4_simplify(insides_already_done, true);
                 }
@@ -344,7 +355,7 @@ impl FloatExpr {
             }
             FloatExpr::AccessMultiVecGroup(mve, idx) => {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -380,7 +391,7 @@ impl FloatExpr {
             }
             FloatExpr::AccessMultiVecFlat(mve, idx) => {
                 let span = tracing::trace_span!("match_AccessMultiVecFlat");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -430,14 +441,14 @@ impl FloatExpr {
             }
             FloatExpr::TraitInvoke11ToFloat(_t, owner) => {
                 let span = tracing::trace_span!("match_TraitInvoke11ToFloat");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             FloatExpr::Product(product, last_factor) => {
                 let span = tracing::trace_span!("match_Product");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 // TODO smells like nested products in impl AntiConstraintViolation for DualNum
 
                 if product.is_empty() {
@@ -569,7 +580,7 @@ impl FloatExpr {
             }
             FloatExpr::Sum(sum, last_addend) => {
                 let span = tracing::trace_span!("match_Sum");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if sum.is_empty() {
                     panic!("Please use FloatExpr::sum so you can find out where you constructed something wrong");
                 }
@@ -655,7 +666,7 @@ impl FloatExpr {
             }
             FloatExpr::Exp(base_expression, exponent_expression, exponent_literal) => {
                 let span = tracing::trace_span!("match_Exp");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     base_expression.float_simplify(insides_already_done);
                 }
@@ -730,7 +741,7 @@ impl Vec2Expr {
         match self {
             Vec2Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -747,7 +758,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Gather1(ref mut f) => {
                 let span = tracing::trace_span!("match_Gather1");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
@@ -755,7 +766,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Gather2(ref mut f0, ref mut f1) => {
                 let span = tracing::trace_span!("match_Gather2");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
                     f0.float_simplify(insides_already_done);
@@ -801,39 +812,39 @@ impl Vec2Expr {
                     (
                         AccessMultiVecFlat(x_mve, x_idx),
                         AccessMultiVecFlat(y_mve, y_idx),
-                    ) if x_mve == y_mve => {
-                        let max_idx = usize::max(*x_idx, *y_idx);
-                        let min_idx = usize::min(*x_idx, *y_idx);
-                        if (min_idx + 1) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve) && min!(*x_idx, *y_idx) + 3 >= max!(*x_idx, *y_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = *x_idx + 1 == *y_idx;
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() >= 2 {
-                                let mv_group = if group.simd_width() == 2 {
-                                    Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx)
-                                } else if group.simd_width() == 3 {
-                                    Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx)))
-                                } else {
-                                    Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx)))
-                                };
-                                *self = if no_swizzle {
-                                    mv_group
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    Vec2Expr::swizzle_vec_2(mv_group, x, y)
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 2) => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                (_, 4) => Vec2Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y),
+                                (_, 3) => Vec2Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y),
+                                (false, 2) => Vec2Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
+                                _ => return
+                            };
+                            self.vec2_simplify(insides_already_done, transpose_simd);
+                            return
                         }
                     }
                     (Product(ref mut x_product, x_lit), Product(ref mut y_product, y_lit)) if transpose_simd => {
@@ -881,7 +892,7 @@ impl Vec2Expr {
             }
             Vec2Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -912,7 +923,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Product(ref mut product, last_factor) => {
                 let span = tracing::trace_span!("match_Product");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 // TODO not sure if this should be fixed here in simplification, or in code emission:
                 //  impl AntiProjectOrthogonallyOnto<Scalar> for DualNum
                 //  Before:    DualNum::from_groups(/* scalar, e1234 */ Simd32x2::powi(Simd32x2::from(other[scalar]), 2) * self.group0())
@@ -1135,7 +1146,7 @@ impl Vec2Expr {
                 //  self.group0() + (Simd32x2::from([other[scalar], 0.0]) * Simd32x2::from([-1.0, 0.0])),
 
                 let span = tracing::trace_span!("match_Sum");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec2Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -1235,9 +1246,9 @@ impl Vec2Expr {
                     *self = if f0 == f1 { Vec2Expr::Gather1(f0) } else { Vec2Expr::Gather2(f0, f1) };
                 }
             }
-            Vec2Expr::SwizzleVec2(v2, i0, i1) => {
+            Vec2Expr::SwizzleVec2(box v2, i0, i1) => {
                 let span = tracing::trace_span!("match_SwizzleVec2");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if *i0 > 1 || *i1 > 1 {
                     panic!("Please use Vec2Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
@@ -1248,12 +1259,67 @@ impl Vec2Expr {
                     *self = v2.take_as_owned();
                     return;
                 }
+                if eqs!(*i0, *i1) {
+                    *self = Vec2Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
+                    self.vec2_simplify(false, transpose_simd);
+                    return;
+                }
                 match v2 {
-                    box Vec2Expr::Gather1(f0) => {
+                    Vec2Expr::Gather1(f0) => {
                         *self = Vec2Expr::Gather1(f0.take_as_owned());
                     }
-                    box Vec2Expr::Gather2(f0, f1) => {
+                    Vec2Expr::Gather2(f0, f1) => {
                         let fs = [f0, f1];
+                        *self = Vec2Expr::Gather2(fs[*i0].clone(), fs[*i1].clone());
+                    }
+                    _ => {}
+                }
+            }
+            Vec2Expr::SwizzleVec3(box v3, i0, i1) => {
+                let span = tracing::trace_span!("match_SwizzleVec3");
+                let _span_entered = span.enter();
+                if *i0 > 2 || *i1 > 2 {
+                    panic!("Please use Vec2Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1) {
+                    *self = Vec2Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
+                    self.vec2_simplify(false, transpose_simd);
+                    return;
+                }
+                match v3 {
+                    Vec3Expr::Gather1(f0) => {
+                        *self = Vec2Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec3Expr::Gather3(f0, f1, f2) => {
+                        let fs = [f0, f1, f2];
+                        *self = Vec2Expr::Gather2(fs[*i0].clone(), fs[*i1].clone());
+                    }
+                    _ => {}
+                }
+            }
+            Vec2Expr::SwizzleVec4(box v4, i0, i1) => {
+                let span = tracing::trace_span!("match_SwizzleVec4");
+                let _span_entered = span.enter();
+                if *i0 > 3 || *i1 > 3 {
+                    panic!("Please use Vec2Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1) {
+                    *self = Vec2Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
+                    self.vec2_simplify(false, transpose_simd);
+                    return;
+                }
+                match v4 {
+                    Vec4Expr::Gather1(f0) => {
+                        *self = Vec2Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec4Expr::Gather4(f0, f1, f2, f3) => {
+                        let fs = [f0, f1, f2, f3];
                         *self = Vec2Expr::Gather2(fs[*i0].clone(), fs[*i1].clone());
                     }
                     _ => {}
@@ -1261,7 +1327,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Truncate3to2(box v3) => {
                 let span = tracing::trace_span!("match_Truncate3to2");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     v3.vec3_simplify(insides_already_done, transpose_simd);
                 }
@@ -1292,7 +1358,7 @@ impl Vec2Expr {
             }
             Vec2Expr::Truncate4to2(box v4) => {
                 let span = tracing::trace_span!("match_Truncate4to2");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     v4.vec4_simplify(insides_already_done, transpose_simd);
                 }
@@ -1349,7 +1415,7 @@ impl Vec3Expr {
         match self {
             Vec3Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -1366,7 +1432,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Gather1(ref mut f) => {
                 let span = tracing::trace_span!("match_Gather1");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
@@ -1374,7 +1440,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Gather3(ref mut f0, ref mut f1, ref mut f2) => {
                 let span = tracing::trace_span!("match_Gather3");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
                     f0.float_simplify(insides_already_done);
@@ -1386,7 +1452,11 @@ impl Vec3Expr {
                     return;
                 }
                 match (f0, f1, f2) {
-                    (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y), AccessVec4(box ref mut v4_c, z)) => {
+                    (
+                        AccessVec4(box ref mut v4_a, x),
+                        AccessVec4(box ref mut v4_b, y),
+                        AccessVec4(box ref mut v4_c, z)
+                    ) if eqs!(*v4_a, *v4_b, *v4_c) => {
                         if v4_a == v4_b && v4_a == v4_c {
                             *self = if *x == 0 && *y == 1 && *z == 2 {
                                 Vec3Expr::Truncate4to3(Box::new(v4_a.take_as_owned()))
@@ -1398,15 +1468,17 @@ impl Vec3Expr {
                             return;
                         }
                     }
-                    (AccessVec3(box ref mut v3_a, x), AccessVec3(box ref mut v3_b, y), AccessVec3(box ref mut v3_c, z)) => {
-                        if v3_a == v3_b && v3_a == v3_c {
-                            *self = if *x == 0 && *y == 1 && *z == 2 {
-                                v3_a.take_as_owned()
-                            } else {
-                                Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, *z)
-                            };
-                            return;
-                        }
+                    (
+                        AccessVec3(box ref mut v3_a, x),
+                        AccessVec3(box ref mut v3_b, y),
+                        AccessVec3(box ref mut v3_c, z)
+                    ) if eqs!(*v3_a, *v3_b, *v3_c) => {
+                        *self = if *x == 0 && *y == 1 && *z == 2 {
+                            v3_a.take_as_owned()
+                        } else {
+                            Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, *z)
+                        };
+                        return;
                     }
                     (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z) => {
                         if v2_a == v2_b {
@@ -1420,79 +1492,79 @@ impl Vec3Expr {
                         AccessMultiVecFlat(x_mve, x_idx),
                         AccessMultiVecFlat(y_mve, y_idx),
                         AccessMultiVecFlat(z_mve, z_idx),
-                    ) if x_mve == y_mve && y_mve == z_mve => {
-                        let max_idx = usize::max(*x_idx, usize::max(*y_idx, *z_idx));
-                        let min_idx = usize::min(*x_idx, usize::min(*y_idx, *z_idx));
-                        if (min_idx + 2) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve, z_mve) && min!(*x_idx, *y_idx, *z_idx) + 3 >= max!(*x_idx, *y_idx, *z_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx, *z_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx, *z_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = (*x_idx + 1 == *y_idx) && (*x_idx + 2 == *z_idx);
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() >= 3 {
-                                let mv_group = if group.simd_width() == 3 {
-                                    Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx)
-                                } else {
-                                    Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx)))
-                                };
-                                *self = if no_swizzle {
-                                    mv_group
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    let z = *z_idx - min_idx;
-                                    Vec3Expr::swizzle_vec_3(mv_group, x, y, z)
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            let z = *z_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 3) => Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                (_, 4) => Vec3Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z),
+                                (false, 3) => Vec3Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z),
+                                (false, 2) => Vec3Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec3Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
+                                _ => return
+                            };
+                            self.vec3_simplify(insides_already_done, transpose_simd);
+                            return
                         }
                     }
                     (
                         AccessMultiVecFlat(x_mve, x_idx),
                         AccessMultiVecFlat(y_mve, y_idx),
                         z,
-                    ) if x_mve == y_mve => {
-                        let max_idx = usize::max(*x_idx, *y_idx);
-                        let min_idx = usize::min(*x_idx, *y_idx);
-                        if (min_idx + 1) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve) && min!(*x_idx, *y_idx) + 3 >= max!(*x_idx, *y_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = *x_idx + 1 == *y_idx;
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() >= 2 {
-                                let mv_group = match group.simd_width() {
-                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec3Expr::Extend2to3(mv_group, z.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    Vec3Expr::Extend2to3(
-                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
-                                        z.take_as_owned(),
-                                    )
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 2) => Vec3Expr::Extend2to3(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), z.take_as_owned()),
+                                (_, 4) => Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned()),
+                                (_, 3) => Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned()),
+                                (false, 2) => Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned()),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec3Expr::Extend2to3(Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)), z.take_as_owned()),
+                                _ => return
+                            };
+                            self.vec3_simplify(insides_already_done, transpose_simd);
+                            return
                         }
                     }
                     (Literal(x), Literal(y), z) if *x == *y => {
@@ -1656,7 +1728,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Extend2to3(v2, f1) => {
                 let span = tracing::trace_span!("match_Extend2to3");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     v2.vec2_simplify(insides_already_done, transpose_simd);
                     f1.float_simplify(insides_already_done);
@@ -1677,7 +1749,7 @@ impl Vec3Expr {
             }
             Vec3Expr::AccessMultiVecGroup(ref mut mve, ref mut idx) => {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -1708,7 +1780,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Product(ref mut product, last_factor) => {
                 let span = tracing::trace_span!("match_Product");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if product.is_empty() {
                     panic!("Please use Vec3Expr::product so you can find out where you constructed something wrong");
                 }
@@ -1978,7 +2050,7 @@ impl Vec3Expr {
             }
             Vec3Expr::Sum(ref mut sum, last_addend) => {
                 let span = tracing::trace_span!("match_Sum");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec3Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -2101,9 +2173,38 @@ impl Vec3Expr {
                     *self = if f0 == f1 && f1 == f2 { Vec3Expr::Gather1(f0) } else { Vec3Expr::Gather3(f0, f1, f2) };
                 }
             }
-            Vec3Expr::SwizzleVec3(v3, i0, i1, i2) => {
+            Vec3Expr::SwizzleVec2(v2, i0, i1, i2) => {
+                let span = tracing::trace_span!("match_SwizzleVec2");
+                let _span_entered = span.enter();
+                if *i0 > 1 || *i1 > 1 || *i2 > 1 {
+                    panic!("Please use Vec3Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v2.vec2_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1, *i2) {
+                    *self = Vec3Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
+                    self.vec3_simplify(false, transpose_simd);
+                    return;
+                }
+                match v2 {
+                    Vec2Expr::Gather1(f0) => {
+                        *self = Vec3Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec2Expr::Gather2(f0, f1) if eqs!(*i0, *i1, *i2) => {
+                        let fs = [f0, f1];
+                        *self = Vec3Expr::Gather1(fs[*i0].clone());
+                    }
+                    Vec2Expr::Gather2(f0, f1) => {
+                        let fs = [f0, f1];
+                        *self = Vec3Expr::Gather3(fs[*i0].clone(), fs[*i1].clone(), fs[*i2].clone());
+                    }
+                    _ => {}
+                }
+            }
+            Vec3Expr::SwizzleVec3(box v3, i0, i1, i2) => {
                 let span = tracing::trace_span!("match_SwizzleVec3");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if *i0 > 2 || *i1 > 2 || *i2 > 2 {
                     panic!("Please use Vec3Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
@@ -2114,26 +2215,60 @@ impl Vec3Expr {
                     *self = v3.take_as_owned();
                     return;
                 }
+                if eqs!(*i0, *i1, *i2) {
+                    *self = Vec3Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
+                    self.vec3_simplify(false, transpose_simd);
+                    return;
+                }
                 match v3 {
-                    box Vec3Expr::Gather1(f0) => {
+                    Vec3Expr::Gather1(f0) => {
                         *self = Vec3Expr::Gather1(f0.take_as_owned());
                     }
-                    box Vec3Expr::Gather3(f0, f1, f2) => {
+                    Vec3Expr::Gather3(f0, f1, f2) => {
                         let fs = [f0, f1, f2];
                         *self = Vec3Expr::Gather3(fs[*i0].clone(), fs[*i1].clone(), fs[*i2].clone());
                     }
-                    box Vec3Expr::Extend2to3(v, z) if *i0 == 0 && *i1 == 1 => {
+                    Vec3Expr::Extend2to3(v, z) if *i0 == 0 && *i1 == 1 => {
                         *self = Vec3Expr::Extend2to3(v.take_as_owned(), z.take_as_owned());
                     }
-                    box Vec3Expr::Extend2to3(v, z) if *i0 < 2 && *i1 < 2 => {
+                    Vec3Expr::Extend2to3(v, z) if *i0 < 2 && *i1 < 2 => {
                         *self = Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v.take_as_owned(), *i0, *i1), z.take_as_owned());
+                    }
+                    _ => {}
+                }
+            }
+            Vec3Expr::SwizzleVec4(box v4, i0, i1, i2) => {
+                let span = tracing::trace_span!("match_SwizzleVec4");
+                let _span_entered = span.enter();
+                if *i0 > 3 || *i1 > 3 || *i2 >32 {
+                    panic!("Please use Vec3Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1, *i2) {
+                    *self = Vec3Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
+                    self.vec3_simplify(false, transpose_simd);
+                    return;
+                }
+                match v4 {
+                    Vec4Expr::Gather1(f0) => {
+                        *self = Vec3Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec4Expr::Gather4(f0, f1, f2, f3) if eqs!(*i0, *i1, *i2) && *i0 < 3 => {
+                        let fs = [f0, f1, f2, f3];
+                        *self = Vec3Expr::Gather1(fs[*i0].clone());
+                    }
+                    Vec4Expr::Gather4(f0, f1, f2, f3) => {
+                        let fs = [f0, f1, f2, f3];
+                        *self = Vec3Expr::Gather3(fs[*i0].clone(), fs[*i1].clone(), fs[*i2].clone());
                     }
                     _ => {}
                 }
             }
             Vec3Expr::Truncate4to3(box v4) => {
                 let span = tracing::trace_span!("match_Truncate4to3");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     v4.vec4_simplify(insides_already_done, transpose_simd);
                 }
@@ -2185,7 +2320,7 @@ impl Vec4Expr {
         match self {
             Vec4Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 // TODO convert all the strong_count uses to into_inner instead
                 //  Arc::into_inner(decl)
@@ -2204,7 +2339,7 @@ impl Vec4Expr {
             }
             Vec4Expr::Gather1(f) => {
                 let span = tracing::trace_span!("match_Gather1");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     f.float_simplify(insides_already_done);
                 }
@@ -2229,8 +2364,9 @@ impl Vec4Expr {
                 //  impl AntiProjectOrthogonallyOnto<Point> for Horizon {
                 //  impl AntiProjectOrthogonallyOnto<Flector> for Line {
 
+
                 let span = tracing::trace_span!("match_Gather4");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 // println!("simplify Vec4Expr::Gather4 BEFORE: {f0:?} {f1:?} {f2:?} {f3:?}");
                 if !insides_already_done {
@@ -2244,6 +2380,7 @@ impl Vec4Expr {
                     *self = Vec4Expr::Gather1(f0.take_as_owned());
                     return;
                 }
+                tracing::trace!("attempting match on ({f0:?}, {f1:?}, {f2:?}, {f3:?})");
                 match (f0, f1, f2, f3) {
                     (AccessVec4(box v4_a, x), AccessVec4(box v4_b, y), AccessVec4(box v4_c, z), AccessVec4(box v4_d, w)) => {
                         if v4_a == v4_b && v4_a == v4_c && v4_a == v4_d {
@@ -2276,35 +2413,41 @@ impl Vec4Expr {
                         AccessMultiVecFlat(y_mve, y_idx),
                         AccessMultiVecFlat(z_mve, z_idx),
                         AccessMultiVecFlat(w_mve, w_idx),
-                    ) if x_mve == y_mve && y_mve == z_mve && z_mve == w_mve => {
-                        let max_idx = usize::max(*x_idx, usize::max(*y_idx, usize::max(*z_idx, *w_idx)));
-                        let min_idx = usize::min(*x_idx, usize::min(*y_idx, usize::min(*z_idx, *w_idx)));
-                        if (min_idx + 3) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve, z_mve, w_mve) && min!(*x_idx, *y_idx, *z_idx, *w_idx) + 3 >= max!(*x_idx, *y_idx, *z_idx, *w_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx, *z_idx, *w_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx, *z_idx, *w_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = (*x_idx + 1 == *y_idx) && (*x_idx + 2 == *z_idx) && (*x_idx + 3 == *w_idx);
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() == 4 {
-                                let mv_group = Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx);
-                                *self = if no_swizzle {
-                                    mv_group
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    let z = *z_idx - min_idx;
-                                    let w = *w_idx - min_idx;
-                                    Vec4Expr::swizzle_vec_4(mv_group, x, y, z, w)
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            let z = *z_idx - flat_idx;
+                            let w = *w_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 4) => Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
+                                (false, 4) => Vec4Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z, w),
+                                (false, 3) => Vec4Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z, w),
+                                (false, 2) => Vec4Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z, w),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec4Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
+                                _ => return
+                            };
+                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            return
                         }
                     }
                     (
@@ -2312,41 +2455,42 @@ impl Vec4Expr {
                         AccessMultiVecFlat(y_mve, y_idx),
                         AccessMultiVecFlat(z_mve, z_idx),
                         w,
-                    ) if x_mve == y_mve && y_mve == z_mve => {
-                        let max_idx = usize::max(*x_idx, usize::max(*y_idx, *z_idx));
-                        let min_idx = usize::min(*x_idx, usize::min(*y_idx, *z_idx));
-                        if (min_idx + 2) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve, z_mve) && min!(*x_idx, *y_idx, *z_idx) + 3 >= max!(*x_idx, *y_idx, *z_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx, *z_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx, *z_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = (*x_idx + 1 == *y_idx) && (*x_idx + 2 == *z_idx);
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() >= 3 {
-                                let mv_group = match group.simd_width() {
-                                    3 => Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    4 => Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec4Expr::Extend3to4(mv_group, w.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    let z = *z_idx - min_idx;
-                                    Vec4Expr::Extend3to4(
-                                        Vec3Expr::swizzle_vec_3(mv_group, x, y, z),
-                                        w.take_as_owned()
-                                    )
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            let z = *z_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 3) => Vec4Expr::Extend3to4(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), w.take_as_owned()),
+                                (_, 4) => Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z), w.take_as_owned()),
+                                (false, 3) => Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z), w.take_as_owned()),
+                                (false, 2) => Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y, z), w.take_as_owned()),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec4Expr::Extend3to4(Vec3Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)), w.take_as_owned()),
+                                _ => return
+                            };
+                            tracing::trace!("Extend3to4 result: {self:?}");
+                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            tracing::trace!("Extend3to4 simplified result: {self:?}");
+                            return
                         }
                     }
                     (
@@ -2354,42 +2498,39 @@ impl Vec4Expr {
                         AccessMultiVecFlat(y_mve, y_idx),
                         z,
                         w,
-                    ) if x_mve == y_mve => {
-                        let max_idx = usize::max(*x_idx, *y_idx);
-                        let min_idx = usize::min(*x_idx, *y_idx);
-                        if (min_idx + 1) < max_idx {
-                            // indexes are too far apart
-                            return
-                        }
+                    ) if eqs!(x_mve, y_mve) && min!(*x_idx, *y_idx) + 3 >= max!(*x_idx, *y_idx) => {
+                        let max_flat_idx = max!(*x_idx, *y_idx);
+                        let min_flat_idx = min!(*x_idx, *y_idx);
+                        let required_width = (max_flat_idx - min_flat_idx) + 1;
                         let no_swizzle = *x_idx + 1 == *y_idx;
                         let mut group_idx = 0;
                         let mut flat_idx = 0;
                         for group in x_mve.mv_class.groups().into_iter() {
-                            if flat_idx > min_idx {
+                            let group_is_too_late = flat_idx > min_flat_idx;
+                            if group_is_too_late {
+                                tracing::trace!(group_is_too_late);
                                 return
                             }
-                            if min_idx == flat_idx && group.simd_width() >= 2 {
-                                let mv_group = match group.simd_width() {
-                                    2 => Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx),
-                                    3 => Vec2Expr::Truncate3to2(Box::new(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    4 => Vec2Expr::Truncate4to2(Box::new(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx))),
-                                    _ => unreachable!("max simd width is 4")
-                                };
-                                *self = if no_swizzle {
-                                    Vec4Expr::Extend2to4(mv_group, z.take_as_owned(), w.take_as_owned())
-                                } else {
-                                    let x = *x_idx - min_idx;
-                                    let y = *y_idx - min_idx;
-                                    Vec4Expr::Extend2to4(
-                                        Vec2Expr::swizzle_vec_2(mv_group, x, y),
-                                        z.take_as_owned(),
-                                        w.take_as_owned(),
-                                    )
-                                };
-                                return
+                            let group_is_too_early = (flat_idx + (group.simd_width() - 1)) < max_flat_idx;
+                            let group_is_too_narrow = group.simd_width() < required_width;
+                            if group_is_too_early || group_is_too_narrow {
+                                tracing::trace!(group_is_too_early, group_is_too_narrow);
+                                group_idx = group_idx + 1;
+                                flat_idx = flat_idx + group.simd_width();
+                                continue;
                             }
-                            group_idx = group_idx + 1;
-                            flat_idx = flat_idx + group.simd_width();
+                            let x = *x_idx - flat_idx;
+                            let y = *y_idx - flat_idx;
+                            *self = match (no_swizzle, group.simd_width()) {
+                                (true, 2) => Vec4Expr::Extend2to4(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), z.take_as_owned(), w.take_as_owned()),
+                                (_, 4) => Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned(), w.take_as_owned()),
+                                (_, 3) => Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_3(Vec3Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned(), w.take_as_owned()),
+                                (false, 2) => Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(Vec2Expr::AccessMultiVecGroup(x_mve.take_as_owned(), group_idx), x, y), z.take_as_owned(), w.take_as_owned()),
+                                (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec4Expr::Extend2to4(Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)), z.take_as_owned(), w.take_as_owned()),
+                                _ => return
+                            };
+                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            return
                         }
                     }
                     (Literal(x), Literal(y), Literal(z), w) if eqs!(x, y, z) => {
@@ -2792,7 +2933,7 @@ impl Vec4Expr {
             }
             Vec4Expr::Extend2to4(v2, f1, f2) => {
                 let span = tracing::trace_span!("match_Extend2to4");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     v2.vec2_simplify(insides_already_done, transpose_simd);
                     f1.float_simplify(insides_already_done);
@@ -2828,7 +2969,7 @@ impl Vec4Expr {
                 //  ]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
 
                 let span = tracing::trace_span!("match_Extend3to4");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 // println!("simplify Vec4Expr::Extend3to4 BEFORE: {v3:?} {f1:?}");
                 if !insides_already_done {
                     v3.vec3_simplify(insides_already_done, transpose_simd);
@@ -2861,7 +3002,7 @@ impl Vec4Expr {
             }
             Vec4Expr::AccessMultiVecGroup(mve, idx) => {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     mve.multivec_simplify(insides_already_done);
                 }
@@ -2892,7 +3033,7 @@ impl Vec4Expr {
             }
             Vec4Expr::Product(product, last_factor) => {
                 let span = tracing::trace_span!("match_Product");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if product.is_empty() {
                     panic!("Please use Vec4Expr::product so you can find out where you constructed something wrong");
                 }
@@ -3253,7 +3394,7 @@ impl Vec4Expr {
             }
             Vec4Expr::Sum(sum, last_addend) => {
                 let span = tracing::trace_span!("match_Sum");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if sum.is_empty() {
                     panic!("Please use Vec4Expr::sum so you can find out where you constructed something wrong");
                 }
@@ -3396,9 +3537,67 @@ impl Vec4Expr {
                     };
                 }
             }
+            Vec4Expr::SwizzleVec2(v2, i0, i1, i2, i3) => {
+                let span = tracing::trace_span!("match_SwizzleVec2");
+                let _span_entered = span.enter();
+                if *i0 > 1 || *i1 > 1 || *i2 > 1 {
+                    panic!("Please use Vec4Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v2.vec2_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1, *i2, *i3) {
+                    *self = Vec4Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
+                    self.vec4_simplify(false, transpose_simd);
+                    return;
+                }
+                match v2 {
+                    Vec2Expr::Gather1(f0) => {
+                        *self = Vec4Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec2Expr::Gather2(f0, f1) if eqs!(*i0, *i1, *i2, *i3) => {
+                        let fs = [f0, f1];
+                        *self = Vec4Expr::Gather1(fs[*i0].take_as_owned());
+                    }
+                    Vec2Expr::Gather2(f0, f1) => {
+                        let fs = [f0, f1];
+                        *self = Vec4Expr::Gather4(fs[*i0].clone(), fs[*i1].clone(), fs[*i2].clone(), fs[*i3].clone());
+                    }
+                    _ => {}
+                }
+            }
+            Vec4Expr::SwizzleVec3(v3, i0, i1, i2, i3) => {
+                let span = tracing::trace_span!("match_SwizzleVec3");
+                let _span_entered = span.enter();
+                if *i0 > 2 || *i1 > 2 || *i2 > 2 {
+                    panic!("Please use Vec4Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
+                }
+                if !insides_already_done {
+                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                }
+                if eqs!(*i0, *i1, *i2, *i3) {
+                    *self = Vec4Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
+                    self.vec4_simplify(false, transpose_simd);
+                    return;
+                }
+                match v3 {
+                    Vec3Expr::Gather1(f0) => {
+                        *self = Vec4Expr::Gather1(f0.take_as_owned());
+                    }
+                    Vec3Expr::Gather3(f0, f1, f2) if eqs!(*i0, *i1, *i2, *i3)  => {
+                        let fs = [f0, f1, f2];
+                        *self = Vec4Expr::Gather1(fs[*i0].take_as_owned());
+                    }
+                    Vec3Expr::Gather3(f0, f1, f2) => {
+                        let fs = [f0, f1, f2];
+                        *self = Vec4Expr::Gather4(fs[*i0].clone(), fs[*i1].clone(), fs[*i2].clone(), fs[*i3].clone());
+                    }
+                    _ => {}
+                }
+            }
             Vec4Expr::SwizzleVec4(v4, i0, i1, i2, i3) => {
                 let span = tracing::trace_span!("match_SwizzleVec4");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if *i0 > 3 || *i1 > 3 || *i2 > 3 {
                     panic!("Please use Vec4Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
@@ -3407,6 +3606,11 @@ impl Vec4Expr {
                 }
                 if *i0 == 0 && *i1 == 1 && *i2 == 2 && *i3 == 3 {
                     *self = v4.take_as_owned();
+                    return;
+                }
+                if eqs!(*i0, *i1, *i2, *i3) {
+                    *self = Vec4Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
+                    self.vec4_simplify(false, transpose_simd);
                     return;
                 }
                 match v4 {
@@ -3525,7 +3729,7 @@ impl MultiVectorExpr {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 let decl = &v.decl;
                 if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
@@ -3542,7 +3746,7 @@ impl MultiVectorExpr {
             }
             MultiVectorVia::Construct(groups) => {
                 let span = tracing::trace_span!("match_Construct");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     for group in groups.iter_mut() {
                         group.group_simplify(insides_already_done);
@@ -3577,27 +3781,26 @@ impl MultiVectorExpr {
                     }
                 });
                 if let Some(result) = result {
-                    // Any chance of take_as_owned for MultiVectorExpr? Not trivial.
                     *self = result.take_as_owned();
                 }
             }
             MultiVectorVia::TraitInvoke11ToClass(_t, owner) => {
                 let span = tracing::trace_span!("match_TraitInvoke11ToClass");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke21ToClass(_t, owner, _other) => {
                 let span = tracing::trace_span!("match_TraitInvoke21ToClass");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                 }
             }
             MultiVectorVia::TraitInvoke22ToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke22ToClass");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.multivec_simplify(insides_already_done);
@@ -3605,7 +3808,7 @@ impl MultiVectorExpr {
             }
             MultiVectorVia::TraitInvoke12iToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke12iToClass");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.int_simplify(insides_already_done);
@@ -3613,7 +3816,7 @@ impl MultiVectorExpr {
             }
             MultiVectorVia::TraitInvoke12fToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke12fToClass");
-                let _enter = span.enter();
+                let _span_entered = span.enter();
                 if !insides_already_done {
                     owner.multivec_simplify(insides_already_done);
                     other.float_simplify(insides_already_done);

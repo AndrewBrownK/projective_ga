@@ -101,6 +101,8 @@ impl FloatExpr {
     }
 }
 
+// TODO incorporate new swizzles
+
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec2_product_transpose(
     float_product_0: &mut Vec<(FloatExpr, f32)>,

@@ -356,7 +356,9 @@ impl Vec2Expr {
             }
             Vec2Expr::Truncate3to2(box v) => v.deep_inline_variables(),
             Vec2Expr::Truncate4to2(box v) => v.deep_inline_variables(),
-            Vec2Expr::SwizzleVec2(v, _, _) => v.deep_inline_variables(),
+            Vec2Expr::SwizzleVec2(box v, _, _) => v.deep_inline_variables(),
+            Vec2Expr::SwizzleVec3(box v, _, _) => v.deep_inline_variables(),
+            Vec2Expr::SwizzleVec4(box v, _, _) => v.deep_inline_variables(),
             Vec2Expr::AccessMultiVecGroup(mv, _) => mv.deep_inline_variables(),
             Vec2Expr::Product(v, _) => {
                 let mut result = false;
@@ -426,6 +428,8 @@ impl Vec2Expr {
                 FloatExpr::sum(f_addends, f_lit)
             }
             Vec2Expr::SwizzleVec2(box mut v, x, y) => v.take_part_as_owned([x, y][idx]),
+            Vec2Expr::SwizzleVec3(box mut v, x, y) => v.take_part_as_owned([x, y][idx]),
+            Vec2Expr::SwizzleVec4(box mut v, x, y) => v.take_part_as_owned([x, y][idx]),
             Vec2Expr::Truncate3to2(box mut v3) => v3.take_part_as_owned(idx),
             Vec2Expr::Truncate4to2(box mut v4) => v4.take_part_as_owned(idx),
         }
@@ -450,6 +454,8 @@ impl Vec2Expr {
             Vec2Expr::Product(_, _) => false,
             Vec2Expr::Sum(_, _) => false,
             Vec2Expr::SwizzleVec2(_, _, _) => false,
+            Vec2Expr::SwizzleVec3(_, _, _) => false,
+            Vec2Expr::SwizzleVec4(_, _, _) => false,
             Vec2Expr::Truncate3to2(v) => v.is_memory_read_and_not_compute(),
             Vec2Expr::Truncate4to2(v) => v.is_memory_read_and_not_compute(),
         }
@@ -483,7 +489,9 @@ impl Vec3Expr {
                 result
             }
             Vec3Expr::Truncate4to3(box v) => v.deep_inline_variables(),
-            Vec3Expr::SwizzleVec3(v, _, _, _) => v.deep_inline_variables(),
+            Vec3Expr::SwizzleVec2(v, _, _, _) => v.deep_inline_variables(),
+            Vec3Expr::SwizzleVec3(box v, _, _, _) => v.deep_inline_variables(),
+            Vec3Expr::SwizzleVec4(box v, _, _, _) => v.deep_inline_variables(),
             Vec3Expr::AccessMultiVecGroup(mv, _) => mv.deep_inline_variables(),
             Vec3Expr::Product(v, _) => {
                 let mut result = false;
@@ -551,7 +559,9 @@ impl Vec3Expr {
                 let f_lit = v_lits[idx];
                 FloatExpr::sum(f_addends, f_lit)
             }
+            Vec3Expr::SwizzleVec2(mut v, x, y, z) => v.take_part_as_owned([x, y, z][idx]),
             Vec3Expr::SwizzleVec3(box mut v, x, y, z) => v.take_part_as_owned([x, y, z][idx]),
+            Vec3Expr::SwizzleVec4(box mut v, x, y, z) => v.take_part_as_owned([x, y, z][idx]),
             Vec3Expr::Truncate4to3(box mut v4) => v4.take_part_as_owned(idx),
             Vec3Expr::Extend2to3(mut v2, f) => match idx {
                 0 | 1 => v2.take_part_as_owned(idx),
@@ -579,7 +589,9 @@ impl Vec3Expr {
             Vec3Expr::AccessMultiVecGroup(mve, _) => mve.is_memory_read_and_not_compute(),
             Vec3Expr::Product(_, _) => false,
             Vec3Expr::Sum(_, _) => false,
+            Vec3Expr::SwizzleVec2(_, _, _, _) => false,
             Vec3Expr::SwizzleVec3(_, _, _, _) => false,
+            Vec3Expr::SwizzleVec4(_, _, _, _) => false,
             Vec3Expr::Truncate4to3(v) => v.is_memory_read_and_not_compute(),
             // could go one way or the other on this one, I'll allow it for now
             Vec3Expr::Extend2to3(v, z) => v.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute(),
@@ -621,7 +633,9 @@ impl Vec4Expr {
                 result |= f1.deep_inline_variables();
                 result
             }
-            Vec4Expr::SwizzleVec4(v, _, _, _, _) => v.deep_inline_variables(),
+            Vec4Expr::SwizzleVec2(v, _, _, _, _) => v.deep_inline_variables(),
+            Vec4Expr::SwizzleVec3(v, _, _, _, _) => v.deep_inline_variables(),
+            Vec4Expr::SwizzleVec4(box v, _, _, _, _) => v.deep_inline_variables(),
             Vec4Expr::AccessMultiVecGroup(mv, _) => mv.deep_inline_variables(),
             Vec4Expr::Product(v, _) => {
                 let mut result = false;
@@ -689,6 +703,8 @@ impl Vec4Expr {
                 let f_lit = v_lits[idx];
                 FloatExpr::sum(f_addends, f_lit)
             }
+            Vec4Expr::SwizzleVec2(mut v, x, y, z, w) => v.take_part_as_owned([x, y, z, w][idx]),
+            Vec4Expr::SwizzleVec3(mut v, x, y, z, w) => v.take_part_as_owned([x, y, z, w][idx]),
             Vec4Expr::SwizzleVec4(box mut v, x, y, z, w) => v.take_part_as_owned([x, y, z, w][idx]),
             Vec4Expr::Extend2to4(mut v2, z, w) => match idx {
                 0 | 1 => v2.take_part_as_owned(idx),
@@ -724,6 +740,8 @@ impl Vec4Expr {
             //  see impl AntiConstraintViolation for AntiFlector
             Vec4Expr::Product(_, _) => false,
             Vec4Expr::Sum(_, _) => false,
+            Vec4Expr::SwizzleVec2(_, _, _, _, _) => false,
+            Vec4Expr::SwizzleVec3(_, _, _, _, _) => false,
             Vec4Expr::SwizzleVec4(_, _, _, _, _) => false,
             // could go one way or the other on these, I'll allow it for now
             Vec4Expr::Extend2to4(v, z, w) => v.is_memory_read_and_not_compute() && z.is_memory_read_and_not_compute() && w.is_memory_read_and_not_compute(),

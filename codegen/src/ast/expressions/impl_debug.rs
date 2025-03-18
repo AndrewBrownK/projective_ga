@@ -272,6 +272,14 @@ impl<'e> Debug for DebugExpression<'e, Vec2Expr> {
                 let v = self.also(v);
                 write!(f, "swizzle_vec_2({v:?}, {i0}, {i1})")?;
             },
+            Vec2Expr::SwizzleVec3(box v, i0, i1) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_3({v:?}, {i0}, {i1})")?;
+            },
+            Vec2Expr::SwizzleVec4(box v, i0, i1) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_4({v:?}, {i0}, {i1})")?;
+            },
             Vec2Expr::Truncate3to2(box v) => {
                 let v = self.also(v);
                 write!(f, "Truncate3to2(Box::new({v:?}))")?;
@@ -331,9 +339,17 @@ impl<'e> Debug for DebugExpression<'e, Vec3Expr> {
                 }
                 write!(f, "{ti}], {l:?})")?;
             }
+            Vec3Expr::SwizzleVec2(v, i0, i1, i2) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_2({v:?}, {i0}, {i1}, {i2})")?;
+            },
             Vec3Expr::SwizzleVec3(box v, i0, i1, i2) => {
                 let v = self.also(v);
                 write!(f, "swizzle_vec_3({v:?}, {i0}, {i1}, {i2})")?;
+            },
+            Vec3Expr::SwizzleVec4(box v, i0, i1, i2) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_4({v:?}, {i0}, {i1}, {i2})")?;
             },
             Vec3Expr::Truncate4to3(box v) => {
                 let v = self.also(v);
@@ -396,6 +412,14 @@ impl<'e> Debug for DebugExpression<'e, Vec4Expr> {
                 }
                 write!(f, "{ti}], {l:?})")?;
             }
+            Vec4Expr::SwizzleVec2(v, i0, i1, i2, i3) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_2({v:?}, {i0}, {i1}, {i2}, {i3})")?;
+            },
+            Vec4Expr::SwizzleVec3(v, i0, i1, i2, i3) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_3({v:?}, {i0}, {i1}, {i2}, {i3})")?;
+            },
             Vec4Expr::SwizzleVec4(box v, i0, i1, i2, i3) => {
                 let v = self.also(v);
                 write!(f, "swizzle_vec_4({v:?}, {i0}, {i1}, {i2}, {i3})")?;

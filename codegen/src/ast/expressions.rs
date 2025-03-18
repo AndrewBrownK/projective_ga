@@ -12,6 +12,8 @@ use crate::ast::traits::TraitKey;
 use crate::ast::{RawVariableDeclaration, RawVariableInvocation, Variable};
 use crate::utility::slice_retain_mut;
 use std::collections::HashSet;
+use crate::ast::expressions::Vec2Expr::{Truncate3to2, Truncate4to2};
+use crate::ast::expressions::Vec3Expr::Extend2to3;
 
 pub trait TraitResultType: Clone + Debug + Sized + Send + Sync + 'static {
     type Expr: Expression<Self>;
@@ -239,6 +241,9 @@ pub enum Vec2Expr {
     Product(Vec<(Vec2Expr, f32)>, [f32; 2]),
     Sum(Vec<(Vec2Expr, f32)>, [f32; 2]),
     SwizzleVec2(Box<Vec2Expr>, usize, usize),
+    SwizzleVec3(Box<Vec3Expr>, usize, usize),
+    SwizzleVec4(Box<Vec4Expr>, usize, usize),
+    // TODO replace truncations with swizzles
     Truncate3to2(Box<Vec3Expr>),
     Truncate4to2(Box<Vec4Expr>),
 }
@@ -250,7 +255,10 @@ pub enum Vec3Expr {
     AccessMultiVecGroup(MultiVectorExpr, usize),
     Product(Vec<(Vec3Expr, f32)>, [f32; 3]),
     Sum(Vec<(Vec3Expr, f32)>, [f32; 3]),
+    SwizzleVec2(Vec2Expr, usize, usize, usize),
     SwizzleVec3(Box<Vec3Expr>, usize, usize, usize),
+    SwizzleVec4(Box<Vec4Expr>, usize, usize, usize),
+    // TODO replace truncate with swizzle
     Truncate4to3(Box<Vec4Expr>),
     Extend2to3(Vec2Expr, FloatExpr),
 }
@@ -262,6 +270,8 @@ pub enum Vec4Expr {
     AccessMultiVecGroup(MultiVectorExpr, usize),
     Product(Vec<(Vec4Expr, f32)>, [f32; 4]),
     Sum(Vec<(Vec4Expr, f32)>, [f32; 4]),
+    SwizzleVec2(Vec2Expr, usize, usize, usize, usize),
+    SwizzleVec3(Vec3Expr, usize, usize, usize, usize),
     SwizzleVec4(Box<Vec4Expr>, usize, usize, usize, usize),
     Extend2to4(Vec2Expr, FloatExpr, FloatExpr),
     Extend3to4(Vec3Expr, FloatExpr),

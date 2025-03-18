@@ -590,7 +590,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
 
         'outer: loop {
             let span = tracing::span!(Level::DEBUG, "inlining_variables");
-            let _span = span.enter();
+            let span_entered = span.enter();
             'inner: loop {
                 // Scan through the lines in reverse, drop unused variables
 
@@ -647,7 +647,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     break 'inner
                 }
             }
-            drop(_span);
+            drop(span_entered);
             do_copy_pasta!("Debuggable Copy-Pasta (inlining_variables):");
 
             // Destructuring simplification of variables that are not used in whole
@@ -660,7 +660,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             let mut i = 0;
 
             let span = tracing::span!(Level::DEBUG, "destructuring_variables");
-            let _span = span.enter();
+            let span_entered = span.enter();
             'inner: while i < lines.len() {
                 // Foo i=2 j=0
                 // Bar i=1 j=1
@@ -730,7 +730,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 // Baz_z i=0 j=4
                 i += l;
             }
-            drop(_span);
+            drop(span_entered);
 
             if did_destructure {
                 // This output may use "missing" variables, like "Baz" in the comment examples.
