@@ -1,25 +1,132 @@
 
-// TODO make the Debug content valid rust copy-pasta
+#[derive(Clone, Copy)]
+pub struct DebugExpression<'e, E> {
+    multi_line: bool,
+    indent_level: usize,
+    expr: &'e E,
+}
+impl<'e, E> DebugExpression<'e, E> {
+    pub fn new(multi_line: bool, expr: &'e E) -> Self {
+        DebugExpression {
+            multi_line,
+            indent_level: 0,
+            expr,
+        }
+    }
+
+    fn also<'e2, E2>(&self, expr: &'e2 E2) -> DebugExpression<'e2, E2> {
+        DebugExpression {
+            multi_line: self.multi_line,
+            indent_level: self.indent_level,
+            expr,
+        }
+    }
+
+    fn also_deeper<'e2, E2>(&self, expr: &'e2 E2) -> DebugExpression<'e2, E2> {
+        DebugExpression {
+            multi_line: self.multi_line,
+            indent_level: self.indent_level + 1,
+            expr,
+        }
+    }
+
+    fn this_newline_and_indent(&self) -> String {
+        if self.multi_line {
+            format!("\n{}", "    ".repeat(self.indent_level))
+        } else {
+            " ".to_string()
+        }
+    }
+
+    fn inner_newline_and_indent(&self) -> String {
+        if self.multi_line {
+            format!("\n{}", "    ".repeat(self.indent_level + 1))
+        } else {
+            " ".to_string()
+        }
+    }
+}
 
 
 impl Debug for AnyExpression {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for IntExpr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for FloatExpr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for Vec2Expr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for Vec3Expr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for Vec4Expr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for MultiVectorGroupExpr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+impl Debug for MultiVectorExpr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        DebugExpression::new(false, self).fmt(f)
+    }
+}
+
+
+
+impl<'e> Debug for DebugExpression<'e, AnyExpression> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "/* AnyExpression */ ")?;
-        match self {
-            AnyExpression::Int(e) => write!(f, "{e:?}")?,
-            AnyExpression::Float(e) => write!(f, "{e:?}")?,
-            AnyExpression::Vec2(e) => write!(f, "{e:?}")?,
-            AnyExpression::Vec3(e) => write!(f, "{e:?}")?,
-            AnyExpression::Vec4(e) => write!(f, "{e:?}")?,
-            AnyExpression::Class(e) => write!(f, "{e:?}")?,
+        match self.expr {
+            AnyExpression::Int(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
+            AnyExpression::Float(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
+            AnyExpression::Vec2(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
+            AnyExpression::Vec3(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
+            AnyExpression::Vec4(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
+            AnyExpression::Class(e) => {
+                let e = self.also(e);
+                write!(f, "{e:?}")?
+            },
         }
         Ok(())
     }
 }
 
-impl Debug for IntExpr {
+impl<'e> Debug for DebugExpression<'e, IntExpr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let IntExpr::Variable(v) = &self {
+        if let IntExpr::Variable(v) = &self.expr {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
                 ("self", 0) => write!(f, "slf")?,
@@ -29,17 +136,20 @@ impl Debug for IntExpr {
             return write!(f, ".clone().into()");
         }
         write!(f, "IntExpr::")?;
-        match self {
+        match self.expr {
             IntExpr::Variable(_) => {}
             IntExpr::Literal(l) => write!(f, "Literal({l})")?,
-            IntExpr::TraitInvoke10ToInt(t, m) => write!(f, "TraitInvoke10ToInt({t:?}, {m})")?,
+            IntExpr::TraitInvoke10ToInt(t, m) => write!(f, "TraitInvoke10ToInt({t:?}, {m:?})")?,
         }
         Ok(())
     }
 }
-impl Debug for FloatExpr {
+impl<'e> Debug for DebugExpression<'e, FloatExpr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let FloatExpr::Variable(v) = &self {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+
+        if let FloatExpr::Variable(v) = &self.expr {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
                 ("self", 0) => write!(f, "slf")?,
@@ -49,35 +159,62 @@ impl Debug for FloatExpr {
             return write!(f, ".clone().into()");
         }
         write!(f, "FloatExpr::")?;
-        match self {
+        match self.expr {
             FloatExpr::Variable(_) => {}
             FloatExpr::Literal(l) => write!(f, "Literal({l:?})")?,
-            FloatExpr::FromInt(i) => write!(f, "FromInt({i:?})")?,
-            FloatExpr::AccessVec2(v, i) => write!(f, "access_vec_2({}, {i})", *v)?,
-            FloatExpr::AccessVec3(v, i) => write!(f, "access_vec_3({}, {i})", *v)?,
-            FloatExpr::AccessVec4(v, i) => write!(f, "access_vec_4({}, {i})", *v)?,
-            FloatExpr::AccessMultiVecGroup(mve, i) => write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?,
-            FloatExpr::AccessMultiVecFlat(mve, i) => write!(f, "AccessMultiVecFlat({mve:?}, {i:?})")?,
-            FloatExpr::TraitInvoke11ToFloat(t, m) => write!(f, "TraitInvoke11ToFloat({t:?}, {m})")?,
+            FloatExpr::FromInt(i) => {
+                let i = self.also(i);
+                write!(f, "FromInt({i:?})")?;
+            },
+            FloatExpr::AccessVec2(box v, i) => {
+                let v = self.also(v);
+                write!(f, "access_vec_2({:?}, {i})", v)?;
+            },
+            FloatExpr::AccessVec3(box v, i) => {
+                let v = self.also(v);
+                write!(f, "access_vec_3({:?}, {i})", v)?;
+            },
+            FloatExpr::AccessVec4(box v, i) => {
+                let v = self.also(v);
+                write!(f, "access_vec_4({:?}, {i})", v)?;
+            },
+            FloatExpr::AccessMultiVecGroup(mve, i) => {
+                let mve = self.also(mve);
+                write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?;
+            },
+            FloatExpr::AccessMultiVecFlat(mve, i) => {
+                let mve = self.also(mve);
+                write!(f, "AccessMultiVecFlat({mve:?}, {i:?})")?;
+            },
+            FloatExpr::TraitInvoke11ToFloat(t, m) => {
+                let m = self.also(m);
+                write!(f, "TraitInvoke11ToFloat({t:?}, {m:?})")?;
+            },
             FloatExpr::Product(v, l) => {
-                write!(f, "Product(vec![")?;
+                write!(f, "product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {exp:?}),")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
             FloatExpr::Sum(v, l) => {
-                write!(f, "Sum(vec![")?;
+                write!(f, "sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {coe:?}),")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
             FloatExpr::Exp(box a, b, c) => {
+                let a = self.also(a);
                 write!(f, "Exp(Box::new({a:?}), ")?;
                 match b {
                     None => write!(f, "None")?,
-                    Some(box b) => write!(f, "Some(Box::new({b:?}))")?,
+                    Some(box b) => {
+                        let b = self.also(b);
+                        write!(f, "Some(Box::new({b:?}))")?
+                    },
                 }
                 write!(f, ", {c:?})")?;
             }
@@ -85,9 +222,12 @@ impl Debug for FloatExpr {
         Ok(())
     }
 }
-impl Debug for Vec2Expr {
+impl<'e> Debug for DebugExpression<'e, Vec2Expr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let Vec2Expr::Variable(v) = &self {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+
+        if let Vec2Expr::Variable(v) = &self.expr {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
                 ("self", 0) => write!(f, "slf")?,
@@ -97,35 +237,59 @@ impl Debug for Vec2Expr {
             return write!(f, ".clone().into()");
         }
         write!(f, "Vec2Expr::")?;
-        match self {
+        match self.expr {
             Vec2Expr::Variable(_) => {}
-            Vec2Expr::Gather1(x) => write!(f, "Gather1({x:?})")?,
-            Vec2Expr::Gather2(x, y) => write!(f, "Gather2({x:?}, {y:?})")?,
-            Vec2Expr::AccessMultiVecGroup(mve, i) => write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?,
+            Vec2Expr::Gather1(x) => {
+                let x = self.also(x);
+                write!(f, "Gather1({x:?})")?;
+            },
+            Vec2Expr::Gather2(x, y) => {
+                let x = self.also_deeper(x);
+                let y = self.also_deeper(y);
+                write!(f, "Gather2({ii}{x:?},{ii}{y:?}{ti})")?;
+            },
+            Vec2Expr::AccessMultiVecGroup(mve, i) => {
+                let mve = self.also(mve);
+                write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?;
+            },
             Vec2Expr::Product(v, l) => {
-                write!(f, "Product(vec![")?;
+                write!(f, "product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {exp:?}), ")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
             Vec2Expr::Sum(v, l) => {
-                write!(f, "Sum(vec![")?;
+                write!(f, "sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {coe:?}), ")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
-            Vec2Expr::SwizzleVec2(box v, i0, i1) => write!(f, "swizzle_vec_2({v:?}, {i0}, {i1})")?,
-            Vec2Expr::Truncate3to2(box v) => write!(f, "Truncate3to2(Box::new({v:?}))")?,
-            Vec2Expr::Truncate4to2(box v) => write!(f, "Truncate4to2(Box::new({v:?}))")?,
+            Vec2Expr::SwizzleVec2(box v, i0, i1) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_2({v:?}, {i0}, {i1})")?;
+            },
+            Vec2Expr::Truncate3to2(box v) => {
+                let v = self.also(v);
+                write!(f, "Truncate3to2(Box::new({v:?}))")?;
+            },
+            Vec2Expr::Truncate4to2(box v) => {
+                let v = self.also(v);
+                write!(f, "Truncate4to2(Box::new({v:?}))")?;
+            },
         }
         Ok(())
     }
 }
-impl Debug for Vec3Expr {
+impl<'e> Debug for DebugExpression<'e, Vec3Expr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let Vec3Expr::Variable(v) = &self {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+
+        if let Vec3Expr::Variable(v) = &self.expr {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
                 ("self", 0) => write!(f, "slf")?,
@@ -135,35 +299,61 @@ impl Debug for Vec3Expr {
             return write!(f, ".clone().into()");
         }
         write!(f, "Vec3Expr::")?;
-        match self {
+        match self.expr {
             Vec3Expr::Variable(_) => {}
-            Vec3Expr::Gather1(x) => write!(f, "Gather1({x:?})")?,
-            Vec3Expr::Gather3(x, y, z) => write!(f, "Gather3({x:?}, {y:?}, {z:?})")?,
-            Vec3Expr::AccessMultiVecGroup(mve, i) => write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?,
+            Vec3Expr::Gather1(x) => {
+                let x = self.also(x);
+                write!(f, "Gather1({x:?})")?;
+            },
+            Vec3Expr::Gather3(x, y, z) => {
+                let x = self.also_deeper(x);
+                let y = self.also_deeper(y);
+                let z = self.also_deeper(z);
+                write!(f, "Gather3({ii}{x:?},{ii}{y:?},{ii}{z:?}{ti})")?;
+            },
+            Vec3Expr::AccessMultiVecGroup(mve, i) => {
+                let mve = self.also(mve);
+                write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?;
+            },
             Vec3Expr::Product(v, l) => {
-                write!(f, "Product(vec![")?;
+                write!(f, "product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {exp:?}), ")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
             Vec3Expr::Sum(v, l) => {
-                write!(f, "Sum(vec![")?;
+                write!(f, "sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {coe:?}), ")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
-            Vec3Expr::SwizzleVec3(box v, i0, i1, i2) => write!(f, "swizzle_vec_3({v:?}, {i0}, {i1}, {i2})")?,
-            Vec3Expr::Truncate4to3(box v) => write!(f, "Truncate4to3(Box::new({v:?}))")?,
-            Vec3Expr::Extend2to3(v, z) => write!(f, "Extend2to3(Box::new({v:?}), {z:?})")?,
+            Vec3Expr::SwizzleVec3(box v, i0, i1, i2) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_3({v:?}, {i0}, {i1}, {i2})")?;
+            },
+            Vec3Expr::Truncate4to3(box v) => {
+                let v = self.also(v);
+                write!(f, "Truncate4to3(Box::new({v:?}))")?;
+            },
+            Vec3Expr::Extend2to3(v, z) => {
+                let v = self.also_deeper(v);
+                let z = self.also_deeper(z);
+                write!(f, "Extend2to3({ii}Box::new({v:?}),{ii}{z:?}{ti})")?;
+            },
         }
         Ok(())
     }
 }
-impl Debug for Vec4Expr {
+impl<'e> Debug for DebugExpression<'e, Vec4Expr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        if let Vec4Expr::Variable(v) = &self {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+
+        if let Vec4Expr::Variable(v) = &self.expr {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
                 ("self", 0) => write!(f, "slf")?,
@@ -173,51 +363,92 @@ impl Debug for Vec4Expr {
             return write!(f, ".clone().into()");
         }
         write!(f, "Vec4Expr::")?;
-        match self {
+        match self.expr {
             Vec4Expr::Variable(_) => {}
-            Vec4Expr::Gather1(x) => write!(f, "Gather1({x:?})")?,
-            Vec4Expr::Gather4(x, y, z, w) => write!(f, "Gather4({x:?}, {y:?}, {z:?}, {w:?})")?,
-            Vec4Expr::AccessMultiVecGroup(mve, i) => write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?,
+            Vec4Expr::Gather1(x) => {
+                let x = self.also(x);
+                write!(f, "Gather1({x:?})")?;
+            },
+            Vec4Expr::Gather4(x, y, z, w) => {
+                let x = self.also_deeper(x);
+                let y = self.also_deeper(y);
+                let z = self.also_deeper(z);
+                let w = self.also_deeper(w);
+                write!(f, "Gather4({ii}{x:?},{ii}{y:?},{ii}{z:?},{ii}{w:?}{ti})")?;
+            },
+            Vec4Expr::AccessMultiVecGroup(mve, i) => {
+                let mve = self.also(mve);
+                write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?;
+            },
             Vec4Expr::Product(v, l) => {
-                write!(f, "Product(vec![")?;
+                write!(f, "product(vec![")?;
                 for (e, exp) in v.iter() {
-                    write!(f, "({e:?}, {exp:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {exp:?}),")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
             Vec4Expr::Sum(v, l) => {
-                write!(f, "Sum(vec![")?;
+                write!(f, "sum(vec![")?;
                 for (e, coe) in v.iter() {
-                    write!(f, "({e:?}, {coe:?}), ")?;
+                    let e = self.also_deeper(e);
+                    write!(f, "{ii}({e:?}, {coe:?}),")?;
                 }
-                write!(f, "], {l:?})")?;
+                write!(f, "{ti}], {l:?})")?;
             }
-            Vec4Expr::SwizzleVec4(box v, i0, i1, i2, i3) => write!(f, "swizzle_vec_4({v:?}, {i0}, {i1}, {i2}, {i3})")?,
-            Vec4Expr::Extend2to4(v, z, w) => write!(f, "Extend2to4({v:?}, {z:?}, {w:?})")?,
-            Vec4Expr::Extend3to4(v, z) => write!(f, "Extend3to4({v:?}, {z:?})")?,
+            Vec4Expr::SwizzleVec4(box v, i0, i1, i2, i3) => {
+                let v = self.also(v);
+                write!(f, "swizzle_vec_4({v:?}, {i0}, {i1}, {i2}, {i3})")?;
+            },
+            Vec4Expr::Extend2to4(v, z, w) => {
+                let v = self.also_deeper(v);
+                let z = self.also_deeper(z);
+                let w = self.also_deeper(w);
+                write!(f, "Extend2to4({ii}{v:?},{ii}{z:?},{ii}{w:?}{ti})")?;
+            },
+            Vec4Expr::Extend3to4(v, w) => {
+                let v = self.also_deeper(v);
+                let w = self.also_deeper(w);
+                write!(f, "Extend3to4({ii}{v:?},{ii}{w:?}{ti})")?;
+            },
         }
         Ok(())
     }
 }
 
-impl Debug for MultiVectorGroupExpr {
+impl<'e> Debug for DebugExpression<'e, MultiVectorGroupExpr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "MultiVectorGroupExpr::")?;
-        match self {
-            MultiVectorGroupExpr::JustFloat(v) => write!(f, "JustFloat({v:?})")?,
-            MultiVectorGroupExpr::Vec2(v) => write!(f, "Vec2({v:?})")?,
-            MultiVectorGroupExpr::Vec3(v) => write!(f, "Vec3({v:?})")?,
-            MultiVectorGroupExpr::Vec4(v) => write!(f, "Vec4({v:?})")?,
+        match self.expr {
+            MultiVectorGroupExpr::JustFloat(v) => {
+                let v = self.also(v);
+                write!(f, "JustFloat({v:?})")?
+            },
+            MultiVectorGroupExpr::Vec2(v) => {
+                let v = self.also(v);
+                write!(f, "Vec2({v:?})")?
+            },
+            MultiVectorGroupExpr::Vec3(v) => {
+                let v = self.also(v);
+                write!(f, "Vec3({v:?})")?
+            },
+            MultiVectorGroupExpr::Vec4(v) => {
+                let v = self.also(v);
+                write!(f, "Vec4({v:?})")?
+            },
         }
         Ok(())
     }
 }
 
 
-impl Debug for MultiVectorExpr {
+impl<'e> Debug for DebugExpression<'e, MultiVectorExpr> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let n = self.mv_class.name();
-        let via = self.expr.as_ref();
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+
+        let n = self.expr.mv_class.name();
+        let via = self.expr.expr.as_ref();
         if let MultiVectorVia::Variable(v) = &via {
             let (n, i) = &v.decl.name;
             match (n.as_str(), i) {
@@ -232,30 +463,32 @@ impl Debug for MultiVectorExpr {
             MultiVectorVia::Variable(_) => {}
             MultiVectorVia::Construct(v) => {
                 write!(f, "Construct(vec![")?;
-                let mut gs = self.mv_class.groups().into_iter();
-                for (i, expr) in v.iter().enumerate() {
+                let mut gs = self.expr.mv_class.groups().into_iter();
+                for expr in v.iter() {
                     let group = gs.next().expect("zipping");
-                    if i > 0 {
-                        write!(f, ", ")?;
-                    }
                     use BasisElementGroup::*;
                     use MultiVectorGroupExpr::*;
+                    let expr = self.also_deeper(expr);
                     match group {
                         G1(be0) => {
-                            write!(f, "/* {be0} */ {expr:?}")?;
+                            write!(f, "{ii}/* {be0} */")?;
+                            write!(f, "{ii}{expr:?},")?;
                         }
                         G2(be0, be1) => {
-                            write!(f, "/* {be0}, {be1} */ {expr:?}")?;
+                            write!(f, "{ii}/* {be0}, {be1} */")?;
+                            write!(f, "{ii}{expr:?},")?;
                         }
                         G3(be0, be1, be2) => {
-                            write!(f, "/* {be0}, {be1}, {be2} */ {expr:?}")?;
+                            write!(f, "{ii}/* {be0}, {be1}, {be2} */")?;
+                            write!(f, "{ii}{expr:?},")?;
                         }
                         G4(be0, be1, be2, be3) => {
-                            write!(f, "/* {be0}, {be1}, {be2}, {be3} */ {expr:?}")?;
+                            write!(f, "{ii}/* {be0}, {be1}, {be2}, {be3} */")?;
+                            write!(f, "{ii}{expr:?},")?;
                         }
                     }
                 }
-                write!(f, "])")?;
+                write!(f, "{ti}])")?;
             }
             // TODO make these trait invoke debugs more similar (see FloatExpr and IntExpr too)
             MultiVectorVia::TraitInvoke11ToClass(t, mv) => {

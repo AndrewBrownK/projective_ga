@@ -8,7 +8,8 @@
 use ExtractionStrength::WholeGroups;
 use ExtractionStrength::Gather1;
 use ExtractionStrength::Swizzle;
-use ExtractionStrength::ExtendAndTruncate;
+use ExtractionStrength::TruncateAndExtend;
+use ExtractionStrength::NaturalExtend;
 
 #[repr(usize)]
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -16,15 +17,16 @@ pub enum ExtractionStrength {
     WholeGroups = 0,
     Gather1 = 1,
     Swizzle = 2,
-    ExtendAndTruncate = 3
+    NaturalExtend = 3,
+    TruncateAndExtend = 4,
 }
 impl ExtractionStrength {
-    pub const ASCENDING_STRENGTH: [ExtractionStrength; 4] = [
+    pub const ASCENDING_STRENGTH: [ExtractionStrength; 5] = [
         WholeGroups,
         Gather1,
         Swizzle,
-        // TODO distinction between "natural extensions" and "truncated extensions"
-        ExtendAndTruncate,
+        NaturalExtend,
+        TruncateAndExtend,
     ];
 }
 
@@ -109,6 +111,7 @@ fn vec2_product_transpose(
     // See if we can pull out a Vec2Expr::Product
     let mut vec2_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
@@ -216,14 +219,14 @@ fn vec2_product_extract(
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
-        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy && eqs!(v0, v1) => {
             vec2_product.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), power));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
-        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy && eqs!(v0, v1) => {
             vec2_product.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), power));
             true
         }
@@ -250,6 +253,7 @@ fn vec2_sum_transpose(
     // See if we can pull out a Vec2Expr::Sum
     let mut vec2_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
@@ -353,14 +357,14 @@ fn vec2_sum_extract(
         (
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1)
-        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy && eqs!(v0, v1) => {
             vec2_sum.push((Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), coefficient));
             true
         }
         (
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1)
-        ) if extraction_strength >= ExtendAndTruncate && xy && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy && eqs!(v0, v1) => {
             vec2_sum.push((Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), coefficient));
             true
         }
@@ -388,6 +392,7 @@ fn vec3_product_transpose(
     // See if we can pull out a Vec3Expr::Product
     let mut vec3_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
@@ -525,7 +530,7 @@ fn vec3_product_extract(
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             z
-        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_z && eqs!(v0, v1) => {
             vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), power));
             true
         }
@@ -533,7 +538,7 @@ fn vec3_product_extract(
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= NaturalExtend && xy_z && eqs!(v0, v1) => {
             vec3_product.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), power));
             true
         }
@@ -541,7 +546,7 @@ fn vec3_product_extract(
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2)
-        ) if extraction_strength >= ExtendAndTruncate && xyz && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= TruncateAndExtend && xyz && eqs!(v0, v1, v2) => {
             vec3_product.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), power));
             true
         }
@@ -559,7 +564,7 @@ fn vec3_product_extract(
             Sum(v0, a0),
             Sum(v1, a1),
             z,
-        ) if extraction_strength >= ExtendAndTruncate && xy_z => {
+        ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), power));
@@ -580,6 +585,7 @@ fn vec3_sum_transpose(
     // See if we can pull out a Vec3Expr::Sum
     let mut vec3_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
@@ -708,7 +714,7 @@ fn vec3_sum_extract(
             AccessVec3(box v0, i0),
             AccessVec3(box v1, i1),
             z
-        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_z && eqs!(v0, v1) => {
             vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone()), coefficient));
             true
         }
@@ -716,7 +722,7 @@ fn vec3_sum_extract(
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if extraction_strength >= ExtendAndTruncate && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= NaturalExtend && xy_z && eqs!(v0, v1) => {
             vec3_sum.push((Vec3Expr::Extend2to3(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone()), coefficient));
             true
         }
@@ -724,7 +730,7 @@ fn vec3_sum_extract(
             AccessVec4(box v0, i0),
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
-        ) if extraction_strength >= ExtendAndTruncate && xyz && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= TruncateAndExtend && xyz && eqs!(v0, v1, v2) => {
             vec3_sum.push((Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), coefficient));
             true
         }
@@ -742,7 +748,7 @@ fn vec3_sum_extract(
             Product(v0, a0),
             Product(v1, a1),
             z,
-        ) if extraction_strength >= ExtendAndTruncate && xy_z => {
+        ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
             vec3_sum.push((Vec3Expr::Extend2to3(transposed, z.clone()), coefficient));
@@ -764,6 +770,7 @@ fn vec4_product_transpose(
     // See if we can pull out a Vec4Expr::Product
     let mut vec4_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
             float_product_1.retain_mut(|(e1, f1)| {
@@ -990,7 +997,7 @@ fn vec4_product_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= TruncateAndExtend && xyz_w && eqs!(v0, v1, v2) => {
             vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), power));
             true
         }
@@ -999,7 +1006,7 @@ fn vec4_product_extract(
             AccessVec4(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw && eqs!(v0, v1) => {
             vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), power));
             true
         }
@@ -1008,7 +1015,7 @@ fn vec4_product_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= NaturalExtend && xyz_w && eqs!(v0, v1, v2) => {
             vec4_product.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), power));
             true
         }
@@ -1017,7 +1024,7 @@ fn vec4_product_extract(
             AccessVec3(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw && eqs!(v0, v1) => {
             vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), power));
             true
         }
@@ -1026,7 +1033,7 @@ fn vec4_product_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= NaturalExtend && xy_zw && eqs!(v0, v1) => {
             vec4_product.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), power));
             true
         }
@@ -1046,7 +1053,7 @@ fn vec4_product_extract(
             Sum(v1, a1),
             Sum(v2, a2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w => {
+        ) if extraction_strength >= TruncateAndExtend && xyz_w => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
             vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), power));
@@ -1057,7 +1064,7 @@ fn vec4_product_extract(
             Sum(v1, a1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
             vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), power));
@@ -1079,6 +1086,7 @@ fn vec4_sum_transpose(
     // See if we can pull out a Vec4Expr::Sum
     let mut vec4_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
             float_sum_1.retain_mut(|(e1, f1)| {
@@ -1232,7 +1240,7 @@ fn vec4_sum_extract(
             AccessVec4(box v1, i1),
             AccessVec4(box v2, i2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= TruncateAndExtend && xyz_w && eqs!(v0, v1, v2) => {
             vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3))), w.clone()), coefficient));
             true
         }
@@ -1241,7 +1249,7 @@ fn vec4_sum_extract(
             AccessVec4(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw && eqs!(v0, v1) => {
             vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, 2, 3))), z.clone(), w.clone()), coefficient));
             true
         }
@@ -1250,7 +1258,7 @@ fn vec4_sum_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= NaturalExtend && xyz_w && eqs!(v0, v1, v2) => {
             vec4_sum.push((Vec4Expr::Extend3to4(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2), w.clone()), coefficient));
             true
         }
@@ -1259,7 +1267,7 @@ fn vec4_sum_extract(
             AccessVec3(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw && eqs!(v0, v1) => {
             vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, 2))), z.clone(), w.clone()), coefficient));
             true
         }
@@ -1268,7 +1276,7 @@ fn vec4_sum_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= NaturalExtend && xy_zw && eqs!(v0, v1) => {
             vec4_sum.push((Vec4Expr::Extend2to4(Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1), z.clone(), w.clone()), coefficient));
             true
         }
@@ -1288,7 +1296,7 @@ fn vec4_sum_extract(
             Product(v1, a1),
             Product(v2, a2),
             w
-        ) if extraction_strength >= ExtendAndTruncate && xyz_w => {
+        ) if extraction_strength >= TruncateAndExtend && xyz_w => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_product_transpose(v0, v1, v2, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend3to4(transposed, w.clone()), coefficient));
@@ -1299,7 +1307,7 @@ fn vec4_sum_extract(
             Product(v1, a1),
             z,
             w
-        ) if extraction_strength >= ExtendAndTruncate && xy_zw => {
+        ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), coefficient));

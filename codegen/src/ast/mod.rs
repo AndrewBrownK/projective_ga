@@ -1,5 +1,5 @@
 use crate::ast::datatype::{Float, MultiVector};
-use crate::ast::expressions::{AnyExpression, Vec4Expr};
+use crate::ast::expressions::{AnyExpression, Expression, Vec4Expr};
 use parking_lot::RwLock;
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -23,13 +23,14 @@ pub struct Variable<ExprType> {
 
 impl<ExprType> Variable<ExprType> {
     // For quick testing purposes
-    fn quick_var(name: &str, e: ExprType) -> Self {
+    fn quick_var<Expr: Expression<ExprType>>(name: &str, expr_type: ExprType, e: Option<Expr>) -> Self {
+        let expr = e.map(|it| Arc::new(RwLock::new(it.into_any_expression())));
         Variable {
-            expr_type: e,
+            expr_type,
             decl: Arc::new(RawVariableDeclaration {
                 comment: None,
                 name: (name.to_string(), 0),
-                expr: None,
+                expr,
                 force_inline: Arc::new(AtomicBool::new(false)),
             }),
         }
@@ -43,28 +44,31 @@ impl<ExprType> Variable<ExprType> {
 pub mod quick_variables {
     use crate::algebra::basis::BasisElement;
     use crate::ast::datatype::{Float, Integer, MultiVector, Vec2, Vec3, Vec4};
+    use crate::ast::expressions::{FloatExpr, IntExpr, MultiVectorExpr, Vec2Expr, Vec3Expr, Vec4Expr};
     use crate::ast::Variable;
 
-    pub fn int_var(name: &str) -> Variable<Integer> {
-        Variable::<Integer>::quick_var(name, Integer)
+    pub fn int_var(name: &str, expr: Option<IntExpr>) -> Variable<Integer> {
+        Variable::<Integer>::quick_var(name, Integer, expr)
     }
-    pub fn float_var(name: &str) -> Variable<Float> {
-        Variable::<Float>::quick_var(name, Float)
+    pub fn float_var(name: &str, expr: Option<FloatExpr>) -> Variable<Float> {
+        Variable::<Float>::quick_var(name, Float, expr)
     }
-    pub fn vec2_var(name: &str) -> Variable<Vec2> {
-        Variable::<Vec2>::quick_var(name, Vec2)
+    pub fn vec2_var(name: &str, expr: Option<Vec2Expr>) -> Variable<Vec2> {
+        Variable::<Vec2>::quick_var(name, Vec2, expr)
     }
-    pub fn vec3_var(name: &str) -> Variable<Vec3> {
-        Variable::<Vec3>::quick_var(name, Vec3)
+    pub fn vec3_var(name: &str, expr: Option<Vec3Expr>) -> Variable<Vec3> {
+        Variable::<Vec3>::quick_var(name, Vec3, expr)
     }
-    pub fn vec4_var(name: &str) -> Variable<Vec4> {
-        Variable::<Vec4>::quick_var(name, Vec4)
+    pub fn vec4_var(name: &str, expr: Option<Vec4Expr>) -> Variable<Vec4> {
+        Variable::<Vec4>::quick_var(name, Vec4, expr)
     }
     pub fn multivec_var<const AntiScalar: BasisElement>(
-        name: &str, mv: &'static crate::algebra::multivector::MultiVec<AntiScalar>
+        name: &str,
+        mv: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
+        expr: Option<MultiVectorExpr>
     ) -> Variable<MultiVector> {
         let mv = MultiVector::from(mv);
-        Variable::<MultiVector>::quick_var(name, mv)
+        Variable::<MultiVector>::quick_var(name, mv, expr)
     }
 }
 
