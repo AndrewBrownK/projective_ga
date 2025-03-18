@@ -1,6 +1,6 @@
 #![allow(non_upper_case_globals)]
 
-use std::marker::{ConstParamTy, ConstParamTy_, UnsizedConstParamTy};
+use std::marker::{ConstParamTy_, UnsizedConstParamTy};
 
 use crate::algebra::basis::{BasisElement, BasisSignature};
 use std::cmp::PartialEq;

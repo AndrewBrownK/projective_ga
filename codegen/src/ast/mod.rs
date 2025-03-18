@@ -1,5 +1,4 @@
-use crate::ast::datatype::{Float, MultiVector};
-use crate::ast::expressions::{AnyExpression, Expression, Vec4Expr};
+use crate::ast::expressions::{AnyExpression, Expression};
 use parking_lot::RwLock;
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -62,6 +61,7 @@ pub mod quick_variables {
     pub fn vec4_var(name: &str, expr: Option<Vec4Expr>) -> Variable<Vec4> {
         Variable::<Vec4>::quick_var(name, Vec4, expr)
     }
+    #[allow(non_upper_case_globals)]
     pub fn multivec_var<const AntiScalar: BasisElement>(
         name: &str,
         mv: &'static crate::algebra::multivector::MultiVec<AntiScalar>,

@@ -103,7 +103,7 @@ pub trait TraitDef_1_Type_0_Args: TraitImpl_10 + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.clone());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits10.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits10.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             // return builder.inline_by_copy_existing_10::<Self>(&trait_key, raw_impl);
@@ -260,7 +260,7 @@ pub trait TraitDef_1_Type_1_Arg: TraitImpl_11 + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.expression_type());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits11.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits11.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             // return builder.inline_by_copy_existing_11::<Self, _>(&trait_key, raw_impl, owner);
@@ -426,7 +426,7 @@ pub trait TraitDef_2_Types_1_Arg: TraitImpl_21 + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.expression_type(), other.clone());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits21.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits21.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             // return builder.inline_by_copy_existing_21::<Self, _>(&trait_key, raw_impl, owner);
@@ -601,7 +601,7 @@ pub trait TraitDef_2_Types_2_Args: TraitImpl_22 + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.expression_type(), other.expression_type());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits22.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits22.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             // return builder.inline_by_copy_existing_22::<Self, _, _>(&trait_key, raw_impl, owner, other);
@@ -786,7 +786,7 @@ pub trait TraitDef_1_Type_2_Args_f32: TraitImpl_12f + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.expression_type());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits12f.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits12f.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             //return builder.inline_by_copy_existing_12f::<Self, _, _>(&trait_key, raw_impl, owner, other);
@@ -953,7 +953,7 @@ pub trait TraitDef_1_Type_2_Args_i32: TraitImpl_12i + ProvideTraitNames {
         let impl_key = (trait_key.clone(), owner.expression_type());
 
         // Double Option/None: First is no impl attempted yet, Second is impl determined absent
-        if let Some(Some(raw_impl)) = builder.registry.traits12i.get(&impl_key).await {
+        if let Some(Some(_raw_impl)) = builder.registry.traits12i.get(&impl_key).await {
             // Simplification can be expensive, reuse existing implementation
             // TODO enable and debug the panic
             // return builder.inline_by_copy_existing_12i::<Self, _, _>(&trait_key, raw_impl, owner, other);

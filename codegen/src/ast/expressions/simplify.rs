@@ -1074,10 +1074,10 @@ impl Vec2Expr {
                     ($float_expr:expr, $k:expr) => {
                         if $k != 1.0 {
                             match &mut $float_expr {
-                                FloatExpr::Product(v, c) => {
+                                FloatExpr::Product(_, c) => {
                                     c.mul_assign($k);
                                 }
-                                otherwise => {
+                                _ => {
                                     let f = $float_expr.take_as_owned();
                                     $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
                                     $float_expr.float_simplify(true);
@@ -1097,7 +1097,7 @@ impl Vec2Expr {
                 }
 
                 let is_any_gather2 = !gather2_x.is_empty() || !gather2_y.is_empty();
-                let mut is_only_gather2 = is_any_gather2 && product.is_empty() && gather1.is_empty();
+                let is_only_gather2 = is_any_gather2 && product.is_empty() && gather1.is_empty();
 
                 let mut x_is_zeroed_without_last_factor = false;
                 let mut y_is_zeroed_without_last_factor = false;
@@ -1925,10 +1925,10 @@ impl Vec3Expr {
                     ($float_expr:expr, $k:expr) => {
                         if $k != 1.0 {
                             match &mut $float_expr {
-                                FloatExpr::Product(v, c) => {
+                                FloatExpr::Product(_, c) => {
                                     c.mul_assign($k);
                                 }
-                                otherwise => {
+                                _ => {
                                     let f = $float_expr.take_as_owned();
                                     $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
                                     $float_expr.float_simplify(true);
@@ -1969,7 +1969,7 @@ impl Vec3Expr {
                 }
 
                 let is_any_gather3 = !gather3_x.is_empty() || !gather3_y.is_empty() || !gather3_z.is_empty();
-                let mut is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && gather1.is_empty() && !is_any_gather3;
+                let mut is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && gather1.is_empty() && gather3_x.is_empty() && gather3_y.is_empty();
                 let mut is_only_gather3 = is_any_gather3 && product.is_empty() && gather1.is_empty() && extend2to3_xy.is_empty();
 
                 let mut x_is_zeroed_without_last_factor = false;
@@ -1981,7 +1981,7 @@ impl Vec3Expr {
                     f.simplify();
                     if z == 0.0 {
                         extend2to3_xy.push((Vec2Expr::Gather1(f), 1.0));
-                        is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && !is_any_gather3;
+                        is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && gather3_x.is_empty() && gather3_y.is_empty();
                         is_only_gather3 = is_any_gather3 && product.is_empty() && extend2to3_xy.is_empty();
                     } else {
                         product.push((Vec3Expr::Gather1(f), 1.0));
@@ -1989,8 +1989,6 @@ impl Vec3Expr {
                 }
                 if !extend2to3_xy.is_empty() {
                     let mut xy_coefficient = [1.0; 2];
-                    let mut vec2_products = Vec2Expr::product(extend2to3_xy, xy_coefficient);
-                    vec2_products.simplify();
                     if is_only_2to3 {
                         xy_coefficient = [last_factor[0], last_factor[1]];
                         last_factor[0] = 1.0;
@@ -1998,6 +1996,8 @@ impl Vec3Expr {
                         mul_coefficient!(leftover_z, last_factor[2]);
                         last_factor[2] = 1.0;
                     }
+                    let mut vec2_products = Vec2Expr::product(extend2to3_xy, xy_coefficient);
+                    vec2_products.simplify();
                     if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
                         x_is_zeroed_without_last_factor = true;
                         y_is_zeroed_without_last_factor = true;
@@ -3064,6 +3064,11 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Product(product, last_factor) => {
+
+                // TODO impl GeometricProduct<Motor> for MultiVector {
+                //  + (self.group4().ww().with_zw(self[e2], other[e1234] * self[e321]) * other.group1().xyx().with_w(1.0))
+                //  + (self.group4().ww().with_zw(self[e2], other[scalar] * self[e321]) * other.group0().xyx().with_w(1.0))
+
                 let span = tracing::trace_span!("match_Product");
                 let _span_entered = span.enter();
                 if product.is_empty() {
@@ -3208,10 +3213,10 @@ impl Vec4Expr {
                     ($float_expr:expr, $k:expr) => {
                         if $k != 1.0 {
                             match &mut $float_expr {
-                                FloatExpr::Product(v, c) => {
+                                FloatExpr::Product(_, c) => {
                                     c.mul_assign($k);
                                 }
-                                otherwise => {
+                                _ => {
                                     let f = $float_expr.take_as_owned();
                                     $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
                                     $float_expr.float_simplify(true);
@@ -3275,8 +3280,8 @@ impl Vec4Expr {
                 }
 
                 let is_any_gather4 = !gather4_x.is_empty() || !gather4_y.is_empty() || !gather4_z.is_empty() || !gather4_w.is_empty();
-                let mut is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
-                let mut is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                let mut is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && gather4_x.is_empty() && gather4_y.is_empty();
+                let mut is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
                 let mut is_only_gather4 = is_any_gather4 && product.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
 
                 let mut x_is_zeroed_without_last_factor = false;
@@ -3289,13 +3294,13 @@ impl Vec4Expr {
                     f.simplify();
                     if z == 0.0 && w == 0.0 {
                         extend2to4_xy.push((Vec2Expr::Gather1(f), 1.0));
-                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
-                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && gather4_x.is_empty() && gather4_y.is_empty();
+                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
                         is_only_gather4 = is_any_gather4 && product.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
                     } else if w == 0.0 {
                         extend3to4_xyz.push((Vec3Expr::Gather1(f), 1.0));
-                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && !is_any_gather4;
-                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty()  && !is_any_gather4;
+                        is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && gather4_x.is_empty() && gather4_y.is_empty();
+                        is_only_3to4 = !extend3to4_xyz.is_empty() && product.is_empty() && extend2to4_xy.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
                         is_only_gather4 = is_any_gather4 && product.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
                     } else {
                         product.push((Vec4Expr::Gather1(f), 1.0));
@@ -3303,9 +3308,6 @@ impl Vec4Expr {
                 }
                 if !extend2to4_xy.is_empty() {
                     let mut xy_coefficient = [1.0; 2];
-                    let mut vec2_products = Vec2Expr::product(extend2to4_xy, xy_coefficient);
-                    vec2_products.simplify();
-                    let mut leftover_w = swap_take!(leftover_w, default_coefficient!(3));
                     if is_only_2to4 {
                         xy_coefficient = [last_factor[0], last_factor[1]];
                         last_factor[0] = 1.0;
@@ -3315,6 +3317,8 @@ impl Vec4Expr {
                         last_factor[2] = 1.0;
                         last_factor[3] = 1.0;
                     }
+                    let mut vec2_products = Vec2Expr::product(extend2to4_xy, xy_coefficient);
+                    vec2_products.simplify();
                     if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
                         x_is_zeroed_without_last_factor = true;
                         y_is_zeroed_without_last_factor = true;
@@ -3325,7 +3329,13 @@ impl Vec4Expr {
                     if let FloatExpr::Literal(0.0) = &leftover_w {
                         w_is_zeroed_without_last_factor = true;
                     }
-                    product.push((Vec4Expr::Extend2to4(vec2_products, leftover_z, leftover_w), 1.0));
+                    if !extend3to4_xyz.is_empty() {
+                        extend3to4_xyz.push((Vec3Expr::Extend2to3(vec2_products, leftover_z), 1.0));
+                        is_only_3to4 = product.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
+                    } else {
+                        let leftover_w = swap_take!(leftover_w, default_coefficient!(3));
+                        product.push((Vec4Expr::Extend2to4(vec2_products, leftover_z, leftover_w), 1.0));
+                    }
                 }
                 if !extend3to4_xyz.is_empty() {
                     let mut xyz_coefficient = [1.0; 3];

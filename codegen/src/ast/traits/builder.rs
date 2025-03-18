@@ -35,22 +35,21 @@ impl Debug for CommentOrVariableDeclaration {
                     return write!(f, "// This comment is an unused variable that will get removed");
                 };
                 write!(f, "let ")?;
-                let mut derived_name = String::new();
-                match &v.name {
+                let derived_name = match &v.name {
                     (n, 0) => {
                         if n.as_str() == "self" {
-                            derived_name = "slf".to_string();
                             write!(f, "slf")?;
+                            "slf".to_string()
                         } else {
-                            derived_name = n.clone();
                             write!(f, "{n}")?;
+                            n.clone()
                         }
                     }
                     (n, i) => {
-                        derived_name = format!("{n}_{}", i + 1);
                         write!(f, "{n}_{}", i + 1)?;
+                        format!("{n}_{}", i + 1)
                     }
-                }
+                };
                 write!(f, " = ")?;
                 match &v.expr {
                     None => write!(f, "todo!(\"variable has no backing\")")?,
@@ -566,14 +565,14 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 for line in lines.iter() {
                     copy_pasta = format!("{copy_pasta}{line:?}\n");
                 }
-                copy_pasta.push_str("let the_return: ");
+                copy_pasta.push_str("let mut the_return: ");
                 copy_pasta.push_str(match return_type {
-                    ExpressionType::Int(Integer) => "IntExpr",
-                    ExpressionType::Float(Float) => "FloatExpr",
-                    ExpressionType::Vec2(Vec2) => "Vec2Expr",
-                    ExpressionType::Vec3(Vec3) => "Vec3Expr",
-                    ExpressionType::Vec4(Vec4) => "Vec4Expr",
-                    ExpressionType::Class(MultiVector) => "MultiVectorExpr",
+                    ExpressionType::Int(_) => "IntExpr",
+                    ExpressionType::Float(_) => "FloatExpr",
+                    ExpressionType::Vec2(_) => "Vec2Expr",
+                    ExpressionType::Vec3(_) => "Vec3Expr",
+                    ExpressionType::Vec4(_) => "Vec4Expr",
+                    ExpressionType::Class(_) => "MultiVectorExpr",
                 });
                 copy_pasta.push_str(" = ");
                 copy_pasta = format!("{copy_pasta}{:?}", DebugExpression::new(true, &return_expr));
@@ -808,7 +807,6 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             lines,
             return_comment: self.return_comment,
             return_expr,
-            specialized: self.specialized,
             statistics,
         });
         let w = self.wanted_multi_vecs.into_inner();

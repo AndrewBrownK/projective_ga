@@ -2063,6 +2063,7 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
 
 
 
+        // TODO are assign_impls allowed in slang?
         // if !do_assign_impl {
         //     return Ok(());
         // }

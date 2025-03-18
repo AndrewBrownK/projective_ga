@@ -220,8 +220,8 @@ postgres-types = "0.2.7""#
 
     fn write_build_rs<P: AsRef<Path>>(
         &self,
-        crate_folder: P,
-        algebra_name: &'static str,
+        _crate_folder: P,
+        _algebra_name: &'static str,
     ) -> anyhow::Result<()> {
 //         let crate_folder = crate_folder.as_ref().to_path_buf();
 //         let file_path = crate_folder.join(Path::new("build.rs"));

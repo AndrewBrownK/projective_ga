@@ -1,7 +1,7 @@
 use crate::algebra::basis::grades::{AntiGrades, Grades};
 use crate::algebra::basis::{BasisElement, BasisSignature};
 use crate::algebra::multivector::{BasisElementGroup, MultiVec};
-use crate::ast::expressions::{FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
+use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::{Debug, Display, Formatter};
@@ -139,7 +139,9 @@ impl MultiVector {
             mv_class: self.clone(),
             expr: Box::new(MultiVectorVia::Construct(outer)),
         };
+        tracing::trace!("Raw MultiVector::Construct result: {:?}", DebugExpression::new(true, &result));
         result.simplify();
+        tracing::trace!("Simplified MultiVector::Construct result: {:?}", DebugExpression::new(true, &result));
         result
     }
 

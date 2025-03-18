@@ -73,7 +73,9 @@ impl PartialEq for FloatExpr {
             (_, Product(..)) => false,
             (Sum(..), _) => false,
             (_, Sum(..)) => false,
+            #[allow(unreachable_patterns)]
             (Exp(..), _) => false,
+            #[allow(unreachable_patterns)]
             (_, Exp(..)) => false,
         }
     }
@@ -236,7 +238,9 @@ impl PartialEq for Vec2Expr {
             (_, SwizzleVec4(..)) => false,
             (Truncate3to2(..), _) => false,
             (_, Truncate3to2(..)) => false,
+            #[allow(unreachable_patterns)]
             (Truncate4to2(..), _) => false,
+            #[allow(unreachable_patterns)]
             (_, Truncate4to2(..)) => false,
         }
     }
@@ -430,7 +434,9 @@ impl PartialEq for Vec3Expr {
             (_, SwizzleVec4(..)) => false,
             (Truncate4to3(..), _) => false,
             (_, Truncate4to3(..)) => false,
+            #[allow(unreachable_patterns)]
             (Extend2to3(..), _) => false,
+            #[allow(unreachable_patterns)]
             (_, Extend2to3(..)) => false,
         }
     }
@@ -645,7 +651,9 @@ impl PartialEq for Vec4Expr {
             (_, SwizzleVec4(..)) => false,
             (Extend2to4(..), _) => false,
             (_, Extend2to4(..)) => false,
+            #[allow(unreachable_patterns)]
             (Extend3to4(..), _) => false,
+            #[allow(unreachable_patterns)]
             (_, Extend3to4(..)) => false,
         }
     }

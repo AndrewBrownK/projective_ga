@@ -82,7 +82,7 @@ impl Param {
     }
 }
 
-pub type TraitParam = (ExpressionType, Param);
+pub(crate) type TraitParam = (ExpressionType, Param);
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum TraitArity {
@@ -116,7 +116,6 @@ pub(crate) struct RawTraitImplementation {
     pub(crate) lines: Vec<CommentOrVariableDeclaration>,
     pub(crate) return_comment: Option<String>,
     pub(crate) return_expr: AnyExpression,
-    pub(crate) specialized: bool,
     pub(crate) statistics: VectoredOperationsTracker,
 }
 
@@ -183,7 +182,7 @@ macro_rules! register_all {
     ( $anti_scalar:ident $mv_repo:expr; $($t:ident)+ $(| $($t2:ident)+)*) => {
         {
             // TODO handle toggling of progress bars
-            let useProgressBars = true;
+            let use_progress_bars = true;
             use $crate::build_scripts::common_traits::*;
             let tir = $crate::ast::traits::TraitImplRegistry::new();
             use $crate::ast::traits::{Register10, Register11, Register21, Register22, Register12f, Register12i};
@@ -192,7 +191,7 @@ macro_rules! register_all {
             let multi_progress = $crate::ast::traits::indicatif_multi_progress();
             let _: () = rt.block_on(async {
                 let mut overall_pb = None;
-                if useProgressBars {
+                if use_progress_bars {
                     let opb = std::sync::Arc::new(multi_progress.add($crate::ast::traits::indicatif_progress_bar(0).with_finish($crate::ast::traits::indicatif_and_leave())));
                     opb.set_style($crate::ast::traits::progress_style());
                     opb.set_message("AST: Trait Implementations");

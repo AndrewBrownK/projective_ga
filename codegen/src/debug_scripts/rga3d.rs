@@ -5,7 +5,7 @@ use std::sync::atomic::Ordering::Release;
 use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
 use crate::ast::traits::{Debug10, Debug11, Debug22, Debug12f, Debug12i, Debug21, DebugTrait};
-use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, DotProduct, GeometricAntiProduct, SquareRoot, Subtraction};
+use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, DotProduct, GeometricAntiProduct, GeometricProduct, SquareRoot, Subtraction};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
@@ -43,7 +43,24 @@ async fn single_expression_simplification_debugger() {
         .event_format(DebuggableCopyPasta::new())
         .init();
 
-    // do stuff
+    // Debuggable Copy-Pasta: impl GeometricProduct<Motor> for MultiVector
+    let slf = multivec_var("self", &MultiVector, None);
+    let other = multivec_var("other", &Motor, None);
+    let mut the_return: Vec4Expr = Vec4Expr::Extend3to4(
+        Vec3Expr::product(vec![
+            (Vec3Expr::swizzle_vec_3(Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0))), 0, 1, 0), 1.0),
+            (Vec3Expr::Extend2to3(
+                Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 4), 3, 3, 2, 3))),
+                FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3)
+            ), 1.0),
+        ], [1.0, 1.0, 1.0]),
+        FloatExpr::Literal(1.0)
+    );
+
+    the_return.slice_to_floats();
+    println!("{:?}", DebugExpression::new(true, &the_return));
+    the_return.simplify();
+    println!("{:?}", DebugExpression::new(true, &the_return));
 }
 
 #[tokio::test]
@@ -53,8 +70,8 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    DebugTrait(Subtraction)
-        .trace_implementation(Level::TRACE, repo, &DualNum, &AntiScalar)
+    DebugTrait(GeometricProduct)
+        .trace_implementation(Level::TRACE, repo, &MultiVector, &Motor)
         .await;
 }
 

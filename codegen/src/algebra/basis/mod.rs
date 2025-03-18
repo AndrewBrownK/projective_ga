@@ -1,5 +1,3 @@
-#![feature(const_option)]
-
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};

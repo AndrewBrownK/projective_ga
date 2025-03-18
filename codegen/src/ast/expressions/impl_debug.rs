@@ -358,7 +358,7 @@ impl<'e> Debug for DebugExpression<'e, Vec3Expr> {
             Vec3Expr::Extend2to3(v, z) => {
                 let v = self.also_deeper(v);
                 let z = self.also_deeper(z);
-                write!(f, "Extend2to3({ii}Box::new({v:?}),{ii}{z:?}{ti})")?;
+                write!(f, "Extend2to3({ii}{v:?},{ii}{z:?}{ti})")?;
             },
         }
         Ok(())

@@ -157,7 +157,7 @@ fn vec2_product_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec2_product_extract(
     extraction_strength: ExtractionStrength,
     vec2_product: &mut Vec<(Vec2Expr, f32)>,
@@ -296,7 +296,7 @@ fn vec2_sum_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec2_sum_extract(
     extraction_strength: ExtractionStrength,
     vec2_sum: &mut Vec<(Vec2Expr, f32)>,
@@ -449,7 +449,7 @@ fn vec3_product_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec3_product_extract(
     extraction_strength: ExtractionStrength,
     vec3_product: &mut Vec<(Vec3Expr, f32)>,
@@ -576,6 +576,29 @@ fn vec3_product_extract(
     }
 }
 
+// TODO some hideous changes in impl GeometricProduct<Motor> for MultiVector
+//  Before:
+//     // e41, e42, e43
+//     (Simd32x3::from(self[scalar]) * other.group0().xyz())
+//     + (Simd32x3::from(self[e1234]) * other.group1().xyz())
+//     + (self.group2().xxy() * other.group1().wzx())
+//     + (self.group2().zyz() * other.group1().yww())
+//     + (self.group3().xxy() * other.group0().wzx())
+//     + (self.group3().zyz() * other.group0().yww())
+//     - (self.group2().yzx() * other.group1().zxy())
+//     - (self.group3().yzx() * other.group0().zxy()),
+//  After:
+//     // e41, e42, e43
+//     (Simd32x3::from(other[e1234]) * self.group3())
+//     + (Simd32x3::from(other[scalar]) * self.group2())
+//     + (other.group0().yzz() * self.group3().zx().with_z(self[scalar]))
+//     + (other.group1().yzz() * self.group2().zx().with_z(self[e1234]))
+//     + (Simd32x2::from(self[scalar]) * other.group0().xy()).with_z(other[e41] * self[e31])
+//     + (Simd32x2::from(self[e1234]) * other.group1().xy()).with_z(other[e23] * self[e42])
+//     - (self.group2().yzx() * other.group1().zxy())
+//     - (self.group3().yzx() * other.group0().zxy()),
+
+
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec3_sum_transpose(
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
@@ -638,7 +661,7 @@ fn vec3_sum_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec3_sum_extract(
     extraction_strength: ExtractionStrength,
     vec3_sum: &mut Vec<(Vec3Expr, f32)>,
@@ -838,7 +861,7 @@ fn vec4_product_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec4_product_extract(
     extraction_strength: ExtractionStrength,
     vec4_product: &mut Vec<(Vec4Expr, f32)>,
@@ -1149,7 +1172,7 @@ fn vec4_sum_transpose(
     Some(result)
 }
 
-#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength), ret)]
+#[tracing::instrument(level = "trace", skip_all, fields(extraction_strength))]
 fn vec4_sum_extract(
     extraction_strength: ExtractionStrength,
     vec4_sum: &mut Vec<(Vec4Expr, f32)>,
