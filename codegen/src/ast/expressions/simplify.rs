@@ -207,6 +207,15 @@ impl FloatExpr {
                         self.simplify();
                         return
                     }
+                    Vec2Expr::SwizzleVec2(box v2, i0, i1) => {
+                        *self = FloatExpr::access_vec_2(v2.take_as_owned(), [*i0, *i1][*idx_in_vec]);
+                    }
+                    Vec2Expr::SwizzleVec3(box v3, i0, i1) => {
+                        *self = FloatExpr::access_vec_3(v3.take_as_owned(), [*i0, *i1][*idx_in_vec]);
+                    }
+                    Vec2Expr::SwizzleVec4(box v4, i0, i1) => {
+                        *self = FloatExpr::access_vec_4(v4.take_as_owned(), [*i0, *i1][*idx_in_vec]);
+                    }
                     _ => {}
                 }
             }
@@ -270,6 +279,15 @@ impl FloatExpr {
                         *self = FloatExpr::sum(new_addends, literal[*idx_in_vec]);
                         self.simplify();
                         return
+                    }
+                    Vec3Expr::SwizzleVec2(v2, i0, i1, i2) => {
+                        *self = FloatExpr::access_vec_2(v2.take_as_owned(), [*i0, *i1, *i2][*idx_in_vec]);
+                    }
+                    Vec3Expr::SwizzleVec3(box v3, i0, i1, i2) => {
+                        *self = FloatExpr::access_vec_3(v3.take_as_owned(), [*i0, *i1, *i2][*idx_in_vec]);
+                    }
+                    Vec3Expr::SwizzleVec4(box v4, i0, i1, i2) => {
+                        *self = FloatExpr::access_vec_4(v4.take_as_owned(), [*i0, *i1, *i2][*idx_in_vec]);
                     }
                     _ => {}
                 }
@@ -349,6 +367,15 @@ impl FloatExpr {
                         *self = FloatExpr::sum(new_addends, literal[*idx_in_vec]);
                         self.simplify();
                         return
+                    }
+                    Vec4Expr::SwizzleVec2(v2, i0, i1, i2, i3) => {
+                        *self = FloatExpr::access_vec_2(v2.take_as_owned(), [*i0, *i1, *i2, *i3][*idx_in_vec]);
+                    }
+                    Vec4Expr::SwizzleVec3(v3, i0, i1, i2, i3) => {
+                        *self = FloatExpr::access_vec_3(v3.take_as_owned(), [*i0, *i1, *i2, *i3][*idx_in_vec]);
+                    }
+                    Vec4Expr::SwizzleVec4(box v4, i0, i1, i2, i3) => {
+                        *self = FloatExpr::access_vec_4(v4.take_as_owned(), [*i0, *i1, *i2, *i3][*idx_in_vec]);
                     }
                     _ => {}
                 }
