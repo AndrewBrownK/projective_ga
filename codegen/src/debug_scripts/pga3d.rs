@@ -12,7 +12,7 @@ use crate::{ga, multi_vecs};
 use crate::ast::quick_variables::float_var;
 
 fn float_var_expr(n: &str) -> FloatExpr {
-    float_var(n).into()
+    float_var(n, None).into()
 }
 
 // R ⟑ C = MultiVector(

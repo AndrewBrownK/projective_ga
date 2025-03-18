@@ -1,3 +1,4 @@
+use crate::ast::expressions::DebugExpression;
 
 pub struct HasNotReturned;
 
@@ -34,15 +35,19 @@ impl Debug for CommentOrVariableDeclaration {
                     return write!(f, "// This comment is an unused variable that will get removed");
                 };
                 write!(f, "let ")?;
+                let mut derived_name = String::new();
                 match &v.name {
                     (n, 0) => {
                         if n.as_str() == "self" {
+                            derived_name = "slf".to_string();
                             write!(f, "slf")?;
                         } else {
+                            derived_name = n.clone();
                             write!(f, "{n}")?;
                         }
                     }
                     (n, i) => {
+                        derived_name = format!("{n}_{}", i + 1);
                         write!(f, "{n}_{}", i + 1)?;
                     }
                 }
@@ -51,7 +56,18 @@ impl Debug for CommentOrVariableDeclaration {
                     None => write!(f, "todo!(\"variable has no backing\")")?,
                     Some(d) => {
                         let d = d.read();
-                        write!(f, "{d:?}")?;
+                        // TODO it needs to be an actual variable, not just a raw expression
+                        match &*d {
+                            AnyExpression::Int(e) => write!(f, "int_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            AnyExpression::Float(e) => write!(f, "float_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            AnyExpression::Vec2(e) => write!(f, "vec2_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            AnyExpression::Vec3(e) => write!(f, "vec3_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            AnyExpression::Vec4(e) => write!(f, "vec4_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            AnyExpression::Class(e) => {
+                                let mv = e.mv_class.name();
+                                write!(f, "multivec_var(\"{derived_name}\", &{mv}, Some({:?}))", DebugExpression::new(true, e))?
+                            },
+                        }
                     }
                 }
                 write!(f, ";")
@@ -508,7 +524,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             if owner_param.is_data_param() {
                 copy_pasta.push_str("let slf = multivec_var(\"self\", &");
                 copy_pasta.push_str(owner.name());
-                copy_pasta.push_str(");\n");
+                copy_pasta.push_str(", None);\n");
             }
             let mut qty_other = 0;
             for (other_ty, other_param) in other_params.iter() {
@@ -538,7 +554,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     copy_pasta.push_str(", &");
                     copy_pasta.push_str(m.name());
                 }
-                copy_pasta.push_str(");\n");
+                copy_pasta.push_str(", None);\n");
             }
             copy_pasta
         });
@@ -558,22 +574,23 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     ExpressionType::Class(MultiVector) => "MultiVectorExpr",
                 });
                 copy_pasta.push_str(" = ");
-                copy_pasta = format!("{copy_pasta}{return_expr:?}");
+                copy_pasta = format!("{copy_pasta}{:?}", DebugExpression::new(true, &return_expr));
                 copy_pasta.push_str(";\n");
                 copy_pasta
             }};
         }
         macro_rules! do_copy_pasta {
-            () => {
-                tracing::event!(Level::DEBUG, "Debuggable Copy-Pasta:");
+            ($n:literal) => {
+                tracing::event!(Level::DEBUG, $n);
                 tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!());
             };
         }
 
-        do_copy_pasta!();
+        do_copy_pasta!("Debuggable Copy-Pasta (initial contents):");
 
         'outer: loop {
-            let span = tracing::span!(Level::DEBUG, "Inlining Variables");
+            let span = tracing::span!(Level::DEBUG, "inlining_variables");
+            let _span = span.enter();
             'inner: loop {
                 // Scan through the lines in reverse, drop unused variables
 
@@ -630,8 +647,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     break 'inner
                 }
             }
-            drop(span);
-            do_copy_pasta!();
+            drop(_span);
+            do_copy_pasta!("Debuggable Copy-Pasta (inlining_variables):");
 
             // Destructuring simplification of variables that are not used in whole
             let mut dv = DestructurableVariables::new();
@@ -642,7 +659,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             let mut did_destructure = false;
             let mut i = 0;
 
-            let span = tracing::span!(Level::DEBUG, "Destructuring Variables");
+            let span = tracing::span!(Level::DEBUG, "destructuring_variables");
+            let _span = span.enter();
             'inner: while i < lines.len() {
                 // Foo i=2 j=0
                 // Bar i=1 j=1
@@ -712,10 +730,16 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 // Baz_z i=0 j=4
                 i += l;
             }
-            drop(span);
+            drop(_span);
 
             if did_destructure {
-                do_copy_pasta!();
+                // This output may use "missing" variables, like "Baz" in the comment examples.
+                // Those dangling/missing variables are held by Arcs, but won't show up in the
+                // list of lines. They are marked with force_inline, and will be inlined on the
+                // next inlining_variables pass. So even though this is supposed to be copy-pasta,
+                // don't be alarmed to find "missing" variables in this output, it just shows
+                // that the destructured-inlining process is working as intended.
+                do_copy_pasta!("Debuggable Copy-Pasta (destructuring_variables):");
                 continue 'outer
             } else {
                 break 'outer;
