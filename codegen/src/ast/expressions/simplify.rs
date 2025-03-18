@@ -1118,12 +1118,12 @@ impl Vec2Expr {
                     if let FloatExpr::Literal(0.0) = &y {
                         y_is_zeroed_without_last_factor = true;
                     }
-                    product.push((Vec2Expr::Gather2(x, y), 1.0));
                     if is_only_gather2 {
-                        // Should we move the last_factor (coefficients) inside the Gather?
-                        // Well... maybe. Maybe sometimes. Maybe not other times.
-                        // Maybe we will deal with it on a case by case basis depending on
-                        // how the code generation looks
+                        product.push((Vec2Expr::Gather2(x * last_factor[0], y * last_factor[1]), 1.0));
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                    } else {
+                        product.push((Vec2Expr::Gather2(x, y), 1.0));
                     }
                 }
                 if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&
@@ -2023,12 +2023,17 @@ impl Vec3Expr {
                     if let FloatExpr::Literal(0.0) = &z {
                         z_is_zeroed_without_last_factor = true;
                     }
-                    product.push((Vec3Expr::Gather3(x, y, z), 1.0));
                     if is_only_gather3 {
-                        // Should we move the last_factor (coefficients) inside the Gather?
-                        // Well... maybe. Maybe sometimes. Maybe not other times.
-                        // Maybe we will deal with it on a case by case basis depending on
-                        // how the code generation looks
+                        product.push((Vec3Expr::Gather3(
+                            x * last_factor[0],
+                            y * last_factor[1],
+                            z * last_factor[2],
+                        ), 1.0));
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                        last_factor[2] = 1.0;
+                    } else {
+                        product.push((Vec3Expr::Gather3(x, y, z), 1.0));
                     }
                 }
                 if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&
@@ -3365,12 +3370,19 @@ impl Vec4Expr {
                     if let FloatExpr::Literal(0.0) = &w {
                         w_is_zeroed_without_last_factor = true;
                     }
-                    product.push((Vec4Expr::Gather4(x, y, z, w), 1.0));
                     if is_only_gather4 {
-                        // Should we move the last_factor (coefficients) inside the Gather?
-                        // Well... maybe. Maybe sometimes. Maybe not other times.
-                        // Maybe we will deal with it on a case by case basis depending on
-                        // how the code generation looks
+                        product.push((Vec4Expr::Gather4(
+                            x * last_factor[0],
+                            y * last_factor[1],
+                            z * last_factor[2],
+                            w * last_factor[3],
+                        ), 1.0));
+                        last_factor[0] = 1.0;
+                        last_factor[1] = 1.0;
+                        last_factor[2] = 1.0;
+                        last_factor[3] = 1.0;
+                    } else {
+                        product.push((Vec4Expr::Gather4(x, y, z, w), 1.0));
                     }
                 }
                 if (last_factor[0] == 1.0 || x_is_zeroed_without_last_factor) &&

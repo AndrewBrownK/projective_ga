@@ -498,7 +498,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
         let return_type = return_expr.expression_type();
 
         let trait_key = self.trait_def.names.trait_key;
+        let we_are_debugging = Arc::new(AtomicBool::new(false));
         let copy_pasta_preamble = once_cell::unsync::Lazy::<String, _>::new(|| {
+            we_are_debugging.store(true, Release);
             let mut copy_pasta = format!("// Debuggable Copy-Pasta: impl {}", trait_key.final_name);
             let mut open_brace = false;
             for (ty, param) in other_params.iter() {
@@ -653,9 +655,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             // Destructuring simplification of variables that are not used in whole
             let mut dv = DestructurableVariables::new();
             return_expr.scan_for_destructurable_variables(&mut dv);
+            let mut debug_lines = vec![];
             let mut should_destructure = dv.needs_destructuring();
-
-            // let mut ili2 = 0;
             let mut did_destructure = false;
             let mut i = 0;
 
@@ -676,6 +677,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                         should_destructure = dv.needs_destructuring();
                     }
                     i += 1;
+                    if we_are_debugging.load(Acquire) {
+                        debug_lines.push(CommentOrVariableDeclaration::VarDec(Arc::downgrade(&vd)));
+                    }
                     continue 'inner
                 }
 
@@ -688,6 +692,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                         should_destructure = dv.needs_destructuring();
                     }
                     i += 1;
+                    if we_are_debugging.load(Acquire) {
+                        debug_lines.push(CommentOrVariableDeclaration::VarDec(Arc::downgrade(&vd)));
+                    }
                     continue 'inner
                 }
                 if let Some(expr) = &vd.expr {
@@ -699,7 +706,12 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
 
                 // Foo i=2 j=0
                 // Bar i=1 j=1
-                drop(lines.remove(j));
+                let removed_line = lines.remove(j);
+                if we_are_debugging.load(Acquire) {
+                    debug_lines.push(removed_line);
+                } else {
+                    drop(removed_line);
+                }
 
                 let l = new_vars.len();
                 for new_var in new_vars {
@@ -714,6 +726,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     }
 
                     let new_line = CommentOrVariableDeclaration::VarDec(Arc::downgrade(&new_var));
+                    if we_are_debugging.load(Acquire) {
+                        debug_lines.push(new_line.clone());
+                    }
 
                     // Foo i=2 j=0
                     // Bar i=1 j=1
@@ -733,13 +748,10 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             drop(span_entered);
 
             if did_destructure {
-                // This output may use "missing" variables, like "Baz" in the comment examples.
-                // Those dangling/missing variables are held by Arcs, but won't show up in the
-                // list of lines. They are marked with force_inline, and will be inlined on the
-                // next inlining_variables pass. So even though this is supposed to be copy-pasta,
-                // don't be alarmed to find "missing" variables in this output, it just shows
-                // that the destructured-inlining process is working as intended.
+                debug_lines.reverse();
+                let lines = debug_lines;
                 do_copy_pasta!("Debuggable Copy-Pasta (destructuring_variables):");
+                drop(lines);
                 continue 'outer
             } else {
                 break 'outer;

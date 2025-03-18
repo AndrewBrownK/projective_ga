@@ -5,7 +5,7 @@ use std::sync::atomic::Ordering::Release;
 use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
 use crate::ast::traits::{Debug10, Debug11, Debug22, Debug12f, Debug12i, Debug21, DebugTrait};
-use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, DotProduct, GeometricAntiProduct, SquareRoot};
+use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, DotProduct, GeometricAntiProduct, SquareRoot, Subtraction};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
@@ -46,9 +46,6 @@ async fn single_expression_simplification_debugger() {
     // do stuff
 }
 
-// TODO impl AntiConstraintViolation for MultiVector {
-//   - (self.group1().xwzw()[0] * self[e423])
-
 #[tokio::test]
 async fn multi_line_simplification_debugger() {
     let rga3d = crate::ga! { e1234;
@@ -56,8 +53,8 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    DebugTrait(AntiConstraintViolation)
-        .trace_implementation(Level::TRACE, repo, &MultiVector)
+    DebugTrait(Subtraction)
+        .trace_implementation(Level::TRACE, repo, &DualNum, &AntiScalar)
         .await;
 }
 
