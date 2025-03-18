@@ -178,6 +178,8 @@ impl Expression<Vec2> for Vec2Expr {
                 }
             }
             Vec2Expr::SwizzleVec2(v, _, _) => v.substitute_variable(old.clone(), new.clone()),
+            Vec2Expr::SwizzleVec3(v, _, _) => v.substitute_variable(old.clone(), new.clone()),
+            Vec2Expr::SwizzleVec4(v, _, _) => v.substitute_variable(old.clone(), new.clone()),
             Vec2Expr::Truncate3to2(v) => v.substitute_variable(old.clone(), new.clone()),
             Vec2Expr::Truncate4to2(v) => v.substitute_variable(old.clone(), new.clone()),
         }
@@ -244,7 +246,9 @@ impl Expression<Vec3> for Vec3Expr {
                     v.substitute_variable(old.clone(), new.clone());
                 }
             }
+            Vec3Expr::SwizzleVec2(v, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
             Vec3Expr::SwizzleVec3(v, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
+            Vec3Expr::SwizzleVec4(v, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
             Vec3Expr::Truncate4to3(v) => v.substitute_variable(old.clone(), new.clone()),
         }
     }
@@ -316,6 +320,8 @@ impl Expression<Vec4> for Vec4Expr {
                     v.substitute_variable(old.clone(), new.clone());
                 }
             }
+            Vec4Expr::SwizzleVec2(v, _, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
+            Vec4Expr::SwizzleVec3(v, _, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
             Vec4Expr::SwizzleVec4(v, _, _, _, _) => v.substitute_variable(old.clone(), new.clone()),
         }
     }

@@ -870,6 +870,18 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 let y = swizzle_term(i1)?;
                 write!(w, ".{x}{y}")?;
             },
+            Vec2Expr::SwizzleVec3(box v, i0, i1) => {
+                self.write_vec3(w, v, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                write!(w, ".{x}{y}")?;
+            },
+            Vec2Expr::SwizzleVec4(box v, i0, i1) => {
+                self.write_vec4(w, v, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                write!(w, ".{x}{y}")?;
+            },
             Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box v3, i0, i1, _)) => {
                 self.write_vec3(w, v3, false)?;
                 let x = swizzle_term(i0)?;
@@ -1079,6 +1091,13 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                     write!(w, ")")?;
                 }
             }
+            Vec3Expr::SwizzleVec2(v, i0, i1, i2) => {
+                self.write_vec2(w, v, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                let z = swizzle_term(i2)?;
+                write!(w, ".{x}{y}{z}")?;
+            },
             Vec3Expr::SwizzleVec3(box v, i0, i1, i2) => {
                 match v {
                     Vec3Expr::Truncate4to3(box v4) => self.write_vec4(w, v4, false)?,
@@ -1088,6 +1107,13 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                     }
                     _ => self.write_vec3(w, v, false)?,
                 }
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                let z = swizzle_term(i2)?;
+                write!(w, ".{x}{y}{z}")?;
+            },
+            Vec3Expr::SwizzleVec4(box v, i0, i1, i2) => {
+                self.write_vec4(w, v, false)?;
                 let x = swizzle_term(i0)?;
                 let y = swizzle_term(i1)?;
                 let z = swizzle_term(i2)?;
@@ -1309,6 +1335,22 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 if len > 1 && !grouping_provided {
                     write!(w, ")")?;
                 }
+            }
+            Vec4Expr::SwizzleVec2(v, i0, i1, i2, i3) => {
+                self.write_vec2(w, v, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                let z = swizzle_term(i2)?;
+                let w2 = swizzle_term(i3)?;
+                write!(w, ".{x}{y}{z}{w2}")?;
+            }
+            Vec4Expr::SwizzleVec3(v, i0, i1, i2, i3) => {
+                self.write_vec3(w, v, false)?;
+                let x = swizzle_term(i0)?;
+                let y = swizzle_term(i1)?;
+                let z = swizzle_term(i2)?;
+                let w2 = swizzle_term(i3)?;
+                write!(w, ".{x}{y}{z}{w2}")?;
             }
             Vec4Expr::SwizzleVec4(box v, i0, i1, i2, i3) => {
                 self.write_vec4(w, v, false)?;

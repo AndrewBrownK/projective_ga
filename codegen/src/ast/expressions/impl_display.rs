@@ -226,6 +226,20 @@ impl Display for Vec2Expr {
                 v.display_indexed(f, *y)?;
                 write!(f, "]")?;
             }
+            Vec2Expr::SwizzleVec3(box v, x, y) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, "]")?;
+            }
+            Vec2Expr::SwizzleVec4(box v, x, y) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, "]")?;
+            }
             Vec2Expr::AccessMultiVecGroup(mv, i) => {
                 let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i] else {
                     unreachable!(
@@ -364,7 +378,25 @@ impl Display for Vec3Expr {
                 v4.display_indexed(f, 2)?;
                 write!(f, "]")?;
             }
+            Vec3Expr::SwizzleVec2(v, x, y , z) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *z)?;
+                write!(f, "]")?;
+            }
             Vec3Expr::SwizzleVec3(box v, x, y , z) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *z)?;
+                write!(f, "]")?;
+            }
+            Vec3Expr::SwizzleVec4(box v, x, y , z) => {
                 write!(f, "[")?;
                 v.display_indexed(f, *x)?;
                 write!(f, ", ")?;
@@ -512,6 +544,28 @@ impl Display for Vec4Expr {
                 write!(f, ", ")?;
                 v.display_indexed(f, 2)?;
                 write!(f, ", {w}]")?;
+            }
+            Vec4Expr::SwizzleVec2(v, x, y, z, w) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *z)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *w)?;
+                write!(f, "]")?;
+            }
+            Vec4Expr::SwizzleVec3(v, x, y, z, w) => {
+                write!(f, "[")?;
+                v.display_indexed(f, *x)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *y)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *z)?;
+                write!(f, ", ")?;
+                v.display_indexed(f, *w)?;
+                write!(f, "]")?;
             }
             Vec4Expr::SwizzleVec4(box v, x, y, z, w) => {
                 write!(f, "[")?;
@@ -757,6 +811,22 @@ impl Vec2Expr {
                     v.display_indexed(f, *i1)?;
                 }
             }
+            Vec2Expr::SwizzleVec3(v, i0, i1) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+            }
+            Vec2Expr::SwizzleVec4(v, i0, i1) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+            }
             Vec2Expr::AccessMultiVecGroup(mv, i) => {
                 let BasisElementGroup::G2(be0, be1) = mv.mv_class.groups()[*i] else {
                     unreachable!(
@@ -929,7 +999,29 @@ impl Vec3Expr {
             Vec3Expr::Truncate4to3(v) => {
                 v.display_indexed(f, idx)?;
             }
+            Vec3Expr::SwizzleVec2(v, i0, i1, i2) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+                if idx == 2 {
+                    v.display_indexed(f, *i2)?;
+                }
+            }
             Vec3Expr::SwizzleVec3(v, i0, i1, i2) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+                if idx == 2 {
+                    v.display_indexed(f, *i2)?;
+                }
+            }
+            Vec3Expr::SwizzleVec4(v, i0, i1, i2) => {
                 if idx == 0 {
                     v.display_indexed(f, *i0)?;
                 }
@@ -1139,6 +1231,34 @@ impl Vec4Expr {
                 }
                 if idx == 3 {
                     write!(f, "{f1}")?;
+                }
+            }
+            Vec4Expr::SwizzleVec2(v, i0, i1, i2, i3) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+                if idx == 2 {
+                    v.display_indexed(f, *i2)?;
+                }
+                if idx == 3 {
+                    v.display_indexed(f, *i3)?;
+                }
+            }
+            Vec4Expr::SwizzleVec3(v, i0, i1, i2, i3) => {
+                if idx == 0 {
+                    v.display_indexed(f, *i0)?;
+                }
+                if idx == 1 {
+                    v.display_indexed(f, *i1)?;
+                }
+                if idx == 2 {
+                    v.display_indexed(f, *i2)?;
+                }
+                if idx == 3 {
+                    v.display_indexed(f, *i3)?;
                 }
             }
             Vec4Expr::SwizzleVec4(v, i0, i1, i2, i3) => {

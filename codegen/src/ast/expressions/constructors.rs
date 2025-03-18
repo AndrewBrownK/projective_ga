@@ -37,6 +37,16 @@ impl Vec2Expr {
         assert!(y < 2);
         Vec2Expr::SwizzleVec2(Box::new(v), x, y)
     }
+    pub fn swizzle_vec_3(v: Vec3Expr, x: usize, y: usize) -> Self {
+        assert!(x < 3);
+        assert!(y < 3);
+        Vec2Expr::SwizzleVec3(Box::new(v), x, y)
+    }
+    pub fn swizzle_vec_4(v: Vec4Expr, x: usize, y: usize) -> Self {
+        assert!(x < 4);
+        assert!(y < 4);
+        Vec2Expr::SwizzleVec4(Box::new(v), x, y)
+    }
 }
 
 impl Vec3Expr {
@@ -48,11 +58,23 @@ impl Vec3Expr {
         assert!(!addends.is_empty());
         Vec3Expr::Sum(addends, literal)
     }
+    pub fn swizzle_vec_2(v: Vec2Expr, x: usize, y: usize, z: usize) -> Self {
+        assert!(x < 2);
+        assert!(y < 2);
+        assert!(z < 2);
+        Vec3Expr::SwizzleVec2(v, x, y, z)
+    }
     pub fn swizzle_vec_3(v: Vec3Expr, x: usize, y: usize, z: usize) -> Self {
         assert!(x < 3);
         assert!(y < 3);
         assert!(z < 3);
         Vec3Expr::SwizzleVec3(Box::new(v), x, y, z)
+    }
+    pub fn swizzle_vec_4(v: Vec4Expr, x: usize, y: usize, z: usize) -> Self {
+        assert!(x < 4);
+        assert!(y < 4);
+        assert!(z < 4);
+        Vec3Expr::SwizzleVec4(Box::new(v), x, y, z)
     }
 }
 
@@ -64,6 +86,20 @@ impl Vec4Expr {
     pub fn sum(addends: Vec<(Vec4Expr, f32)>, literal: [f32; 4]) -> Self {
         assert!(!addends.is_empty());
         Vec4Expr::Sum(addends, literal)
+    }
+    pub fn swizzle_vec_2(v: Vec2Expr, x: usize, y: usize, z: usize, w: usize) -> Self {
+        assert!(x < 2);
+        assert!(y < 2);
+        assert!(z < 2);
+        assert!(w < 2);
+        Vec4Expr::SwizzleVec2(v, x, y, z, w)
+    }
+    pub fn swizzle_vec_3(v: Vec3Expr, x: usize, y: usize, z: usize, w: usize) -> Self {
+        assert!(x < 3);
+        assert!(y < 3);
+        assert!(z < 3);
+        assert!(w < 3);
+        Vec4Expr::SwizzleVec3(v, x, y, z, w)
     }
     pub fn swizzle_vec_4(v: Vec4Expr, x: usize, y: usize, z: usize, w: usize) -> Self {
         assert!(x < 4);

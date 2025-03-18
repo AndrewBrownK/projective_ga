@@ -18,7 +18,7 @@ pub mod trace;
 #[derive(Clone, Debug)]
 pub struct Variable<ExprType> {
     pub expr_type: ExprType,
-    decl: Arc<RawVariableDeclaration>,
+    pub(crate) decl: Arc<RawVariableDeclaration>,
 }
 
 impl<ExprType> Variable<ExprType> {

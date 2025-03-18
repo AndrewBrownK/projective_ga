@@ -6,6 +6,7 @@ impl PartialEq for FloatExpr {
         match (self, other) {
             (Variable(a), Variable(b)) => a == b,
             (Literal(a), Literal(b)) => FloatOrd(*a) == FloatOrd(*b),
+            (FromInt(a), FromInt(b)) => a == b,
             (AccessVec2(a, ai), AccessVec2(b, bi)) => a == b && ai == bi,
             (AccessVec3(a, ai), AccessVec3(b, bi)) => a == b && ai == bi,
             (AccessVec4(a, ai), AccessVec4(b, bi)) => a == b && ai == bi,
@@ -27,7 +28,7 @@ impl PartialEq for FloatExpr {
                         return false
                     }
                 }
-                return true
+                true
             }
             (Sum(a, al), Sum(b, bl)) => {
                 if FloatOrd(*al) != FloatOrd(*bl) {
@@ -44,9 +45,36 @@ impl PartialEq for FloatExpr {
                         return false
                     }
                 }
-                return true
+                true
             }
-            _ => false,
+            (Exp(a, ae, al), Exp(b, be, bl)) => a == b && ae == be && al == bl,
+
+            // Fully list the other branches so that if we add to variants, we get a
+            // compiler error if we forget to update this method.
+            (Variable(..), _) => false,
+            (_, Variable(..)) => false,
+            (Literal(..), _) => false,
+            (_, Literal(..)) => false,
+            (FromInt(..), _) => false,
+            (_, FromInt(..)) => false,
+            (AccessVec2(..), _) => false,
+            (_, AccessVec2(..)) => false,
+            (AccessVec3(..), _) => false,
+            (_, AccessVec3(..)) => false,
+            (AccessVec4(..), _) => false,
+            (_, AccessVec4(..)) => false,
+            (AccessMultiVecGroup(..), _) => false,
+            (_, AccessMultiVecGroup(..)) => false,
+            (AccessMultiVecFlat(..), _) => false,
+            (_, AccessMultiVecFlat(..)) => false,
+            (TraitInvoke11ToFloat(..), _) => false,
+            (_, TraitInvoke11ToFloat(..)) => false,
+            (Product(..), _) => false,
+            (_, Product(..)) => false,
+            (Sum(..), _) => false,
+            (_, Sum(..)) => false,
+            (Exp(..), _) => false,
+            (_, Exp(..)) => false,
         }
     }
 }
@@ -80,7 +108,7 @@ impl Ord for FloatExpr {
                     let c = af.cmp(bf);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             }
             (Sum(a, al), Sum(b, bl)) => {
                 let c =  FloatOrd(*al).cmp(&FloatOrd(*bl));
@@ -93,14 +121,14 @@ impl Ord for FloatExpr {
                     let c = aa.cmp(ba);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             }
             (Exp(a_factor, a_exp, a_lexp), Exp(b_factor, b_exp, b_lexp)) => {
                 let c = a_factor.cmp(&b_factor);
                 if c != Ordering::Equal { return c }
                 let c = a_exp.cmp(&b_exp);
                 if c != Ordering::Equal { return c }
-                return FloatOrd(*a_lexp).cmp(&FloatOrd(*b_lexp));
+                FloatOrd(*a_lexp).cmp(&FloatOrd(*b_lexp))
             }
             (Variable(_), _) => Ordering::Less,
             (_, Variable(_)) => Ordering::Greater,
@@ -139,7 +167,6 @@ impl PartialEq for Vec2Expr {
             (Variable(a), Variable(b)) => a.eq(&b),
             (Gather1(a), Gather1(b)) => a.eq(&b),
             (Gather2(a0, a1), Gather2(b0, b1)) => a0 == b0 && a1 == b1,
-            (SwizzleVec2(av, a0, a1), SwizzleVec2(bv, b0, b1)) => av == bv && a0 == b0 && a1 == b1,
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => amv == bmv && ai == bi,
             (Product(a, al), Product(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -159,7 +186,7 @@ impl PartialEq for Vec2Expr {
                         return false
                     }
                 }
-                return true
+                true
             }
             (Sum(a, al), Sum(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -179,9 +206,38 @@ impl PartialEq for Vec2Expr {
                         return false
                     }
                 }
-                return true
+                true
             }
-            _ => false
+            (SwizzleVec2(av, a0, a1), SwizzleVec2(bv, b0, b1)) => av == bv && a0 == b0 && a1 == b1,
+            (SwizzleVec3(av, a0, a1), SwizzleVec3(bv, b0, b1)) => av == bv && a0 == b0 && a1 == b1,
+            (SwizzleVec4(av, a0, a1), SwizzleVec4(bv, b0, b1)) => av == bv && a0 == b0 && a1 == b1,
+            (Truncate3to2(a), Truncate3to2(b)) => a == b,
+            (Truncate4to2(a), Truncate4to2(b)) => a == b,
+
+            // Fully list the other branches so that if we add to variants, we get a
+            // compiler error if we forget to update this method.
+            (Variable(..), _) => false,
+            (_, Variable(..)) => false,
+            (Gather1(..), _) => false,
+            (_, Gather1(..)) => false,
+            (Gather2(..), _) => false,
+            (_, Gather2(..)) => false,
+            (AccessMultiVecGroup(..), _) => false,
+            (_, AccessMultiVecGroup(..)) => false,
+            (Product(..), _) => false,
+            (_, Product(..)) => false,
+            (Sum(..), _) => false,
+            (_, Sum(..)) => false,
+            (SwizzleVec2(..), _) => false,
+            (_, SwizzleVec2(..)) => false,
+            (SwizzleVec3(..), _) => false,
+            (_, SwizzleVec3(..)) => false,
+            (SwizzleVec4(..), _) => false,
+            (_, SwizzleVec4(..)) => false,
+            (Truncate3to2(..), _) => false,
+            (_, Truncate3to2(..)) => false,
+            (Truncate4to2(..), _) => false,
+            (_, Truncate4to2(..)) => false,
         }
     }
 }
@@ -200,12 +256,12 @@ impl Ord for Vec2Expr {
             (Gather2(a0, a1), Gather2(b0, b1)) => {
                 let c = a0.cmp(b0);
                 if c != Ordering::Equal { return c }
-                return a1.cmp(b1)
+                a1.cmp(b1)
             },
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => {
                 let c = amv.cmp(bmv);
                 if c != Ordering::Equal { return c }
-                return ai.cmp(bi)
+                ai.cmp(bi)
             }
             (Product(a, al), Product(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -220,7 +276,7 @@ impl Ord for Vec2Expr {
                     let c = af.cmp(bf);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             }
             (Sum(a, al), Sum(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -235,20 +291,34 @@ impl Ord for Vec2Expr {
                     let c = aa.cmp(ba);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             },
             (SwizzleVec2(av, a0, a1), SwizzleVec2(bv, b0, b1)) => {
                 let c = av.cmp(bv);
                 if c != Ordering::Equal { return c }
                 let c = a0.cmp(b0);
                 if c != Ordering::Equal { return c }
-                return a1.cmp(b1)
+                a1.cmp(b1)
+            },
+            (SwizzleVec3(av, a0, a1), SwizzleVec3(bv, b0, b1)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                a1.cmp(b1)
+            },
+            (SwizzleVec4(av, a0, a1), SwizzleVec4(bv, b0, b1)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                a1.cmp(b1)
             },
             (Truncate3to2(box a), Truncate3to2(box b)) => {
-                return a.cmp(b)
+                a.cmp(b)
             }
             (Truncate4to2(box a), Truncate4to2(box b)) => {
-                return a.cmp(b)
+                a.cmp(b)
             }
             (Variable(_), _) => Ordering::Less,
             (_, Variable(_)) => Ordering::Greater,
@@ -264,6 +334,10 @@ impl Ord for Vec2Expr {
             (_, Sum(_, _)) => Ordering::Greater,
             (SwizzleVec2(_, _, _), _) => Ordering::Less,
             (_, SwizzleVec2(_, _, _)) => Ordering::Greater,
+            (SwizzleVec3(_, _, _), _) => Ordering::Less,
+            (_, SwizzleVec3(_, _, _)) => Ordering::Greater,
+            (SwizzleVec4(_, _, _), _) => Ordering::Less,
+            (_, SwizzleVec4(_, _, _)) => Ordering::Greater,
             (Truncate3to2(_), _) => Ordering::Less,
             (_, Truncate3to2(_)) => Ordering::Greater,
             #[allow(unreachable_patterns)]
@@ -281,7 +355,6 @@ impl PartialEq for Vec3Expr {
             (Variable(a), Variable(b)) => a.eq(&b),
             (Gather1(a), Gather1(b)) => a.eq(&b),
             (Gather3(a0, a1, a2), Gather3(b0, b1, b2)) => a0 == b0 && a1 == b1 && a2 == b2,
-            (SwizzleVec3(av, a0, a1, a2), SwizzleVec3(bv, b0, b1, b2)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2,
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => amv == bmv && ai == bi,
             (Product(a, al), Product(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -304,7 +377,7 @@ impl PartialEq for Vec3Expr {
                         return false
                     }
                 }
-                return true
+                true
             }
             (Sum(a, al), Sum(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -327,9 +400,38 @@ impl PartialEq for Vec3Expr {
                         return false
                     }
                 }
-                return true
+                true
             }
-            _ => false
+            (SwizzleVec2(av, a0, a1, a2), SwizzleVec2(bv, b0, b1, b2)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2,
+            (SwizzleVec3(av, a0, a1, a2), SwizzleVec3(bv, b0, b1, b2)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2,
+            (SwizzleVec4(av, a0, a1, a2), SwizzleVec4(bv, b0, b1, b2)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2,
+            (Truncate4to3(a), Truncate4to3(b)) => a == b,
+            (Extend2to3(a, az), Extend2to3(b, bz)) => a == b && az == bz,
+
+            // Fully list the other branches so that if we add to variants, we get a
+            // compiler error if we forget to update this method.
+            (Variable(..), _) => false,
+            (_, Variable(..)) => false,
+            (Gather1(..), _) => false,
+            (_, Gather1(..)) => false,
+            (Gather3(..), _) => false,
+            (_, Gather3(..)) => false,
+            (AccessMultiVecGroup(..), _) => false,
+            (_, AccessMultiVecGroup(..)) => false,
+            (Product(..), _) => false,
+            (_, Product(..)) => false,
+            (Sum(..), _) => false,
+            (_, Sum(..)) => false,
+            (SwizzleVec2(..), _) => false,
+            (_, SwizzleVec2(..)) => false,
+            (SwizzleVec3(..), _) => false,
+            (_, SwizzleVec3(..)) => false,
+            (SwizzleVec4(..), _) => false,
+            (_, SwizzleVec4(..)) => false,
+            (Truncate4to3(..), _) => false,
+            (_, Truncate4to3(..)) => false,
+            (Extend2to3(..), _) => false,
+            (_, Extend2to3(..)) => false,
         }
     }
 }
@@ -351,12 +453,12 @@ impl Ord for Vec3Expr {
                 if c != Ordering::Equal { return c }
                 let c = a1.cmp(b1);
                 if c != Ordering::Equal { return c }
-                return a2.cmp(b2)
+                a2.cmp(b2)
             },
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => {
                 let c = amv.cmp(bmv);
                 if c != Ordering::Equal { return c }
-                return ai.cmp(bi)
+                ai.cmp(bi)
             }
             (Product(a, al), Product(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -373,7 +475,7 @@ impl Ord for Vec3Expr {
                     let c = af.cmp(bf);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             }
             (Sum(a, al), Sum(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -390,7 +492,16 @@ impl Ord for Vec3Expr {
                     let c = aa.cmp(ba);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
+            },
+            (SwizzleVec2(av, a0, a1, a2), SwizzleVec2(bv, b0, b1, b2)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                let c = a1.cmp(b1);
+                if c != Ordering::Equal { return c }
+                a2.cmp(b2)
             },
             (SwizzleVec3(av, a0, a1, a2), SwizzleVec3(bv, b0, b1, b2)) => {
                 let c = av.cmp(bv);
@@ -399,15 +510,24 @@ impl Ord for Vec3Expr {
                 if c != Ordering::Equal { return c }
                 let c = a1.cmp(b1);
                 if c != Ordering::Equal { return c }
-                return a2.cmp(b2)
+                a2.cmp(b2)
+            },
+            (SwizzleVec4(av, a0, a1, a2), SwizzleVec4(bv, b0, b1, b2)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                let c = a1.cmp(b1);
+                if c != Ordering::Equal { return c }
+                a2.cmp(b2)
             },
             (Truncate4to3(box a), Truncate4to3(box b)) => {
-                return a.cmp(b);
+                a.cmp(b)
             }
             (Extend2to3(a_v2, a_z), Extend2to3(b_v2, b_z)) => {
                 let c = a_v2.cmp(b_v2);
                 if c != Ordering::Equal { return c }
-                return a_z.cmp(b_z)
+                a_z.cmp(b_z)
             }
             (Variable(_), _) => Ordering::Less,
             (_, Variable(_)) => Ordering::Greater,
@@ -421,8 +541,12 @@ impl Ord for Vec3Expr {
             (_, Product(_, _)) => Ordering::Greater,
             (Sum(_, _), _) => Ordering::Less,
             (_, Sum(_, _)) => Ordering::Greater,
+            (SwizzleVec2(_, _, _, _), _) => Ordering::Less,
+            (_, SwizzleVec2(_, _, _, _)) => Ordering::Greater,
             (SwizzleVec3(_, _, _, _), _) => Ordering::Less,
             (_, SwizzleVec3(_, _, _, _)) => Ordering::Greater,
+            (SwizzleVec4(_, _, _, _), _) => Ordering::Less,
+            (_, SwizzleVec4(_, _, _, _)) => Ordering::Greater,
             (Truncate4to3(_), _) => Ordering::Less,
             (_, Truncate4to3(_)) => Ordering::Greater,
             #[allow(unreachable_patterns)]
@@ -440,7 +564,6 @@ impl PartialEq for Vec4Expr {
             (Variable(a), Variable(b)) => a.eq(&b),
             (Gather1(a), Gather1(b)) => a.eq(&b),
             (Gather4(a0, a1, a2, a3), Gather4(b0, b1, b2, b3)) => a0 == b0 && a1 == b1 && a2 == b2 && a3 == b3,
-            (SwizzleVec4(av, a0, a1, a2, a3), SwizzleVec4(bv, b0, b1, b2, b3)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2 && a3 == b3,
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => amv == bmv && ai == bi,
             (Product(a, al), Product(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -466,7 +589,7 @@ impl PartialEq for Vec4Expr {
                         return false
                     }
                 }
-                return true
+                true
             }
             (Sum(a, al), Sum(b, bl)) => {
                 if FloatOrd(al[0]) != FloatOrd(bl[0]) {
@@ -492,9 +615,38 @@ impl PartialEq for Vec4Expr {
                         return false
                     }
                 }
-                return true
+                true
             },
-            _ => false
+            (SwizzleVec2(av, a0, a1, a2, a3), SwizzleVec2(bv, b0, b1, b2, b3)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2 && a3 == b3,
+            (SwizzleVec3(av, a0, a1, a2, a3), SwizzleVec3(bv, b0, b1, b2, b3)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2 && a3 == b3,
+            (SwizzleVec4(av, a0, a1, a2, a3), SwizzleVec4(bv, b0, b1, b2, b3)) => av == bv && a0 == b0 && a1 == b1 && a2 == b2 && a3 == b3,
+            (Extend2to4(a, az, aw), Extend2to4(b, bz, bw)) => a == b && az == bz && aw == bw,
+            (Extend3to4(a, aw), Extend3to4(b, bw)) => a == b && aw == bw,
+
+            // Fully list the other branches so that if we add to variants, we get a
+            // compiler error if we forget to update this method.
+            (Variable(..), _) => false,
+            (_, Variable(..)) => false,
+            (Gather1(..), _) => false,
+            (_, Gather1(..)) => false,
+            (Gather4(..), _) => false,
+            (_, Gather4(..)) => false,
+            (AccessMultiVecGroup(..), _) => false,
+            (_, AccessMultiVecGroup(..)) => false,
+            (Product(..), _) => false,
+            (_, Product(..)) => false,
+            (Sum(..), _) => false,
+            (_, Sum(..)) => false,
+            (SwizzleVec2(..), _) => false,
+            (_, SwizzleVec2(..)) => false,
+            (SwizzleVec3(..), _) => false,
+            (_, SwizzleVec3(..)) => false,
+            (SwizzleVec4(..), _) => false,
+            (_, SwizzleVec4(..)) => false,
+            (Extend2to4(..), _) => false,
+            (_, Extend2to4(..)) => false,
+            (Extend3to4(..), _) => false,
+            (_, Extend3to4(..)) => false,
         }
     }
 }
@@ -517,12 +669,12 @@ impl Ord for Vec4Expr {
                 if c != Ordering::Equal { return c }
                 let c = a2.cmp(b2);
                 if c != Ordering::Equal { return c }
-                return a3.cmp(b3)
+                a3.cmp(b3)
             },
             (AccessMultiVecGroup(amv, ai), AccessMultiVecGroup(bmv, bi)) => {
                 let c = amv.cmp(bmv);
                 if c != Ordering::Equal { return c }
-                return ai.cmp(bi)
+                ai.cmp(bi)
             }
             (Product(a, al), Product(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -541,7 +693,7 @@ impl Ord for Vec4Expr {
                     let c = af.cmp(bf);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
             }
             (Sum(a, al), Sum(b, bl)) => {
                 let c =  FloatOrd(al[0]).cmp(&FloatOrd(bl[0]));
@@ -560,7 +712,29 @@ impl Ord for Vec4Expr {
                     let c = aa.cmp(ba);
                     if c != Ordering::Equal { return c }
                 }
-                return Ordering::Equal
+                Ordering::Equal
+            },
+            (SwizzleVec2(av, a0, a1, a2, a3), SwizzleVec2(bv, b0, b1, b2, b3)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                let c = a1.cmp(b1);
+                if c != Ordering::Equal { return c }
+                let c = a2.cmp(b2);
+                if c != Ordering::Equal { return c }
+                a3.cmp(b3)
+            },
+            (SwizzleVec3(av, a0, a1, a2, a3), SwizzleVec3(bv, b0, b1, b2, b3)) => {
+                let c = av.cmp(bv);
+                if c != Ordering::Equal { return c }
+                let c = a0.cmp(b0);
+                if c != Ordering::Equal { return c }
+                let c = a1.cmp(b1);
+                if c != Ordering::Equal { return c }
+                let c = a2.cmp(b2);
+                if c != Ordering::Equal { return c }
+                a3.cmp(b3)
             },
             (SwizzleVec4(av, a0, a1, a2, a3), SwizzleVec4(bv, b0, b1, b2, b3)) => {
                 let c = av.cmp(bv);
@@ -571,19 +745,19 @@ impl Ord for Vec4Expr {
                 if c != Ordering::Equal { return c }
                 let c = a2.cmp(b2);
                 if c != Ordering::Equal { return c }
-                return a3.cmp(b3)
+                a3.cmp(b3)
             },
             (Extend2to4(a_v2, a_z, a_w), Extend2to4(b_v2, b_z, b_w)) => {
                 let c = a_v2.cmp(b_v2);
                 if c != Ordering::Equal { return c }
                 let c = a_z.cmp(b_z);
                 if c != Ordering::Equal { return c }
-                return a_w.cmp(b_w)
+                a_w.cmp(b_w)
             }
             (Extend3to4(a_v2, a_w), Extend3to4(b_v2, b_w)) => {
                 let c = a_v2.cmp(b_v2);
                 if c != Ordering::Equal { return c }
-                return a_w.cmp(b_w)
+                a_w.cmp(b_w)
             }
             (Variable(_), _) => Ordering::Less,
             (_, Variable(_)) => Ordering::Greater,
@@ -597,6 +771,10 @@ impl Ord for Vec4Expr {
             (_, Product(_, _)) => Ordering::Greater,
             (Sum(_, _), _) => Ordering::Less,
             (_, Sum(_, _)) => Ordering::Greater,
+            (SwizzleVec2(_, _, _, _, _), _) => Ordering::Less,
+            (_, SwizzleVec2(_, _, _, _, _)) => Ordering::Greater,
+            (SwizzleVec3(_, _, _, _, _), _) => Ordering::Less,
+            (_, SwizzleVec3(_, _, _, _, _)) => Ordering::Greater,
             (SwizzleVec4(_, _, _, _, _), _) => Ordering::Less,
             (_, SwizzleVec4(_, _, _, _, _)) => Ordering::Greater,
             (Extend2to4(_, _, _), _) => Ordering::Less,

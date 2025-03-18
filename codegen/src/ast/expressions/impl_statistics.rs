@@ -168,6 +168,8 @@ impl TrackOperations for Vec2Expr {
                 result
             }
             Vec2Expr::SwizzleVec2(box v, _, _) => v.count_operations(lookup),
+            Vec2Expr::SwizzleVec3(box v, _, _) => v.count_operations(lookup),
+            Vec2Expr::SwizzleVec4(box v, _, _) => v.count_operations(lookup),
             Vec2Expr::Truncate3to2(box v) => v.count_operations(lookup),
             Vec2Expr::Truncate4to2(box v) => v.count_operations(lookup),
         }
@@ -229,7 +231,9 @@ impl TrackOperations for Vec3Expr {
                 }
                 result
             }
+            Vec3Expr::SwizzleVec2(v, _, _, _) => v.count_operations(lookup),
             Vec3Expr::SwizzleVec3(v, _, _, _) => v.count_operations(lookup),
+            Vec3Expr::SwizzleVec4(v, _, _, _) => v.count_operations(lookup),
             Vec3Expr::Truncate4to3(v) => v.count_operations(lookup),
         }
     }
@@ -293,6 +297,8 @@ impl TrackOperations for Vec4Expr {
                 }
                 result
             }
+            Vec4Expr::SwizzleVec2(v, _, _, _, _) => v.count_operations(lookup),
+            Vec4Expr::SwizzleVec3(v, _, _, _, _) => v.count_operations(lookup),
             Vec4Expr::SwizzleVec4(v, _, _, _, _) => v.count_operations(lookup),
         }
     }

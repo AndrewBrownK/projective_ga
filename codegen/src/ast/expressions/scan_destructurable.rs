@@ -236,6 +236,12 @@ impl Vec2Expr {
             Vec2Expr::SwizzleVec2(box v, _a, _b) => {
                 v.scan_for_destructurable_variables(tracker);
             }
+            Vec2Expr::SwizzleVec3(box v, _a, _b) => {
+                v.scan_for_destructurable_variables(tracker);
+            }
+            Vec2Expr::SwizzleVec4(box v, _a, _b) => {
+                v.scan_for_destructurable_variables(tracker);
+            }
             // Vec2Expr::Truncate3to2(box Vec3Expr::Variable(v)) => tracker.note_partial_variable_use(v),
             // Vec2Expr::Truncate3to2(box Vec3Expr::SwizzleVec3(box Vec3Expr::Variable(v), _, _, _)) => tracker.note_partial_variable_use(v),
             Vec2Expr::Truncate3to2(box v) => v.scan_for_destructurable_variables(tracker),
@@ -283,7 +289,13 @@ impl Vec3Expr {
                     }
                 }
             }
+            Vec3Expr::SwizzleVec2(v, _a, _b, _c) => {
+                v.scan_for_destructurable_variables(tracker);
+            }
             Vec3Expr::SwizzleVec3(box v, _a, _b, _c) => {
+                v.scan_for_destructurable_variables(tracker);
+            }
+            Vec3Expr::SwizzleVec4(box v, _a, _b, _c) => {
                 v.scan_for_destructurable_variables(tracker);
             }
             // Vec3Expr::Truncate4to3(box Vec4Expr::Variable(v)) => tracker.note_partial_variable_use(v),
@@ -338,6 +350,12 @@ impl Vec4Expr {
                         f.scan_for_destructurable_variables(tracker);
                     }
                 }
+            }
+            Vec4Expr::SwizzleVec2(v, _a, _b, _c, _d) => {
+                v.scan_for_destructurable_variables(tracker);
+            }
+            Vec4Expr::SwizzleVec3(v, _a, _b, _c, _d) => {
+                v.scan_for_destructurable_variables(tracker);
             }
             Vec4Expr::SwizzleVec4(box v, _a, _b, _c, _d) => {
                 v.scan_for_destructurable_variables(tracker);
