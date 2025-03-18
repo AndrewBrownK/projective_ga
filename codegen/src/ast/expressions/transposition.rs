@@ -105,6 +105,7 @@ impl FloatExpr {
 
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec2_product_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     mut coalesce_product_literal: [f32; 2]
@@ -113,6 +114,11 @@ fn vec2_product_transpose(
     // See if we can pull out a Vec2Expr::Product
     let mut vec2_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
@@ -237,7 +243,7 @@ fn vec2_product_extract(
             Sum(v1, a1)
         ) if xy => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec2_product.push((transposed, power));
             true
         }
@@ -247,6 +253,7 @@ fn vec2_product_extract(
 
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec2_sum_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     mut coalesce_sum_literal: [f32; 2]
@@ -255,6 +262,11 @@ fn vec2_sum_transpose(
     // See if we can pull out a Vec2Expr::Sum
     let mut vec2_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
@@ -375,7 +387,7 @@ fn vec2_sum_extract(
             Product(v1, a1)
         ) if xy => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec2_sum.push((transposed, coefficient));
             true
         }
@@ -385,6 +397,7 @@ fn vec2_sum_extract(
 
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec3_product_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     float_product_2: &mut Vec<(FloatExpr, f32)>,
@@ -394,6 +407,11 @@ fn vec3_product_transpose(
     // See if we can pull out a Vec3Expr::Product
     let mut vec3_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
@@ -558,7 +576,7 @@ fn vec3_product_extract(
             Sum(v2, a2)
         ) if xyz => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { return false };
             vec3_product.push((transposed, power));
             true
         }
@@ -568,7 +586,7 @@ fn vec3_product_extract(
             z,
         ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec3_product.push((Vec3Expr::Extend2to3(transposed, z.clone()), power));
             true
         }
@@ -576,31 +594,9 @@ fn vec3_product_extract(
     }
 }
 
-// TODO some hideous changes in impl GeometricProduct<Motor> for MultiVector
-//  Before:
-//     // e41, e42, e43
-//     (Simd32x3::from(self[scalar]) * other.group0().xyz())
-//     + (Simd32x3::from(self[e1234]) * other.group1().xyz())
-//     + (self.group2().xxy() * other.group1().wzx())
-//     + (self.group2().zyz() * other.group1().yww())
-//     + (self.group3().xxy() * other.group0().wzx())
-//     + (self.group3().zyz() * other.group0().yww())
-//     - (self.group2().yzx() * other.group1().zxy())
-//     - (self.group3().yzx() * other.group0().zxy()),
-//  After:
-//     // e41, e42, e43
-//     (Simd32x3::from(other[e1234]) * self.group3())
-//     + (Simd32x3::from(other[scalar]) * self.group2())
-//     + (other.group0().yzz() * self.group3().zx().with_z(self[scalar]))
-//     + (other.group1().yzz() * self.group2().zx().with_z(self[e1234]))
-//     + (Simd32x2::from(self[scalar]) * other.group0().xy()).with_z(other[e41] * self[e31])
-//     + (Simd32x2::from(self[e1234]) * other.group1().xy()).with_z(other[e23] * self[e42])
-//     - (self.group2().yzx() * other.group1().zxy())
-//     - (self.group3().yzx() * other.group0().zxy()),
-
-
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec3_sum_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     float_sum_2: &mut Vec<(FloatExpr, f32)>,
@@ -610,6 +606,11 @@ fn vec3_sum_transpose(
     // See if we can pull out a Vec3Expr::Sum
     let mut vec3_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
@@ -765,7 +766,7 @@ fn vec3_sum_extract(
             Product(v2, a2),
         ) if xyz => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = vec3_product_transpose(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_product_transpose(Some(extraction_strength), v0, v1, v2, a) else { return false };
             vec3_sum.push((transposed, coefficient));
             true
         }
@@ -775,7 +776,7 @@ fn vec3_sum_extract(
             z,
         ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec3_sum.push((Vec3Expr::Extend2to3(transposed, z.clone()), coefficient));
             true
         }
@@ -785,6 +786,7 @@ fn vec3_sum_extract(
 
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec4_product_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_product_0: &mut Vec<(FloatExpr, f32)>,
     float_product_1: &mut Vec<(FloatExpr, f32)>,
     float_product_2: &mut Vec<(FloatExpr, f32)>,
@@ -795,6 +797,11 @@ fn vec4_product_transpose(
     // See if we can pull out a Vec4Expr::Product
     let mut vec4_product = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_product_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_factor = false;
@@ -1069,7 +1076,7 @@ fn vec4_product_extract(
             Sum(v3, a3),
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
-            let Some(transposed) = vec4_sum_transpose(v0, v1, v2, v3, a) else { return false };
+            let Some(transposed) = vec4_sum_transpose(Some(extraction_strength), v0, v1, v2, v3, a) else { return false };
             vec4_product.push((transposed, power));
             true
         }
@@ -1080,7 +1087,7 @@ fn vec4_product_extract(
             w
         ) if extraction_strength >= TruncateAndExtend && xyz_w => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = vec3_sum_transpose(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { return false };
             vec4_product.push((Vec4Expr::Extend3to4(transposed, w.clone()), power));
             true
         }
@@ -1091,7 +1098,7 @@ fn vec4_product_extract(
             w
         ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_sum_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec4_product.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), power));
             true
         }
@@ -1101,6 +1108,7 @@ fn vec4_product_extract(
 
 #[tracing::instrument(level = "trace", skip_all)]
 fn vec4_sum_transpose(
+    max_extraction_strength: Option<ExtractionStrength>,
     float_sum_0: &mut Vec<(FloatExpr, f32)>,
     float_sum_1: &mut Vec<(FloatExpr, f32)>,
     float_sum_2: &mut Vec<(FloatExpr, f32)>,
@@ -1111,6 +1119,11 @@ fn vec4_sum_transpose(
     // See if we can pull out a Vec4Expr::Sum
     let mut vec4_sum = vec![];
     for extraction_strength in ExtractionStrength::ASCENDING_STRENGTH.into_iter() {
+        if let Some(mes) = &max_extraction_strength {
+            if &extraction_strength > mes {
+                break
+            }
+        }
         tracing::trace!("attempting extraction at strength {extraction_strength:?}");
         float_sum_0.retain_mut(|(e0, f0)| {
             let mut pulling_out_addend = false;
@@ -1312,7 +1325,7 @@ fn vec4_sum_extract(
             Product(v3, a3),
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
-            let Some(transposed) = vec4_product_transpose(v0, v1, v2, v3, a) else { return false };
+            let Some(transposed) = vec4_product_transpose(Some(extraction_strength), v0, v1, v2, v3, a) else { return false };
             vec4_sum.push((transposed, coefficient));
             true
         }
@@ -1323,7 +1336,7 @@ fn vec4_sum_extract(
             w
         ) if extraction_strength >= TruncateAndExtend && xyz_w => {
             let a = [*a0, *a1, *a2];
-            let Some(transposed) = vec3_product_transpose(v0, v1, v2, a) else { return false };
+            let Some(transposed) = vec3_product_transpose(Some(extraction_strength), v0, v1, v2, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend3to4(transposed, w.clone()), coefficient));
             true
         }
@@ -1334,7 +1347,7 @@ fn vec4_sum_extract(
             w
         ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
-            let Some(transposed) = vec2_product_transpose(v0, v1, a) else { return false };
+            let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return false };
             vec4_sum.push((Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()), coefficient));
             true
         }

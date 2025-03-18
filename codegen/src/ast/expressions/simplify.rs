@@ -876,41 +876,41 @@ impl Vec2Expr {
                     }
                     (Product(ref mut x_product, x_lit), Product(ref mut y_product, y_lit)) if transpose_simd => {
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_product_transpose(x_product, y_product, lits) {
+                        if let Some(transposed) = vec2_product_transpose(None, x_product, y_product, lits) {
                             *self = transposed;
                         }
                     }
                     (x, Product(ref mut y_product, y_lit)) if transpose_simd => {
                         let lits = [1.0, *y_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec2_product_transpose(&mut x, y_product, lits) {
+                        if let Some(transposed) = vec2_product_transpose(None, &mut x, y_product, lits) {
                             *self = transposed;
                         }
                     }
                     (Product(ref mut x_product, x_lit), y) if transpose_simd => {
                         let lits = [*x_lit, 1.0];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec2_product_transpose(x_product, &mut y, lits) {
+                        if let Some(transposed) = vec2_product_transpose(None, x_product, &mut y, lits) {
                             *self = transposed;
                         }
                     }
                     (Sum(ref mut x_sum, x_lit), Sum(ref mut y_sum, y_lit)) if transpose_simd => {
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_sum_transpose(x_sum, y_sum, lits) {
+                        if let Some(transposed) = vec2_sum_transpose(None, x_sum, y_sum, lits) {
                             *self = transposed;
                         }
                     }
                     (x, Sum(ref mut y_sum, y_lit)) if transpose_simd => {
                         let lits = [0.0, *y_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec2_sum_transpose(&mut x, y_sum, lits) {
+                        if let Some(transposed) = vec2_sum_transpose(None, &mut x, y_sum, lits) {
                             *self = transposed;
                         }
                     }
                     (Sum(ref mut x_sum, x_lit), y) if transpose_simd => {
                         let lits = [*x_lit, 0.0];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec2_sum_transpose(x_sum, &mut y, lits) {
+                        if let Some(transposed) = vec2_sum_transpose(None, x_sum, &mut y, lits) {
                             *self = transposed;
                         }
                     }
@@ -1603,7 +1603,7 @@ impl Vec3Expr {
                         Product(ref mut z_product, z_lit)
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = vec3_product_transpose(x_product, y_product, z_product, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, x_product, y_product, z_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -1614,7 +1614,7 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [1.0, *y_lit, *z_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(&mut x, y_product, z_product, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, &mut x, y_product, z_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -1625,7 +1625,7 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, 1.0, *z_lit];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(x_product, &mut y, z_product, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, x_product, &mut y, z_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -1636,12 +1636,12 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, 1.0];
                         let mut zv = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(x_product, y_product, &mut zv, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, x_product, y_product, &mut zv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_product_transpose(x_product, y_product, lits) {
+                        if let Some(transposed) = vec2_product_transpose(None, x_product, y_product, lits) {
                             *self = Vec3Expr::Extend2to3(transposed, z.take_as_owned());
                             return
                         }
@@ -1650,7 +1650,7 @@ impl Vec3Expr {
                         let lits = [1.0, 1.0, *z_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(&mut x, &mut y, z_product, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, &mut x, &mut y, z_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -1658,7 +1658,7 @@ impl Vec3Expr {
                         let lits = [1.0, *y_lit, 1.0];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(&mut x, y_product, &mut z, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, &mut x, y_product, &mut z, lits) {
                             *self = transposed;
                         }
                     }
@@ -1666,7 +1666,7 @@ impl Vec3Expr {
                         let lits = [*x_lit, 1.0, 1.0];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_product_transpose(x_product, &mut y, &mut z, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, x_product, &mut y, &mut z, lits) {
                             *self = transposed;
                         }
                     }
@@ -1676,7 +1676,7 @@ impl Vec3Expr {
                         Sum(ref mut z_sum, z_lit)
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = vec3_sum_transpose(x_sum, y_sum, z_sum, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, x_sum, y_sum, z_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -1687,7 +1687,7 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [0.0, *y_lit, *z_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(&mut x, y_sum, z_sum, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, &mut x, y_sum, z_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -1698,7 +1698,7 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, 0.0, *z_lit];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(x_sum, &mut y, z_sum, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, x_sum, &mut y, z_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -1709,12 +1709,12 @@ impl Vec3Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, 0.0];
                         let mut zv = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(x_sum, y_sum, &mut zv, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, x_sum, y_sum, &mut zv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_sum_transpose(x_sum, y_sum, lits) {
+                        if let Some(transposed) = vec2_sum_transpose(None, x_sum, y_sum, lits) {
                             *self = Vec3Expr::Extend2to3(transposed, z.take_as_owned());
                             return
                         }
@@ -1723,7 +1723,7 @@ impl Vec3Expr {
                         let lits = [0.0, 0.0, *z_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(&mut x, &mut y, z_sum, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, &mut x, &mut y, z_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -1731,7 +1731,7 @@ impl Vec3Expr {
                         let lits = [0.0, *y_lit, 0.0];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(&mut x, y_sum, &mut z, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, &mut x, y_sum, &mut z, lits) {
                             *self = transposed;
                         }
                     }
@@ -1739,7 +1739,7 @@ impl Vec3Expr {
                         let lits = [*x_lit, 0.0, 0.0];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec3_sum_transpose(x_sum, &mut y, &mut z, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, x_sum, &mut y, &mut z, lits) {
                             *self = transposed;
                         }
                     }
@@ -2578,7 +2578,7 @@ impl Vec4Expr {
                         Product(ref mut w_product, w_lit),
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit, *w_lit];
-                        if let Some(transposed) = vec4_product_transpose(x_product, y_product, z_product, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, y_product, z_product, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2590,7 +2590,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [1.0, *y_lit, *z_lit, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, x_product, y_product, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, x_product, y_product, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2602,7 +2602,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, 1.0, *z_lit, *w_lit];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, &mut y, z_product, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, &mut y, z_product, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2614,7 +2614,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, 1.0, *w_lit];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, y_product, &mut z, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, y_product, &mut z, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2626,12 +2626,12 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit, 1.0];
                         let mut wv = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, y_product, z_product, &mut wv, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, y_product, z_product, &mut wv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = vec3_product_transpose(x_product, y_product, z_product, lits) {
+                        if let Some(transposed) = vec3_product_transpose(None, x_product, y_product, z_product, lits) {
                             *self = Vec4Expr::Extend3to4(transposed, w.take_as_owned());
                             return
                         }
@@ -2645,7 +2645,7 @@ impl Vec4Expr {
                         let lits = [1.0, 1.0, *z_lit, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, &mut y, z_product, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, &mut y, z_product, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2658,12 +2658,12 @@ impl Vec4Expr {
                         let lits = [*x_lit, *y_lit, 1.0, 1.0];
                         let mut zv = vec![(z.clone(), 1.0)];
                         let mut wv = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, y_product, &mut zv, &mut wv, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, y_product, &mut zv, &mut wv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_product_transpose(x_product, y_product, lits) {
+                        if let Some(transposed) = vec2_product_transpose(None, x_product, y_product, lits) {
                             *self = Vec4Expr::Extend2to4(transposed, z.take_as_owned(), w.take_as_owned());
                             return
                         }
@@ -2677,7 +2677,7 @@ impl Vec4Expr {
                         let lits = [1.0, *y_lit, *z_lit, 1.0];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, y_product, z_product, &mut w, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, y_product, z_product, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2690,7 +2690,7 @@ impl Vec4Expr {
                         let lits = [*x_lit, 1.0, 1.0, *w_lit];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, &mut y, &mut z, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, &mut y, &mut z, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2703,7 +2703,7 @@ impl Vec4Expr {
                         let lits = [*x_lit, 1.0, *z_lit, 1.0];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, &mut y, z_product, &mut w, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, &mut y, z_product, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2716,7 +2716,7 @@ impl Vec4Expr {
                         let lits = [1.0, *y_lit, 1.0, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, y_product, &mut z, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, y_product, &mut z, w_product, lits) {
                             *self = transposed;
                         }
                     }
@@ -2726,7 +2726,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, &mut y, &mut z, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, &mut y, &mut z, w_product, lits) {
                             // println!("yes transposed");
                             *self = transposed;
                         } else {
@@ -2738,7 +2738,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, &mut y, z_product, &mut w, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, &mut y, z_product, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2747,7 +2747,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(&mut x, y_product, &mut z, &mut w, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, y_product, &mut z, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2756,7 +2756,7 @@ impl Vec4Expr {
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(x_product, &mut y, &mut z, &mut w, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, x_product, &mut y, &mut z, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2767,7 +2767,7 @@ impl Vec4Expr {
                         Sum(ref mut w_sum, w_lit)
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit, *w_lit];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, y_sum, z_sum, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, y_sum, z_sum, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2779,7 +2779,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [0.0, *y_lit, *z_lit, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, x_sum, y_sum, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, x_sum, y_sum, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2791,7 +2791,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, 0.0, *z_lit, *w_lit];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, &mut y, z_sum, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, &mut y, z_sum, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2803,7 +2803,7 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, 0.0, *w_lit];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, y_sum, &mut z, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, y_sum, &mut z, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2815,12 +2815,12 @@ impl Vec4Expr {
                     ) if transpose_simd => {
                         let lits = [*x_lit, *y_lit, *z_lit, 0.0];
                         let mut wv = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, y_sum, z_sum, &mut wv, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, y_sum, z_sum, &mut wv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit, *z_lit];
-                        if let Some(transposed) = vec3_sum_transpose(x_sum, y_sum, z_sum, lits) {
+                        if let Some(transposed) = vec3_sum_transpose(None, x_sum, y_sum, z_sum, lits) {
                             *self = Vec4Expr::Extend3to4(transposed, w.take_as_owned());
                             return
                         }
@@ -2834,7 +2834,7 @@ impl Vec4Expr {
                         let lits = [0.0, 0.0, *z_lit, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, &mut y, z_sum, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, &mut y, z_sum, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2847,12 +2847,12 @@ impl Vec4Expr {
                         let lits = [*x_lit, *y_lit, 0.0, 0.0];
                         let mut zv = vec![(z.clone(), 1.0)];
                         let mut wv = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, y_sum, &mut zv, &mut wv, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, y_sum, &mut zv, &mut wv, lits) {
                             *self = transposed;
                             return
                         }
                         let lits = [*x_lit, *y_lit];
-                        if let Some(transposed) = vec2_sum_transpose(x_sum, y_sum, lits) {
+                        if let Some(transposed) = vec2_sum_transpose(None, x_sum, y_sum, lits) {
                             *self = Vec4Expr::Extend2to4(transposed, z.take_as_owned(), w.take_as_owned());
                             return
                         }
@@ -2866,7 +2866,7 @@ impl Vec4Expr {
                         let lits = [0.0, *y_lit, *z_lit, 0.0];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, y_sum, z_sum, &mut w, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, y_sum, z_sum, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2879,7 +2879,7 @@ impl Vec4Expr {
                         let lits = [*x_lit, 0.0, 0.0, *w_lit];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, &mut y, &mut z, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, &mut y, &mut z, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2892,7 +2892,7 @@ impl Vec4Expr {
                         let lits = [*x_lit, 0.0, *z_lit, 0.0];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, &mut y, z_sum, &mut w, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, &mut y, z_sum, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2905,7 +2905,7 @@ impl Vec4Expr {
                         let lits = [0.0, *y_lit, 0.0, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, y_sum, &mut z, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, y_sum, &mut z, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2914,7 +2914,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, &mut y, &mut z, w_sum, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, &mut y, &mut z, w_sum, lits) {
                             *self = transposed;
                         }
                     }
@@ -2923,7 +2923,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, &mut y, z_sum, &mut w, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, &mut y, z_sum, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2932,7 +2932,7 @@ impl Vec4Expr {
                         let mut x = vec![(x.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(&mut x, y_sum, &mut z, &mut w, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, &mut x, y_sum, &mut z, &mut w, lits) {
                             *self = transposed;
                         }
                     }
@@ -2941,7 +2941,7 @@ impl Vec4Expr {
                         let mut y = vec![(y.clone(), 1.0)];
                         let mut z = vec![(z.clone(), 1.0)];
                         let mut w = vec![(w.clone(), 1.0)];
-                        if let Some(transposed) = vec4_sum_transpose(x_sum, &mut y, &mut z, &mut w, lits) {
+                        if let Some(transposed) = vec4_sum_transpose(None, x_sum, &mut y, &mut z, &mut w, lits) {
                             *self = transposed;
                         }
                     }
