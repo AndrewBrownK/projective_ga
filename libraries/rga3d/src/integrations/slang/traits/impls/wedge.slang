@@ -127,7 +127,7 @@ public extension DualNum {
     public Motor wedge(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(this.group0.xx, this.scalar, (this.scalar * other.e1234) + (this.e1234 * other.scalar)) * float4(other.group0.xyz, 1.0), 
+            float4((float3(this.scalar) * other.group0.xyz), (this.scalar * other.e1234) + (this.e1234 * other.scalar)), 
             /* e23, e31, e12, scalar */
             float4(this.scalar) * other.group1
         );
@@ -491,7 +491,7 @@ public extension Line {
     public Motor wedge(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.scalar, other.scalar, other.scalar, -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) * float4(this.group0.xyz, 1.0), 
+            float4((float3(other.scalar) * this.group0.xyz), -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)), 
             /* e23, e31, e12, scalar */
             float4((float3(other.scalar) * this.group1.xyz), 0.0)
         );
@@ -579,7 +579,7 @@ public extension Motor {
     public Motor wedge(DualNum other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.group0.xx, other.scalar, (other.scalar * this.e1234) + (other.e1234 * this.scalar)) * float4(this.group0.xyz, 1.0), 
+            float4((float3(other.scalar) * this.group0.xyz), (other.scalar * this.e1234) + (other.e1234 * this.scalar)), 
             /* e23, e31, e12, scalar */
             float4(other.scalar) * this.group1
         );
@@ -619,7 +619,7 @@ public extension Motor {
     public Motor wedge(Line other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(this.scalar, this.scalar, this.scalar, -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) * float4(other.group0.xyz, 1.0), 
+            float4((float3(this.scalar) * other.group0.xyz), -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)), 
             /* e23, e31, e12, scalar */
             float4((float3(this.scalar) * other.group1.xyz), 0.0)
         );

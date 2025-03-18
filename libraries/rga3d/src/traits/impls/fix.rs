@@ -9,15 +9,15 @@
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
+//   Median:         0       1       0
+//  Average:         0       1       0
 //  Maximum:         2       3       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         2       2       0
-//  Maximum:         8       9       3
+//   Median:         0       3       0
+//  Average:         2       3       0
+//  Maximum:         8       9       1
 impl std::ops::Div<FixPrefixOrPostfix> for Horizon {
     type Output = Horizon;
     fn div(self, _rhs: FixPrefixOrPostfix) -> Self::Output {
@@ -47,11 +47,15 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Plane {
 }
 impl Fix for Plane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        0        1
-    // no simd        0        0        3
+    //           add/sub      mul      div
+    //      f32        0        0        1
+    //    simd3        0        1        0
+    // Totals...
+    // yes simd        0        1        1
+    //  no simd        0        3        1
     fn fix(self) -> Self {
-        Plane::from_groups(/* e423, e431, e412, e321 */ (self.group0().xyz() / self.group0().www()).with_w(1.0))
+        use crate::elements::*;
+        Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(1.0 / self[e321]) * self.group0().xyz()).with_w(1.0))
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Point {

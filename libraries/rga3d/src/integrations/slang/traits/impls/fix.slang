@@ -27,7 +27,7 @@ public extension Plane {
     public Plane fix() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4((this.group0.xyz / this.group0.www), 1.0)
+            float4((float3(1.0 / this.e321) * this.group0.xyz), 1.0)
         );
     }
 }

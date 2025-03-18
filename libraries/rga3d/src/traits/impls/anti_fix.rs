@@ -9,15 +9,15 @@
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
+//   Median:         0       1       0
+//  Average:         0       1       0
 //  Maximum:         2       3       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         2       2       0
-//  Maximum:         8       9       3
+//   Median:         0       3       0
+//  Average:         2       3       0
+//  Maximum:         8       9       1
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: AntiFixPrefixOrPostfix) -> Self::Output {
@@ -92,10 +92,14 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Point {
 }
 impl AntiFix for Point {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        0        1
-    // no simd        0        0        3
+    //           add/sub      mul      div
+    //      f32        0        0        1
+    //    simd3        0        1        0
+    // Totals...
+    // yes simd        0        1        1
+    //  no simd        0        3        1
     fn anti_fix(self) -> Self {
-        Point::from_groups(/* e1, e2, e3, e4 */ (self.group0().xyz() / self.group0().www()).with_w(1.0))
+        use crate::elements::*;
+        Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))
     }
 }

@@ -227,7 +227,7 @@ public extension DualNum {
             /* e41, e42, e43, e1234 */
             float4(this.e1234) * other.group0, 
             /* e23, e31, e12, scalar */
-            float4(this.group0.yy, this.e1234, (this.scalar * other.e1234) + (this.e1234 * other.scalar)) * float4(other.group1.xyz, 1.0)
+            float4((float3(this.e1234) * other.group1.xyz), (this.scalar * other.e1234) + (this.e1234 * other.scalar))
         );
     }
 }
@@ -647,7 +647,7 @@ public extension Line {
             /* e41, e42, e43, e1234 */
             float4((float3(other.e1234) * this.group0.xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(other.e1234, other.e1234, other.e1234, -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43)) * float4(this.group1.xyz, 1.0)
+            float4((float3(other.e1234) * this.group1.xyz), -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43))
         );
     }
 }
@@ -711,7 +711,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(other.e1234) * this.group0, 
             /* e23, e31, e12, scalar */
-            float4(other.group0.yy, other.e1234, (other.scalar * this.e1234) + (other.e1234 * this.scalar)) * float4(this.group1.xyz, 1.0)
+            float4((float3(other.e1234) * this.group1.xyz), (other.scalar * this.e1234) + (other.e1234 * this.scalar))
         );
     }
 }
@@ -753,7 +753,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4((float3(this.e1234) * other.group0.xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(this.e1234, this.e1234, this.e1234, -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43)) * float4(other.group1.xyz, 1.0)
+            float4((float3(this.e1234) * other.group1.xyz), -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43))
         );
     }
 }
@@ -781,7 +781,7 @@ public extension Motor {
             /* scalar, e1234 */
             float2((this.e1234 * other.scalar) + (this.scalar * other.e1234) - (this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43), this.e1234 * other.e1234), 
             /* e1, e2, e3, e4 */
-            float4((this.e1234 * other.e1) + (this.e31 * other.e412), (this.e1234 * other.e2) + (this.e12 * other.e423), (this.e1234 * other.e3) + (this.e23 * other.e431), -(this.e42 * other.e431) - (this.e43 * other.e412)) + (this.group0 * float4(other.group4.www, other.e4)) - (other.group4.yzxx * float4(this.group1.zxy, this.e41)), 
+            float4((this.e1234 * other.e1) + (this.e31 * other.e412), (this.e1234 * other.e2) + (this.e12 * other.e423), (this.e1234 * other.e3) + (this.e23 * other.e431), -(this.e42 * other.e431) - (this.e43 * other.e412)) + (this.group0 * float4(float3(other.e321), other.e4)) - (other.group4.yzxx * float4(this.group1.zxy, this.e41)), 
             /* e41, e42, e43 */
             (float3(this.e1234) * other.group2.xyz) + (float3(other.e1234) * this.group0.xyz), 
             /* e23, e31, e12 */
@@ -955,7 +955,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((other.e1234 * this.scalar) + (other.scalar * this.e1234) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43), other.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
-            float4((other.e1234 * this.e1) + (other.e31 * this.e412), (other.e1234 * this.e2) + (other.e12 * this.e423), (other.e1234 * this.e3) + (other.e23 * this.e431), -(other.e42 * this.e431) - (other.e43 * this.e412)) + (other.group0 * float4(this.group4.www, this.e4)) - (this.group4.yzxx * float4(other.group1.zxy, other.e41)), 
+            float4((other.e1234 * this.e1) + (other.e31 * this.e412), (other.e1234 * this.e2) + (other.e12 * this.e423), (other.e1234 * this.e3) + (other.e23 * this.e431), -(other.e42 * this.e431) - (other.e43 * this.e412)) + (other.group0 * float4(float3(this.e321), this.e4)) - (this.group4.yzxx * float4(other.group1.zxy, other.e41)), 
             /* e41, e42, e43 */
             (float3(other.e1234) * this.group2.xyz) + (float3(this.e1234) * other.group0.xyz), 
             /* e23, e31, e12 */

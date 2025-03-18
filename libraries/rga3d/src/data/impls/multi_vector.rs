@@ -13,14 +13,14 @@ use crate::traits::Wedge;
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         1       0       0
-//  Average:         6       8       0
-//  Maximum:        81      98       0
+//  Average:         6       9       0
+//  Maximum:        81      99       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       0       0
 //  Average:        13      16       0
-//  Maximum:       181     196       0
+//  Maximum:       181     194       0
 impl std::ops::Add<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
@@ -834,11 +834,10 @@ impl std::ops::Mul<DualNum> for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        6        0
-    //    simd3        2        5        0
-    //    simd4        0        1        0
+    //    simd3        2        6        0
     // Totals...
     // yes simd        4       12        0
-    //  no simd        8       25        0
+    //  no simd        8       24        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -912,12 +911,12 @@ impl std::ops::Mul<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       19       31        0
-    //    simd2        4        4        0
-    //    simd3       10       12        0
+    //      f32       19       34        0
+    //    simd2        4        7        0
+    //    simd3       10        9        0
     //    simd4        6        6        0
     // Totals...
-    // yes simd       39       53        0
+    // yes simd       39       56        0
     //  no simd       81       99        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
@@ -932,13 +931,13 @@ impl std::ops::Mul<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       35       50        0
-    //    simd2        8        8        0
-    //    simd3       22       30        0
-    //    simd4       16       10        0
+    //      f32       35       51        0
+    //    simd2        8        9        0
+    //    simd3       22       31        0
+    //    simd4       16        8        0
     // Totals...
-    // yes simd       81       98        0
-    //  no simd      181      196        0
+    // yes simd       81       99        0
+    //  no simd      181      194        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -973,11 +972,10 @@ impl std::ops::Mul<Plane> for MultiVector {
     //           add/sub      mul      div
     //      f32        6       11        0
     //    simd2        0        1        0
-    //    simd3        6        9        0
-    //    simd4        0        1        0
+    //    simd3        6       10        0
     // Totals...
     // yes simd       12       22        0
-    //  no simd       24       44        0
+    //  no simd       24       43        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }

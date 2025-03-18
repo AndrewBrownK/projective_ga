@@ -45,11 +45,13 @@ impl RejectViaOriginFrom<Flector> for AntiScalar {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group0();
         let right_dual_g0_w = other[e321] * -1.0;
+        let right_dual_g1_xyz = other.group0().xyz();
         Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x2::from(right_dual_g0_w * -1.0) * anti_wedge_g0.xy()).with_zw(
                 right_dual_g0_w * anti_wedge_g0[2] * -1.0,
-                (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]) - (right_dual_g0_w * self[e1234] * other[e321]),
+                (right_dual_g1_xyz[0] * anti_wedge_g0[0]) + (right_dual_g1_xyz[1] * anti_wedge_g0[1]) + (right_dual_g1_xyz[2] * anti_wedge_g0[2])
+                    - (right_dual_g0_w * self[e1234] * other[e321]),
             ),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -93,7 +95,7 @@ impl RejectViaOriginFrom<Motor> for AntiScalar {
         let anti_wedge_g1 = Simd32x4::from(self[e1234]) * other.group1();
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (other.group1().xyz() * anti_wedge_g1.www())
+            (Simd32x3::from(anti_wedge_g1[3]) * other.group1().xyz())
                 .with_w((anti_wedge_g1[3] * other[scalar]) - (anti_wedge_g1[0] * other[e23]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -118,11 +120,15 @@ impl RejectViaOriginFrom<MultiVector> for AntiScalar {
         let anti_wedge_g3 = Simd32x3::from(self[e1234]) * other.group3();
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0[0] * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0[0] * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -136,7 +142,7 @@ impl RejectViaOriginFrom<MultiVector> for AntiScalar {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0[0]) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0[0])).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -161,7 +167,11 @@ impl RejectViaOriginFrom<Point> for AntiScalar {
     fn reject_via_origin_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group0();
-        AntiScalar::from_groups(/* e1234 */ (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]))
+        let right_dual_g0_xyz = other.group0().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            (right_dual_g0_xyz[0] * anti_wedge_g0[0]) + (right_dual_g0_xyz[1] * anti_wedge_g0[1]) + (right_dual_g0_xyz[2] * anti_wedge_g0[2]),
+        )
     }
 }
 impl RejectViaOriginFrom<Scalar> for AntiScalar {
@@ -201,11 +211,13 @@ impl RejectViaOriginFrom<Flector> for DualNum {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group0();
         let right_dual_g0_w = other[e321] * -1.0;
+        let right_dual_g1_xyz = other.group0().xyz();
         Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x2::from(right_dual_g0_w * -1.0) * anti_wedge_g0.xy()).with_zw(
                 right_dual_g0_w * anti_wedge_g0[2] * -1.0,
-                (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]) - (right_dual_g0_w * self[e1234] * other[e321]),
+                (right_dual_g1_xyz[0] * anti_wedge_g0[0]) + (right_dual_g1_xyz[1] * anti_wedge_g0[1]) + (right_dual_g1_xyz[2] * anti_wedge_g0[2])
+                    - (right_dual_g0_w * self[e1234] * other[e321]),
             ),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -238,19 +250,22 @@ impl RejectViaOriginFrom<Motor> for DualNum {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4        6        0
+    //      f32        4        7        0
+    //    simd2        0        1        0
     //    simd3        0        1        0
-    //    simd4        0        1        0
     // Totals...
-    // yes simd        4        8        0
-    //  no simd        4       13        0
+    // yes simd        4        9        0
+    //  no simd        4       12        0
     fn reject_via_origin_from(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g1 = self.group0().yy().with_zw(self[e1234], (self[scalar] * other[e1234]) + (self[e1234] * other[scalar])) * other.group1().xyz().with_w(1.0);
+        let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group1().xyz();
+        let anti_wedge_g1_w = (self[scalar] * other[e1234]) + (self[e1234] * other[scalar]);
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (other.group1().xyz() * anti_wedge_g1.www())
-                .with_w((anti_wedge_g1[3] * other[scalar]) - (anti_wedge_g1[0] * other[e23]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12])),
+            (Simd32x2::from(anti_wedge_g1_w) * other.group1().xy()).with_zw(
+                anti_wedge_g1_w * other[e12],
+                (anti_wedge_g1_w * other[scalar]) - (anti_wedge_g1_xyz[0] * other[e23]) - (anti_wedge_g1_xyz[1] * other[e31]) - (anti_wedge_g1_xyz[2] * other[e12]),
+            ),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
         )
@@ -273,11 +288,15 @@ impl RejectViaOriginFrom<MultiVector> for DualNum {
         let anti_wedge_g3 = Simd32x3::from(self[e1234]) * other.group3();
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -291,7 +310,7 @@ impl RejectViaOriginFrom<MultiVector> for DualNum {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -316,7 +335,11 @@ impl RejectViaOriginFrom<Point> for DualNum {
     fn reject_via_origin_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group0();
-        AntiScalar::from_groups(/* e1234 */ (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]))
+        let right_dual_g0_xyz = other.group0().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            (right_dual_g0_xyz[0] * anti_wedge_g0[0]) + (right_dual_g0_xyz[1] * anti_wedge_g0[1]) + (right_dual_g0_xyz[2] * anti_wedge_g0[2]),
+        )
     }
 }
 impl RejectViaOriginFrom<Scalar> for DualNum {
@@ -458,11 +481,15 @@ impl RejectViaOriginFrom<MultiVector> for Flector {
         let anti_wedge_g3 = (Simd32x3::from(other[e321]) * self.group1().xyz()) - (Simd32x3::from(self[e321]) * other.group4().xyz());
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -476,7 +503,7 @@ impl RejectViaOriginFrom<MultiVector> for Flector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -610,11 +637,12 @@ impl RejectViaOriginFrom<MultiVector> for Horizon {
         let anti_wedge_g3 = Simd32x3::from(self[e321] * -1.0) * other.group4().xyz();
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g1_xyz[0] * other[e1]) + (anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3])
+                (anti_wedge_g1_xyz[0] * right_dual_g4_xyz[0]) + (anti_wedge_g1_xyz[1] * right_dual_g4_xyz[1]) + (anti_wedge_g1_xyz[2] * right_dual_g4_xyz[2])
                     - (anti_wedge_g0_x * other[scalar])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
@@ -629,7 +657,7 @@ impl RejectViaOriginFrom<MultiVector> for Horizon {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0) + (anti_wedge_g1_xyz.zxy() * right_dual_g2.yzx()).with_w(0.0)
-                - (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                - (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 - (anti_wedge_g1_xyz.yzx() * right_dual_g2.zxy()).with_w(0.0),
         )
     }
@@ -686,13 +714,14 @@ impl RejectViaOriginFrom<Flector> for Line {
             -(other[e431] * self[e42]) - (other[e412] * self[e43]),
         ]) - (other.group1().yzxx() * self.group1().zxy().with_w(self[e41]));
         let right_dual_g0_w = other[e321] * -1.0;
+        let right_dual_g1_xyz = other.group0().xyz();
         Motor::from_groups(
             // e41, e42, e43, e1234
             Simd32x4::from([
                 right_dual_g0_w * anti_wedge_g0[0],
                 right_dual_g0_w * anti_wedge_g0[1],
                 right_dual_g0_w * anti_wedge_g0[2],
-                (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]),
+                (right_dual_g1_xyz[0] * anti_wedge_g0[0]) + (right_dual_g1_xyz[1] * anti_wedge_g0[1]) + (right_dual_g1_xyz[2] * anti_wedge_g0[2]),
             ]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -743,24 +772,23 @@ impl RejectViaOriginFrom<Motor> for Line {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        8       10        0
+    //      f32        8       11        0
+    //    simd2        0        1        0
     //    simd3        0        1        0
-    //    simd4        0        1        0
     // Totals...
-    // yes simd        8       12        0
-    //  no simd        8       17        0
+    // yes simd        8       13        0
+    //  no simd        8       16        0
     fn reject_via_origin_from(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g1 = Simd32x4::from([
-            other[e1234],
-            other[e1234],
-            other[e1234],
-            -(self[e41] * other[e23]) - (self[e42] * other[e31]) - (self[e43] * other[e12]) - (self[e23] * other[e41]) - (self[e31] * other[e42]) - (self[e12] * other[e43]),
-        ]) * self.group1().with_w(1.0);
+        let anti_wedge_g1_xyz = Simd32x3::from(other[e1234]) * self.group1();
+        let anti_wedge_g1_w =
+            -(self[e41] * other[e23]) - (self[e42] * other[e31]) - (self[e43] * other[e12]) - (self[e23] * other[e41]) - (self[e31] * other[e42]) - (self[e12] * other[e43]);
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (other.group1().xyz() * anti_wedge_g1.www())
-                .with_w((anti_wedge_g1[3] * other[scalar]) - (anti_wedge_g1[0] * other[e23]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12])),
+            (Simd32x2::from(anti_wedge_g1_w) * other.group1().xy()).with_zw(
+                anti_wedge_g1_w * other[e12],
+                (anti_wedge_g1_w * other[scalar]) - (anti_wedge_g1_xyz[0] * other[e23]) - (anti_wedge_g1_xyz[1] * other[e31]) - (anti_wedge_g1_xyz[2] * other[e12]),
+            ),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
         )
@@ -789,11 +817,15 @@ impl RejectViaOriginFrom<MultiVector> for Line {
         let anti_wedge_g3 = Simd32x3::from(other[e1234]) * self.group1();
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2]),
@@ -806,7 +838,7 @@ impl RejectViaOriginFrom<MultiVector> for Line {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -842,7 +874,7 @@ impl RejectViaOriginFrom<DualNum> for Motor {
     // f32        1        3        0
     fn reject_via_origin_from(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[scalar] * ((other[scalar] * self[e1234]) + (other[e1234] * self[scalar])))
+        AntiScalar::from_groups(/* e1234 */ (other[scalar] * other[scalar] * self[e1234]) + (other[scalar] * other[e1234] * self[scalar]))
     }
 }
 impl RejectViaOriginFrom<Flector> for Motor {
@@ -865,11 +897,13 @@ impl RejectViaOriginFrom<Flector> for Motor {
         ]) + (Simd32x4::from(self[e1234]) * other.group0())
             - (other.group1().yzxx() * self.group1().zxy().with_w(self[e41]));
         let right_dual_g0_w = other[e321] * -1.0;
+        let right_dual_g1_xyz = other.group0().xyz();
         Motor::from_groups(
             // e41, e42, e43, e1234
             (Simd32x2::from(right_dual_g0_w * -1.0) * anti_wedge_g0.xy()).with_zw(
                 right_dual_g0_w * anti_wedge_g0[2] * -1.0,
-                (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]) - (right_dual_g0_w * other[e321] * self[e1234]),
+                (right_dual_g1_xyz[0] * anti_wedge_g0[0]) + (right_dual_g1_xyz[1] * anti_wedge_g0[1]) + (right_dual_g1_xyz[2] * anti_wedge_g0[2])
+                    - (right_dual_g0_w * other[e321] * self[e1234]),
             ),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -901,24 +935,26 @@ impl RejectViaOriginFrom<Line> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7        9        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //    simd3        0        3        0
     // Totals...
     // yes simd        7       12        0
-    //  no simd        7       19        0
+    //  no simd        7       18        0
     fn reject_via_origin_from(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g1 = Simd32x4::from([
-            self[e1234],
-            self[e1234],
-            self[e1234],
-            -(other[e41] * self[e23]) - (other[e42] * self[e31]) - (other[e43] * self[e12]) - (other[e23] * self[e41]) - (other[e31] * self[e42]) - (other[e12] * self[e43]),
-        ]) * other.group1().with_w(1.0);
+        let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group1();
         let right_dual_g0 = other.group1() * Simd32x3::from(-1.0);
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (right_dual_g0 * Simd32x3::from(anti_wedge_g1[3]))
-                .with_w(-(right_dual_g0[0] * anti_wedge_g1[0]) - (right_dual_g0[1] * anti_wedge_g1[1]) - (right_dual_g0[2] * anti_wedge_g1[2])),
+            (right_dual_g0
+                * Simd32x3::from(
+                    -(other[e41] * self[e23])
+                        - (other[e42] * self[e31])
+                        - (other[e43] * self[e12])
+                        - (other[e23] * self[e41])
+                        - (other[e31] * self[e42])
+                        - (other[e12] * self[e43]),
+                ))
+            .with_w(-(anti_wedge_g1_xyz[0] * right_dual_g0[0]) - (anti_wedge_g1_xyz[1] * right_dual_g0[1]) - (anti_wedge_g1_xyz[2] * right_dual_g0[2])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
         )
@@ -943,7 +979,7 @@ impl RejectViaOriginFrom<Motor> for Motor {
             );
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (other.group1().xyz() * anti_wedge_g1.www())
+            (Simd32x3::from(anti_wedge_g1[3]) * other.group1().xyz())
                 .with_w((anti_wedge_g1[3] * other[scalar]) - (anti_wedge_g1[0] * other[e23]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12])),
             // e23, e31, e12, scalar
             Simd32x4::from(0.0),
@@ -974,16 +1010,20 @@ impl RejectViaOriginFrom<MultiVector> for Motor {
             (self[e1234] * other[e2]) + (self[e12] * other[e423]),
             (self[e1234] * other[e3]) + (self[e23] * other[e431]),
             -(self[e42] * other[e431]) - (self[e43] * other[e412]),
-        ]) + (self.group0() * other.group4().www().with_w(other[e4]))
+        ]) + (self.group0() * Simd32x3::from(other[e321]).with_w(other[e4]))
             - (other.group4().yzxx() * self.group1().zxy().with_w(self[e41]));
         let anti_wedge_g3 = (Simd32x3::from(self[e1234]) * other.group3()) + (Simd32x3::from(other[e1234]) * self.group1().xyz());
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -997,7 +1037,7 @@ impl RejectViaOriginFrom<MultiVector> for Motor {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -1042,7 +1082,11 @@ impl RejectViaOriginFrom<Point> for Motor {
     fn reject_via_origin_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g0 = Simd32x4::from(self[e1234]) * other.group0();
-        AntiScalar::from_groups(/* e1234 */ (anti_wedge_g0[0] * other[e1]) + (anti_wedge_g0[1] * other[e2]) + (anti_wedge_g0[2] * other[e3]))
+        let right_dual_g0_xyz = other.group0().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            (right_dual_g0_xyz[0] * anti_wedge_g0[0]) + (right_dual_g0_xyz[1] * anti_wedge_g0[1]) + (right_dual_g0_xyz[2] * anti_wedge_g0[2]),
+        )
     }
 }
 impl RejectViaOriginFrom<Scalar> for Motor {
@@ -1093,11 +1137,13 @@ impl RejectViaOriginFrom<Flector> for MultiVector {
         ]) + (Simd32x4::from(self[e1234]) * other.group0())
             - (other.group1().yzxx() * self.group3().zxy().with_w(self[e41]));
         let right_dual_g0_w = other[e321] * -1.0;
+        let right_dual_g1_xyz = other.group0().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3]) - (right_dual_g0_w * other[e321] * self[e1234]),
+                (right_dual_g1_xyz[0] * anti_wedge_g1[0]) + (right_dual_g1_xyz[1] * anti_wedge_g1[1]) + (right_dual_g1_xyz[2] * anti_wedge_g1[2])
+                    - (right_dual_g0_w * other[e321] * self[e1234]),
             ]),
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(anti_wedge_g0_x * right_dual_g0_w),
@@ -1106,7 +1152,7 @@ impl RejectViaOriginFrom<Flector> for MultiVector {
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
-            (Simd32x3::from(anti_wedge_g0_x) * other.group0().xyz()).with_w(0.0) + (Simd32x3::from(right_dual_g0_w * other[e321]) * self.group4().xyz()).with_w(0.0)
+            (right_dual_g1_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0) + (Simd32x3::from(right_dual_g0_w * other[e321]) * self.group4().xyz()).with_w(0.0)
                 - (Simd32x3::from(right_dual_g0_w * self[e321]) * other.group1().xyz()).with_w(0.0),
         )
     }
@@ -1204,7 +1250,7 @@ impl RejectViaOriginFrom<Motor> for MultiVector {
             (other[e1234] * self[e2]) + (other[e12] * self[e423]),
             (other[e1234] * self[e3]) + (other[e23] * self[e431]),
             -(other[e42] * self[e431]) - (other[e43] * self[e412]),
-        ]) + (other.group0() * self.group4().www().with_w(self[e4]))
+        ]) + (other.group0() * Simd32x3::from(self[e321]).with_w(self[e4]))
             - (self.group4().yzxx() * other.group1().zxy().with_w(other[e41]));
         let anti_wedge_g3 = (Simd32x3::from(other[e1234]) * self.group3()) + (Simd32x3::from(self[e1234]) * other.group1().xyz());
         MultiVector::from_groups(
@@ -1265,11 +1311,15 @@ impl RejectViaOriginFrom<MultiVector> for MultiVector {
             - (Simd32x3::from(self[e321]) * other.group4().xyz());
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -1284,7 +1334,7 @@ impl RejectViaOriginFrom<MultiVector> for MultiVector {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -1328,18 +1378,22 @@ impl RejectViaOriginFrom<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        5        7        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //      f32        2        7        0
+    //    simd3        0        4        0
+    //    simd4        3        1        0
     // Totals...
-    // yes simd        5        9        0
-    //  no simd        5       14        0
+    // yes simd        5       12        0
+    //  no simd       14       23        0
     fn reject_via_origin_from(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let anti_wedge_g1 = Simd32x4::from(self[e1234]) * other.group0();
+        let right_dual_g0_xyz = other.group0().xyz();
         MultiVector::from_groups(
             // scalar, e1234
-            Simd32x2::from([0.0, (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])]),
+            Simd32x2::from([
+                0.0,
+                (right_dual_g0_xyz[0] * anti_wedge_g1[0]) + (right_dual_g0_xyz[1] * anti_wedge_g1[1]) + (right_dual_g0_xyz[2] * anti_wedge_g1[2]),
+            ]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e41, e42, e43
@@ -1347,7 +1401,10 @@ impl RejectViaOriginFrom<Point> for MultiVector {
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
-            (Simd32x3::from(-(self[e423] * other[e1]) - (self[e431] * other[e2]) - (self[e412] * other[e3]) - (self[e321] * other[e4])) * other.group0().xyz()).with_w(0.0),
+            -(right_dual_g0_xyz * Simd32x3::from(self[e423] * other[e1])).with_w(0.0)
+                - (right_dual_g0_xyz * Simd32x3::from(self[e431] * other[e2])).with_w(0.0)
+                - (right_dual_g0_xyz * Simd32x3::from(self[e412] * other[e3])).with_w(0.0)
+                - (right_dual_g0_xyz * Simd32x3::from(self[e321] * other[e4])).with_w(0.0),
         )
     }
 }
@@ -1549,11 +1606,15 @@ impl RejectViaOriginFrom<MultiVector> for Plane {
         let anti_wedge_g3 = (Simd32x3::from(other[e321]) * self.group0().xyz()) - (Simd32x3::from(self[e321]) * other.group4().xyz());
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3])
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2])
                     - (anti_wedge_g3[0] * right_dual_g2[0])
                     - (anti_wedge_g3[1] * right_dual_g2[1])
                     - (anti_wedge_g3[2] * right_dual_g2[2])
@@ -1567,7 +1628,7 @@ impl RejectViaOriginFrom<MultiVector> for Plane {
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
             (anti_wedge_g3 * Simd32x3::from(right_dual_g1_w)).with_w(0.0)
-                + (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0)
+                + (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0)
                 + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
@@ -1682,11 +1743,15 @@ impl RejectViaOriginFrom<MultiVector> for Point {
         let anti_wedge_g1 = Simd32x4::from(other[e1234]) * self.group0();
         let right_dual_g1_w = other[e321] * -1.0;
         let right_dual_g2 = other.group3() * Simd32x3::from(-1.0);
+        let right_dual_g4_xyz = other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g0_x * other[scalar]) + (anti_wedge_g1[0] * other[e1]) + (anti_wedge_g1[1] * other[e2]) + (anti_wedge_g1[2] * other[e3]),
+                (anti_wedge_g0_x * other[scalar])
+                    + (right_dual_g4_xyz[0] * anti_wedge_g1[0])
+                    + (right_dual_g4_xyz[1] * anti_wedge_g1[1])
+                    + (right_dual_g4_xyz[2] * anti_wedge_g1[2]),
             ]),
             // e1, e2, e3, e4
             Simd32x3::from(0.0).with_w(anti_wedge_g0_x * right_dual_g1_w),
@@ -1695,7 +1760,7 @@ impl RejectViaOriginFrom<MultiVector> for Point {
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
-            (Simd32x3::from(anti_wedge_g0_x) * other.group1().xyz()).with_w(0.0) + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
+            (right_dual_g4_xyz * Simd32x3::from(anti_wedge_g0_x)).with_w(0.0) + (right_dual_g2.yzx() * anti_wedge_g1.zxy()).with_w(0.0)
                 - (right_dual_g2.zxy() * anti_wedge_g1.yzx()).with_w(0.0),
         )
     }

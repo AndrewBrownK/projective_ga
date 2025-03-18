@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       2       0
 //   Median:         3       8       0
-//  Average:         6      13       0
-//  Maximum:        20      36       0
+//  Average:         2       9       0
+//  Maximum:         6      22       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       2       0
 //   Median:         3       8       0
-//  Average:         7      14       0
-//  Maximum:        23      42       0
+//  Average:         3      11       0
+//  Maximum:         9      28       0
 impl std::ops::Div<AntiConstraintViolationPrefixOrPostfix> for DualNum {
     type Output = Scalar;
     fn div(self, _rhs: AntiConstraintViolationPrefixOrPostfix) -> Self::Output {
@@ -84,21 +84,17 @@ impl AntiConstraintViolation for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       19       34        0
+    //      f32        5       20        0
     //    simd4        1        2        0
     // Totals...
-    // yes simd       20       36        0
-    //  no simd       23       42        0
+    // yes simd        6       22        0
+    //  no simd        9       28        0
     fn anti_constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
-                2.0 * (self[scalar] * self[e1234]) + (self[e1] * self[e423])
-                    - (self.group1().xwzw()[0] * self[e423])
-                    - 2.0 * (self[e41] * self[e23])
-                    - 2.0 * (self[e42] * self[e31])
-                    - 2.0 * (self[e43] * self[e12]),
+                2.0 * (self[scalar] * self[e1234]) - 2.0 * (self[e41] * self[e23]) - 2.0 * (self[e42] * self[e31]) - 2.0 * (self[e43] * self[e12]),
                 0.0,
             ]),
             // e1, e2, e3, e4
@@ -110,15 +106,9 @@ impl AntiConstraintViolation for MultiVector {
             // e423, e431, e412, e321
             Simd32x4::from(2.0) * (Simd32x4::from(self[e1234]) * self.group4())
                 + Simd32x4::from([
-                    2.0 * (self[e4] * self[e41]) + (self.group4().zxy()[0] * self[e42]) + (self[e43] * self[e431])
-                        - (self.group4().yzx()[0] * self[e43])
-                        - (self.group4().zxy()[0] * self[e42]),
-                    2.0 * (self[e4] * self[e42]) + (self.group4().zxy()[1] * self[e43]) + (self[e41] * self[e412])
-                        - (self.group4().yzx()[1] * self[e41])
-                        - (self.group4().zxy()[1] * self[e43]),
-                    2.0 * (self[e4] * self[e43]) + (self.group4().zxy()[2] * self[e41]) + (self[e42] * self[e423])
-                        - (self.group4().yzx()[2] * self[e42])
-                        - (self.group4().zxy()[2] * self[e41]),
+                    self[e4] * self[e41] * 2.0,
+                    self[e4] * self[e42] * 2.0,
+                    self[e4] * self[e43] * 2.0,
                     -2.0 * (self[e1] * self[e41]) - 2.0 * (self[e2] * self[e42]) - 2.0 * (self[e3] * self[e43]),
                 ]),
         )

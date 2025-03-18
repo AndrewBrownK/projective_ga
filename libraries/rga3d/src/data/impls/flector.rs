@@ -431,11 +431,10 @@ impl std::ops::Mul<DualNum> for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        3        0
-    //    simd3        1        2        0
-    //    simd4        0        1        0
+    //    simd3        1        3        0
     // Totals...
     // yes simd        2        6        0
-    //  no simd        4       13        0
+    //  no simd        4       12        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }

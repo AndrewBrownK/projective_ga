@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         5      10       0
-//  Average:        18      27       0
-//  Maximum:       162     201       0
+//  Average:        17      27       0
+//  Maximum:       162     203       0
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         8      21       0
-//  Average:        37      51       0
-//  Maximum:       362     405       0
+//  Average:        36      50       0
+//  Maximum:       362     402       0
 impl std::ops::Div<SandwichInfix> for DualNum {
     type Output = SandwichInfixPartial<DualNum>;
     fn div(self, _rhs: SandwichInfix) -> Self::Output {
@@ -50,25 +50,20 @@ impl Sandwich<Flector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        7        0
-    //    simd3        2        3        0
-    //    simd4        0        2        0
+    //    simd3        2        5        0
     // Totals...
     // yes simd        4       12        0
-    //  no simd        8       24        0
+    //  no simd        8       22        0
     fn sandwich(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 = self.group0().xx().with_zw(self[scalar], (self[scalar] * other[e4]) - (self[e1234] * other[e321])) * other.group0().xyz().with_w(1.0);
+        let geometric_product_g0_xyz = Simd32x3::from(self[scalar]) * other.group0().xyz();
         let geometric_product_g1_w = self[scalar] * other[e321];
         Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from([
-                self[scalar],
-                self[scalar],
-                self[scalar],
-                (geometric_product_g1_w * self[e1234]) + (geometric_product_g0[3] * self[scalar]),
-            ]) * geometric_product_g0.xyz().with_w(1.0),
+            (geometric_product_g0_xyz * Simd32x3::from(self[scalar]))
+                .with_w((geometric_product_g1_w * self[e1234]) + (self[scalar] * self[scalar] * other[e4]) - (self[scalar] * self[e1234] * other[e321])),
             // e423, e431, e412, e321
-            ((Simd32x3::from(self[e1234]) * geometric_product_g0.xyz()) + (Simd32x3::from(self[scalar] * self[scalar]) * other.group1().xyz())
+            ((geometric_product_g0_xyz * Simd32x3::from(self[e1234])) + (Simd32x3::from(self[scalar] * self[scalar]) * other.group1().xyz())
                 - (Simd32x3::from(self[scalar] * self[e1234]) * other.group0().xyz()))
             .with_w(geometric_product_g1_w * self[scalar]),
         )
@@ -133,15 +128,14 @@ impl Sandwich<MultiVector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        4       14        0
-    //    simd3        4        8        0
-    //    simd4        0        2        0
+    //    simd3        4       10        0
     // Totals...
     // yes simd        8       24        0
-    //  no simd       16       46        0
+    //  no simd       16       44        0
     fn sandwich(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0_x = self[scalar] * other[scalar];
-        let geometric_product_g1 = self.group0().xx().with_zw(self[scalar], (self[scalar] * other[e4]) - (self[e1234] * other[e321])) * other.group1().xyz().with_w(1.0);
+        let geometric_product_g1_xyz = Simd32x3::from(self[scalar]) * other.group1().xyz();
         let geometric_product_g3 = Simd32x3::from(self[scalar]) * other.group3();
         let geometric_product_g4_w = self[scalar] * other[e321];
         MultiVector::from_groups(
@@ -151,12 +145,8 @@ impl Sandwich<MultiVector> for DualNum {
                 (geometric_product_g0_x * self[e1234]) + (self[scalar] * self[scalar] * other[e1234]) + (self[scalar] * self[e1234] * other[scalar]),
             ]),
             // e1, e2, e3, e4
-            Simd32x4::from([
-                self[scalar],
-                self[scalar],
-                self[scalar],
-                (geometric_product_g4_w * self[e1234]) + (geometric_product_g1[3] * self[scalar]),
-            ]) * geometric_product_g1.xyz().with_w(1.0),
+            (geometric_product_g1_xyz * Simd32x3::from(self[scalar]))
+                .with_w((geometric_product_g4_w * self[e1234]) + (self[scalar] * self[scalar] * other[e4]) - (self[scalar] * self[e1234] * other[e321])),
             // e41, e42, e43
             (geometric_product_g3 * Simd32x3::from(self[e1234]))
                 + (Simd32x3::from(self[scalar] * self[scalar]) * other.group2())
@@ -164,7 +154,7 @@ impl Sandwich<MultiVector> for DualNum {
             // e23, e31, e12
             geometric_product_g3 * Simd32x3::from(self[scalar]),
             // e423, e431, e412, e321
-            ((Simd32x3::from(self[e1234]) * geometric_product_g1.xyz()) + (Simd32x3::from(self[scalar] * self[scalar]) * other.group4().xyz())
+            ((geometric_product_g1_xyz * Simd32x3::from(self[e1234])) + (Simd32x3::from(self[scalar] * self[scalar]) * other.group4().xyz())
                 - (Simd32x3::from(self[scalar] * self[e1234]) * other.group1().xyz()))
             .with_w(geometric_product_g4_w * self[scalar]),
         )
@@ -258,33 +248,31 @@ impl Sandwich<AntiScalar> for Flector {
     }
 }
 impl Sandwich<DualNum> for Flector {
-    type Output = Motor;
+    type Output = DualNum;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        4       11        0
-    //    simd3        1        2        0
-    //    simd4        7        9        0
+    //      f32        4        7        0
+    //    simd2        4        4        0
+    //    simd3        1        3        0
     // Totals...
-    // yes simd       12       22        0
-    //  no simd       35       53        0
+    // yes simd        9       14        0
+    //  no simd       15       24        0
     fn sandwich(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 = other.group0().xx().with_zw(other[scalar], (other[scalar] * self[e4]) + (other[e1234] * self[e321])) * self.group0().xyz().with_w(1.0);
+        let geometric_product_g0_xyz = Simd32x3::from(other[scalar]) * self.group0().xyz();
         let geometric_product_g1_xyz = (Simd32x3::from(other[scalar]) * self.group1().xyz()) + (Simd32x3::from(other[e1234]) * self.group0().xyz());
-        let geometric_product_g1_w = other[scalar] * self[e321];
-        Motor::from_groups(
-            // e41, e42, e43, e1234
-            (Simd32x4::from(geometric_product_g0[3]) * self.group0().xyz().with_w(self[e321]))
-                + (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g0[1] * self[e431]]) * geometric_product_g1_xyz.zyz().with_w(1.0))
-                + (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g0[0] * self[e423]]) * geometric_product_g1_xyz.xxy().with_w(1.0))
-                + (geometric_product_g0.yzxz() * self.group1().zxyz())
-                - (Simd32x4::from(geometric_product_g1_w) * self.group1().xyz().with_w(self[e4]))
-                - (Simd32x4::from([self[e4], self[e412], self[e423], geometric_product_g1_xyz[1] * self[e2]]) * geometric_product_g0.xxy().with_w(1.0))
-                - (Simd32x4::from([self[e431], self[e4], self[e4], geometric_product_g1_xyz[2] * self[e3]]) * geometric_product_g0.zyz().with_w(1.0))
-                - (self.group0().zxyx() * geometric_product_g1_xyz.yzx().with_w(geometric_product_g1_xyz[0])),
-            // e23, e31, e12, scalar
-            Simd32x3::from(0.0)
-                .with_w((geometric_product_g0[0] * self[e1]) + (geometric_product_g0[1] * self[e2]) + (geometric_product_g0[2] * self[e3]) - (geometric_product_g1_w * self[e321])),
+        DualNum::from_groups(
+            // scalar, e1234
+            Simd32x2::from([
+                0.0,
+                (self[e321] * self[e321] * other[e1234]) + (other[scalar] * self[e4] * self[e321])
+                    - (geometric_product_g1_xyz[0] * self[e1])
+                    - (geometric_product_g1_xyz[1] * self[e2])
+                    - (geometric_product_g1_xyz[2] * self[e3]),
+            ]) + (Simd32x2::from(geometric_product_g0_xyz[0]) * Simd32x2::from([self[e1], self[e423]]))
+                + (Simd32x2::from(geometric_product_g0_xyz[1]) * Simd32x2::from([self[e2], self[e431]]))
+                + (Simd32x2::from(geometric_product_g0_xyz[2]) * Simd32x2::from([self[e3], self[e412]]))
+                - (Simd32x2::from(other[scalar] * self[e321]) * Simd32x2::from([self[e321], self[e4]])),
         )
     }
 }
@@ -317,9 +305,9 @@ impl Sandwich<Flector> for Flector {
             - (self.group1().ww().with_zw(self[e2], other[e321] * self[e321]) * other.group0().xyx().with_w(1.0));
         Flector::from_groups(
             // e1, e2, e3, e4
-            (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g0[1] * self[e2]]) * geometric_product_g1.zyz().with_w(1.0))
+            (Simd32x4::from([geometric_product_g1[3], geometric_product_g1[3], geometric_product_g1[3], geometric_product_g0[2]]) * self.group0().xyzz())
+                + (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g0[1] * self[e2]]) * geometric_product_g1.zyz().with_w(1.0))
                 + (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g0[0] * self[e1]]) * geometric_product_g1.xxy().with_w(1.0))
-                + (self.group0().xyzz() * geometric_product_g1.www().with_w(geometric_product_g0[2]))
                 + Simd32x3::from(0.0).with_w(
                     (geometric_product_g1[3] * self[e4]) - (geometric_product_g1[0] * self[e423]) - (geometric_product_g1[1] * self[e431]) - (geometric_product_g1[2] * self[e412]),
                 )
@@ -331,9 +319,9 @@ impl Sandwich<Flector> for Flector {
                 (geometric_product_g1[1] * self[e423]) + (geometric_product_g1[2] * self[e4]) + (geometric_product_g1[3] * self[e412]) - (geometric_product_g1[0] * self[e431]),
                 0.0,
             ]) + (geometric_product_g0.yzx() * self.group0().zxy()).with_w(geometric_product_g1[3] * self[e321])
+                - (Simd32x4::from([geometric_product_g0[3], geometric_product_g0[3], geometric_product_g0[3], geometric_product_g1[2]]) * self.group0().xyzz())
                 - (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g1[1] * self[e2]]) * geometric_product_g0.zyz().with_w(1.0))
-                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0))
-                - (self.group0().xyzz() * geometric_product_g0.www().with_w(geometric_product_g1[2])),
+                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0)),
         )
     }
 }
@@ -367,9 +355,9 @@ impl Sandwich<Horizon> for Flector {
                 (geometric_product_g1[1] * self[e423]) + (geometric_product_g1[2] * self[e4]) + (geometric_product_g1[3] * self[e412]) - (geometric_product_g1[0] * self[e431]),
                 0.0,
             ]) + (geometric_product_g0.yzx() * self.group0().zxy()).with_w(geometric_product_g1[3] * self[e321])
+                - (Simd32x4::from([geometric_product_g0[3], geometric_product_g0[3], geometric_product_g0[3], geometric_product_g1[2]]) * self.group0().xyzz())
                 - (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g1[1] * self[e2]]) * geometric_product_g0.zyz().with_w(1.0))
-                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0))
-                - (self.group0().xyzz() * geometric_product_g0.www().with_w(geometric_product_g1[2])),
+                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0)),
         )
     }
 }
@@ -555,7 +543,7 @@ impl Sandwich<MultiVector> for Flector {
             ]) + (reverse_g1 * Simd32x4::from(geometric_product_g0[0]))
                 - (Simd32x4::from([reverse_g1[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g1[3], reverse_g1[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
-                - (self.group0().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0])),
+                - (self.group0().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0])),
         )
     }
 }
@@ -613,9 +601,9 @@ impl Sandwich<Plane> for Flector {
                 (geometric_product_g1[1] * self[e423]) + (geometric_product_g1[2] * self[e4]) + (geometric_product_g1[3] * self[e412]) - (geometric_product_g1[0] * self[e431]),
                 0.0,
             ]) + (geometric_product_g0.yzx() * self.group0().zxy()).with_w(geometric_product_g1[3] * self[e321])
+                - (Simd32x4::from([geometric_product_g0[3], geometric_product_g0[3], geometric_product_g0[3], geometric_product_g1[2]]) * self.group0().xyzz())
                 - (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g1[1] * self[e2]]) * geometric_product_g0.zyz().with_w(1.0))
-                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0))
-                - (self.group0().xyzz() * geometric_product_g0.www().with_w(geometric_product_g1[2])),
+                - (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g1[0] * self[e1]]) * geometric_product_g0.xxy().with_w(1.0)),
         )
     }
 }
@@ -646,9 +634,9 @@ impl Sandwich<Point> for Flector {
         ]) + (self.group0().yzxx() * other.group0().zxyx());
         Point::from_groups(
             // e1, e2, e3, e4
-            (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g0[1] * self[e2]]) * geometric_product_g1.zyz().with_w(1.0))
+            (Simd32x4::from([geometric_product_g1[3], geometric_product_g1[3], geometric_product_g1[3], geometric_product_g0[2]]) * self.group0().xyzz())
+                + (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g0[1] * self[e2]]) * geometric_product_g1.zyz().with_w(1.0))
                 + (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g0[0] * self[e1]]) * geometric_product_g1.xxy().with_w(1.0))
-                + (self.group0().xyzz() * geometric_product_g1.www().with_w(geometric_product_g0[2]))
                 + Simd32x3::from(0.0).with_w(
                     (geometric_product_g1[3] * self[e4]) - (geometric_product_g1[0] * self[e423]) - (geometric_product_g1[1] * self[e431]) - (geometric_product_g1[2] * self[e412]),
                 )
@@ -937,7 +925,7 @@ impl Sandwich<Flector> for Line {
         use crate::elements::*;
         let geometric_product_g0 = (other.group0().yzxx() * self.group1().zxy().with_w(self[e41]))
             + Simd32x3::from(0.0).with_w((other[e3] * self[e43]) - (other[e431] * self[e31]) - (other[e412] * self[e12]))
-            + (self.group1() * other.group1().www()).with_w(other[e2] * self[e42])
+            + (Simd32x3::from(other[e321]) * self.group1()).with_w(other[e2] * self[e42])
             - (self.group1().yzx() * other.group0().zxy()).with_w(other[e423] * self[e23]);
         let geometric_product_g1 = Simd32x4::from([
             (other[e3] * self[e42]) + (other[e4] * self[e23]) + (other[e431] * self[e12]),
@@ -945,7 +933,7 @@ impl Sandwich<Flector> for Line {
             (other[e2] * self[e41]) + (other[e4] * self[e12]) + (other[e423] * self[e31]),
             0.0,
         ]) - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]))
-            - (self.group0() * other.group1().www()).with_w(other[e3] * self[e12])
+            - (Simd32x3::from(other[e321]) * self.group0()).with_w(other[e3] * self[e12])
             - (self.group1().yzx() * other.group1().zxy()).with_w(other[e2] * self[e31]);
         Flector::from_groups(
             // e1, e2, e3, e4
@@ -1199,32 +1187,28 @@ impl Sandwich<Plane> for Line {
     type Output = Plane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       11       18        0
-    //    simd3        0        4        0
-    //    simd4        4        2        0
+    //      f32       11       19        0
+    //    simd3        0        6        0
+    //    simd4        4        0        0
     // Totals...
-    // yes simd       15       24        0
-    //  no simd       27       38        0
+    // yes simd       15       25        0
+    //  no simd       27       37        0
     fn sandwich(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 = Simd32x4::from([
-            other[e321],
-            other[e321],
-            other[e321],
-            -(self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        ]) * self.group1().with_w(1.0);
+        let geometric_product_g0_xyz = Simd32x3::from(other[e321]) * self.group1();
+        let geometric_product_g0_w = -(self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]);
         let geometric_product_g1 = (self.group1().zxy() * other.group0().yzx()).with_w(0.0)
             - (Simd32x3::from(other[e321]) * self.group0()).with_w(0.0)
             - (self.group1().yzx() * other.group0().zxy()).with_w(0.0);
         Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from([
-                (geometric_product_g0[2] * self[e42]) + (geometric_product_g0[3] * self[e23]) + (geometric_product_g1[2] * self[e31]) + (geometric_product_g1[3] * self[e41]),
-                (geometric_product_g0[0] * self[e43]) + (geometric_product_g0[3] * self[e31]) + (geometric_product_g1[0] * self[e12]) + (geometric_product_g1[3] * self[e42]),
-                (geometric_product_g0[1] * self[e41]) + (geometric_product_g0[3] * self[e12]) + (geometric_product_g1[1] * self[e23]) + (geometric_product_g1[3] * self[e43]),
-                geometric_product_g0[2] * self[e12] * -1.0,
-            ]) - (geometric_product_g0.yzxx() * self.group0().zxy().with_w(self[e23]))
-                - (self.group1().zxy() * geometric_product_g1.yzx()).with_w(geometric_product_g0[1] * self[e31]),
+                (geometric_product_g0_w * self[e23]) + (geometric_product_g0_xyz[2] * self[e42]) + (geometric_product_g1[2] * self[e31]) + (geometric_product_g1[3] * self[e41]),
+                (geometric_product_g0_w * self[e31]) + (geometric_product_g0_xyz[0] * self[e43]) + (geometric_product_g1[0] * self[e12]) + (geometric_product_g1[3] * self[e42]),
+                (geometric_product_g0_w * self[e12]) + (geometric_product_g0_xyz[1] * self[e41]) + (geometric_product_g1[1] * self[e23]) + (geometric_product_g1[3] * self[e43]),
+                geometric_product_g0_xyz[2] * self[e12] * -1.0,
+            ]) - (geometric_product_g0_xyz.yzx() * self.group0().zxy()).with_w(geometric_product_g0_xyz[0] * self[e23])
+                - (self.group1().zxy() * geometric_product_g1.yzx()).with_w(geometric_product_g0_xyz[1] * self[e31]),
         )
     }
 }
@@ -1356,7 +1340,7 @@ impl Sandwich<Flector> for Motor {
         let geometric_product_g0 = (other.group0().xyxx() * self.group1().wwy().with_w(self[e41]))
             + (other.group0().yzzy() * self.group1().zxw().with_w(self[e42]))
             + Simd32x3::from(0.0).with_w((other[e4] * self[scalar]) - (other[e431] * self[e31]) - (other[e412] * self[e12]) - (other[e321] * self[e1234]))
-            + (self.group1().xyz() * other.group1().www()).with_w(other[e3] * self[e43])
+            + (Simd32x3::from(other[e321]) * self.group1().xyz()).with_w(other[e3] * self[e43])
             - (self.group1().yzxx() * other.group0().zxy().with_w(other[e423]));
         let geometric_product_g1 = Simd32x4::from([
             (other[e4] * self[e23]) + (other[e423] * self[scalar]) + (other[e431] * self[e12]) - (other[e321] * self[e41]),
@@ -1567,7 +1551,7 @@ impl Sandwich<MultiVector> for Motor {
             - (Simd32x2::from(other[e12]) * Simd32x2::from([self[e12], self[e43]]));
         let geometric_product_g1 = (Simd32x4::from([other[e2], other[e321], other[e321], self[e42] * other[e2]]) * self.group1().zyz().with_w(1.0))
             + (Simd32x4::from([other[e321], other[e3], other[e1], self[e41] * other[e1]]) * self.group1().xxy().with_w(1.0))
-            + (other.group1().xyzz() * self.group1().www().with_w(self[e43]))
+            + (other.group1().xyzz() * Simd32x3::from(self[scalar]).with_w(self[e43]))
             + Simd32x3::from(0.0).with_w((self[scalar] * other[e4]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]))
             - (self.group1().yzx() * other.group1().zxy()).with_w(self[e1234] * other[e321]);
         let geometric_product_g2 = (Simd32x3::from(self[e1234]) * other.group3())
@@ -1588,9 +1572,9 @@ impl Sandwich<MultiVector> for Motor {
             (self[e31] * other[e423]) + (self[e12] * other[e4]) + (self[scalar] * other[e412]) - (self[e23] * other[e431]),
             0.0,
         ]) + (self.group0().yzx() * other.group1().zxy()).with_w(self[scalar] * other[e321])
+            - (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e12]]) * other.group1().xyzz())
             - (Simd32x4::from([other[e2], other[e321], other[e321], self[e31] * other[e2]]) * self.group0().zyz().with_w(1.0))
-            - (Simd32x4::from([other[e321], other[e3], other[e1], self[e23] * other[e1]]) * self.group0().xxy().with_w(1.0))
-            - (other.group1().xyzz() * self.group0().www().with_w(self[e12]));
+            - (Simd32x4::from([other[e321], other[e3], other[e1], self[e23] * other[e1]]) * self.group0().xxy().with_w(1.0));
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
@@ -1673,59 +1657,45 @@ impl Sandwich<Origin> for Motor {
     }
 }
 impl Sandwich<Plane> for Motor {
-    type Output = Flector;
+    type Output = Plane;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       22       30        0
-    //    simd3        3        4        0
-    //    simd4        3        4        0
+    //      f32       15       23        0
+    //    simd3        3        6        0
+    //    simd4        3        2        0
     // Totals...
-    // yes simd       28       38        0
-    //  no simd       43       58        0
+    // yes simd       21       31        0
+    //  no simd       36       49        0
     fn sandwich(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 = Simd32x4::from([
-            other[e321],
-            other[e321],
-            other[e321],
-            -(self[e1234] * other[e321]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        ]) * self.group1().xyz().with_w(1.0);
+        let geometric_product_g0_xyz = Simd32x3::from(other[e321]) * self.group1().xyz();
         let geometric_product_g1_xyz = (Simd32x3::from(self[scalar]) * other.group0().xyz()) + (self.group1().zxy() * other.group0().yzx())
             - (Simd32x3::from(other[e321]) * self.group0().xyz())
             - (self.group1().yzx() * other.group0().zxy());
         let geometric_product_g1_w = self[scalar] * other[e321];
-        Flector::from_groups(
-            // e1, e2, e3, e4
-            Simd32x3::from(0.0).with_w(
-                (geometric_product_g1_w * self[e1234]) + (geometric_product_g0[3] * self[scalar])
-                    - (geometric_product_g1_xyz[0] * self[e23])
-                    - (geometric_product_g1_xyz[1] * self[e31])
-                    - (geometric_product_g1_xyz[2] * self[e12])
-                    - (geometric_product_g0[0] * self[e41])
-                    - (geometric_product_g0[1] * self[e42])
-                    - (geometric_product_g0[2] * self[e43]),
-            ),
+        Plane::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from([
-                (geometric_product_g1_xyz[0] * self[scalar])
-                    + (geometric_product_g1_xyz[2] * self[e31])
-                    + (geometric_product_g0[0] * self[e1234])
-                    + (geometric_product_g0[2] * self[e42])
-                    + (geometric_product_g0[3] * self[e23]),
-                (geometric_product_g1_xyz[0] * self[e12])
-                    + (geometric_product_g1_xyz[1] * self[scalar])
-                    + (geometric_product_g0[0] * self[e43])
-                    + (geometric_product_g0[1] * self[e1234])
-                    + (geometric_product_g0[3] * self[e31]),
-                (geometric_product_g1_xyz[1] * self[e23])
-                    + (geometric_product_g1_xyz[2] * self[scalar])
-                    + (geometric_product_g0[1] * self[e41])
-                    + (geometric_product_g0[2] * self[e1234])
-                    + (geometric_product_g0[3] * self[e12]),
-                geometric_product_g0[2] * self[e12] * -1.0,
-            ]) + (Simd32x4::from(geometric_product_g1_w) * self.group0().xyz().with_w(self[scalar]))
-                - (geometric_product_g0.yzxy() * self.group0().zxy().with_w(self[e31]))
-                - (self.group1().zxyx() * geometric_product_g1_xyz.yzx().with_w(geometric_product_g0[0])),
+                (geometric_product_g1_w * self[e41])
+                    + (geometric_product_g0_xyz[0] * self[e1234])
+                    + (geometric_product_g0_xyz[2] * self[e42])
+                    + (geometric_product_g1_xyz[0] * self[scalar])
+                    + (geometric_product_g1_xyz[2] * self[e31]),
+                (geometric_product_g1_w * self[e42])
+                    + (geometric_product_g0_xyz[0] * self[e43])
+                    + (geometric_product_g0_xyz[1] * self[e1234])
+                    + (geometric_product_g1_xyz[0] * self[e12])
+                    + (geometric_product_g1_xyz[1] * self[scalar]),
+                (geometric_product_g1_w * self[e43])
+                    + (geometric_product_g0_xyz[1] * self[e41])
+                    + (geometric_product_g0_xyz[2] * self[e1234])
+                    + (geometric_product_g1_xyz[1] * self[e23])
+                    + (geometric_product_g1_xyz[2] * self[scalar]),
+                geometric_product_g0_xyz[2] * self[e12] * -1.0,
+            ]) + (self.group1()
+                * Simd32x3::from(-(self[e1234] * other[e321]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412])).with_w(geometric_product_g1_w))
+                - (self.group1().zxyy() * geometric_product_g1_xyz.yzx().with_w(geometric_product_g0_xyz[1]))
+                - (geometric_product_g0_xyz.yzx() * self.group0().zxy()).with_w(geometric_product_g0_xyz[0] * self[e23]),
         )
     }
 }
@@ -1746,14 +1716,14 @@ impl Sandwich<Point> for Motor {
             self[e12] * other[e1] * -1.0,
             self[e23] * other[e2] * -1.0,
             (self[e43] * other[e3]) + (self[scalar] * other[e4]),
-        ]) + (other.group0().xyzy() * self.group1().www().with_w(self[e42]))
+        ]) + (other.group0().xyzy() * Simd32x3::from(self[scalar]).with_w(self[e42]))
             + (other.group0().yzxx() * self.group1().zxy().with_w(self[e41]));
         let geometric_product_g1 = Simd32x4::from([
             (self[e42] * other[e3]) + (self[e23] * other[e4]),
             (self[e43] * other[e1]) + (self[e31] * other[e4]),
             (self[e41] * other[e2]) + (self[e12] * other[e4]),
             self[e12] * other[e3] * -1.0,
-        ]) - (other.group0().xyzy() * self.group0().www().with_w(self[e31]))
+        ]) - (Simd32x4::from([self[e1234], self[e1234], self[e1234], self[e31]]) * other.group0().xyzy())
             - (other.group0().yzxx() * self.group0().zxy().with_w(self[e23]));
         Point::from_groups(
             // e1, e2, e3, e4
@@ -1852,98 +1822,67 @@ impl Sandwich<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       16       27        0
+    //      f32       16       29        0
     //    simd2        8        8        0
-    //    simd3       17       42        0
-    //    simd4       23        6        0
+    //    simd3        2        9        0
+    //    simd4        8        5        0
     // Totals...
-    // yes simd       64       83        0
-    //  no simd      175      193        0
+    // yes simd       34       51        0
+    //  no simd       70       92        0
     fn sandwich(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0_x = other[scalar] * self[scalar];
         let geometric_product_g0_y = (other[scalar] * self[e1234]) + (other[e1234] * self[scalar]);
-        let geometric_product_g1 = other.group0().xx().with_zw(other[scalar], (other[scalar] * self[e4]) + (other[e1234] * self[e321])) * self.group1().xyz().with_w(1.0);
+        let geometric_product_g1_xyz = Simd32x3::from(other[scalar]) * self.group1().xyz();
+        let geometric_product_g1_w = (other[scalar] * self[e4]) + (other[e1234] * self[e321]);
         let geometric_product_g2 = (Simd32x3::from(other[scalar]) * self.group2()) + (Simd32x3::from(other[e1234]) * self.group3());
         let geometric_product_g3 = Simd32x3::from(other[scalar]) * self.group3();
         let geometric_product_g4_xyz = (Simd32x3::from(other[scalar]) * self.group4().xyz()) + (Simd32x3::from(other[e1234]) * self.group1().xyz());
         let geometric_product_g4_w = other[scalar] * self[e321];
-        let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
-        let reverse_g3 = self.group3() * Simd32x3::from(-1.0);
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (geometric_product_g0_y * self[scalar]) + (geometric_product_g1[3] * self[e321])
-                    - (geometric_product_g3[0] * reverse_g2[0])
-                    - (geometric_product_g3[1] * reverse_g2[1])
-                    - (geometric_product_g3[2] * reverse_g2[2])
+                (geometric_product_g0_y * self[scalar]) + (geometric_product_g1_w * self[e321])
+                    - (geometric_product_g3[0] * self[e41])
+                    - (geometric_product_g3[1] * self[e42])
+                    - (geometric_product_g3[2] * self[e43])
                     - (geometric_product_g4_xyz[0] * self[e1])
                     - (geometric_product_g4_xyz[1] * self[e2])
                     - (geometric_product_g4_xyz[2] * self[e3]),
             ]) + (Simd32x2::from(geometric_product_g0_x) * self.group0())
-                + (Simd32x2::from(geometric_product_g1[0]) * Simd32x2::from([self[e1], self[e423]]))
-                + (Simd32x2::from(geometric_product_g1[1]) * Simd32x2::from([self[e2], self[e431]]))
-                + (Simd32x2::from(geometric_product_g1[2]) * Simd32x2::from([self[e3], self[e412]]))
+                + (Simd32x2::from(geometric_product_g1_xyz[0]) * Simd32x2::from([self[e1], self[e423]]))
+                + (Simd32x2::from(geometric_product_g1_xyz[1]) * Simd32x2::from([self[e2], self[e431]]))
+                + (Simd32x2::from(geometric_product_g1_xyz[2]) * Simd32x2::from([self[e3], self[e412]]))
                 - (Simd32x2::from(geometric_product_g4_w) * Simd32x2::from([self[e321], self[e4]]))
-                - (Simd32x2::from(reverse_g3[0]) * Simd32x2::from([geometric_product_g3[0], geometric_product_g2[0]]))
-                - (Simd32x2::from(reverse_g3[1]) * Simd32x2::from([geometric_product_g3[1], geometric_product_g2[1]]))
-                - (Simd32x2::from(reverse_g3[2]) * Simd32x2::from([geometric_product_g3[2], geometric_product_g2[2]])),
+                - (Simd32x2::from(self[e23]) * Simd32x2::from([geometric_product_g3[0], geometric_product_g2[0]]))
+                - (Simd32x2::from(self[e31]) * Simd32x2::from([geometric_product_g3[1], geometric_product_g2[1]]))
+                - (Simd32x2::from(self[e12]) * Simd32x2::from([geometric_product_g3[2], geometric_product_g2[2]])),
             // e1, e2, e3, e4
-            (geometric_product_g1 * Simd32x4::from(self[scalar]))
-                + (Simd32x4::from(geometric_product_g0_x) * self.group1())
-                + (Simd32x4::from(geometric_product_g4_w) * reverse_g3.with_w(self[e1234]))
-                + (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
-                + (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
+            (Simd32x4::from(geometric_product_g0_x) * self.group1())
+                + (Simd32x4::from([self[scalar], self[e12], self[e23], geometric_product_g4_w * self[e1234]]) * geometric_product_g1_xyz.xxy().with_w(1.0))
+                + (Simd32x4::from([self[e2], self[e321], self[e321], geometric_product_g2[2] * self[e3]]) * geometric_product_g3.zyz().with_w(1.0))
+                + (Simd32x4::from([self[e31], self[scalar], self[scalar], geometric_product_g2[0] * self[e1]]) * geometric_product_g1_xyz.zyz().with_w(1.0))
+                + (Simd32x4::from([self[e321], self[e3], self[e1], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.xxy().with_w(1.0))
                 + Simd32x3::from(0.0).with_w(
-                    -(geometric_product_g3[1] * self[e431])
+                    -(geometric_product_g1_xyz[1] * self[e42])
+                        - (geometric_product_g1_xyz[2] * self[e43])
+                        - (geometric_product_g3[0] * self[e423])
+                        - (geometric_product_g3[1] * self[e431])
                         - (geometric_product_g3[2] * self[e412])
-                        - (geometric_product_g4_xyz[0] * reverse_g3[0])
-                        - (geometric_product_g4_xyz[1] * reverse_g3[1])
-                        - (geometric_product_g4_xyz[2] * reverse_g3[2])
-                        - (reverse_g2[0] * geometric_product_g1[0])
-                        - (reverse_g2[1] * geometric_product_g1[1])
-                        - (reverse_g2[2] * geometric_product_g1[2]),
+                        - (geometric_product_g4_xyz[0] * self[e23])
+                        - (geometric_product_g4_xyz[1] * self[e31])
+                        - (geometric_product_g4_xyz[2] * self[e12]),
                 )
-                + (reverse_g3.yzx() * geometric_product_g1.zxy()).with_w(geometric_product_g2[2] * self[e3])
-                - (geometric_product_g3.yzx() * self.group1().zxy()).with_w(geometric_product_g0_y * self[e321])
-                - (reverse_g3.zxy() * geometric_product_g1.yzx()).with_w(geometric_product_g3[0] * self[e423]),
+                + (Simd32x3::from(geometric_product_g4_w) * self.group3()).with_w(geometric_product_g1_w * self[scalar])
+                - (geometric_product_g1_xyz.yzx() * self.group3().zxy()).with_w(geometric_product_g0_y * self[e321])
+                - (geometric_product_g3.yzx() * self.group1().zxy()).with_w(geometric_product_g1_xyz[0] * self[e41]),
             // e41, e42, e43
-            (reverse_g2 * Simd32x3::from(geometric_product_g0_x))
-                + (reverse_g3 * Simd32x3::from(geometric_product_g0_y))
-                + (Simd32x3::from(geometric_product_g1[3]) * self.group1().xyz())
-                + (Simd32x3::from([reverse_g2[1], self[e1234], self[e1234]]) * geometric_product_g3.zyz())
-                + (Simd32x3::from([reverse_g3[1], self[scalar], self[scalar]]) * geometric_product_g2.zyz())
-                + (Simd32x3::from([self[scalar], reverse_g3[2], reverse_g3[0]]) * geometric_product_g2.xxy())
-                + (Simd32x3::from([self[e1234], reverse_g2[2], reverse_g2[0]]) * geometric_product_g3.xxy())
-                + (Simd32x3::from([self[e2], self[e321], self[e321]]) * geometric_product_g4_xyz.zyz())
-                + (Simd32x3::from([self[e321], self[e3], self[e1]]) * geometric_product_g4_xyz.xxy())
-                + (geometric_product_g1.yzx() * self.group4().zxy())
-                - (Simd32x3::from(geometric_product_g4_w) * self.group4().xyz())
-                - (Simd32x3::from([self[e4], self[e412], self[e423]]) * geometric_product_g1.xxy())
-                - (Simd32x3::from([self[e431], self[e4], self[e4]]) * geometric_product_g1.zyz())
-                - (geometric_product_g2.yzx() * reverse_g3.zxy())
-                - (geometric_product_g3.yzx() * reverse_g2.zxy())
-                - (geometric_product_g4_xyz.yzx() * self.group1().zxy()),
+            Simd32x3::from(0.0),
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
-            (reverse_g2 * Simd32x3::from(geometric_product_g4_w)).with_w(0.0)
-                + (reverse_g3 * Simd32x3::from(geometric_product_g1[3])).with_w(0.0)
-                + (Simd32x3::from(geometric_product_g0_x) * self.group4().xyz()).with_w(0.0)
-                + (Simd32x3::from(self[e1234]) * geometric_product_g1.xyz()).with_w(0.0)
-                + (Simd32x3::from([reverse_g3[1], self[scalar], self[scalar]]) * geometric_product_g4_xyz.zyz()).with_w(0.0)
-                + (Simd32x3::from([self[scalar], reverse_g3[2], reverse_g3[0]]) * geometric_product_g4_xyz.xxy()).with_w(0.0)
-                + (Simd32x3::from([self[e4], self[e412], self[e423]]) * geometric_product_g3.xxy()).with_w(0.0)
-                + (Simd32x3::from([self[e431], self[e4], self[e4]]) * geometric_product_g3.zyz()).with_w(0.0)
-                + (geometric_product_g2.yzx() * self.group1().zxy()).with_w(0.0)
-                + (reverse_g2.yzx() * geometric_product_g1.zxy()).with_w(0.0)
-                - (Simd32x3::from(geometric_product_g0_y) * self.group1().xyz()).with_w(0.0)
-                - (Simd32x3::from([self[e2], self[e321], self[e321]]) * geometric_product_g2.zyz()).with_w(0.0)
-                - (Simd32x3::from([self[e321], self[e3], self[e1]]) * geometric_product_g2.xxy()).with_w(0.0)
-                - (geometric_product_g3.yzx() * self.group4().zxy()).with_w(0.0)
-                - (geometric_product_g4_xyz.yzx() * reverse_g3.zxy()).with_w(0.0)
-                - (reverse_g2.zxy() * geometric_product_g1.yzx()).with_w(0.0),
+            Simd32x4::from(0.0),
         )
     }
 }
@@ -1951,13 +1890,13 @@ impl Sandwich<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       50       76        0
-    //    simd2       12       12        0
+    //      f32       50       77        0
+    //    simd2       12       13        0
     //    simd3       32       47        0
-    //    simd4       24       16        0
+    //    simd4       24       15        0
     // Totals...
-    // yes simd      118      151        0
-    //  no simd      266      305        0
+    // yes simd      118      152        0
+    //  no simd      266      304        0
     fn sandwich(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x2::from([0.0, (other[e321] * self[e4]) - (other[e2] * self[e431]) - (other[e3] * self[e412]) - (other[e4] * self[e321])])
@@ -1965,30 +1904,30 @@ impl Sandwich<Flector> for MultiVector {
             + (Simd32x2::from(self[e2]) * Simd32x2::from([other[e2], other[e431]]))
             + (Simd32x2::from(self[e3]) * Simd32x2::from([other[e3], other[e412]]))
             - (Simd32x2::from([other[e321], other[e1]]) * self.group4().wx());
-        let geometric_product_g1 = (other.group0().xyxx() * self.group0().xx().with_zw(self[e31], self[e41]))
+        let geometric_product_g1 = (other.group0().xyxx() * Simd32x2::from(self[scalar]).with_zw(self[e31], self[e41]))
             + (other.group0().yzzy() * self.group3().zx().with_zw(self[scalar], self[e42]))
             + Simd32x3::from(0.0).with_w((other[e4] * self[scalar]) - (other[e431] * self[e31]) - (other[e412] * self[e12]) - (other[e321] * self[e1234]))
-            + (self.group3() * other.group1().www()).with_w(other[e3] * self[e43])
+            + (Simd32x3::from(other[e321]) * self.group3()).with_w(other[e3] * self[e43])
             - (self.group3().yzx() * other.group0().zxy()).with_w(other[e423] * self[e23]);
         let geometric_product_g2 = (Simd32x3::from(other[e321]) * self.group4().xyz())
-            + (Simd32x3::from([self[e4], self[e4], self[e431]]) * other.group0().xyx())
-            + (Simd32x3::from([self[e412], self[e423], self[e4]]) * other.group0().yzz())
+            + (other.group0().xyx() * Simd32x2::from(self[e4]).with_z(self[e431]))
+            + (other.group0().yzz() * self.group4().zx().with_z(self[e4]))
             + (other.group1().zxy() * self.group1().yzx())
             - (Simd32x3::from(other[e4]) * self.group1().xyz())
-            - (Simd32x3::from([self[e3], self[e1], self[e321]]) * other.group1().yzz())
-            - (Simd32x3::from([self[e321], self[e321], self[e2]]) * other.group1().xyx())
-            - (other.group0().zxy() * self.group4().yzx());
+            - (other.group0().zxy() * self.group4().yzx())
+            - (other.group1().xyx() * Simd32x2::from(self[e321]).with_z(self[e2]))
+            - (other.group1().yzz() * self.group1().zx().with_z(self[e321]));
         let geometric_product_g3 = (other.group0().zxy() * self.group1().yzx())
             - (Simd32x3::from(other[e321]) * self.group1().xyz())
-            - (Simd32x3::from([self[e3], self[e1], self[e321]]) * other.group0().yzz())
-            - (Simd32x3::from([self[e321], self[e321], self[e2]]) * other.group0().xyx());
+            - (other.group0().xyx() * Simd32x2::from(self[e321]).with_z(self[e2]))
+            - (other.group0().yzz() * self.group1().zx().with_z(self[e321]));
         let geometric_product_g4 = Simd32x4::from([
             (other[e4] * self[e23]) + (other[e423] * self[scalar]) + (other[e431] * self[e12]) - (other[e321] * self[e41]),
             (other[e4] * self[e31]) + (other[e431] * self[scalar]) + (other[e412] * self[e23]) - (other[e321] * self[e42]),
             (other[e4] * self[e12]) + (other[e423] * self[e31]) + (other[e412] * self[scalar]) - (other[e321] * self[e43]),
             0.0,
         ]) + (self.group2().yzx() * other.group0().zxy()).with_w(other[e321] * self[scalar])
-            - (other.group0().xyxx() * self.group0().yy().with_zw(self[e42], self[e23]))
+            - (other.group0().xyxx() * Simd32x2::from(self[e1234]).with_zw(self[e42], self[e23]))
             - (other.group0().yzzy() * self.group2().zx().with_zw(self[e1234], self[e31]))
             - (self.group3().yzx() * other.group1().zxy()).with_w(other[e3] * self[e12]);
         let reverse_g2 = self.group2() * Simd32x3::from(-1.0);
@@ -2017,9 +1956,9 @@ impl Sandwich<Flector> for MultiVector {
             (Simd32x4::from(geometric_product_g0[0]) * self.group1())
                 + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
                 + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
-                + (self.group0().xx().with_zw(self[scalar], geometric_product_g4[3] * self[e1234]) * geometric_product_g1.xyz().with_w(1.0))
                 + (geometric_product_g1.zx().with_zw(geometric_product_g4[3], geometric_product_g1[3] * self[scalar]) * reverse_g3.yzz().with_w(1.0))
                 + (geometric_product_g4.ww().with_zw(geometric_product_g1[1], geometric_product_g2[2] * self[e3]) * reverse_g3.xyx().with_w(1.0))
+                + (Simd32x2::from(self[scalar]) * geometric_product_g1.xy()).with_zw(geometric_product_g1[2] * self[scalar], geometric_product_g4[3] * self[e1234])
                 + Simd32x3::from(0.0).with_w(
                     -(geometric_product_g3[1] * reverse_g4[1])
                         - (geometric_product_g3[2] * reverse_g4[2])
@@ -2090,7 +2029,7 @@ impl Sandwich<Flector> for MultiVector {
                 - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
                 - (geometric_product_g1.yzxy() * reverse_g2.zxy().with_w(reverse_g3[1]))
-                - (self.group1().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+                - (self.group1().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
                 - (reverse_g3.zxy() * geometric_product_g4.yzx()).with_w(reverse_g3[2] * geometric_product_g1[2]),
         )
@@ -2100,13 +2039,13 @@ impl Sandwich<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       35       53        0
-    //    simd2        8       10        0
+    //      f32       35       54        0
+    //    simd2        8       11        0
     //    simd3       22       34        0
-    //    simd4       16       15        0
+    //    simd4       16       14        0
     // Totals...
-    // yes simd       81      112        0
-    //  no simd      181      235        0
+    // yes simd       81      113        0
+    //  no simd      181      234        0
     fn sandwich(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x2::from(other[e321]) * Simd32x2::from([self[e321], self[e4]]) * Simd32x2::from([-1.0, 1.0]);
@@ -2140,9 +2079,9 @@ impl Sandwich<Horizon> for MultiVector {
             (Simd32x4::from(geometric_product_g0[0]) * self.group1())
                 + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
                 + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
-                + (self.group0().xx().with_zw(self[scalar], geometric_product_g4[3] * self[e1234]) * geometric_product_g1.xyz().with_w(1.0))
                 + (geometric_product_g1.zx().with_zw(geometric_product_g4[3], geometric_product_g1[3] * self[scalar]) * reverse_g3.yzz().with_w(1.0))
                 + (geometric_product_g4.ww().with_zw(geometric_product_g1[1], geometric_product_g2[2] * self[e3]) * reverse_g3.xyx().with_w(1.0))
+                + (Simd32x2::from(self[scalar]) * geometric_product_g1.xy()).with_zw(geometric_product_g1[2] * self[scalar], geometric_product_g4[3] * self[e1234])
                 + Simd32x3::from(0.0).with_w(
                     -(geometric_product_g3[1] * reverse_g4[1])
                         - (geometric_product_g3[2] * reverse_g4[2])
@@ -2213,7 +2152,7 @@ impl Sandwich<Horizon> for MultiVector {
                 - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
                 - (geometric_product_g1.yzxy() * reverse_g2.zxy().with_w(reverse_g3[1]))
-                - (self.group1().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+                - (self.group1().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
                 - (reverse_g3.zxy() * geometric_product_g4.yzx()).with_w(reverse_g3[2] * geometric_product_g1[2]),
         )
@@ -2242,13 +2181,13 @@ impl Sandwich<Line> for MultiVector {
             (other[e23] * self[e2]) + (other[e12] * self[e321]),
             -(other[e42] * self[e2]) - (other[e43] * self[e3]) - (other[e23] * self[e423]) - (other[e31] * self[e431]) - (other[e12] * self[e412]),
         ]) - (self.group1().yzxx() * other.group1().zxy().with_w(other[e41]));
-        let geometric_product_g2 = (other.group0().xyx() * self.group0().xx().with_z(self[e31]))
+        let geometric_product_g2 = (other.group0().xyx() * Simd32x2::from(self[scalar]).with_z(self[e31]))
             + (other.group0().yzz() * self.group3().zx().with_z(self[scalar]))
-            + (other.group1().xyx() * self.group0().yy().with_z(self[e42]))
+            + (other.group1().xyx() * Simd32x2::from(self[e1234]).with_z(self[e42]))
             + (other.group1().yzz() * self.group2().zx().with_z(self[e1234]))
             - (other.group0().zxy() * self.group3().yzx())
             - (other.group1().zxy() * self.group2().yzx());
-        let geometric_product_g3 = (other.group1().xyx() * self.group0().xx().with_z(self[e31])) + (other.group1().yzz() * self.group3().zx().with_z(self[scalar]))
+        let geometric_product_g3 = (other.group1().xyx() * Simd32x2::from(self[scalar]).with_z(self[e31])) + (other.group1().yzz() * self.group3().zx().with_z(self[scalar]))
             - (other.group1().zxy() * self.group3().yzx());
         let geometric_product_g4 = Simd32x4::from([
             (other[e41] * self[e321]) + (other[e42] * self[e3]) + (other[e23] * self[e4]) + (other[e31] * self[e412]),
@@ -2323,7 +2262,7 @@ impl Sandwich<Line> for MultiVector {
                 - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
                 - (geometric_product_g1.yzxy() * reverse_g2.zxy().with_w(reverse_g3[1]))
-                - (self.group1().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+                - (self.group1().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
                 - (reverse_g3.zxy() * geometric_product_g4.yzx()).with_w(reverse_g3[2] * geometric_product_g1[2]),
         )
@@ -2333,13 +2272,13 @@ impl Sandwich<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       54       83        0
-    //    simd2       12       12        0
-    //    simd3       32       43        0
-    //    simd4       22       18        0
+    //      f32       54       87        0
+    //    simd2       12       16        0
+    //    simd3       32       40        0
+    //    simd4       22       17        0
     // Totals...
-    // yes simd      120      156        0
-    //  no simd      262      308        0
+    // yes simd      120      160        0
+    //  no simd      262      307        0
     fn sandwich(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x2::from([0.0, (other[scalar] * self[e1234]) - (other[e23] * self[e41]) - (other[e31] * self[e42]) - (other[e12] * self[e43])])
@@ -2357,15 +2296,15 @@ impl Sandwich<Motor> for MultiVector {
             - (self.group1().yzxx() * other.group1().zxy().with_w(other[e41]));
         let geometric_product_g2 = (Simd32x3::from(other[e1234]) * self.group3())
             + (Simd32x3::from(other[scalar]) * self.group2())
-            + (other.group0().xyx() * self.group0().xx().with_z(self[e31]))
             + (other.group0().yzz() * self.group3().zx().with_z(self[scalar]))
-            + (other.group1().xyx() * self.group0().yy().with_z(self[e42]))
             + (other.group1().yzz() * self.group2().zx().with_z(self[e1234]))
+            + (Simd32x2::from(self[scalar]) * other.group0().xy()).with_z(other[e41] * self[e31])
+            + (Simd32x2::from(self[e1234]) * other.group1().xy()).with_z(other[e23] * self[e42])
             - (self.group2().yzx() * other.group1().zxy())
             - (self.group3().yzx() * other.group0().zxy());
         let geometric_product_g3 = (Simd32x3::from(other[scalar]) * self.group3())
-            + (other.group1().xyx() * self.group0().xx().with_z(self[e31]))
             + (other.group1().yzz() * self.group3().zx().with_z(self[scalar]))
+            + (Simd32x2::from(self[scalar]) * other.group1().xy()).with_z(other[e23] * self[e31])
             - (self.group3().yzx() * other.group1().zxy());
         let geometric_product_g4 = Simd32x4::from([
             (other[e42] * self[e3]) + (other[e1234] * self[e1]) + (other[e23] * self[e4]) + (other[e31] * self[e412]) + (other[scalar] * self[e423]),
@@ -2401,9 +2340,9 @@ impl Sandwich<Motor> for MultiVector {
             (Simd32x4::from(geometric_product_g0[0]) * self.group1())
                 + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
                 + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
-                + (self.group0().xx().with_zw(self[scalar], geometric_product_g4[3] * self[e1234]) * geometric_product_g1.xyz().with_w(1.0))
                 + (geometric_product_g1.zx().with_zw(geometric_product_g4[3], geometric_product_g1[3] * self[scalar]) * reverse_g3.yzz().with_w(1.0))
                 + (geometric_product_g4.ww().with_zw(geometric_product_g1[1], geometric_product_g2[2] * self[e3]) * reverse_g3.xyx().with_w(1.0))
+                + (Simd32x2::from(self[scalar]) * geometric_product_g1.xy()).with_zw(geometric_product_g1[2] * self[scalar], geometric_product_g4[3] * self[e1234])
                 + Simd32x3::from(0.0).with_w(
                     -(geometric_product_g3[1] * reverse_g4[1])
                         - (geometric_product_g3[2] * reverse_g4[2])
@@ -2474,7 +2413,7 @@ impl Sandwich<Motor> for MultiVector {
                 - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
                 - (geometric_product_g1.yzxy() * reverse_g2.zxy().with_w(reverse_g3[1]))
-                - (self.group1().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+                - (self.group1().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
                 - (reverse_g3.zxy() * geometric_product_g4.yzx()).with_w(reverse_g3[2] * geometric_product_g1[2]),
         )
@@ -2484,13 +2423,13 @@ impl Sandwich<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       70      102        0
-    //    simd2       16       16        0
-    //    simd3       44       61        0
-    //    simd4       32       22        0
+    //      f32       70      104        0
+    //    simd2       16       18        0
+    //    simd3       44       62        0
+    //    simd4       32       19        0
     // Totals...
-    // yes simd      162      201        0
-    //  no simd      362      405        0
+    // yes simd      162      203        0
+    //  no simd      362      402        0
     fn sandwich(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x2::from([
@@ -2512,9 +2451,9 @@ impl Sandwich<MultiVector> for MultiVector {
             - (Simd32x2::from([other[e321], other[e1]]) * self.group4().wx());
         let geometric_product_g1 = (Simd32x4::from(other[scalar]) * self.group1())
             + (other.group1().yzzx() * self.group3().zx().with_zw(self[scalar], self[e41]))
-            + (self.group0().xx().with_zw(self[e31], other[e1234] * self[e321]) * other.group1().xyx().with_w(1.0))
             + (self.group1().zx().with_zw(self[e321], other[e3] * self[e43]) * other.group3().yzz().with_w(1.0))
             + (self.group4().ww().with_zw(self[e2], other[e2] * self[e42]) * other.group3().xyx().with_w(1.0))
+            + (Simd32x2::from(self[scalar]) * other.group1().xy()).with_zw(other[e1] * self[e31], other[e1234] * self[e321])
             + Simd32x3::from(0.0).with_w(
                 -(other[e43] * self[e3])
                     - (other[e23] * self[e423])
@@ -2525,33 +2464,33 @@ impl Sandwich<MultiVector> for MultiVector {
                     - (other[e412] * self[e12])
                     - (other[e321] * self[e1234]),
             )
-            + (self.group3() * other.group4().www()).with_w(other[e4] * self[scalar])
+            + (Simd32x3::from(other[e321]) * self.group3()).with_w(other[e4] * self[scalar])
             - (self.group1().yzxy() * other.group3().zxy().with_w(other[e42]))
             - (self.group3().yzx() * other.group1().zxy()).with_w(other[e41] * self[e1]);
         let geometric_product_g2 = (Simd32x3::from(other[scalar]) * self.group2())
             + (Simd32x3::from(other[e1234]) * self.group3())
             + (Simd32x3::from(other[e321]) * self.group4().xyz())
-            + (Simd32x3::from([self[e4], self[e4], self[e431]]) * other.group1().xyx())
-            + (Simd32x3::from([self[e412], self[e423], self[e4]]) * other.group1().yzz())
-            + (other.group2().xyx() * self.group0().xx().with_z(self[e31]))
+            + (other.group2().xyx() * Simd32x2::from(self[scalar]).with_z(self[e31]))
             + (other.group2().yzz() * self.group3().zx().with_z(self[scalar]))
-            + (other.group3().xyx() * self.group0().yy().with_z(self[e42]))
+            + (other.group3().xyx() * Simd32x2::from(self[e1234]).with_z(self[e42]))
             + (other.group3().yzz() * self.group2().zx().with_z(self[e1234]))
+            + (other.group1().xyx() * Simd32x2::from(self[e4]).with_z(self[e431]))
+            + (other.group1().yzz() * self.group4().zx().with_z(self[e4]))
             + (other.group4().zxy() * self.group1().yzx())
             - (Simd32x3::from(other[e4]) * self.group1().xyz())
-            - (Simd32x3::from([self[e3], self[e1], self[e321]]) * other.group4().yzz())
-            - (Simd32x3::from([self[e321], self[e321], self[e2]]) * other.group4().xyx())
             - (other.group2().zxy() * self.group3().yzx())
             - (other.group3().zxy() * self.group2().yzx())
-            - (other.group1().zxy() * self.group4().yzx());
+            - (other.group1().zxy() * self.group4().yzx())
+            - (other.group4().xyx() * Simd32x2::from(self[e321]).with_z(self[e2]))
+            - (other.group4().yzz() * self.group1().zx().with_z(self[e321]));
         let geometric_product_g3 = (Simd32x3::from(other[scalar]) * self.group3())
-            + (other.group3().xyx() * self.group0().xx().with_z(self[e31]))
+            + (other.group3().xyx() * Simd32x2::from(self[scalar]).with_z(self[e31]))
             + (other.group3().yzz() * self.group3().zx().with_z(self[scalar]))
             + (other.group1().zxy() * self.group1().yzx())
             - (Simd32x3::from(other[e321]) * self.group1().xyz())
-            - (Simd32x3::from([self[e3], self[e1], self[e321]]) * other.group1().yzz())
-            - (Simd32x3::from([self[e321], self[e321], self[e2]]) * other.group1().xyx())
-            - (other.group3().zxy() * self.group3().yzx());
+            - (other.group3().zxy() * self.group3().yzx())
+            - (other.group1().xyx() * Simd32x2::from(self[e321]).with_z(self[e2]))
+            - (other.group1().yzz() * self.group1().zx().with_z(self[e321]));
         let geometric_product_g4 = Simd32x4::from([
             (other[e3] * self[e42])
                 + (other[e4] * self[e23])
@@ -2579,10 +2518,10 @@ impl Sandwich<MultiVector> for MultiVector {
                 + (other[e412] * self[scalar]),
             0.0,
         ]) + (Simd32x4::from(other[scalar]) * self.group4())
-            + (other.group0().yy().with_zw(other[e1234], other[e321] * self[scalar]) * self.group1().xyz().with_w(1.0))
-            - (other.group1().xyxx() * self.group0().yy().with_zw(self[e42], self[e23]))
+            + (Simd32x3::from(other[e1234]) * self.group1().xyz()).with_w(other[e321] * self[scalar])
+            - (other.group1().xyxx() * Simd32x2::from(self[e1234]).with_zw(self[e42], self[e23]))
             - (other.group1().yzzy() * self.group2().zx().with_zw(self[e1234], self[e31]))
-            - (self.group2() * other.group4().www()).with_w(other[e12] * self[e3])
+            - (Simd32x3::from(other[e321]) * self.group2()).with_w(other[e12] * self[e3])
             - (other.group2().zxy() * self.group1().yzx()).with_w(other[e3] * self[e12])
             - (other.group3().zxy() * self.group4().yzx()).with_w(other[e23] * self[e1])
             - (self.group3().yzx() * other.group4().zxy()).with_w(other[e31] * self[e2]);
@@ -2612,9 +2551,9 @@ impl Sandwich<MultiVector> for MultiVector {
             (Simd32x4::from(geometric_product_g0[0]) * self.group1())
                 + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
                 + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
-                + (self.group0().xx().with_zw(self[scalar], geometric_product_g4[3] * self[e1234]) * geometric_product_g1.xyz().with_w(1.0))
                 + (geometric_product_g1.zx().with_zw(geometric_product_g4[3], geometric_product_g1[3] * self[scalar]) * reverse_g3.yzz().with_w(1.0))
                 + (geometric_product_g4.ww().with_zw(geometric_product_g1[1], geometric_product_g2[2] * self[e3]) * reverse_g3.xyx().with_w(1.0))
+                + (Simd32x2::from(self[scalar]) * geometric_product_g1.xy()).with_zw(geometric_product_g1[2] * self[scalar], geometric_product_g4[3] * self[e1234])
                 + Simd32x3::from(0.0).with_w(
                     -(geometric_product_g3[1] * reverse_g4[1])
                         - (geometric_product_g3[2] * reverse_g4[2])
@@ -2685,7 +2624,7 @@ impl Sandwich<MultiVector> for MultiVector {
                 - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
                 - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
                 - (geometric_product_g1.yzxy() * reverse_g2.zxy().with_w(reverse_g3[1]))
-                - (self.group1().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+                - (self.group1().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
                 - (reverse_g3.zxy() * geometric_product_g4.yzx()).with_w(reverse_g3[2] * geometric_product_g1[2]),
         )
@@ -2759,23 +2698,19 @@ impl Sandwich<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       41       61        0
-    //    simd2        8        8        0
-    //    simd3       28       40        0
-    //    simd4       16       13        0
+    //      f32       41       67        0
+    //    simd2        8        9        0
+    //    simd3       28       43        0
+    //    simd4       16        9        0
     // Totals...
-    // yes simd       93      122        0
-    //  no simd      205      249        0
+    // yes simd       93      128        0
+    //  no simd      205      250        0
     fn sandwich(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0_x = self[e321] * other[e321] * -1.0;
         let geometric_product_g0_y = (self[e1] * other[e423]) + (self[e2] * other[e431]) + (self[e3] * other[e412]) + (self[e4] * other[e321]);
-        let geometric_product_g1 = Simd32x4::from([
-            other[e321],
-            other[e321],
-            other[e321],
-            -(self[e1234] * other[e321]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]),
-        ]) * self.group3().with_w(1.0);
+        let geometric_product_g1_xyz = Simd32x3::from(other[e321]) * self.group3();
+        let geometric_product_g1_w = -(self[e1234] * other[e321]) - (self[e23] * other[e423]) - (self[e31] * other[e431]) - (self[e12] * other[e412]);
         let geometric_product_g2 = (Simd32x3::from(other[e321]) * self.group4().xyz()) + (self.group1().yzx() * other.group0().zxy())
             - (Simd32x3::from(self[e321]) * other.group0().xyz())
             - (self.group1().zxy() * other.group0().yzx());
@@ -2791,101 +2726,101 @@ impl Sandwich<Plane> for MultiVector {
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (geometric_product_g0_y * self[scalar]) + (geometric_product_g1[3] * reverse_g4[3])
+                (geometric_product_g0_y * self[scalar]) + (geometric_product_g1_w * reverse_g4[3])
                     - (geometric_product_g3[0] * reverse_g2[0])
                     - (geometric_product_g3[1] * reverse_g2[1])
                     - (geometric_product_g3[2] * reverse_g2[2])
                     - (geometric_product_g4_xyz[0] * self[e1])
                     - (geometric_product_g4_xyz[1] * self[e2])
                     - (geometric_product_g4_xyz[2] * self[e3]),
-            ]) + (Simd32x2::from(geometric_product_g1[0]) * Simd32x2::from([self[e1], reverse_g4[0]]))
-                + (Simd32x2::from(geometric_product_g1[1]) * Simd32x2::from([self[e2], reverse_g4[1]]))
-                + (Simd32x2::from(geometric_product_g1[2]) * Simd32x2::from([self[e3], reverse_g4[2]]))
+            ]) + (Simd32x2::from(geometric_product_g1_xyz[0]) * Simd32x2::from([self[e1], reverse_g4[0]]))
+                + (Simd32x2::from(geometric_product_g1_xyz[1]) * Simd32x2::from([self[e2], reverse_g4[1]]))
+                + (Simd32x2::from(geometric_product_g1_xyz[2]) * Simd32x2::from([self[e3], reverse_g4[2]]))
                 - (Simd32x2::from(geometric_product_g0_x) * self.group0())
                 - (Simd32x2::from(geometric_product_g4_w) * Simd32x2::from([reverse_g4[3], self[e4]]))
                 - (Simd32x2::from(reverse_g3[0]) * Simd32x2::from([geometric_product_g3[0], geometric_product_g2[0]]))
                 - (Simd32x2::from(reverse_g3[1]) * Simd32x2::from([geometric_product_g3[1], geometric_product_g2[1]]))
                 - (Simd32x2::from(reverse_g3[2]) * Simd32x2::from([geometric_product_g3[2], geometric_product_g2[2]])),
             // e1, e2, e3, e4
-            (geometric_product_g1 * Simd32x4::from(self[scalar]))
-                + (Simd32x4::from(geometric_product_g4_w) * reverse_g3.with_w(self[e1234]))
-                + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[0] * self[e1]]) * geometric_product_g3.xxy().with_w(1.0))
-                + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.zyz().with_w(1.0))
+            (Simd32x4::from([reverse_g3[1], self[scalar], self[scalar], geometric_product_g2[0] * self[e1]]) * geometric_product_g1_xyz.zyz().with_w(1.0))
+                + (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g2[1] * self[e2]]) * geometric_product_g3.xxy().with_w(1.0))
+                + (Simd32x4::from([self[scalar], reverse_g3[2], reverse_g3[0], geometric_product_g4_w * self[e1234]]) * geometric_product_g1_xyz.xxy().with_w(1.0))
+                + (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g2[2] * self[e3]]) * geometric_product_g3.zyz().with_w(1.0))
                 + Simd32x3::from(0.0).with_w(
-                    -(geometric_product_g3[1] * reverse_g4[1])
+                    -(geometric_product_g1_xyz[1] * reverse_g2[1])
+                        - (geometric_product_g1_xyz[2] * reverse_g2[2])
+                        - (geometric_product_g3[0] * reverse_g4[0])
+                        - (geometric_product_g3[1] * reverse_g4[1])
                         - (geometric_product_g3[2] * reverse_g4[2])
                         - (geometric_product_g4_xyz[0] * reverse_g3[0])
                         - (geometric_product_g4_xyz[1] * reverse_g3[1])
-                        - (geometric_product_g4_xyz[2] * reverse_g3[2])
-                        - (reverse_g2[0] * geometric_product_g1[0])
-                        - (reverse_g2[1] * geometric_product_g1[1])
-                        - (reverse_g2[2] * geometric_product_g1[2]),
+                        - (geometric_product_g4_xyz[2] * reverse_g3[2]),
                 )
-                + (reverse_g3.yzx() * geometric_product_g1.zxy()).with_w(geometric_product_g2[2] * self[e3])
+                + (reverse_g3 * Simd32x3::from(geometric_product_g4_w)).with_w(geometric_product_g1_w * self[scalar])
                 - (Simd32x4::from(geometric_product_g0_x) * self.group1())
-                - (geometric_product_g3.yzx() * self.group1().zxy()).with_w(geometric_product_g0_y * reverse_g4[3])
-                - (reverse_g3.zxy() * geometric_product_g1.yzx()).with_w(geometric_product_g3[0] * reverse_g4[0]),
+                - (geometric_product_g1_xyz.yzx() * reverse_g3.zxy()).with_w(geometric_product_g0_y * reverse_g4[3])
+                - (geometric_product_g3.yzx() * self.group1().zxy()).with_w(geometric_product_g1_xyz[0] * reverse_g2[0]),
             // e41, e42, e43
             (reverse_g3 * Simd32x3::from(geometric_product_g0_y))
-                + (Simd32x3::from(geometric_product_g1[3]) * self.group1().xyz())
+                + (Simd32x3::from(geometric_product_g1_w) * self.group1().xyz())
                 + (Simd32x3::from([reverse_g2[1], self[e1234], self[e1234]]) * geometric_product_g3.zyz())
                 + (Simd32x3::from([reverse_g3[1], self[scalar], self[scalar]]) * geometric_product_g2.zyz())
                 + (Simd32x3::from([reverse_g4[3], self[e3], self[e1]]) * geometric_product_g4_xyz.xxy())
                 + (Simd32x3::from([self[scalar], reverse_g3[2], reverse_g3[0]]) * geometric_product_g2.xxy())
                 + (Simd32x3::from([self[e1234], reverse_g2[2], reverse_g2[0]]) * geometric_product_g3.xxy())
                 + (Simd32x3::from([self[e2], reverse_g4[3], reverse_g4[3]]) * geometric_product_g4_xyz.zyz())
-                + (geometric_product_g1.yzx() * reverse_g4.zxy())
+                + (geometric_product_g1_xyz.yzx() * reverse_g4.zxy())
                 - (reverse_g2 * Simd32x3::from(geometric_product_g0_x))
                 - (Simd32x3::from(geometric_product_g4_w) * reverse_g4.xyz())
-                - (Simd32x3::from([reverse_g4[1], self[e4], self[e4]]) * geometric_product_g1.zyz())
-                - (Simd32x3::from([self[e4], reverse_g4[2], reverse_g4[0]]) * geometric_product_g1.xxy())
+                - (Simd32x3::from([reverse_g4[1], self[e4], self[e4]]) * geometric_product_g1_xyz.zyz())
+                - (Simd32x3::from([self[e4], reverse_g4[2], reverse_g4[0]]) * geometric_product_g1_xyz.xxy())
                 - (geometric_product_g2.yzx() * reverse_g3.zxy())
                 - (geometric_product_g3.yzx() * reverse_g2.zxy())
                 - (geometric_product_g4_xyz.yzx() * self.group1().zxy()),
             // e23, e31, e12
             (Simd32x3::from([reverse_g3[1], self[scalar], self[scalar]]) * geometric_product_g3.zyz())
                 + (Simd32x3::from([self[scalar], reverse_g3[2], reverse_g3[0]]) * geometric_product_g3.xxy())
-                + (geometric_product_g1.yzx() * self.group1().zxy())
+                + (geometric_product_g1_xyz.yzx() * self.group1().zxy())
                 - (reverse_g3 * Simd32x3::from(geometric_product_g0_x))
                 - (Simd32x3::from(geometric_product_g4_w) * self.group1().xyz())
-                - (Simd32x3::from([reverse_g4[3], self[e3], self[e1]]) * geometric_product_g1.xxy())
-                - (Simd32x3::from([self[e2], reverse_g4[3], reverse_g4[3]]) * geometric_product_g1.zyz())
+                - (Simd32x3::from([reverse_g4[3], self[e3], self[e1]]) * geometric_product_g1_xyz.xxy())
+                - (Simd32x3::from([self[e2], reverse_g4[3], reverse_g4[3]]) * geometric_product_g1_xyz.zyz())
                 - (geometric_product_g3.yzx() * reverse_g3.zxy()),
             // e423, e431, e412, e321
             Simd32x4::from([
-                (geometric_product_g2[1] * self[e3])
+                (geometric_product_g4_w * reverse_g2[0])
+                    + (geometric_product_g1_xyz[0] * self[e1234])
+                    + (geometric_product_g1_xyz[2] * reverse_g2[1])
+                    + (geometric_product_g2[1] * self[e3])
                     + (geometric_product_g3[0] * self[e4])
                     + (geometric_product_g3[2] * reverse_g4[1])
                     + (geometric_product_g4_xyz[0] * self[scalar])
-                    + (geometric_product_g4_xyz[2] * reverse_g3[1])
-                    + (reverse_g2[1] * geometric_product_g1[2])
-                    + (reverse_g3[0] * geometric_product_g1[3])
-                    + (geometric_product_g1[0] * self[e1234]),
-                (geometric_product_g2[2] * self[e1])
+                    + (geometric_product_g4_xyz[2] * reverse_g3[1]),
+                (geometric_product_g4_w * reverse_g2[1])
+                    + (geometric_product_g1_xyz[0] * reverse_g2[2])
+                    + (geometric_product_g1_xyz[1] * self[e1234])
+                    + (geometric_product_g2[2] * self[e1])
                     + (geometric_product_g3[0] * reverse_g4[2])
                     + (geometric_product_g3[1] * self[e4])
                     + (geometric_product_g4_xyz[0] * reverse_g3[2])
-                    + (geometric_product_g4_xyz[1] * self[scalar])
-                    + (reverse_g2[2] * geometric_product_g1[0])
-                    + (reverse_g3[1] * geometric_product_g1[3])
-                    + (geometric_product_g1[1] * self[e1234]),
-                (geometric_product_g2[0] * self[e2])
+                    + (geometric_product_g4_xyz[1] * self[scalar]),
+                (geometric_product_g4_w * reverse_g2[2])
+                    + (geometric_product_g1_xyz[1] * reverse_g2[0])
+                    + (geometric_product_g1_xyz[2] * self[e1234])
+                    + (geometric_product_g2[0] * self[e2])
                     + (geometric_product_g3[1] * reverse_g4[0])
                     + (geometric_product_g3[2] * self[e4])
                     + (geometric_product_g4_xyz[1] * reverse_g3[0])
-                    + (geometric_product_g4_xyz[2] * self[scalar])
-                    + (reverse_g2[0] * geometric_product_g1[1])
-                    + (reverse_g3[2] * geometric_product_g1[3])
-                    + (geometric_product_g1[2] * self[e1234]),
+                    + (geometric_product_g4_xyz[2] * self[scalar]),
                 0.0,
-            ]) + (Simd32x4::from(geometric_product_g4_w) * reverse_g2.with_w(self[scalar]))
+            ]) + (reverse_g3 * Simd32x3::from(geometric_product_g1_w)).with_w(geometric_product_g4_w * self[scalar])
                 - (reverse_g4 * Simd32x4::from(geometric_product_g0_x))
-                - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g3[1] * self[e2]]) * geometric_product_g2.xxy().with_w(1.0))
-                - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[2] * self[e3]]) * geometric_product_g2.zyz().with_w(1.0))
-                - (geometric_product_g1.yzxz() * reverse_g2.zxy().with_w(reverse_g3[2]))
-                - (self.group1().xyzx() * Simd32x3::from(geometric_product_g0_y).with_w(geometric_product_g3[0]))
-                - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(reverse_g3[0] * geometric_product_g1[0])
-                - (geometric_product_g4_xyz.yzx() * reverse_g3.zxy()).with_w(reverse_g3[1] * geometric_product_g1[1]),
+                - (Simd32x4::from([reverse_g4[3], self[e3], self[e1], geometric_product_g1_xyz[2] * reverse_g3[2]]) * geometric_product_g2.xxy().with_w(1.0))
+                - (Simd32x4::from([self[e2], reverse_g4[3], reverse_g4[3], geometric_product_g3[0] * self[e1]]) * geometric_product_g2.zyz().with_w(1.0))
+                - (Simd32x2::from(geometric_product_g0_y) * self.group1().xy()).with_zw(geometric_product_g0_y * self[e3], geometric_product_g1_xyz[0] * reverse_g3[0])
+                - (geometric_product_g1_xyz.yzx() * reverse_g2.zxy()).with_w(geometric_product_g1_xyz[1] * reverse_g3[1])
+                - (geometric_product_g3.yzx() * reverse_g4.zxy()).with_w(geometric_product_g3[1] * self[e2])
+                - (geometric_product_g4_xyz.yzx() * reverse_g3.zxy()).with_w(geometric_product_g3[2] * self[e3]),
         )
     }
 }
@@ -2921,7 +2856,7 @@ impl Sandwich<Point> for MultiVector {
             (self[e43] * other[e1]) + (self[e31] * other[e4]),
             (self[e41] * other[e2]) + (self[e12] * other[e4]),
             self[e12] * other[e3] * -1.0,
-        ]) - (other.group0().xyzx() * self.group0().yy().with_zw(self[e1234], self[e23]))
+        ]) - (other.group0().xyzx() * Simd32x3::from(self[e1234]).with_w(self[e23]))
             - (other.group0().yzxy() * self.group2().zxy().with_w(self[e31]));
         MultiVector::from_groups(
             // scalar, e1234
@@ -3067,11 +3002,11 @@ impl Sandwich<Flector> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        7       14        0
-    //    simd3        3        4        0
-    //    simd4        2        4        0
+    //    simd3        3        5        0
+    //    simd4        2        3        0
     // Totals...
     // yes simd       12       22        0
-    //  no simd       24       42        0
+    //  no simd       24       41        0
     fn sandwich(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x4::from([
@@ -3084,12 +3019,9 @@ impl Sandwich<Flector> for Plane {
         let geometric_product_g1 = Simd32x4::from(self[e321] * -1.0) * other.group0().xyz().with_w(other[e321]);
         Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from([
-                self[e321],
-                self[e321],
-                self[e321],
+            (Simd32x3::from(self[e321]) * geometric_product_g1.xyz()).with_w(
                 -(geometric_product_g0[3] * self[e321]) - (geometric_product_g1[0] * self[e423]) - (geometric_product_g1[1] * self[e431]) - (geometric_product_g1[2] * self[e412]),
-            ]) * geometric_product_g1.xyz().with_w(1.0),
+            ),
             // e423, e431, e412, e321
             ((Simd32x3::from(geometric_product_g1[3]) * self.group0().xyz()) + (geometric_product_g1.zxy() * self.group0().yzx())
                 - (Simd32x3::from(self[e321]) * geometric_product_g0.xyz())
@@ -3118,32 +3050,27 @@ impl Sandwich<Horizon> for Plane {
     }
 }
 impl Sandwich<Line> for Plane {
-    type Output = Motor;
+    type Output = Line;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        6       12        0
-    //    simd3        0        4        0
-    //    simd4        4        3        0
+    //      f32        2        4        0
+    //    simd3        3        9        0
+    //    simd4        2        0        0
     // Totals...
-    // yes simd       10       19        0
-    //  no simd       22       36        0
+    // yes simd        7       13        0
+    //  no simd       19       31        0
     fn sandwich(self, other: Line) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 =
-            Simd32x4::from([self[e321], self[e321], self[e321], -(other[e23] * self[e423]) - (other[e31] * self[e431]) - (other[e12] * self[e412])]) * other.group1().with_w(1.0);
+        let geometric_product_g0 = (Simd32x3::from(self[e321]) * other.group1()).with_w(-(other[e23] * self[e423]) - (other[e31] * self[e431]) - (other[e12] * self[e412]));
         let geometric_product_g1 = (Simd32x3::from(self[e321]) * other.group0()).with_w(0.0) + (other.group1().yzx() * self.group0().zxy()).with_w(0.0)
             - (other.group1().zxy() * self.group0().yzx()).with_w(0.0);
-        Motor::from_groups(
-            // e41, e42, e43, e1234
-            Simd32x4::from([
-                -(geometric_product_g0[2] * self[e431]) - (geometric_product_g1[3] * self[e423]),
-                -(geometric_product_g0[0] * self[e412]) - (geometric_product_g1[3] * self[e431]),
-                -(geometric_product_g0[1] * self[e423]) - (geometric_product_g1[3] * self[e412]),
-                (geometric_product_g0[2] * self[e412]) + (geometric_product_g0[3] * self[e321]),
-            ]) + (geometric_product_g0.yzxx() * self.group0().zxyx())
-                + (self.group0().wwwy() * geometric_product_g1.xyz().with_w(geometric_product_g0[1])),
-            // e23, e31, e12, scalar
-            (Simd32x3::from(self[e321] * -1.0) * geometric_product_g0.xyz()).with_w(0.0),
+        Line::from_groups(
+            // e41, e42, e43
+            (Simd32x3::from(self[e321]) * geometric_product_g1.xyz()) + (geometric_product_g0.yzx() * self.group0().zxy())
+                - (Simd32x3::from(geometric_product_g1[3]) * self.group0().xyz())
+                - (geometric_product_g0.zxy() * self.group0().yzx()),
+            // e23, e31, e12
+            Simd32x3::from(self[e321] * -1.0) * geometric_product_g0.xyz(),
         )
     }
 }
@@ -3151,39 +3078,28 @@ impl Sandwich<Motor> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        9       22        0
-    //    simd3        0        1        0
-    //    simd4        4        6        0
+    //      f32        0        9        0
+    //    simd3        0        3        0
+    //    simd4        6        8        0
     // Totals...
-    // yes simd       13       29        0
-    //  no simd       25       49        0
+    // yes simd        6       20        0
+    //  no simd       24       50        0
     fn sandwich(self, other: Motor) -> Self::Output {
         use crate::elements::*;
-        let geometric_product_g0 = Simd32x4::from([
-            self[e321],
-            self[e321],
-            self[e321],
-            (other[e1234] * self[e321]) - (other[e23] * self[e423]) - (other[e31] * self[e431]) - (other[e12] * self[e412]),
-        ]) * other.group1().xyz().with_w(1.0);
+        let geometric_product_g0_xyz = Simd32x3::from(self[e321]) * other.group1().xyz();
         let geometric_product_g1_w = other[scalar] * self[e321];
         Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from([
-                -(geometric_product_g1_w * self[e423]) - (geometric_product_g0[2] * self[e431]) - (other.group1().zxy()[0] * self.group0().yzx()[0] * self[e321]),
-                -(geometric_product_g1_w * self[e431]) - (geometric_product_g0[0] * self[e412]) - (other.group1().zxy()[1] * self.group0().yzx()[1] * self[e321]),
-                -(geometric_product_g1_w * self[e412]) - (geometric_product_g0[1] * self[e423]) - (other.group1().zxy()[2] * self.group0().yzx()[2] * self[e321]),
-                0.0,
-            ]) + (Simd32x4::from([
-                other.group1().yzx()[0] * self.group0().zxy()[0],
-                other.group1().yzx()[1] * self.group0().zxy()[1],
-                other.group1().yzx()[2] * self.group0().zxy()[2],
-                geometric_product_g0[2],
-            ]) * self.group0().wwwz())
-                + (geometric_product_g0.yzxx() * self.group0().zxyx())
-                + (Simd32x4::from([self[e321], self[e321], self[e321], geometric_product_g0[3]]) * self.group0() * other.group1().www().with_w(1.0))
-                + (Simd32x3::from(self[e321] * self[e321]) * other.group0().xyz()).with_w(geometric_product_g0[1] * self[e431]),
+            (Simd32x4::from([self[e423] * self[e321], self[e431] * self[e321], self[e412] * self[e321], self[e321] * self[e321] * other[e1234]])
+                * Simd32x3::from(other[scalar]).with_w(1.0))
+                + (self.group0().zxyx() * geometric_product_g0_xyz.yzx().with_w(geometric_product_g0_xyz[0]))
+                + (self.group0().zxyz() * (Simd32x3::from(self[e321]) * other.group1().yzx()).with_w(geometric_product_g0_xyz[2]))
+                + (Simd32x3::from(self[e321] * self[e321]) * other.group0().xyz()).with_w(geometric_product_g0_xyz[1] * self[e431])
+                - (self.group0() * Simd32x3::from(geometric_product_g1_w).with_w(other[e23] * self[e423]))
+                - (self.group0().yzxy() * geometric_product_g0_xyz.zxy().with_w(other[e31] * self[e321]))
+                - (Simd32x4::from(self[e321]) * other.group1().zxyz() * self.group0().yzxz()),
             // e23, e31, e12, scalar
-            Simd32x4::from(self[e321] * -1.0) * geometric_product_g0.xyz().with_w(geometric_product_g1_w),
+            Simd32x4::from(self[e321] * -1.0) * geometric_product_g0_xyz.with_w(geometric_product_g1_w),
         )
     }
 }
@@ -3191,68 +3107,55 @@ impl Sandwich<MultiVector> for Plane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32       12       34        0
+    //      f32       12       30        0
     //    simd2        0        1        0
-    //    simd3       12       18        0
-    //    simd4        0        2        0
+    //    simd3       12       22        0
     // Totals...
-    // yes simd       24       55        0
+    // yes simd       24       53        0
     //  no simd       48       98        0
     fn sandwich(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0_x = other[e321] * self[e321] * -1.0;
-        let geometric_product_g1 = Simd32x4::from([
-            self[e321],
-            self[e321],
-            self[e321],
-            (other[e1234] * self[e321]) - (other[e23] * self[e423]) - (other[e31] * self[e431]) - (other[e12] * self[e412]),
-        ]) * other.group3().with_w(1.0);
+        let geometric_product_g1_xyz = Simd32x3::from(self[e321]) * other.group3();
         let geometric_product_g3 = Simd32x3::from(self[e321] * -1.0) * other.group1().xyz();
         let geometric_product_g4_w = other[scalar] * self[e321];
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 geometric_product_g4_w * self[e321],
-                (geometric_product_g1[0] * self[e423]) + (geometric_product_g1[1] * self[e431]) + (geometric_product_g1[2] * self[e412]) + (geometric_product_g1[3] * self[e321]),
+                (geometric_product_g1_xyz[0] * self[e423])
+                    + (geometric_product_g1_xyz[1] * self[e431])
+                    + (geometric_product_g1_xyz[2] * self[e412])
+                    + (self[e321] * self[e321] * other[e1234])
+                    - (other[e23] * self[e423] * self[e321])
+                    - (other[e31] * self[e431] * self[e321])
+                    - (other[e12] * self[e412] * self[e321]),
             ]) * Simd32x2::from([-1.0, 1.0]),
             // e1, e2, e3, e4
-            Simd32x4::from([
-                self[e321],
-                self[e321],
-                self[e321],
+            (geometric_product_g3 * Simd32x3::from(self[e321])).with_w(
                 (self[e321] * self[e321] * other[e4]) + (other[e1] * self[e423] * self[e321]) + (other[e2] * self[e431] * self[e321]) + (other[e3] * self[e412] * self[e321])
                     - (geometric_product_g3[0] * self[e423])
                     - (geometric_product_g3[1] * self[e431])
                     - (geometric_product_g3[2] * self[e412]),
-            ]) * geometric_product_g3.with_w(1.0),
+            ),
             // e41, e42, e43
             (Simd32x3::from(self[e321] * self[e321]) * other.group2())
                 + (Simd32x3::from(other[scalar] * self[e321]) * self.group0().xyz())
-                + (geometric_product_g1.yzx() * self.group0().zxy())
+                + (geometric_product_g1_xyz.yzx() * self.group0().zxy())
                 + (Simd32x3::from(self[e321]) * other.group3().yzx() * self.group0().zxy())
                 - (Simd32x3::from(geometric_product_g4_w) * self.group0().xyz())
-                - (geometric_product_g1.zxy() * self.group0().yzx())
+                - (geometric_product_g1_xyz.zxy() * self.group0().yzx())
                 - (Simd32x3::from(self[e321]) * other.group3().zxy() * self.group0().yzx()),
             // e23, e31, e12
-            Simd32x3::from(self[e321] * -1.0) * geometric_product_g1.xyz(),
+            geometric_product_g1_xyz * Simd32x3::from(self[e321] * -1.0),
             // e423, e431, e412, e321
-            ((Simd32x3::from(self[e321])
-                * Simd32x3::from([
-                    other.group1().zxy()[0] * self.group0().yzx()[0],
-                    other.group1().zxy()[1] * self.group0().yzx()[1],
-                    other.group1().zxy()[2] * self.group0().yzx()[2],
-                ]))
-                + (Simd32x3::from(self[e321] * self[e321]) * other.group4().xyz())
+            ((Simd32x3::from(self[e321] * self[e321]) * other.group4().xyz())
                 + (geometric_product_g3.zxy() * self.group0().yzx())
+                + (Simd32x3::from(self[e321]) * other.group1().zxy() * self.group0().yzx())
                 - (Simd32x3::from(geometric_product_g0_x) * self.group0().xyz())
-                - (Simd32x3::from(self[e321])
-                    * Simd32x3::from([
-                        other.group1().yzx()[0] * self.group0().zxy()[0],
-                        other.group1().yzx()[1] * self.group0().zxy()[1],
-                        other.group1().yzx()[2] * self.group0().zxy()[2],
-                    ]))
                 - (Simd32x3::from(other[e321] * self[e321]) * self.group0().xyz())
-                - (geometric_product_g3.yzx() * self.group0().zxy()))
+                - (geometric_product_g3.yzx() * self.group0().zxy())
+                - (Simd32x3::from(self[e321]) * other.group1().yzx() * self.group0().zxy()))
             .with_w(geometric_product_g0_x * self[e321] * -1.0),
         )
     }
@@ -3292,11 +3195,11 @@ impl Sandwich<Point> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5       11        0
-    //    simd3        0        4        0
-    //    simd4        3        2        0
+    //    simd3        0        5        0
+    //    simd4        3        1        0
     // Totals...
     // yes simd        8       17        0
-    //  no simd       17       31        0
+    //  no simd       17       30        0
     fn sandwich(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let geometric_product_g0 = Simd32x4::from([
@@ -3308,15 +3211,12 @@ impl Sandwich<Point> for Plane {
         let geometric_product_g1_xyz = Simd32x3::from(self[e321] * -1.0) * other.group0().xyz();
         Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from([
-                self[e321],
-                self[e321],
-                self[e321],
+            (geometric_product_g1_xyz * Simd32x3::from(self[e321])).with_w(
                 -(geometric_product_g1_xyz[0] * self[e423])
                     - (geometric_product_g1_xyz[1] * self[e431])
                     - (geometric_product_g1_xyz[2] * self[e412])
                     - (geometric_product_g0[3] * self[e321]),
-            ]) * geometric_product_g1_xyz.with_w(1.0),
+            ),
             // e423, e431, e412, e321
             (geometric_product_g1_xyz.zxy() * self.group0().yzx()).with_w(0.0)
                 - (Simd32x3::from(self[e321]) * geometric_product_g0.xyz()).with_w(0.0)
@@ -3409,7 +3309,7 @@ impl Sandwich<Flector> for Point {
                 geometric_product_g1[2] * self[e1] * -1.0,
                 geometric_product_g1[0] * self[e2] * -1.0,
                 (geometric_product_g0[2] * self[e3]) + (geometric_product_g1[3] * self[e4]),
-            ]) + (self.group0().xyzy() * geometric_product_g1.www().with_w(geometric_product_g0[1]))
+            ]) + (Simd32x4::from([geometric_product_g1[3], geometric_product_g1[3], geometric_product_g1[3], geometric_product_g0[1]]) * self.group0().xyzy())
                 + (self.group0().yzxx() * geometric_product_g1.zxy().with_w(geometric_product_g0[0])),
             // e423, e431, e412, e321
             Simd32x4::from([
@@ -3417,7 +3317,7 @@ impl Sandwich<Flector> for Point {
                 (geometric_product_g0[2] * self[e1]) + (geometric_product_g1[1] * self[e4]),
                 (geometric_product_g0[0] * self[e2]) + (geometric_product_g1[2] * self[e4]),
                 geometric_product_g1[2] * self[e3] * -1.0,
-            ]) - (self.group0().xyzy() * geometric_product_g0.www().with_w(geometric_product_g1[1]))
+            ]) - (Simd32x4::from([geometric_product_g0[3], geometric_product_g0[3], geometric_product_g0[3], geometric_product_g1[1]]) * self.group0().xyzy())
                 - (self.group0().yzxx() * geometric_product_g0.zxy().with_w(geometric_product_g1[0])),
         )
     }
@@ -3580,7 +3480,7 @@ impl Sandwich<MultiVector> for Point {
                 (geometric_product_g2[2] * self[e1]) + (geometric_product_g3[1] * self[e4]),
                 (geometric_product_g2[0] * self[e2]) + (geometric_product_g3[2] * self[e4]),
                 geometric_product_g3[2] * self[e3] * -1.0,
-            ]) - (self.group0().xyzx() * geometric_product_g0.yy().with_zw(geometric_product_g0[1], geometric_product_g3[0]))
+            ]) - (self.group0().xyzx() * Simd32x2::from(geometric_product_g0[1]).with_zw(geometric_product_g0[1], geometric_product_g3[0]))
                 - (self.group0().yzxy() * geometric_product_g2.zxy().with_w(geometric_product_g3[1])),
         )
     }
@@ -3629,7 +3529,7 @@ impl Sandwich<Plane> for Point {
                 (geometric_product_g1_xyz[1] * self[e4]) + (geometric_product_g0[2] * self[e1]),
                 (geometric_product_g1_xyz[2] * self[e4]) + (geometric_product_g0[0] * self[e2]),
                 geometric_product_g1_xyz[2] * self[e3] * -1.0,
-            ]) - (self.group0().xyzy() * geometric_product_g0.www().with_w(geometric_product_g1_xyz[1]))
+            ]) - (self.group0().xyzy() * Simd32x3::from(geometric_product_g0[3]).with_w(geometric_product_g1_xyz[1]))
                 - (self.group0().yzxx() * geometric_product_g0.zxy().with_w(geometric_product_g1_xyz[0])),
         )
     }
@@ -3660,7 +3560,7 @@ impl Sandwich<Point> for Point {
                 geometric_product_g1[2] * self[e1] * -1.0,
                 geometric_product_g1[0] * self[e2] * -1.0,
                 (geometric_product_g0_xyz[2] * self[e3]) + (geometric_product_g1[3] * self[e4]),
-            ]) + (self.group0().xyzy() * geometric_product_g1.www().with_w(geometric_product_g0_xyz[1]))
+            ]) + (self.group0().xyzy() * Simd32x3::from(geometric_product_g1[3]).with_w(geometric_product_g0_xyz[1]))
                 + (self.group0().yzxx() * geometric_product_g1.zxy().with_w(geometric_product_g0_xyz[0])),
         )
     }

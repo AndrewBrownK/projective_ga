@@ -171,7 +171,7 @@ public extension DualNum {
             /* e1, e2, e3, e4 */
             float4(((float3(this.scalar) * geometric_anti_product_g1.xyz) + (float3(this.e1234) * geometric_anti_product_g0.xyz)), geometric_anti_product_g0[3] * this.e1234), 
             /* e423, e431, e412, e321 */
-            float4(this.e1234, this.e1234, this.e1234, (geometric_anti_product_g0[3] * this.scalar) + (geometric_anti_product_g1[3] * this.e1234)) * float4(geometric_anti_product_g1.xyz, 1.0)
+            float4(geometric_anti_product_g1[0], geometric_anti_product_g1[1], geometric_anti_product_g1[2] * this.e1234, (geometric_anti_product_g0[3] * this.scalar) + (geometric_anti_product_g1[3] * this.e1234)) * float4(float2(this.e1234), 1.0, 1.0)
         );
     }
 }
@@ -228,7 +228,7 @@ public extension DualNum {
             /* e23, e31, e12 */
             (geometric_anti_product_g2 * float3(this.scalar)) - (float3(other_g0 * this.e1234) * other.group3.xyz), 
             /* e423, e431, e412, e321 */
-            float4(this.e1234, this.e1234, this.e1234, (geometric_anti_product_g1[3] * this.scalar) + (geometric_anti_product_g4[3] * this.e1234)) * float4(geometric_anti_product_g4.xyz, 1.0)
+            float4(geometric_anti_product_g4[0], geometric_anti_product_g4[1], geometric_anti_product_g4[2] * this.e1234, (geometric_anti_product_g1[3] * this.scalar) + (geometric_anti_product_g4[3] * this.e1234)) * float4(float2(this.e1234), 1.0, 1.0)
         );
     }
 }
@@ -359,7 +359,7 @@ public extension Flector {
             /* e1, e2, e3, e4 */
             float4((geometric_anti_product_g0[2] * this.e2) + (geometric_anti_product_g0[3] * this.e1) + (geometric_anti_product_g1[1] * this.e412) - (geometric_anti_product_g1[3] * this.e423), (geometric_anti_product_g0[1] * this.e321) + (geometric_anti_product_g0[3] * this.e2) + (geometric_anti_product_g1[2] * this.e423) - (geometric_anti_product_g1[3] * this.e431), (geometric_anti_product_g0[2] * this.e321) + (geometric_anti_product_g0[3] * this.e3) + (geometric_anti_product_g1[0] * this.e431) - (geometric_anti_product_g1[3] * this.e412), 0.0) + (float4(this.e321, this.e3, this.e1, this.e4) * geometric_anti_product_g0.xxyw) - (float4(this.e4, this.e412, this.e423, geometric_anti_product_g0[1] * this.e431) * float4(geometric_anti_product_g1.xxy, 1.0)) - (float4(this.e431, this.e4, this.e4, geometric_anti_product_g0[2] * this.e412) * float4(geometric_anti_product_g1.zyz, 1.0)) - (geometric_anti_product_g0.yzxx * float4(this.group0.zxy, this.e423)), 
             /* e423, e431, e412, e321 */
-            (float4(this.e4, this.e412, this.e423, this.e321) * geometric_anti_product_g0.xxyw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g1[0] * this.e423) * float4(geometric_anti_product_g0.zyz, 1.0)) + (this.group1.xyzy * float4(geometric_anti_product_g0.www, geometric_anti_product_g1[1])) + float4(float3(0.0), (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4)) - (geometric_anti_product_g0.yzxx * float4(this.group1.zxy, this.e1))
+            (float4(geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g1[1]) * this.group1.xyzy) + (float4(this.e4, this.e412, this.e423, this.e321) * geometric_anti_product_g0.xxyw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g1[0] * this.e423) * float4(geometric_anti_product_g0.zyz, 1.0)) + float4(float3(0.0), (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4)) - (geometric_anti_product_g0.yzxx * float4(this.group1.zxy, this.e1))
         );
     }
 }
@@ -379,7 +379,7 @@ public extension Flector {
             /* scalar, e1234 */
             float2((geometric_anti_product_g4[3] * this.e4) - (geometric_anti_product_g1[1] * this.e431) - (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g1[3] * this.e321), 0.0) + (float2(geometric_anti_product_g4[0]) * float2(this.e1, this.e423)) + (float2(geometric_anti_product_g4[1]) * float2(this.e2, this.e431)) + (float2(geometric_anti_product_g4[2]) * float2(this.e3, this.e412)) - (float2(this.e423, this.e4) * geometric_anti_product_g1.xw), 
             /* e1, e2, e3, e4 */
-            float4((geometric_anti_product_g2[0] * this.e321) + (geometric_anti_product_g2[2] * this.e2) + (geometric_anti_product_g3[1] * this.e412) - (geometric_anti_product_g3[2] * this.e431), (geometric_anti_product_g2[0] * this.e3) + (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423) - (geometric_anti_product_g3[1] * this.e4), (geometric_anti_product_g2[1] * this.e1) + (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431) - (geometric_anti_product_g3[2] * this.e4), 0.0) + (float4(geometric_anti_product_g0[1]) * this.group0) - (float4(this.e4, this.e412, this.e423, geometric_anti_product_g2[2] * this.e412) * float4(geometric_anti_product_g3.xxy, 1.0)) - (this.group1.xyzx * float4(geometric_anti_product_g0.xx, geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - float4((geometric_anti_product_g2.yzx * this.group0.zxy), geometric_anti_product_g2[1] * this.e431), 
+            float4((geometric_anti_product_g2[0] * this.e321) + (geometric_anti_product_g2[2] * this.e2) + (geometric_anti_product_g3[1] * this.e412) - (geometric_anti_product_g3[2] * this.e431), (geometric_anti_product_g2[0] * this.e3) + (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423) - (geometric_anti_product_g3[1] * this.e4), (geometric_anti_product_g2[1] * this.e1) + (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431) - (geometric_anti_product_g3[2] * this.e4), 0.0) + (float4(geometric_anti_product_g0[1]) * this.group0) - (float4(this.e4, this.e412, this.e423, geometric_anti_product_g2[2] * this.e412) * float4(geometric_anti_product_g3.xxy, 1.0)) - (this.group1.xyzx * float4(float2(geometric_anti_product_g0[0]), geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - float4((geometric_anti_product_g2.yzx * this.group0.zxy), geometric_anti_product_g2[1] * this.e431), 
             /* e41, e42, e43 */
             (geometric_anti_product_g4.yzx * this.group1.zxy) - (float3(geometric_anti_product_g1[3]) * this.group1.xyz) - (float3(this.e4, this.e412, this.e423) * geometric_anti_product_g4.xxy) - (float3(this.e431, this.e4, this.e4) * geometric_anti_product_g4.zyz), 
             /* e23, e31, e12 */
@@ -721,7 +721,7 @@ public extension Line {
             /* e1, e2, e3, e4 */
             float4((float3(geometric_anti_product_g0_y, geometric_anti_product_g0_z, geometric_anti_product_g0_x) * this.group0.zxy), 0.0) - float4((float3(geometric_anti_product_g0_w) * this.group1.xyz), 0.0) - float4((float3(geometric_anti_product_g0_z, geometric_anti_product_g0_x, geometric_anti_product_g0_y) * this.group0.yzx), 0.0), 
             /* e423, e431, e412, e321 */
-            float4((float2(geometric_anti_product_g0_w * -1.0) * this.group0.xyz.xy), geometric_anti_product_g0_w * this.e43 * -1.0, (geometric_anti_product_g0_x * this.e41) + (geometric_anti_product_g0_y * this.e42) + (geometric_anti_product_g0_z * this.e43))
+            float4((float3(geometric_anti_product_g0_w * -1.0) * this.group0.xyz), (geometric_anti_product_g0_x * this.e41) + (geometric_anti_product_g0_y * this.e42) + (geometric_anti_product_g0_z * this.e43))
         );
     }
 }
@@ -996,7 +996,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             (float3(geometric_anti_product_g0[3]) * this.group3.xyz) + (float3(geometric_anti_product_g1[3]) * this.group2.xyz) + (float3(this.scalar, this.e12, this.e23) * geometric_anti_product_g0.xxy) + (float3(this.e1234, this.e43, this.e41) * geometric_anti_product_g1.xxy) + (float3(this.e42, this.e1234, this.e1234) * geometric_anti_product_g1.zyz) + (float3(this.e31, this.scalar, this.scalar) * geometric_anti_product_g0.zyz) - (this.group2.zxy * geometric_anti_product_g1.yzx) - (this.group3.zxy * geometric_anti_product_g0.yzx), 
             /* e423, e431, e412, e321 */
-            (float4(this.e4, this.e412, this.e423, this.e321) * geometric_anti_product_g0.xxyw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g1[0] * this.e423) * float4(geometric_anti_product_g0.zyz, 1.0)) + (this.group4.xyzy * float4(geometric_anti_product_g0.www, geometric_anti_product_g1[1])) + float4(float3(0.0), (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4)) - (geometric_anti_product_g0.yzxx * float4(this.group4.zxy, this.e1))
+            (float4(geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g1[1]) * this.group4.xyzy) + (float4(this.e4, this.e412, this.e423, this.e321) * geometric_anti_product_g0.xxyw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g1[0] * this.e423) * float4(geometric_anti_product_g0.zyz, 1.0)) + float4(float3(0.0), (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4)) - (geometric_anti_product_g0.yzxx * float4(this.group4.zxy, this.e1))
         );
     }
 }
@@ -1016,13 +1016,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((geometric_anti_product_g0[1] * this.scalar) + (geometric_anti_product_g4[3] * this.e4) - (geometric_anti_product_g3[0] * this.e41) - (geometric_anti_product_g3[1] * this.e42) - (geometric_anti_product_g3[2] * this.e43) - (geometric_anti_product_g1[1] * this.e431) - (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g1[3] * this.e321), 0.0) + (geometric_anti_product_g0 * float2(this.e1234)) + (float2(geometric_anti_product_g4[0]) * float2(this.e1, this.e423)) + (float2(geometric_anti_product_g4[1]) * float2(this.e2, this.e431)) + (float2(geometric_anti_product_g4[2]) * float2(this.e3, this.e412)) - (float2(geometric_anti_product_g2[0]) * float2(this.e23, this.e41)) - (float2(geometric_anti_product_g2[1]) * float2(this.e31, this.e42)) - (float2(geometric_anti_product_g2[2]) * float2(this.e12, this.e43)) - (float2(this.e423, this.e4) * geometric_anti_product_g1.xw), 
             /* e1, e2, e3, e4 */
-            float4((geometric_anti_product_g2[2] * this.e2) + (geometric_anti_product_g3[1] * this.e412) + (geometric_anti_product_g1[0] * this.e1234) + (geometric_anti_product_g1[2] * this.e42) + (geometric_anti_product_g1[3] * this.e23) + (geometric_anti_product_g4[0] * this.scalar) + (geometric_anti_product_g4[2] * this.e31) + (geometric_anti_product_g4[3] * this.e41), (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423) + (geometric_anti_product_g1[0] * this.e43) + (geometric_anti_product_g1[1] * this.e1234) + (geometric_anti_product_g1[3] * this.e31) + (geometric_anti_product_g4[0] * this.e12) + (geometric_anti_product_g4[1] * this.scalar) + (geometric_anti_product_g4[3] * this.e42), (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431) + (geometric_anti_product_g1[1] * this.e41) + (geometric_anti_product_g1[2] * this.e1234) + (geometric_anti_product_g1[3] * this.e12) + (geometric_anti_product_g4[1] * this.e23) + (geometric_anti_product_g4[2] * this.scalar) + (geometric_anti_product_g4[3] * this.e43), 0.0) + (float4(geometric_anti_product_g0[1]) * this.group1) + (float4(this.e321, this.e3, this.e1, geometric_anti_product_g1[3] * this.e1234) * float4(geometric_anti_product_g2.xxy, 1.0)) - (float4(this.e4, this.e412, this.e423, geometric_anti_product_g2[2] * this.e412) * float4(geometric_anti_product_g3.xxy, 1.0)) - (float4(this.e431, this.e4, this.e4, geometric_anti_product_g4[0] * this.e41) * float4(geometric_anti_product_g3.zyz, 1.0)) - (geometric_anti_product_g4.yzxz * float4(this.group3.zxy, this.e43)) - (this.group4.xyzx * float4(geometric_anti_product_g0.xx, geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - float4((geometric_anti_product_g2.yzx * this.group1.zxy), geometric_anti_product_g2[1] * this.e431) - float4((this.group2.zxy * geometric_anti_product_g1.yzx), geometric_anti_product_g4[1] * this.e42), 
+            float4((geometric_anti_product_g2[2] * this.e2) + (geometric_anti_product_g3[1] * this.e412) + (geometric_anti_product_g1[0] * this.e1234) + (geometric_anti_product_g1[2] * this.e42) + (geometric_anti_product_g1[3] * this.e23) + (geometric_anti_product_g4[0] * this.scalar) + (geometric_anti_product_g4[2] * this.e31) + (geometric_anti_product_g4[3] * this.e41), (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423) + (geometric_anti_product_g1[0] * this.e43) + (geometric_anti_product_g1[1] * this.e1234) + (geometric_anti_product_g1[3] * this.e31) + (geometric_anti_product_g4[0] * this.e12) + (geometric_anti_product_g4[1] * this.scalar) + (geometric_anti_product_g4[3] * this.e42), (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431) + (geometric_anti_product_g1[1] * this.e41) + (geometric_anti_product_g1[2] * this.e1234) + (geometric_anti_product_g1[3] * this.e12) + (geometric_anti_product_g4[1] * this.e23) + (geometric_anti_product_g4[2] * this.scalar) + (geometric_anti_product_g4[3] * this.e43), 0.0) + (float4(geometric_anti_product_g0[1]) * this.group1) + (float4(this.e321, this.e3, this.e1, geometric_anti_product_g1[3] * this.e1234) * float4(geometric_anti_product_g2.xxy, 1.0)) - (float4(this.e4, this.e412, this.e423, geometric_anti_product_g2[2] * this.e412) * float4(geometric_anti_product_g3.xxy, 1.0)) - (float4(this.e431, this.e4, this.e4, geometric_anti_product_g4[0] * this.e41) * float4(geometric_anti_product_g3.zyz, 1.0)) - (geometric_anti_product_g4.yzxz * float4(this.group3.zxy, this.e43)) - (this.group4.xyzx * float4(float2(geometric_anti_product_g0[0]), geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - float4((geometric_anti_product_g2.yzx * this.group1.zxy), geometric_anti_product_g2[1] * this.e431) - float4((this.group2.zxy * geometric_anti_product_g1.yzx), geometric_anti_product_g4[1] * this.e42), 
             /* e41, e42, e43 */
             (float3(geometric_anti_product_g0[1]) * this.group2.xyz) + (float3(this.e1234, this.e43, this.e41) * geometric_anti_product_g2.xxy) + (float3(this.e42, this.e1234, this.e1234) * geometric_anti_product_g2.zyz) + (geometric_anti_product_g4.yzx * this.group4.zxy) - (float3(geometric_anti_product_g1[3]) * this.group4.xyz) - (float3(this.e4, this.e412, this.e423) * geometric_anti_product_g4.xxy) - (float3(this.e431, this.e4, this.e4) * geometric_anti_product_g4.zyz) - (geometric_anti_product_g2.yzx * this.group2.zxy), 
             /* e23, e31, e12 */
             (float3(geometric_anti_product_g0[0]) * this.group2.xyz) + (float3(geometric_anti_product_g0[1]) * this.group3.xyz) + (float3(geometric_anti_product_g4[3]) * this.group4.xyz) + (float3(this.scalar, this.e12, this.e23) * geometric_anti_product_g2.xxy) + (float3(this.e1234, this.e43, this.e41) * geometric_anti_product_g3.xxy) + (float3(this.e4, this.e412, this.e423) * geometric_anti_product_g1.xxy) + (float3(this.e42, this.e1234, this.e1234) * geometric_anti_product_g3.zyz) + (float3(this.e31, this.scalar, this.scalar) * geometric_anti_product_g2.zyz) + (float3(this.e431, this.e4, this.e4) * geometric_anti_product_g1.zyz) + (geometric_anti_product_g4.yzx * this.group1.zxy) - (float3(geometric_anti_product_g1[3]) * this.group1.xyz) - (float3(this.e2, this.e321, this.e321) * geometric_anti_product_g4.zyz) - (float3(this.e321, this.e3, this.e1) * geometric_anti_product_g4.xxy) - (geometric_anti_product_g2.yzx * this.group3.zxy) - (geometric_anti_product_g3.yzx * this.group2.zxy) - (geometric_anti_product_g1.yzx * this.group4.zxy), 
             /* e423, e431, e412, e321 */
-            (float4(geometric_anti_product_g0[1]) * this.group4) + (float4(this.e1234, this.e43, this.e41, geometric_anti_product_g1[3] * this.scalar) * float4(geometric_anti_product_g4.xxy, 1.0)) + (float4(this.e4, this.e412, this.e423, geometric_anti_product_g3[0] * this.e423) * float4(geometric_anti_product_g2.xxy, 1.0)) + (float4(this.e42, this.e1234, this.e1234, this.e1234) * geometric_anti_product_g4.zyzw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g3[1] * this.e431) * float4(geometric_anti_product_g2.zyz, 1.0)) + float4(float3(0.0), -(geometric_anti_product_g2[1] * this.e2) - (geometric_anti_product_g2[2] * this.e3) - (geometric_anti_product_g1[0] * this.e41) - (geometric_anti_product_g1[1] * this.e42) - (geometric_anti_product_g1[2] * this.e43) - (geometric_anti_product_g4[0] * this.e23) - (geometric_anti_product_g4[1] * this.e31) - (geometric_anti_product_g4[2] * this.e12)) + float4((this.group2.xyz * geometric_anti_product_g1.www), geometric_anti_product_g3[2] * this.e412) - float4((geometric_anti_product_g2.yzx * this.group4.zxy), geometric_anti_product_g0[0] * this.e4) - float4((this.group2.zxy * geometric_anti_product_g4.yzx), geometric_anti_product_g2[0] * this.e1)
+            (float4(geometric_anti_product_g0[1]) * this.group4) + (float4(this.e1234, this.e43, this.e41, geometric_anti_product_g1[3] * this.scalar) * float4(geometric_anti_product_g4.xxy, 1.0)) + (float4(this.e4, this.e412, this.e423, geometric_anti_product_g3[0] * this.e423) * float4(geometric_anti_product_g2.xxy, 1.0)) + (float4(this.e42, this.e1234, this.e1234, this.e1234) * geometric_anti_product_g4.zyzw) + (float4(this.e431, this.e4, this.e4, geometric_anti_product_g3[1] * this.e431) * float4(geometric_anti_product_g2.zyz, 1.0)) + float4(float3(0.0), -(geometric_anti_product_g2[1] * this.e2) - (geometric_anti_product_g2[2] * this.e3) - (geometric_anti_product_g1[0] * this.e41) - (geometric_anti_product_g1[1] * this.e42) - (geometric_anti_product_g1[2] * this.e43) - (geometric_anti_product_g4[0] * this.e23) - (geometric_anti_product_g4[1] * this.e31) - (geometric_anti_product_g4[2] * this.e12)) + float4((float3(geometric_anti_product_g1[3]) * this.group2.xyz), geometric_anti_product_g3[2] * this.e412) - float4((geometric_anti_product_g2.yzx * this.group4.zxy), geometric_anti_product_g0[0] * this.e4) - float4((this.group2.zxy * geometric_anti_product_g4.yzx), geometric_anti_product_g2[0] * this.e1)
         );
     }
 }
@@ -1082,13 +1082,13 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((geometric_anti_product_g0_w * this.e321) + (geometric_anti_product_g0_x * this.e423) + (geometric_anti_product_g0_y * this.e431) + (geometric_anti_product_g0_z * this.e412), geometric_anti_product_g0_w * this.e4), 
             /* e1, e2, e3, e4 */
-            float4(((float3(geometric_anti_product_g0_y, geometric_anti_product_g0_z, geometric_anti_product_g0_x) * this.group2.zxy) - (float3(geometric_anti_product_g0_w) * this.group3.xyz) - (float3(geometric_anti_product_g0_x, geometric_anti_product_g0_y, geometric_anti_product_g0_y * this.e41) * float3(this.group0.yy, 1.0)) - (float3(geometric_anti_product_g0_z, geometric_anti_product_g0_x, geometric_anti_product_g0_z * this.e1234) * float3(this.group2.xyz.yz, 1.0))), geometric_anti_product_g0_w * this.e1234 * -1.0), 
+            float4(((float3(geometric_anti_product_g0_y, geometric_anti_product_g0_z, geometric_anti_product_g0_x) * this.group2.zxy) - (float3(geometric_anti_product_g0_w) * this.group3.xyz) - (float3(geometric_anti_product_g0_x, geometric_anti_product_g0_y, geometric_anti_product_g0_y * this.e41) * float3(float2(this.e1234), 1.0)) - (float3(geometric_anti_product_g0_z, geometric_anti_product_g0_x, geometric_anti_product_g0_z * this.e1234) * float3(this.group2.xyz.yz, 1.0))), geometric_anti_product_g0_w * this.e1234 * -1.0), 
             /* e41, e42, e43 */
             float3(geometric_anti_product_g0_w) * this.group4.xyz, 
             /* e23, e31, e12 */
             (float3(geometric_anti_product_g0_w) * this.group1.xyz) + (float3(geometric_anti_product_g0_y, geometric_anti_product_g0_z, geometric_anti_product_g0_x) * this.group4.zxy) - (float3(this.e4) * float3(geometric_anti_product_g0_x, geometric_anti_product_g0_y, geometric_anti_product_g0_z)) - (float3(geometric_anti_product_g0_z, geometric_anti_product_g0_x, geometric_anti_product_g0_y) * this.group4.yzx), 
             /* e423, e431, e412, e321 */
-            float4((float2(geometric_anti_product_g0_w * -1.0) * this.group2.xyz.xy), geometric_anti_product_g0_w * this.e43 * -1.0, (geometric_anti_product_g0_x * this.e41) + (geometric_anti_product_g0_y * this.e42) + (geometric_anti_product_g0_z * this.e43) - (geometric_anti_product_g0_w * this.scalar))
+            float4((float3(geometric_anti_product_g0_w * -1.0) * this.group2.xyz), (geometric_anti_product_g0_x * this.e41) + (geometric_anti_product_g0_y * this.e42) + (geometric_anti_product_g0_z * this.e43) - (geometric_anti_product_g0_w * this.scalar))
         );
     }
 }
@@ -1185,13 +1185,13 @@ public extension Origin {
             /* scalar, e1234 */
             float2(this.e4) * float2(geometric_anti_product_g4[3], geometric_anti_product_g1[3]) * float2(1.0, -1.0), 
             /* e1, e2, e3, e4 */
-            float4(this.e4) * float4((float2(other_g0) * other.group3.xyz.xy), other_g0 * other.e12, geometric_anti_product_g0[1]), 
+            float4(this.e4) * float4((float3(other_g0) * other.group3.xyz), geometric_anti_product_g0[1]), 
             /* e41, e42, e43 */
             float3(this.e4 * -1.0) * geometric_anti_product_g4.xyz, 
             /* e23, e31, e12 */
             float3(this.e4) * geometric_anti_product_g1.xyz, 
             /* e423, e431, e412, e321 */
-            float4(this.e4 * -1.0) * float4((float2(other_g0) * other.group2.xyz.xy), other_g0 * other.e43, geometric_anti_product_g0[0])
+            float4(this.e4 * -1.0) * float4((float3(other_g0) * other.group2.xyz), geometric_anti_product_g0[0])
         );
     }
 }
@@ -1311,9 +1311,9 @@ public extension Plane {
         float4 geometric_anti_product_g1 = float4(other_g0) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4((geometric_anti_product_g0[0] * this.e321) + (geometric_anti_product_g1[1] * this.e412), (geometric_anti_product_g0[1] * this.e321) + (geometric_anti_product_g1[2] * this.e423), (geometric_anti_product_g0[2] * this.e321) + (geometric_anti_product_g1[0] * this.e431), geometric_anti_product_g0[2] * this.e412 * -1.0) - (this.group0.xyzy * float4(geometric_anti_product_g1.www, geometric_anti_product_g0[1])) - (this.group0.yzxx * float4(geometric_anti_product_g1.zxy, geometric_anti_product_g0[0])), 
+            float4((geometric_anti_product_g0[0] * this.e321) + (geometric_anti_product_g1[1] * this.e412), (geometric_anti_product_g0[1] * this.e321) + (geometric_anti_product_g1[2] * this.e423), (geometric_anti_product_g0[2] * this.e321) + (geometric_anti_product_g1[0] * this.e431), geometric_anti_product_g0[2] * this.e412 * -1.0) - (float4(geometric_anti_product_g1[3], geometric_anti_product_g1[3], geometric_anti_product_g1[3], geometric_anti_product_g0[1]) * this.group0.xyzy) - (this.group0.yzxx * float4(geometric_anti_product_g1.zxy, geometric_anti_product_g0[0])), 
             /* e423, e431, e412, e321 */
-            float4(geometric_anti_product_g0[1] * this.e412 * -1.0, geometric_anti_product_g0[2] * this.e423 * -1.0, geometric_anti_product_g0[0] * this.e431 * -1.0, (geometric_anti_product_g1[1] * this.e431) + (geometric_anti_product_g1[2] * this.e412)) + (geometric_anti_product_g0.zxyw * this.group0.yzxw) + (this.group0.xyzx * float4(geometric_anti_product_g0.www, geometric_anti_product_g1[0]))
+            float4(geometric_anti_product_g0[1] * this.e412 * -1.0, geometric_anti_product_g0[2] * this.e423 * -1.0, geometric_anti_product_g0[0] * this.e431 * -1.0, (geometric_anti_product_g1[1] * this.e431) + (geometric_anti_product_g1[2] * this.e412)) + (float4(geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g0[3], geometric_anti_product_g1[0]) * this.group0.xyzx) + (geometric_anti_product_g0.zxyw * this.group0.yzxw)
         );
     }
 }
@@ -1333,7 +1333,7 @@ public extension Plane {
             /* scalar, e1234 */
             float2(-(geometric_anti_product_g1[0] * this.e423) - (geometric_anti_product_g1[1] * this.e431) - (geometric_anti_product_g1[2] * this.e412) - (geometric_anti_product_g1[3] * this.e321), (geometric_anti_product_g4[0] * this.e423) + (geometric_anti_product_g4[1] * this.e431) + (geometric_anti_product_g4[2] * this.e412)), 
             /* e1, e2, e3, e4 */
-            float4((geometric_anti_product_g2[0] * this.e321) + (geometric_anti_product_g3[1] * this.e412), (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423), (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431), geometric_anti_product_g2[2] * this.e412 * -1.0) - (this.group0.xyzx * float4(geometric_anti_product_g0.xx, geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - (this.group0.yzxy * float4(geometric_anti_product_g3.zxy, geometric_anti_product_g2[1])), 
+            float4((geometric_anti_product_g2[0] * this.e321) + (geometric_anti_product_g3[1] * this.e412), (geometric_anti_product_g2[1] * this.e321) + (geometric_anti_product_g3[2] * this.e423), (geometric_anti_product_g2[2] * this.e321) + (geometric_anti_product_g3[0] * this.e431), geometric_anti_product_g2[2] * this.e412 * -1.0) - (this.group0.xyzx * float4(float2(geometric_anti_product_g0[0]), geometric_anti_product_g0[0], geometric_anti_product_g2[0])) - (this.group0.yzxy * float4(geometric_anti_product_g3.zxy, geometric_anti_product_g2[1])), 
             /* e41, e42, e43 */
             (geometric_anti_product_g4.yzx * this.group0.zxy) - (float3(geometric_anti_product_g1[3]) * this.group0.xyz) - (geometric_anti_product_g4.zxy * this.group0.yzx), 
             /* e23, e31, e12 */
@@ -1450,7 +1450,7 @@ public extension Point {
             /* e1, e2, e3, e4 */
             float4((float3(other_g0 * this.e4) * other.group1.xyz), 0.0) + float4((geometric_anti_product_g0.zxy * this.group0.yzx), 0.0) - float4((geometric_anti_product_g0.yzx * this.group0.zxy), 0.0), 
             /* e423, e431, e412, e321 */
-            float4(this.e4, this.e4, this.e4, -(geometric_anti_product_g0[0] * this.e1) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3)) * float4(geometric_anti_product_g0, 1.0)
+            float4((geometric_anti_product_g0 * float3(this.e4)), -(geometric_anti_product_g0[0] * this.e1) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3))
         );
     }
 }
@@ -1467,7 +1467,7 @@ public extension Point {
             /* e1, e2, e3, e4 */
             float4(((float3(geometric_anti_product_g0[3]) * this.group0.xyz) + (geometric_anti_product_g0.zxy * this.group0.yzx) - (float3(this.e4) * geometric_anti_product_g1.xyz) - (geometric_anti_product_g0.yzx * this.group0.zxy)), geometric_anti_product_g0[3] * this.e4), 
             /* e423, e431, e412, e321 */
-            float4(this.e4, this.e4, this.e4, -(geometric_anti_product_g0[0] * this.e1) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4)) * float4(geometric_anti_product_g0.xyz, 1.0)
+            float4((float3(this.e4) * geometric_anti_product_g0.xyz), -(geometric_anti_product_g0[0] * this.e1) - (geometric_anti_product_g0[1] * this.e2) - (geometric_anti_product_g0[2] * this.e3) - (geometric_anti_product_g1[3] * this.e4))
         );
     }
 }
@@ -1492,7 +1492,7 @@ public extension Point {
             /* e23, e31, e12 */
             (float3(this.e4) * geometric_anti_product_g1.xyz) + (geometric_anti_product_g4.yzx * this.group0.zxy) - (float3(geometric_anti_product_g1[3]) * this.group0.xyz) - (geometric_anti_product_g4.zxy * this.group0.yzx), 
             /* e423, e431, e412, e321 */
-            float4(this.e4, this.e4, this.e4, -(geometric_anti_product_g0[0] * this.e4) - (geometric_anti_product_g2[0] * this.e1) - (geometric_anti_product_g2[1] * this.e2) - (geometric_anti_product_g2[2] * this.e3)) * float4(geometric_anti_product_g2, 1.0)
+            float4((geometric_anti_product_g2 * float3(this.e4)), -(geometric_anti_product_g0[0] * this.e4) - (geometric_anti_product_g2[0] * this.e1) - (geometric_anti_product_g2[1] * this.e2) - (geometric_anti_product_g2[2] * this.e3))
         );
     }
 }

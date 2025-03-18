@@ -19,7 +19,7 @@ use crate::traits::Wedge;
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       4       0
-//  Average:         6      10       0
+//  Average:         6       9       0
 //  Maximum:        85     100       0
 impl std::ops::Add<AntiScalar> for Motor {
     type Output = Motor;
@@ -278,10 +278,11 @@ impl std::ops::BitXor<DualNum> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        1       10        0
+    //  no simd        1        9        0
     fn bitxor(self, other: DualNum) -> Self::Output {
         self.wedge(other)
     }
@@ -319,11 +320,10 @@ impl std::ops::BitXor<Line> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //    simd3        0        2        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       13        0
+    //  no simd        5       12        0
     fn bitxor(self, other: Line) -> Self::Output {
         self.wedge(other)
     }
@@ -592,11 +592,10 @@ impl std::ops::Mul<Plane> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        3        5        0
-    //    simd3        3        4        0
-    //    simd4        0        1        0
+    //    simd3        3        5        0
     // Totals...
     // yes simd        6       10        0
-    //  no simd       12       21        0
+    //  no simd       12       20        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -990,9 +989,9 @@ impl TryFrom<MultiVector> for Motor {
         }
         Ok(Motor::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from([multi_vector[e41], multi_vector[e42], multi_vector[e43], multi_vector[e1234]]),
+            multi_vector.group2().with_w(multi_vector[e1234]),
             // e23, e31, e12, scalar
-            Simd32x4::from([multi_vector[e23], multi_vector[e31], multi_vector[e12], multi_vector[scalar]]),
+            multi_vector.group3().with_w(multi_vector[scalar]),
         ))
     }
 }

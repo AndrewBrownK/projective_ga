@@ -59,7 +59,11 @@ impl WeightNormSquared for Flector {
     // f32        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
+        let sub_type_g1_xyz = self.group1().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e4] * self[e4],
+        )
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Line {
@@ -104,16 +108,17 @@ impl WeightNormSquared for MultiVector {
     // f32        7        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
+        let sub_type_g4_xyz = self.group4().xyz();
         AntiScalar::from_groups(
             // e1234
-            self[e1234] * self[e1234]
+            sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+                + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
+                + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
+                + self[e1234] * self[e1234]
                 + self[e4] * self[e4]
                 + self[e41] * self[e41]
                 + self[e42] * self[e42]
-                + self[e43] * self[e43]
-                + self[e423] * self[e423]
-                + self[e431] * self[e431]
-                + self[e412] * self[e412],
+                + self[e43] * self[e43],
         )
     }
 }
@@ -140,8 +145,11 @@ impl WeightNormSquared for Plane {
     //      add/sub      mul      div
     // f32        2        0        0
     fn weight_norm_squared(self) -> AntiScalar {
-        use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
+        let sub_type_g0_xyz = self.group0().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2],
+        )
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Point {

@@ -20,7 +20,7 @@ use crate::traits::Wedge;
 //  Minimum:         0       0       0
 //   Median:         0       2       0
 //  Average:         0       3       0
-//  Maximum:         8      25       0
+//  Maximum:         8      24       0
 impl std::ops::Add<AntiScalar> for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
@@ -262,10 +262,11 @@ impl std::ops::BitXor<Motor> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        2        0
-    //    simd4        0        2        0
+    //    simd3        0        1        0
+    //    simd4        0        1        0
     // Totals...
     // yes simd        1        4        0
-    //  no simd        1       10        0
+    //  no simd        1        9        0
     fn bitxor(self, other: Motor) -> Self::Output {
         self.wedge(other)
     }
@@ -370,11 +371,10 @@ impl std::ops::Mul<Flector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        1        3        0
-    //    simd3        1        2        0
-    //    simd4        0        1        0
+    //    simd3        1        3        0
     // Totals...
     // yes simd        2        6        0
-    //  no simd        4       13        0
+    //  no simd        4       12        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -413,11 +413,10 @@ impl std::ops::Mul<MultiVector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        6        0
-    //    simd3        2        5        0
-    //    simd4        0        1        0
+    //    simd3        2        6        0
     // Totals...
     // yes simd        4       12        0
-    //  no simd        8       25        0
+    //  no simd        8       24        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }

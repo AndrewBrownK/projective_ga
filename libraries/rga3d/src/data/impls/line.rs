@@ -237,11 +237,10 @@ impl std::ops::BitXor<Motor> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        5        6        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //    simd3        0        2        0
     // Totals...
     // yes simd        5        8        0
-    //  no simd        5       13        0
+    //  no simd        5       12        0
     fn bitxor(self, other: Motor) -> Self::Output {
         self.wedge(other)
     }
@@ -413,11 +412,11 @@ impl std::ops::Mul<Plane> for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        2        3        0
-    //    simd3        0        3        0
-    //    simd4        2        1        0
+    //    simd3        0        4        0
+    //    simd4        2        0        0
     // Totals...
     // yes simd        4        7        0
-    //  no simd       10       16        0
+    //  no simd       10       15        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }

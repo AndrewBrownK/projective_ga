@@ -41,9 +41,10 @@ public AntiScalar operator /(WeightNormSquaredPrefixOrPostfix lhs, Flector rhs) 
 }
 public extension Flector {
     public AntiScalar weight_norm_squared() {
+        float3 sub_type_g1_xyz = this.group1.xyz;
         return AntiScalar(
             /* e1234 */
-            this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e4 * this.e4
         );
     }
 }
@@ -89,9 +90,10 @@ public AntiScalar operator /(WeightNormSquaredPrefixOrPostfix lhs, MultiVector r
 }
 public extension MultiVector {
     public AntiScalar weight_norm_squared() {
+        float3 sub_type_g4_xyz = this.group4.xyz;
         return AntiScalar(
             /* e1234 */
-            this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412
+            sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43
         );
     }
 }
@@ -121,9 +123,10 @@ public AntiScalar operator /(WeightNormSquaredPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public AntiScalar weight_norm_squared() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return AntiScalar(
             /* e1234 */
-            this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2]
         );
     }
 }

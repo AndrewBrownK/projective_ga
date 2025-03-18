@@ -17,7 +17,7 @@
 //  Minimum:         0       0       0
 //   Median:         2       6       0
 //  Average:         2       5       0
-//  Maximum:         8      16       3
+//  Maximum:         8      16       1
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
@@ -75,7 +75,9 @@ impl Unitize for Flector {
     //  no simd        3        8        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
+        let sub_type_g1_xyz = self.group1().xyz();
+        let geometric_anti_product_g0 =
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e4] * self[e4];
         Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -167,14 +169,15 @@ impl Unitize for MultiVector {
     //  no simd        7       16        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e1234] * self[e1234]
+        let sub_type_g4_xyz = self.group4().xyz();
+        let geometric_anti_product_g0 = sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+            + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
+            + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
+            + self[e1234] * self[e1234]
             + self[e4] * self[e4]
             + self[e41] * self[e41]
             + self[e42] * self[e42]
-            + self[e43] * self[e43]
-            + self[e423] * self[e423]
-            + self[e431] * self[e431]
-            + self[e412] * self[e412];
+            + self[e43] * self[e43];
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),
@@ -218,19 +221,16 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Plane {
 }
 impl Unitize for Plane {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        2        2        0
-    // Totals...
-    // yes simd        2        3        0
-    //  no simd        8        9        0
+    //          add/sub      mul      div
+    //   simd4        2        3        0
+    // no simd        8       12        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
+        let sub_type_g0_xyz = self.group0().xyz();
         Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from([f32::powi(self[e423], 3), f32::powi(self[e431], 3), f32::powi(self[e412], 3), self[e412] * self[e412] * self[e321]])
-                + (Simd32x4::powi(self.group0().yxxx(), 2) * self.group0())
-                + (Simd32x4::powi(self.group0().zzyy(), 2) * self.group0()),
+            (Simd32x4::from(sub_type_g0_xyz[0] * sub_type_g0_xyz[0]) * self.group0())
+                + (Simd32x4::from(sub_type_g0_xyz[1] * sub_type_g0_xyz[1]) * self.group0())
+                + (Simd32x4::from(sub_type_g0_xyz[2] * sub_type_g0_xyz[2]) * self.group0()),
         )
     }
 }
@@ -247,10 +247,14 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Point {
 }
 impl Unitize for Point {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        0        1
-    // no simd        0        0        3
+    //           add/sub      mul      div
+    //      f32        0        0        1
+    //    simd3        0        1        0
+    // Totals...
+    // yes simd        0        1        1
+    //  no simd        0        3        1
     fn unitize(self) -> Self {
-        Point::from_groups(/* e1, e2, e3, e4 */ (self.group0().xyz() / self.group0().www()).with_w(1.0))
+        use crate::elements::*;
+        Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))
     }
 }

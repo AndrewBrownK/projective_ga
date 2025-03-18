@@ -41,7 +41,8 @@ public Flector operator /(UnitizePrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Flector unitize() {
-        float geometric_anti_product_g0 = this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
+        float3 sub_type_g1_xyz = this.group1.xyz;
+        float geometric_anti_product_g0 = sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e4 * this.e4;
         return Flector(
             /* e1, e2, e3, e4 */
             float4(geometric_anti_product_g0) * this.group0, 
@@ -98,7 +99,8 @@ public MultiVector operator /(UnitizePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector unitize() {
-        float geometric_anti_product_g0 = this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
+        float3 sub_type_g4_xyz = this.group4.xyz;
+        float geometric_anti_product_g0 = sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43;
         return MultiVector(
             /* scalar, e1234 */
             float2(geometric_anti_product_g0) * this.group0.xy, 
@@ -139,9 +141,10 @@ public Plane operator /(UnitizePrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public Plane unitize() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(pow(this.e423, 3), pow(this.e431, 3), pow(this.e412, 3), this.e412 * this.e412 * this.e321) + (float4_pow(this.group0.yxxx, 2) * this.group0) + (float4_pow(this.group0.zzyy, 2) * this.group0)
+            (float4(sub_type_g0_xyz[0] * sub_type_g0_xyz[0]) * this.group0) + (float4(sub_type_g0_xyz[1] * sub_type_g0_xyz[1]) * this.group0) + (float4(sub_type_g0_xyz[2] * sub_type_g0_xyz[2]) * this.group0)
         );
     }
 }
@@ -157,7 +160,7 @@ public extension Point {
     public Point unitize() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4((this.group0.xyz / this.group0.www), 1.0)
+            float4((float3(1.0 / this.e4) * this.group0.xyz), 1.0)
         );
     }
 }
