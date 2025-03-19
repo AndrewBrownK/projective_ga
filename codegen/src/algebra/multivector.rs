@@ -1304,13 +1304,9 @@ impl DynamicMultiVector {
             // So we explore what happens with deep inlining,
             // even if we stick to using variables in the end.
             let mut orig_f = f.clone();
-            f.deep_inline_variables();
-
-            match f {
-                FloatExpr::Literal(0.0) => continue,
-                FloatExpr::Product(v, _f) if v.is_empty() => panic!("Problem"),
-                FloatExpr::Sum(v, _a) if v.is_empty() => panic!("Problem"),
-                _ => {}
+            f.deep_simplify();
+            if let FloatExpr::Literal(0.0) = f {
+                continue
             }
 
             let mut el = BasisElement::from(el);
@@ -1358,8 +1354,7 @@ impl DynamicMultiVector {
             // So we explore what happens with deep inlining,
             // even if we stick to using variables in the end.
             let mut orig_f = f.clone();
-            f.deep_inline_variables();
-            f.simplify();
+            f.deep_simplify();
 
             match f {
                 FloatExpr::Literal(0.0) => continue,

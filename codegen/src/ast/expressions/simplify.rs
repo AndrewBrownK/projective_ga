@@ -68,7 +68,7 @@ impl<Expr: Ord> SortVecDespiteF32 for Vec<(Expr, f32)> {
 impl AnyExpression {
     pub(crate) fn simplify(&mut self) {
         match self {
-            AnyExpression::Int(_) => {}
+            AnyExpression::Int(e) => e.simplify(),
             AnyExpression::Float(e) => e.simplify(),
             AnyExpression::Vec2(e) => e.simplify(),
             AnyExpression::Vec3(e) => e.simplify(),
@@ -76,28 +76,56 @@ impl AnyExpression {
             AnyExpression::Class(e) => e.simplify(),
         }
     }
+    pub(crate) fn transposing_simplify(&mut self) {
+        match self {
+            AnyExpression::Int(e) => e.transposing_simplify(),
+            AnyExpression::Float(e) => e.transposing_simplify(),
+            AnyExpression::Vec2(e) => e.transposing_simplify(),
+            AnyExpression::Vec3(e) => e.transposing_simplify(),
+            AnyExpression::Vec4(e) => e.transposing_simplify(),
+            AnyExpression::Class(e) => e.transposing_simplify(),
+        }
+    }
+    pub(crate) fn deep_simplify(&mut self) {
+        match self {
+            AnyExpression::Int(e) => e.deep_simplify(),
+            AnyExpression::Float(e) => e.deep_simplify(),
+            AnyExpression::Vec2(e) => e.deep_simplify(),
+            AnyExpression::Vec3(e) => e.deep_simplify(),
+            AnyExpression::Vec4(e) => e.deep_simplify(),
+            AnyExpression::Class(e) => e.deep_simplify(),
+        }
+    }
 }
 
 impl IntExpr {
     #[allow(unused)]
     pub(crate) fn simplify(&mut self) {
-        self.int_simplify(false);
+        self.int_simplify(false, false, false);
     }
     #[allow(unused)]
-    #[tracing::instrument(level = "debug", skip_all)]
-    fn int_simplify(&mut self, insides_already_done: bool) {
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.int_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.int_simplify(false, false, true);
+    }
+    #[allow(unused)]
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn int_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             IntExpr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
                 let _span_entered = span.enter();
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Int(mut new_self) = inlined_expr {
-                            new_self.int_simplify(false);
+                            new_self.int_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -117,23 +145,31 @@ impl IntExpr {
 
 impl FloatExpr {
     pub(crate) fn simplify(&mut self) {
-        self.float_simplify(false);
+        self.float_simplify(false, false, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.float_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.float_simplify(false, false, true);
     }
 
-    #[tracing::instrument(level = "debug", skip_all)]
-    fn float_simplify(&mut self, insides_already_done: bool) {
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn float_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             FloatExpr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
                 let _span_entered = span.enter();
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Float(mut new_self) = inlined_expr {
-                            new_self.float_simplify(false);
+                            new_self.float_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -145,7 +181,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_FromInt");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    a.int_simplify(insides_already_done);
+                    a.int_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match a {
                     IntExpr::Variable(_) => {}
@@ -160,7 +196,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_AccessVec2");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    av2.vec2_simplify(insides_already_done, true);
+                    av2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match av2.as_mut() {
                     Vec2Expr::Gather1(fe) => {
@@ -171,12 +207,12 @@ impl FloatExpr {
                     }
                     Vec2Expr::Truncate3to2(box v) => {
                         *self = FloatExpr::access_vec_3(v.take_as_owned(), *idx_in_vec);
-                        self.float_simplify(false);
+                        self.float_simplify(false, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec2Expr::Truncate4to2(box v) => {
                         *self = FloatExpr::access_vec_4(v.take_as_owned(), *idx_in_vec);
-                        self.float_simplify(false);
+                        self.float_simplify(false, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec2Expr::AccessMultiVecGroup(mve, target_group_idx) => {
@@ -195,7 +231,7 @@ impl FloatExpr {
                             new_factors.push((FloatExpr::access_vec_2(factor.take_as_owned(), *idx_in_vec), *exponent));
                         }
                         *self = FloatExpr::product(new_factors, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec2Expr::Sum(addends, literal) => {
@@ -204,7 +240,7 @@ impl FloatExpr {
                             new_addends.push((FloatExpr::access_vec_2(addend.take_as_owned(), *idx_in_vec), *factor));
                         }
                         *self = FloatExpr::sum(new_addends, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec2Expr::SwizzleVec2(box v2, i0, i1) => {
@@ -223,7 +259,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_AccessVec3");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    av3.vec3_simplify(insides_already_done, true);
+                    av3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match av3.as_mut() {
                     Vec3Expr::Gather1(fe) => {
@@ -234,19 +270,19 @@ impl FloatExpr {
                     }
                     Vec3Expr::Truncate4to3(box v) => {
                         *self = FloatExpr::access_vec_4(v.take_as_owned(), *idx_in_vec);
-                        self.float_simplify(false);
+                        self.float_simplify(false, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec3Expr::Extend2to3(xy, z) => {
                         match *idx_in_vec {
                             0 | 1 => {
                                 *self = FloatExpr::access_vec_2(xy.take_as_owned(), *idx_in_vec);
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             2 => {
                                 *self = z.take_as_owned();
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             _ => {}
@@ -268,7 +304,7 @@ impl FloatExpr {
                             new_factors.push((FloatExpr::access_vec_3(factor.take_as_owned(), *idx_in_vec), *exponent));
                         }
                         *self = FloatExpr::product(new_factors, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec3Expr::Sum(addends, literal) => {
@@ -277,7 +313,7 @@ impl FloatExpr {
                             new_addends.push((FloatExpr::access_vec_3(addend.take_as_owned(), *idx_in_vec), *factor));
                         }
                         *self = FloatExpr::sum(new_addends, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec3Expr::SwizzleVec2(v2, i0, i1, i2) => {
@@ -296,7 +332,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_AccessVec4");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    av4.vec4_simplify(insides_already_done, true);
+                    av4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match av4.as_mut() {
                     Vec4Expr::Gather1(fe) => {
@@ -309,17 +345,17 @@ impl FloatExpr {
                         match *idx_in_vec {
                             0 | 1 => {
                                 *self = FloatExpr::access_vec_2(xy.take_as_owned(), *idx_in_vec);
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             2 => {
                                 *self = z.take_as_owned();
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             3 => {
                                 *self = w.take_as_owned();
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             _ => {}
@@ -329,12 +365,12 @@ impl FloatExpr {
                         match *idx_in_vec {
                             0 | 1 | 2 => {
                                 *self = FloatExpr::access_vec_3(xyz.take_as_owned(), *idx_in_vec);
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             3 => {
                                 *self = w.take_as_owned();
-                                self.float_simplify(false);
+                                self.float_simplify(false, transpose_simd, force_inline_all_variables);
                                 return
                             }
                             _ => {}
@@ -356,7 +392,7 @@ impl FloatExpr {
                             new_factors.push((FloatExpr::access_vec_4(factor.take_as_owned(), *idx_in_vec), *exponent));
                         }
                         *self = FloatExpr::product(new_factors, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec4Expr::Sum(addends, literal) => {
@@ -365,7 +401,7 @@ impl FloatExpr {
                             new_addends.push((FloatExpr::access_vec_4(addend.take_as_owned(), *idx_in_vec), *factor));
                         }
                         *self = FloatExpr::sum(new_addends, literal[*idx_in_vec]);
-                        self.simplify();
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     Vec4Expr::SwizzleVec2(v2, i0, i1, i2, i3) => {
@@ -384,7 +420,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    mve.multivec_simplify(insides_already_done);
+                    mve.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 let idx = *idx;
                 let mv = mve.mv_class;
@@ -420,7 +456,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_AccessMultiVecFlat");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    mve.multivec_simplify(insides_already_done);
+                    mve.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let MultiVectorVia::Construct(groups) = mve.expr.as_mut() {
                     let mut scan_idx = 0;
@@ -470,7 +506,7 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_TraitInvoke11ToFloat");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
             FloatExpr::Product(product, last_factor) => {
@@ -483,7 +519,7 @@ impl FloatExpr {
                 }
                 if !insides_already_done {
                     for (factor, _exponent) in product.iter_mut() {
-                        factor.float_simplify(insides_already_done);
+                        factor.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if product.len() == 1 && *last_factor == 1.0 {
@@ -582,7 +618,7 @@ impl FloatExpr {
                     }
                     *self = FloatExpr::sum(result_sum, 0.0);
                     // Transposition is a non-trivial structural change, so we need to re-simplify
-                    self.float_simplify(insides_already_done);
+                    self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     return
                 }
 
@@ -613,7 +649,7 @@ impl FloatExpr {
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
-                        addend.float_simplify(insides_already_done);
+                        addend.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if sum.len() == 1 && *last_addend == 0.0 {
@@ -622,7 +658,7 @@ impl FloatExpr {
                         *self = addend;
                     } else {
                         let mut new_self = FloatExpr::product(vec![(addend, 1.0)], factor);
-                        new_self.float_simplify(true);
+                        new_self.float_simplify(true, transpose_simd, force_inline_all_variables);
                         *self = new_self;
                     };
                 }
@@ -695,11 +731,11 @@ impl FloatExpr {
                 let span = tracing::trace_span!("match_Exp");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    base_expression.float_simplify(insides_already_done);
+                    base_expression.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let Some(d) = exponent_expression {
                     if !insides_already_done {
-                        d.float_simplify(insides_already_done);
+                        d.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                     if let box FloatExpr::Literal(l) = d {
                         *exponent_literal *= *l;
@@ -734,7 +770,7 @@ impl FloatExpr {
                         let new_factor_exponent = *factor_exponent * *exponent_literal;
                         let new_factor_literal = f32::powf(*factor_literal, *exponent_literal);
                         *self = FloatExpr::product(vec![(factor.take_as_owned(), new_factor_exponent)], new_factor_literal);
-                        self.float_simplify(insides_already_done);
+                        self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                         return
                     }
                     _ => {}
@@ -749,7 +785,7 @@ impl FloatExpr {
                         return
                     }
                     *self = FloatExpr::product(vec![(base_expression.take_as_owned(), *exponent_literal)], 1.0);
-                    self.float_simplify(insides_already_done);
+                    self.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     return
                 }
             }
@@ -761,22 +797,31 @@ impl FloatExpr {
 
 impl Vec2Expr {
     pub(crate) fn simplify(&mut self) {
-        self.vec2_simplify(false, true);
+        self.vec2_simplify(false, false, false);
     }
-    #[tracing::instrument(level = "debug", skip_all)]
-    fn vec2_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
+    #[allow(unused)]
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.vec2_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.slice_to_floats();
+        self.vec2_simplify(false, false, true);
+    }
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn vec2_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             Vec2Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
                 let _span_entered = span.enter();
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec2(mut new_self) = inlined_expr {
-                            new_self.vec2_simplify(false, transpose_simd);
+                            new_self.vec2_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -787,7 +832,7 @@ impl Vec2Expr {
                 let span = tracing::trace_span!("match_Gather1");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    f.float_simplify(insides_already_done);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 // Do I really want to do more here?
             }
@@ -796,8 +841,8 @@ impl Vec2Expr {
                 let _span_entered = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
-                    f0.float_simplify(insides_already_done);
-                    f1.float_simplify(insides_already_done);
+                    f0.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if f0 == f1 {
                     *self = Vec2Expr::Gather1(f0.take_as_owned());
@@ -870,7 +915,7 @@ impl Vec2Expr {
                                 (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
                                 _ => return
                             };
-                            self.vec2_simplify(insides_already_done, transpose_simd);
+                            self.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             return
                         }
                     }
@@ -921,7 +966,7 @@ impl Vec2Expr {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    mve.multivec_simplify(insides_already_done);
+                    mve.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 let idx = *idx;
 
@@ -983,7 +1028,7 @@ impl Vec2Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.vec2_simplify(insides_already_done, transpose_simd);
+                        factor.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 2] {
@@ -1074,7 +1119,7 @@ impl Vec2Expr {
                 if eqs!(x, y) && !gather1.is_empty() {
                     let gather1 = swap_take!(gather1, vec![]);
                     let mut f = FloatExpr::product(gather1, x);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     product.push((Vec2Expr::Gather1(f), 1.0));
                     last_factor[0] = 1.0;
                     last_factor[1] = 1.0;
@@ -1088,14 +1133,14 @@ impl Vec2Expr {
 
                 if !gather1.is_empty() {
                     let mut f = FloatExpr::product(gather1, 1.0);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     product.push((Vec2Expr::Gather1(f), 1.0));
                 }
                 if is_any_gather2 {
                     let mut x = if gather2_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather2_x, 1.0) };
                     let mut y = if gather2_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather2_y, 1.0) };
-                    x.simplify();
-                    y.simplify();
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let FloatExpr::Literal(0.0) = &x {
                         x_is_zeroed_without_last_factor = true;
                     }
@@ -1163,7 +1208,7 @@ impl Vec2Expr {
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
-                        addend.vec2_simplify(insides_already_done, transpose_simd);
+                        addend.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 2] {
@@ -1172,7 +1217,7 @@ impl Vec2Expr {
                         *self = addend;
                     } else {
                         let mut new_self = Vec2Expr::product(vec![(addend, 1.0)], [factor, factor]);
-                        new_self.vec2_simplify(true, transpose_simd);
+                        new_self.vec2_simplify(true, transpose_simd, force_inline_all_variables);
                         *self = new_self;
                     };
                 }
@@ -1264,7 +1309,7 @@ impl Vec2Expr {
                     panic!("Please use Vec2Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, transpose_simd);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if *i0 == 0 && *i1 == 1 {
                     *self = v2.take_as_owned();
@@ -1272,7 +1317,7 @@ impl Vec2Expr {
                 }
                 if eqs!(*i0, *i1) {
                     *self = Vec2Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
-                    self.vec2_simplify(false, transpose_simd);
+                    self.vec2_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v2 {
@@ -1293,11 +1338,11 @@ impl Vec2Expr {
                     panic!("Please use Vec2Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1) {
                     *self = Vec2Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
-                    self.vec2_simplify(false, transpose_simd);
+                    self.vec2_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v3 {
@@ -1318,11 +1363,11 @@ impl Vec2Expr {
                     panic!("Please use Vec2Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1) {
                     *self = Vec2Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
-                    self.vec2_simplify(false, transpose_simd);
+                    self.vec2_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v4 {
@@ -1340,7 +1385,7 @@ impl Vec2Expr {
                 let span = tracing::trace_span!("match_Truncate3to2");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match v3 {
                     Vec3Expr::Gather1(x) => {
@@ -1371,7 +1416,7 @@ impl Vec2Expr {
                 let span = tracing::trace_span!("match_Truncate4to2");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match v4 {
                     Vec4Expr::Gather1(x) => {
@@ -1419,22 +1464,31 @@ impl Vec2Expr {
 }
 impl Vec3Expr {
     pub(crate) fn simplify(&mut self) {
-        self.vec3_simplify(false, true);
+        self.vec3_simplify(false, false, false);
     }
-    #[tracing::instrument(level = "debug", skip_all)]
-    fn vec3_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
+    #[allow(unused)]
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.vec3_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.slice_to_floats();
+        self.vec3_simplify(false, false, true);
+    }
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn vec3_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             Vec3Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
                 let _span_entered = span.enter();
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec3(mut new_self) = inlined_expr {
-                            new_self.vec3_simplify(false, transpose_simd);
+                            new_self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -1445,7 +1499,7 @@ impl Vec3Expr {
                 let span = tracing::trace_span!("match_Gather1");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    f.float_simplify(insides_already_done);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 // Do I really want to do more here?
             }
@@ -1454,9 +1508,9 @@ impl Vec3Expr {
                 let _span_entered = span.enter();
                 use crate::ast::expressions::FloatExpr::*;
                 if !insides_already_done {
-                    f0.float_simplify(insides_already_done);
-                    f1.float_simplify(insides_already_done);
-                    f2.float_simplify(insides_already_done);
+                    f0.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f2.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if f0 == f1 && f0 == f2 {
                     *self = Vec3Expr::Gather1(f0.take_as_owned());
@@ -1494,7 +1548,7 @@ impl Vec3Expr {
                     (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z) => {
                         if v2_a == v2_b {
                             let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
-                            v3.vec2_simplify(true, transpose_simd);
+                            v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
                             *self = Vec3Expr::Extend2to3(v3, z.take_as_owned());
                             return;
                         }
@@ -1535,7 +1589,7 @@ impl Vec3Expr {
                                 (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec3Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
                                 _ => return
                             };
-                            self.vec3_simplify(insides_already_done, transpose_simd);
+                            self.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             return
                         }
                     }
@@ -1574,7 +1628,7 @@ impl Vec3Expr {
                                 (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec3Expr::Extend2to3(Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)), z.take_as_owned()),
                                 _ => return
                             };
-                            self.vec3_simplify(insides_already_done, transpose_simd);
+                            self.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             return
                         }
                     }
@@ -1741,18 +1795,18 @@ impl Vec3Expr {
                 let span = tracing::trace_span!("match_Extend2to3");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, transpose_simd);
-                    f1.float_simplify(insides_already_done);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match (v2, f1) {
                     (Vec2Expr::Gather1(x), z) if x.is_memory_read_and_not_compute() => {
                         *self = Vec3Expr::Gather3(x.clone(), x.take_as_owned(), z.take_as_owned());
-                        self.vec3_simplify(true, transpose_simd);
+                        self.vec3_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     (Vec2Expr::Gather2(x, y), z) => {
                         *self = Vec3Expr::Gather3(x.take_as_owned(), y.take_as_owned(), z.take_as_owned());
-                        self.vec3_simplify(true, transpose_simd);
+                        self.vec3_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     _ => {}
@@ -1762,7 +1816,7 @@ impl Vec3Expr {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    mve.multivec_simplify(insides_already_done);
+                    mve.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 let idx = *idx;
 
@@ -1797,7 +1851,7 @@ impl Vec3Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.vec3_simplify(insides_already_done, transpose_simd);
+                        factor.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 3] {
@@ -1915,7 +1969,7 @@ impl Vec3Expr {
                                 _ => {
                                     let f = $float_expr.take_as_owned();
                                     $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                    $float_expr.float_simplify(true);
+                                    $float_expr.float_simplify(true, transpose_simd, force_inline_all_variables);
                                 }
                             }
                         }
@@ -1924,7 +1978,7 @@ impl Vec3Expr {
                 if eqs!(x, y, z) && !gather1.is_empty() {
                     let gather1 = swap_take!(gather1, vec![]);
                     let mut f = FloatExpr::product(gather1, x);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     product.push((Vec3Expr::Gather1(f), 1.0));
                     last_factor[0] = 1.0;
                     last_factor[1] = 1.0;
@@ -1947,7 +2001,7 @@ impl Vec3Expr {
                     (true, true, false) if !extend2to3_xy.is_empty() => {
                         let z = swap_take!(gather3_z, vec![]);
                         leftover_z = FloatExpr::product(z, 1.0);
-                        leftover_z.float_simplify(true);
+                        leftover_z.float_simplify(true, transpose_simd, force_inline_all_variables);
                     }
                     _ => {}
                 }
@@ -1962,7 +2016,7 @@ impl Vec3Expr {
 
                 if !gather1.is_empty() {
                     let mut f = FloatExpr::product(gather1, 1.0);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if z == 0.0 {
                         extend2to3_xy.push((Vec2Expr::Gather1(f), 1.0));
                         is_only_2to3 = !extend2to3_xy.is_empty() && product.is_empty() && gather3_x.is_empty() && gather3_y.is_empty();
@@ -1981,7 +2035,7 @@ impl Vec3Expr {
                         last_factor[2] = 1.0;
                     }
                     let mut vec2_products = Vec2Expr::product(extend2to3_xy, xy_coefficient);
-                    vec2_products.simplify();
+                    vec2_products.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
                         x_is_zeroed_without_last_factor = true;
                         y_is_zeroed_without_last_factor = true;
@@ -1995,9 +2049,9 @@ impl Vec3Expr {
                     let mut x = if gather3_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather3_x, 1.0) };
                     let mut y = if gather3_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather3_y, 1.0) };
                     let mut z = if gather3_z.is_empty() { default_coefficient!(2) } else { FloatExpr::Product(gather3_z, 1.0) };
-                    x.simplify();
-                    y.simplify();
-                    z.simplify();
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    z.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let FloatExpr::Literal(0.0) = &x {
                         x_is_zeroed_without_last_factor = true;
                     }
@@ -2072,7 +2126,7 @@ impl Vec3Expr {
                 }
                 for (addend, _factor) in sum.iter_mut() {
                     if !insides_already_done {
-                        addend.vec3_simplify(insides_already_done, transpose_simd);
+                        addend.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 3] {
@@ -2081,7 +2135,7 @@ impl Vec3Expr {
                         *self = addend;
                     } else {
                         let mut new_self = Vec3Expr::product(vec![(addend, 1.0)], [factor, factor, factor]);
-                        new_self.vec3_simplify(true, transpose_simd);
+                        new_self.vec3_simplify(true, transpose_simd, force_inline_all_variables);
                         *self = new_self;
                     };
                 }
@@ -2176,7 +2230,7 @@ impl Vec3Expr {
                                 FloatExpr::sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
                             );
                             // Significant restructure, so re-simplify
-                            self.vec3_simplify(false, transpose_simd);
+                            self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
                             return
                         }
                         _ => {}
@@ -2196,11 +2250,11 @@ impl Vec3Expr {
                     panic!("Please use Vec3Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, transpose_simd);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1, *i2) {
                     *self = Vec3Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
-                    self.vec3_simplify(false, transpose_simd);
+                    self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v2 {
@@ -2225,7 +2279,7 @@ impl Vec3Expr {
                     panic!("Please use Vec3Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if *i0 == 0 && *i1 == 1 && *i2 == 2 {
                     *self = v3.take_as_owned();
@@ -2233,7 +2287,7 @@ impl Vec3Expr {
                 }
                 if eqs!(*i0, *i1, *i2) {
                     *self = Vec3Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
-                    self.vec3_simplify(false, transpose_simd);
+                    self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v3 {
@@ -2260,11 +2314,11 @@ impl Vec3Expr {
                     panic!("Please use Vec3Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1, *i2) {
                     *self = Vec3Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
-                    self.vec3_simplify(false, transpose_simd);
+                    self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v4 {
@@ -2286,7 +2340,7 @@ impl Vec3Expr {
                 let span = tracing::trace_span!("match_Truncate4to3");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match v4 {
                     Vec4Expr::Gather1(x) => {
@@ -2329,10 +2383,19 @@ impl Vec3Expr {
 }
 impl Vec4Expr {
     pub(crate) fn simplify(&mut self) {
-        self.vec4_simplify(false, true);
+        self.vec4_simplify(false, false, false);
     }
-    #[tracing::instrument(level = "debug", skip_all)]
-    fn vec4_simplify(&mut self, insides_already_done: bool, transpose_simd: bool) {
+    #[allow(unused)]
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.vec4_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.slice_to_floats();
+        self.vec4_simplify(false, false, true);
+    }
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn vec4_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             Vec4Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
@@ -2340,13 +2403,13 @@ impl Vec4Expr {
                 let decl = &v.decl;
                 // TODO convert all the strong_count uses to into_inner instead
                 //  Arc::into_inner(decl)
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Vec4(mut new_self) = inlined_expr {
-                            new_self.vec4_simplify(false, transpose_simd);
+                            new_self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -2357,7 +2420,7 @@ impl Vec4Expr {
                 let span = tracing::trace_span!("match_Gather1");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    f.float_simplify(insides_already_done);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 // Do I really want to do more here?
             }
@@ -2386,10 +2449,10 @@ impl Vec4Expr {
                 use crate::ast::expressions::FloatExpr::*;
                 // println!("simplify Vec4Expr::Gather4 BEFORE: {f0:?} {f1:?} {f2:?} {f3:?}");
                 if !insides_already_done {
-                    f0.float_simplify(insides_already_done);
-                    f1.float_simplify(insides_already_done);
-                    f2.float_simplify(insides_already_done);
-                    f3.float_simplify(insides_already_done);
+                    f0.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f2.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f3.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 // println!("simplify Vec4Expr::Gather4 AFTER: {f0:?} {f1:?} {f2:?} {f3:?}");
                 if eqs!(f0, f1, f2, f3) {
@@ -2411,7 +2474,7 @@ impl Vec4Expr {
                     (AccessVec3(box v3_a, x), AccessVec3(box v3_b, y), AccessVec3(box v3_c, z), w) => {
                         if v3_a == v3_b && v3_a == v3_c {
                             let mut v3 = Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, *z);
-                            v3.vec3_simplify(true, transpose_simd);
+                            v3.vec3_simplify(true, transpose_simd, force_inline_all_variables);
                             *self = Vec4Expr::Extend3to4(v3, w.take_as_owned());
                             return;
                         }
@@ -2419,7 +2482,7 @@ impl Vec4Expr {
                     (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z, w) => {
                         if v2_a == v2_b {
                             let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
-                            v3.vec2_simplify(true, transpose_simd);
+                            v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
                             *self = Vec4Expr::Extend2to4(v3, z.take_as_owned(), w.take_as_owned());
                             return;
                         }
@@ -2462,7 +2525,7 @@ impl Vec4Expr {
                                 (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec4Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)),
                                 _ => return
                             };
-                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            self.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             return
                         }
                     }
@@ -2504,7 +2567,7 @@ impl Vec4Expr {
                                 _ => return
                             };
                             tracing::trace!("Extend3to4 result: {self:?}");
-                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            self.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             tracing::trace!("Extend3to4 simplified result: {self:?}");
                             return
                         }
@@ -2545,7 +2608,7 @@ impl Vec4Expr {
                                 (false, 1) if !x_mve.is_memory_read_and_not_compute() => Vec4Expr::Extend2to4(Vec2Expr::Gather1(AccessMultiVecFlat(x_mve.take_as_owned(), *x_idx)), z.take_as_owned(), w.take_as_owned()),
                                 _ => return
                             };
-                            self.vec4_simplify(insides_already_done, transpose_simd);
+                            self.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                             return
                         }
                     }
@@ -2951,19 +3014,19 @@ impl Vec4Expr {
                 let span = tracing::trace_span!("match_Extend2to4");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, transpose_simd);
-                    f1.float_simplify(insides_already_done);
-                    f2.float_simplify(insides_already_done);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f2.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 match (v2, f1, f2) {
                     (Vec2Expr::Gather1(x), z, w) if x.is_memory_read_and_not_compute() => {
                         *self = Vec4Expr::Gather4(x.clone(), x.take_as_owned(), z.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     (Vec2Expr::Gather2(x, y), z, w) => {
                         *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     _ => {}
@@ -2988,29 +3051,29 @@ impl Vec4Expr {
                 let _span_entered = span.enter();
                 // println!("simplify Vec4Expr::Extend3to4 BEFORE: {v3:?} {f1:?}");
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, transpose_simd);
-                    f1.float_simplify(insides_already_done);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    f1.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 // println!("simplify Vec4Expr::Extend3to4 AFTER: {v3:?} {f1:?}");
                 match (v3, f1) {
                     (Vec3Expr::Gather1(x), w) if x.is_memory_read_and_not_compute() => {
                         *self = Vec4Expr::Gather4(x.clone(), x.clone(), x.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     (Vec3Expr::Gather3(x, y, z), w) => {
                         *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     (Vec3Expr::Extend2to3(Vec2Expr::Gather2(x, y), z), w) => {
                         *self = Vec4Expr::Gather4(x.take_as_owned(), y.take_as_owned(), z.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     (Vec3Expr::Extend2to3(Vec2Expr::Gather1(x), z), w) if x.is_memory_read_and_not_compute() => {
                         *self = Vec4Expr::Gather4(x.clone(), x.take_as_owned(), z.take_as_owned(), w.take_as_owned());
-                        self.vec4_simplify(true, transpose_simd);
+                        self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         return
                     }
                     _ => {}
@@ -3020,7 +3083,7 @@ impl Vec4Expr {
                 let span = tracing::trace_span!("match_AccessMultiVecGroup");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    mve.multivec_simplify(insides_already_done);
+                    mve.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 let idx = *idx;
 
@@ -3060,7 +3123,7 @@ impl Vec4Expr {
                 }
                 for (factor, _exponent) in product.iter_mut() {
                     if !insides_already_done {
-                        factor.vec4_simplify(insides_already_done, transpose_simd);
+                        factor.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if product.len() == 1 && *last_factor == [1.0; 4] {
@@ -3203,7 +3266,7 @@ impl Vec4Expr {
                                 _ => {
                                     let f = $float_expr.take_as_owned();
                                     $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                    $float_expr.float_simplify(true);
+                                    $float_expr.float_simplify(true, transpose_simd, force_inline_all_variables);
                                 }
                             }
                         }
@@ -3213,7 +3276,7 @@ impl Vec4Expr {
                 if eqs!(x, y, z, w) && !gather1.is_empty() {
                     let gather1 = swap_take!(gather1, vec![]);
                     let mut f = FloatExpr::product(gather1, x);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     product.push((Vec4Expr::Gather1(f), 1.0));
                     last_factor[0] = 1.0;
                     last_factor[1] = 1.0;
@@ -3252,13 +3315,13 @@ impl Vec4Expr {
                         let w = swap_take!(gather4_w, vec![]);
                         leftover_z = FloatExpr::product(z, 1.0);
                         leftover_w = FloatExpr::product(w, 1.0);
-                        leftover_z.float_simplify(true);
-                        leftover_w.float_simplify(true);
+                        leftover_z.float_simplify(true, transpose_simd, force_inline_all_variables);
+                        leftover_w.float_simplify(true, transpose_simd, force_inline_all_variables);
                     }
                     (true, true, true, false) if !extend3to4_xyz.is_empty() => {
                         let w = swap_take!(gather4_w, vec![]);
                         leftover_w = FloatExpr::product(w, 1.0);
-                        leftover_w.float_simplify(true);
+                        leftover_w.float_simplify(true, transpose_simd, force_inline_all_variables);
                     }
                     _ => {}
                 }
@@ -3275,7 +3338,7 @@ impl Vec4Expr {
 
                 if !gather1.is_empty() {
                     let mut f = FloatExpr::product(gather1, 1.0);
-                    f.simplify();
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if z == 0.0 && w == 0.0 {
                         extend2to4_xy.push((Vec2Expr::Gather1(f), 1.0));
                         is_only_2to4 = !extend2to4_xy.is_empty() && product.is_empty() && extend3to4_xyz.is_empty() && gather4_x.is_empty() && gather4_y.is_empty();
@@ -3302,7 +3365,7 @@ impl Vec4Expr {
                         last_factor[3] = 1.0;
                     }
                     let mut vec2_products = Vec2Expr::product(extend2to4_xy, xy_coefficient);
-                    vec2_products.simplify();
+                    vec2_products.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let Vec2Expr::Gather1(FloatExpr::Literal(0.0)) = &vec2_products {
                         x_is_zeroed_without_last_factor = true;
                         y_is_zeroed_without_last_factor = true;
@@ -3332,7 +3395,7 @@ impl Vec4Expr {
                         last_factor[3] = 1.0;
                     }
                     let mut vec3_products = Vec3Expr::product(extend3to4_xyz, xyz_coefficient);
-                    vec3_products.simplify();
+                    vec3_products.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let Vec3Expr::Gather1(FloatExpr::Literal(0.0)) = &vec3_products {
                         x_is_zeroed_without_last_factor = true;
                         y_is_zeroed_without_last_factor = true;
@@ -3348,10 +3411,10 @@ impl Vec4Expr {
                     let mut y = if gather4_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather4_y, 1.0) };
                     let mut z = if gather4_z.is_empty() { default_coefficient!(2) } else { FloatExpr::Product(gather4_z, 1.0) };
                     let mut w = if gather4_w.is_empty() { default_coefficient!(3) } else { FloatExpr::Product(gather4_w, 1.0) };
-                    x.simplify();
-                    y.simplify();
-                    z.simplify();
-                    w.simplify();
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    z.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    w.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let FloatExpr::Literal(0.0) = &x {
                         x_is_zeroed_without_last_factor = true;
                     }
@@ -3433,7 +3496,7 @@ impl Vec4Expr {
                 }
                 if !insides_already_done {
                     for (addend, _factor) in sum.iter_mut() {
-                        addend.vec4_simplify(insides_already_done, transpose_simd);
+                        addend.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 if sum.len() == 1 && *last_addend == [0.0; 4] {
@@ -3442,7 +3505,7 @@ impl Vec4Expr {
                         *self = addend;
                     } else {
                         let mut new_self = Vec4Expr::product(vec![(addend, 1.0)], [factor, factor, factor, factor]);
-                        new_self.vec4_simplify(true, transpose_simd);
+                        new_self.vec4_simplify(true, transpose_simd, force_inline_all_variables);
                         *self = new_self;
                     };
                 }
@@ -3542,7 +3605,7 @@ impl Vec4Expr {
                                 FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.vec4_simplify(false, transpose_simd);
+                            self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                             return
                         }
                         ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
@@ -3552,7 +3615,7 @@ impl Vec4Expr {
                                 FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
                             );
                             // Significant restructure, so re-simplify
-                            self.vec4_simplify(false, transpose_simd);
+                            self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                             return
                         }
                         _ => {}
@@ -3577,11 +3640,11 @@ impl Vec4Expr {
                     panic!("Please use Vec4Expr::swizzle_vec_2 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, transpose_simd);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1, *i2, *i3) {
                     *self = Vec4Expr::Gather1(FloatExpr::AccessVec2(Box::new(v2.take_as_owned()), *i0));
-                    self.vec4_simplify(false, transpose_simd);
+                    self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v2 {
@@ -3606,11 +3669,11 @@ impl Vec4Expr {
                     panic!("Please use Vec4Expr::swizzle_vec_3 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, transpose_simd);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if eqs!(*i0, *i1, *i2, *i3) {
                     *self = Vec4Expr::Gather1(FloatExpr::AccessVec3(Box::new(v3.take_as_owned()), *i0));
-                    self.vec4_simplify(false, transpose_simd);
+                    self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v3 {
@@ -3635,7 +3698,7 @@ impl Vec4Expr {
                     panic!("Please use Vec4Expr::swizzle_vec_4 so you can find out where you constructed something wrong");
                 }
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, transpose_simd);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if *i0 == 0 && *i1 == 1 && *i2 == 2 && *i3 == 3 {
                     *self = v4.take_as_owned();
@@ -3643,7 +3706,7 @@ impl Vec4Expr {
                 }
                 if eqs!(*i0, *i1, *i2, *i3) {
                     *self = Vec4Expr::Gather1(FloatExpr::AccessVec4(Box::new(v4.take_as_owned()), *i0));
-                    self.vec4_simplify(false, transpose_simd);
+                    self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
                     return;
                 }
                 match v4 {
@@ -3673,11 +3736,11 @@ impl Vec4Expr {
     }
 }
 impl MultiVectorGroupExpr {
-    fn group_simplify(&mut self, insides_already_done: bool) {
+    fn group_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             MultiVectorGroupExpr::JustFloat(f) => {
                 if !insides_already_done {
-                    f.float_simplify(insides_already_done);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let FloatExpr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = f {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -3722,7 +3785,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec2(v2) => {
                 if !insides_already_done {
-                    v2.vec2_simplify(insides_already_done, true);
+                    v2.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v2 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -3732,7 +3795,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec3(v3) => {
                 if !insides_already_done {
-                    v3.vec3_simplify(insides_already_done, true);
+                    v3.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v3 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -3742,7 +3805,7 @@ impl MultiVectorGroupExpr {
             }
             MultiVectorGroupExpr::Vec4(v4) => {
                 if !insides_already_done {
-                    v4.vec4_simplify(insides_already_done, true);
+                    v4.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
                 if let Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr, mv_class: _ }, idx) = v4 {
                     if let MultiVectorVia::Construct(v) = expr.as_mut() {
@@ -3755,22 +3818,31 @@ impl MultiVectorGroupExpr {
 }
 impl MultiVectorExpr {
     pub(crate) fn simplify(&mut self) {
-        self.multivec_simplify(false);
+        self.multivec_simplify(false, false, false);
     }
-    #[tracing::instrument(level = "debug", skip_all)]
-    pub(crate) fn multivec_simplify(&mut self, insides_already_done: bool) {
+    #[allow(unused)]
+    pub(crate) fn transposing_simplify(&mut self) {
+        self.multivec_simplify(false, true, false);
+    }
+    #[allow(unused)]
+    pub(crate) fn deep_simplify(&mut self) {
+        self.slice_to_floats();
+        self.multivec_simplify(false, false, true);
+    }
+    #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
+    fn multivec_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match &mut *self.expr {
             MultiVectorVia::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
                 let _span_entered = span.enter();
                 let decl = &v.decl;
-                if 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
+                if force_inline_all_variables || 1 == Arc::strong_count(decl) || decl.force_inline.load(Acquire) {
                     if let Some(lock) = decl.expr.as_ref() {
                         let guard = lock.read();
                         let inlined_expr = guard.deref().clone();
                         drop(guard);
                         if let AnyExpression::Class(mut new_self) = inlined_expr {
-                            new_self.simplify();
+                            new_self.multivec_simplify(false, transpose_simd, force_inline_all_variables);
                             *self = new_self;
                             return
                         }
@@ -3782,7 +3854,7 @@ impl MultiVectorExpr {
                 let _span_entered = span.enter();
                 if !insides_already_done {
                     for group in groups.iter_mut() {
-                        group.group_simplify(insides_already_done);
+                        group.group_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     }
                 }
                 let mut flat_idx_offset = 0;
@@ -3821,38 +3893,38 @@ impl MultiVectorExpr {
                 let span = tracing::trace_span!("match_TraitInvoke11ToClass");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
             MultiVectorVia::TraitInvoke21ToClass(_t, owner, _other) => {
                 let span = tracing::trace_span!("match_TraitInvoke21ToClass");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
             MultiVectorVia::TraitInvoke22ToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke22ToClass");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
-                    other.multivec_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    other.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
             MultiVectorVia::TraitInvoke12iToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke12iToClass");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
-                    other.int_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    other.int_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
             MultiVectorVia::TraitInvoke12fToClass(_t, owner, other) => {
                 let span = tracing::trace_span!("match_TraitInvoke12fToClass");
                 let _span_entered = span.enter();
                 if !insides_already_done {
-                    owner.multivec_simplify(insides_already_done);
-                    other.float_simplify(insides_already_done);
+                    owner.multivec_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    other.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                 }
             }
         }

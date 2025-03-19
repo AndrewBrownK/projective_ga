@@ -43,164 +43,144 @@ async fn single_expression_simplification_debugger() {
         .event_format(DebuggableCopyPasta::new())
         .init();
 
-    // Debuggable Copy-Pasta: impl ProjectOrthogonallyOnto<DualNum> for DualNum
-    let slf = multivec_var("self", &Point, None);
-    let other = multivec_var("other", &Point, None);
-
-
-    // before vec4_sum_transpose
-    let mut the_return = Vec4Expr::Gather4(
-        FloatExpr::sum(vec![
-            (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 0), 1.0),
-                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 1.0),
-            ], 1.0), 1.0),
-            (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 3), 1.0),
+    // Debuggable Copy-Pasta: impl AntiConstraintViolation for Flector
+    let slf = multivec_var("self", &Flector, None);
+    let anti_reverse = multivec_var("anti_reverse", &Flector, Some(MultiVectorExpr::new(&Flector, MultiVectorVia::Construct(vec![
+        /* e1, e2, e3, e4 */
+        MultiVectorGroupExpr::Vec4(Vec4Expr::Gather4(
+            FloatExpr::product(vec![
                 (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 0), 1.0),
-            ], 1.0), -1.0),
-        ], 0.0),
-        FloatExpr::sum(vec![
-            (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 1), 1.0),
-                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 1.0),
-            ], 1.0), 1.0),
-            (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 3), 1.0),
+            ], -1.0),
+            FloatExpr::product(vec![
                 (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 1), 1.0),
-            ], 1.0), -1.0),
-        ], 0.0),
-        FloatExpr::sum(vec![
-            (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 2), 1.0),
+            ], -1.0),
+            FloatExpr::product(vec![
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 2), 1.0),
+            ], -1.0),
+            FloatExpr::product(vec![
                 (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 1.0),
+            ], -1.0)
+        )),
+        /* e423, e431, e412, e321 */
+        MultiVectorGroupExpr::Vec4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 1)),
+    ]))));
+    let geometric_anti_product = multivec_var("geometric_anti_product", &DualNum, Some(MultiVectorExpr::new(&DualNum, MultiVectorVia::Construct(vec![
+        /* scalar, e1234 */
+        MultiVectorGroupExpr::Vec2(Vec2Expr::Gather2(
+            FloatExpr::sum(vec![
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 4), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 0), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 5), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 1), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 6), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 2), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 7), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 0), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 4), 1.0),
+                ], 1.0), -1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 1), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 5), 1.0),
+                ], 1.0), -1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 2), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 6), 1.0),
+                ], 1.0), -1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 3), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 7), 1.0),
+                ], 1.0), -1.0),
+            ], 0.0),
+            FloatExpr::sum(vec![
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 4), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 4), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 5), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 5), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 6), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 6), 1.0),
+                ], 1.0), 1.0),
+                (FloatExpr::product(vec![
+                    (FloatExpr::AccessMultiVecFlat(anti_reverse.clone().into(), 3), 1.0),
+                    (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 1.0),
+                ], 1.0), -1.0),
+            ], 0.0)
+        )),
+    ]))));
+    let anti_dot_product = multivec_var("anti_dot_product", &AntiScalar, Some(MultiVectorExpr::new(&AntiScalar, MultiVectorVia::Construct(vec![
+        /* e1234 */
+        MultiVectorGroupExpr::JustFloat(FloatExpr::sum(vec![
+            (FloatExpr::product(vec![
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 2.0),
             ], 1.0), 1.0),
             (FloatExpr::product(vec![
-                (FloatExpr::AccessMultiVecFlat(other.clone().into(), 3), 1.0),
-                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 2), 1.0),
-            ], 1.0), -1.0),
-        ], 0.0),
-        FloatExpr::Literal(0.0)
-    );
-
-    // Starting extractions
-
-
-
-
-    // vec3_product_extract 1:
-    let vec3_product_extract_1 = Vec3Expr::Gather1(FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 3));
-
-    // vec3_product_extract 2:
-    let vec3_product_extract_2 = Vec3Expr::Truncate4to3(Box::new(
-        Vec4Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0), 0, 1, 2, 3)
-    ));
-
-    // vec4_sum_extract 1:
-    let vec4_sum_extract_1 = Vec4Expr::Extend3to4(
-        Vec3Expr::product(vec![
-            (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3)), 1.0),
-            (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0))), 1.0),
-        ], [1.0, 1.0, 1.0]),
-        FloatExpr::Literal(0.0)
-    );
-
-
-
-
-
-    // vec3_product_extract 3:
-    let vec3_product_extract_3 = Vec3Expr::Gather1(FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0), 3));
-
-    // vec3_product_extract 4:
-    let vec3_product_extract_4 = Vec3Expr::Truncate4to3(Box::new(
-        Vec4Expr::swizzle_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 0, 1, 2, 3)
-    ));
-
-    // vec4_sum_extract 2:
-    let vec4_sum_extract_2 = Vec4Expr::Extend3to4(
-        Vec3Expr::product(vec![
-            (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(other.clone().into(), 3)), 1.0),
-            (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0))), 1.0),
-        ], [1.0, 1.0, 1.0]),
-        FloatExpr::Literal(0.0)
-    );
-
-
-
-
-    // End result should look like this:
-    /*
-        // e41, e42, e43, e1234
-        ((Simd32x3::from(self[e4]) * other.group0().xyz()) - (Simd32x3::from(other[e4]) * self.group0().xyz())).with_w(0.0),
-     */
-
-
-    // vec4_sum_transpose before simplification
-    let mut the_half_fixed_result = Vec4Expr::sum(vec![
-        (Vec4Expr::Extend3to4(
-            Vec3Expr::product(vec![
-                (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3)), 1.0),
-                (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0))), 1.0),
-            ], [1.0, 1.0, 1.0]),
-            FloatExpr::Literal(0.0) ), 0.0),
-        (Vec4Expr::Extend3to4(
-            Vec3Expr::product(vec![
-                (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(other.clone().into(), 3)), 1.0),
-                (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0))), 1.0),
-            ], [1.0, 1.0, 1.0]),
-            FloatExpr::Literal(0.0) ), -1.0),
-        (Vec4Expr::Gather4(
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 4), 2.0),
+            ], 1.0), 1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 5), 2.0),
+            ], 1.0), 1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 6), 2.0),
+            ], 1.0), 1.0),
+        ], 0.0)),
+    ]))));
+    let subtraction = multivec_var("subtraction", &DualNum, Some(MultiVectorExpr::new(&DualNum, MultiVectorVia::Construct(vec![
+        /* scalar, e1234 */
+        MultiVectorGroupExpr::Vec2(Vec2Expr::Gather2(
+            FloatExpr::AccessMultiVecFlat(geometric_anti_product.clone().into(), 0),
             FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::Literal(0.0), 0.0),
-            ], 0.0) ), 1.0),
-    ], [0.0, 0.0, 0.0, 0.0]);
+                (FloatExpr::AccessMultiVecFlat(geometric_anti_product.clone().into(), 1), 1.0),
+                (FloatExpr::AccessMultiVecFlat(anti_dot_product.clone().into(), 0), -1.0),
+            ], 0.0)
+        )),
+    ]))));
+    let mut the_return: MultiVectorExpr = /* AnyExpression */ subtraction.clone().into();
 
 
-    // vec4_sum_transpose still a problem
-    let mut the_return =  Vec4Expr::sum(vec![
-        (Vec4Expr::Extend3to4(
-            Vec3Expr::product(vec![
-                (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3)), 1.0),
-                (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 0))), 1.0),
-            ], [1.0, 1.0, 1.0]),
-            FloatExpr::Literal(0.0) ), 0.0),
-        (Vec4Expr::Extend3to4(
-            Vec3Expr::product(vec![
-                (Vec3Expr::Gather1(FloatExpr::AccessMultiVecFlat(other.clone().into(), 3)), 1.0),
-                (Vec3Expr::Truncate4to3(Box::new(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0))), 1.0),
-            ], [1.0, 1.0, 1.0]),
-            FloatExpr::Literal(0.0) ), -1.0),
-        (Vec4Expr::Gather4(
+    the_return.deep_simplify();
+    println!("{:?}", DebugExpression::new(true, &the_return));
+
+    let mut the_return = MultiVectorExpr::new(&DualNum, MultiVectorVia::Construct(vec![
+        /* scalar, e1234 */
+        MultiVectorGroupExpr::Vec2(Vec2Expr::Gather2(
+            FloatExpr::AccessMultiVecFlat(geometric_anti_product.clone().into(), 0),
             FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-                (FloatExpr::Literal(0.0), 0.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-                (FloatExpr::Literal(0.0), 0.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::product(vec![ ], 1.0), 1.0),
-                (FloatExpr::Literal(0.0), 0.0),
-            ], 0.0),
-            FloatExpr::sum(vec![
-                (FloatExpr::Literal(0.0), 0.0),
-            ], 0.0) ), 1.0),
-    ], [0.0, 0.0, 0.0, 0.0]);
+                (FloatExpr::AccessMultiVecFlat(geometric_anti_product.clone().into(), 1), 1.0),
+                (FloatExpr::AccessMultiVecFlat(anti_dot_product.clone().into(), 0), -1.0),
+            ], 0.0)
+        )),
+    ]));
 
 
-    // the_return.slice_to_floats();
-    // println!("{:?}", DebugExpression::new(true, &the_return));
+    // Debuggable Copy-Pasta: impl AntiConstraintViolation for Flector
+    let slf = multivec_var("self", &Flector, None);
+    let mut the_return: MultiVectorExpr = /* AnyExpression */ MultiVectorExpr::new(&DualNum, MultiVectorVia::Construct(vec![
+        /* scalar, e1234 */
+        MultiVectorGroupExpr::Vec2(Vec2Expr::Gather2(
+            FloatExpr::Literal(0.0),
+            FloatExpr::product(vec![
+                (FloatExpr::AccessMultiVecFlat(slf.clone().into(), 3), 2.0),
+            ], -2.0)
+        )),
+    ]));
+
+
+
+
     the_return.simplify();
     println!("{:?}", DebugExpression::new(true, &the_return));
 
@@ -213,7 +193,6 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    // DebugTrait(ProjectOrthogonallyOnto).trace_implementation(Level::TRACE, repo, &Motor, &Plane).await;
-    DebugTrait(SquareRoot).trace_implementation(Level::TRACE, repo, &Line).await;
+    DebugTrait(AntiConstraintViolation).trace_implementation(Level::TRACE, repo, &Flector).await;
 }
 

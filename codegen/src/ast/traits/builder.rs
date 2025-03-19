@@ -604,7 +604,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 //  enough as it is, it is annoying to undo and redo transposition over and over.
 
                 return_expr.slice_to_floats();
-                return_expr.simplify();
+                return_expr.transposing_simplify();
 
                 let mut i = lines.len();
                 while i > 0 {
@@ -616,7 +616,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                             if let Some(v) = &vd.expr {
                                 let mut expr = v.write();
                                 expr.slice_to_floats();
-                                expr.simplify();
+                                expr.transposing_simplify();
                             }
                         }
                     }
@@ -1230,7 +1230,7 @@ impl<const AntiScalar: BasisElement, ExprType: TraitResultType> TraitImplBuilder
 
     fn finish_deep_inline(self) -> Option<<ExprType as TraitResultType>::Expr> {
         let mut r = self.return_expr?;
-        r.deep_inline_variables();
+        r.deep_simplify();
         ExprType::select_expr(r)
     }
 }

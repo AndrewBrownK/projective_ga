@@ -179,7 +179,7 @@ fn vec2_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec2_simplify(false, false);
+    result.vec2_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -269,6 +269,8 @@ fn vec2_product_extract(
         ) if xy => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
             do_extract!(transposed);
         }
         _ => {}
@@ -329,7 +331,7 @@ fn vec2_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec2_simplify(false, false);
+    result.vec2_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -419,6 +421,8 @@ fn vec2_sum_extract(
         ) if xy => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
             do_extract!(transposed);
         }
         _ => {}
@@ -495,7 +499,7 @@ fn vec3_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec3_simplify(false, false);
+    result.vec3_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -633,6 +637,9 @@ fn vec3_product_extract(
         ) if xyz => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
             do_extract!(transposed);
         }
         (
@@ -642,6 +649,8 @@ fn vec3_product_extract(
         ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
         }
         _ => {}
@@ -714,7 +723,7 @@ fn vec3_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec3_simplify(false, false);
+    result.vec3_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -843,6 +852,9 @@ fn vec3_sum_extract(
         ) if xyz => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_product_transpose(Some(extraction_strength), v0, v1, v2, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(0.0), 1.0)); *a2 = 0.0; }
             do_extract!(transposed);
         }
         (
@@ -852,6 +864,8 @@ fn vec3_sum_extract(
         ) if extraction_strength >= TruncateAndExtend && xy_z => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
         }
         _ => {}
@@ -941,7 +955,7 @@ fn vec4_product_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec4_simplify(false, false);
+    result.vec4_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -1206,6 +1220,10 @@ fn vec4_product_extract(
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
             let Some(transposed) = vec4_sum_transpose(Some(extraction_strength), v0, v1, v2, v3, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
+            if v3.is_empty() { v3.push((Literal(1.0), 1.0)); *a3 = 0.0; }
             do_extract!(transposed);
         }
         (
@@ -1216,6 +1234,9 @@ fn vec4_product_extract(
         ) if extraction_strength >= TruncateAndExtend && xyz_w => {
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
             do_extract!(Vec4Expr::Extend3to4(transposed, w.clone()));
         }
         (
@@ -1226,6 +1247,8 @@ fn vec4_product_extract(
         ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
         }
         _ => {}
@@ -1310,7 +1333,7 @@ fn vec4_sum_transpose(
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
     tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
-    result.vec4_simplify(false, false);
+    result.vec4_simplify(false, false, false);
     tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
@@ -1356,6 +1379,7 @@ fn vec4_sum_extract(
     } else { *w_coefficient == 0.0 };
     let xy_is_zero = x_is_zero && y_is_zero;
     let xyz_is_zero = xy_is_zero && z_is_zero;
+    // TODO use this
     let xyw_is_zero = xy_is_zero && w_is_zero;
     let zw_is_zero = z_is_zero && w_is_zero;
 
@@ -1369,7 +1393,7 @@ fn vec4_sum_extract(
     let xy = eqs!(x_coefficient.ni_signum(), y_coefficient.ni_signum());
     let xyw = eqs!(x_coefficient.ni_signum(), y_coefficient.ni_signum(), w_coefficient.ni_signum());
     let xy_z = xyz || (xy && z_is_zero);
-    let xy_w = xyz || (xy && w_is_zero);
+    let xy_w = xyw || (xy && w_is_zero);
     let zw = eqs!(z_coefficient.ni_signum(), w_coefficient.ni_signum()) || (z_is_zero ^ w_is_zero);
     let xy_zw = xyz_w || (xy_is_zero && zw) || (xy && xy_z && xy_w);
 
@@ -1509,6 +1533,10 @@ fn vec4_sum_extract(
         ) if xyzw => {
             let a = [*a0, *a1, *a2, *a3];
             let Some(transposed) = vec4_product_transpose(Some(extraction_strength), v0, v1, v2, v3, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(0.0), 1.0)); *a2 = 0.0; }
+            if v3.is_empty() { v3.push((Literal(0.0), 1.0)); *a3 = 0.0; }
             do_extract!(transposed);
         }
         (
@@ -1520,6 +1548,9 @@ fn vec4_sum_extract(
             // TODO maybe we should multiply these as by coalesce_sum_literals?
             let a = [*a0, *a1, *a2];
             let Some(transposed) = vec3_product_transpose(Some(extraction_strength), v0, v1, v2, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(0.0), 1.0)); *a2 = 0.0; }
             do_extract!(Vec4Expr::Extend3to4(transposed, w.clone()));
         }
         (
@@ -1530,6 +1561,8 @@ fn vec4_sum_extract(
         ) if extraction_strength >= TruncateAndExtend && xy_zw => {
             let a = [*a0, *a1];
             let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { return; };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
         }
         _ => {}

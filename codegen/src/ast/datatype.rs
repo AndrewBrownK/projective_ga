@@ -139,9 +139,9 @@ impl MultiVector {
             mv_class: self.clone(),
             expr: Box::new(MultiVectorVia::Construct(outer)),
         };
-        tracing::trace!("Raw MultiVector::Construct result: {:?}", DebugExpression::new(true, &result));
+        tracing::trace!("Raw MultiVector::Construct result:\n{:?}", DebugExpression::new(true, &result));
         result.simplify();
-        tracing::trace!("Simplified MultiVector::Construct result: {:?}", DebugExpression::new(true, &result));
+        tracing::trace!("Simplified MultiVector::Construct result:\n{:?}", DebugExpression::new(true, &result));
         result
     }
 
