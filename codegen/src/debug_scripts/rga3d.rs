@@ -5,7 +5,7 @@ use std::sync::atomic::Ordering::Release;
 use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
 use crate::ast::traits::{Debug10, Debug11, Debug22, Debug12f, Debug12i, Debug21, DebugTrait};
-use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, DotProduct, GeometricAntiProduct, GeometricProduct, ProjectOrthogonallyOnto, SquareRoot, Subtraction};
+use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, ConstraintViolation, DotProduct, GeometricAntiProduct, GeometricProduct, ProjectOrthogonallyOnto, SquareRoot, Subtraction};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
@@ -193,6 +193,12 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    DebugTrait(AntiConstraintViolation).trace_implementation(Level::TRACE, repo, &Flector).await;
+
+
+    // TODO according to the wiki, the flector does not necessarily always
+    //  obey the geometric constraint. However our results are giving 0 constraint violation,
+    //  which implies the constraint is always fulfilled.
+    //  https://rigidgeometricalgebra.org/wiki/index.php?title=Flector
+    DebugTrait(ConstraintViolation).trace_implementation(Level::TRACE, repo, &Flector).await;
 }
 
