@@ -5,10 +5,10 @@ use std::io::{BufRead, BufReader, BufWriter, ErrorKind, Write};
 use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{fs, thread};
-use std::sync::atomic::AtomicBool;
 use tokio::task::JoinSet;
 
 use crate::algebra::basis::grades::{plane_based_k_reflections, point_based_k_reflections};
@@ -17,7 +17,7 @@ use crate::algebra::multivector::{MultiVec, MultiVecRepository};
 use crate::ast::datatype::{ExpressionType, MultiVector};
 use crate::ast::expressions::{AnyExpression, FloatExpr, IntExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::traits::{
-    progress_style, BinaryOps, CommentOrVariableDeclaration, RawTraitDefinition, RawTraitImplementation, TraitArity, TraitImplRegistry, TraitKey, TraitParam, TraitTypeConsensus,
+    progress_style, BinaryOps, CommentOrVariableDeclaration, RawTraitDefinition, RawTraitImplementation, TraitArity, TraitImplRegistry, TraitKey, TraitTypeConsensus,
 };
 use crate::ast::RawVariableDeclaration;
 use crate::emit::sort_trait_impls;

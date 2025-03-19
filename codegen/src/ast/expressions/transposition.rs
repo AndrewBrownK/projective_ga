@@ -178,8 +178,9 @@ fn vec2_product_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec2_simplify(false, false);
-    tracing::trace!("Transpose result: {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -327,8 +328,9 @@ fn vec2_sum_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec2_simplify(false, false);
-    tracing::trace!("Transpose result: {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -492,9 +494,9 @@ fn vec3_product_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    tracing::trace!("Transpose result (before simplification): {result:?}");
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec3_simplify(false, false);
-    tracing::trace!("Transpose result (after simplification): {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -530,7 +532,7 @@ fn vec3_product_extract(
         true
     } else { *z_power == 0.0 };
     let xy_is_zero_or_one = x_is_zero_or_one && y_is_zero_or_one;
-    let xy_is_zero = eqs!(0.0, coalesce_product_literals[0], coalesce_product_literals[1]);
+    // let xy_is_zero = eqs!(0.0, coalesce_product_literals[0], coalesce_product_literals[1]);
     let z_is_zero = coalesce_product_literals[2] == 0.0;
 
     // Some critical match criteria that we can calculate up front.
@@ -562,6 +564,8 @@ fn vec3_product_extract(
             } else if xy_z && xy_is_zero_or_one {
                 vec3_product.push((v3, *z_power));
                 z_power.sub_assign(*z_power);
+            } else {
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             }
             return;
         }
@@ -709,8 +713,9 @@ fn vec3_sum_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec3_simplify(false, false);
-    tracing::trace!("Transpose result: {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -776,6 +781,8 @@ fn vec3_sum_extract(
             } else if xy_z && xy_is_zero {
                 vec3_sum.push((v3, *z_coefficient));
                 z_coefficient.sub_assign(*z_coefficient);
+            } else {
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             }
             return;
         }
@@ -933,8 +940,9 @@ fn vec4_product_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec4_simplify(false, false);
-    tracing::trace!("Transpose result: {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -1039,6 +1047,7 @@ fn vec4_product_extract(
                 w_power.sub_assign(zw_power);
             } else if xy_zw && xyz && w_is_zero_or_one {
                 // already covered: xyz_w && w_is_zero_or_one
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             } else if xy_zw && xyw && z_is_zero_or_one {
                 vec4_product.push((v4, xyw_power));
                 x_power.sub_assign(xyw_power);
@@ -1046,9 +1055,12 @@ fn vec4_product_extract(
                 w_power.sub_assign(xyw_power);
             } else if xy_zw && xy_is_zero_or_one && z_is_zero_or_one {
                 // already covered: xyz_w && xyz_is_zero_or_one
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             } else if xy_zw && xy_is_zero_or_one && w_is_zero_or_one {
                 vec4_product.push((v4, *z_power));
                 z_power.sub_assign(*z_power);
+            } else {
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             }
             return;
         }
@@ -1297,9 +1309,9 @@ fn vec4_sum_transpose(
 
     // Since this was a non-trivial transposition of structures,
     // run simplification again on the result.
-    tracing::trace!("Transpose result (before simplification): {result:?}");
+    tracing::trace!("Transpose Result (before simplification):\n{:?}", DebugExpression::new(true, &result));
     result.vec4_simplify(false, false);
-    tracing::trace!("Transpose result (after simplification): {result:?}");
+    tracing::trace!("Transpose Result (after simplification):\n{:?}", DebugExpression::new(true, &result));
     Some(result)
 }
 
@@ -1400,6 +1412,7 @@ fn vec4_sum_extract(
                 w_coefficient.sub_assign(zw_coefficient);
             } else if xy_zw && xyz && w_is_zero {
                 // already covered: xyz_w && w_is_zero
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             } else if xy_zw && xyw && z_is_zero {
                 vec4_sum.push((v4, xyw_coefficient));
                 x_coefficient.sub_assign(xyw_coefficient);
@@ -1407,13 +1420,12 @@ fn vec4_sum_extract(
                 w_coefficient.sub_assign(xyw_coefficient);
             } else if xy_zw && xy_is_zero && z_is_zero {
                 // already covered: xyz_w && xyz_is_zero
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             } else if xy_zw && xy_is_zero && w_is_zero {
                 vec4_sum.push((v4, *z_coefficient));
                 z_coefficient.sub_assign(*z_coefficient);
             } else {
-                // TODO add more tracing panics on unexpected branches throughout this file
-                tracing::trace!(xyzw, xyz, xyz_w, xy, xyw, xy_z, xy_w, zw, xy_zw, x_is_zero, y_is_zero, z_is_zero, w_is_zero);
-                panic!("Failed to match extraction condition")
+                panic!("Extraction logic is flawed - Failed to match extraction condition")
             }
             return;
         }

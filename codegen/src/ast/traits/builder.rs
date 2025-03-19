@@ -537,6 +537,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 } else {
                     String::new()
                 };
+                qty_other += 1;
                 copy_pasta.push_str("let other");
                 copy_pasta.push_str(&suffix);
                 copy_pasta.push_str(" = ");

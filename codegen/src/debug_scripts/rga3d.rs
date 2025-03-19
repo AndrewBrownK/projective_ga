@@ -213,8 +213,7 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    DebugTrait(GeometricProduct)
-        .trace_implementation(Level::TRACE, repo, &Point, &Point)
-        .await;
+    // DebugTrait(ProjectOrthogonallyOnto).trace_implementation(Level::TRACE, repo, &Motor, &Plane).await;
+    DebugTrait(SquareRoot).trace_implementation(Level::TRACE, repo, &Line).await;
 }
 

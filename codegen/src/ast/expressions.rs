@@ -1,4 +1,5 @@
-
+// TODO clean up imports manually. The built in detection doesn't work well across include!()s
+#![allow(unused_imports)]
 
 use std::cmp::Ordering;
 use std::fmt::{Debug, Display, Formatter};
@@ -14,8 +15,6 @@ use crate::ast::traits::TraitKey;
 use crate::ast::{RawVariableDeclaration, RawVariableInvocation, Variable};
 use crate::utility::slice_retain_mut;
 use std::collections::HashSet;
-use crate::ast::expressions::Vec2Expr::{Truncate3to2, Truncate4to2};
-use crate::ast::expressions::Vec3Expr::Extend2to3;
 
 pub trait TraitResultType: Clone + Debug + Sized + Send + Sync + 'static {
     type Expr: Expression<Self>;

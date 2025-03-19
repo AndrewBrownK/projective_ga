@@ -1070,22 +1070,6 @@ impl Vec2Expr {
                         }
                     };
                 }
-                macro_rules! mul_coefficient {
-                    ($float_expr:expr, $k:expr) => {
-                        if $k != 1.0 {
-                            match &mut $float_expr {
-                                FloatExpr::Product(_, c) => {
-                                    c.mul_assign($k);
-                                }
-                                _ => {
-                                    let f = $float_expr.take_as_owned();
-                                    $float_expr = FloatExpr::Product(vec![(f, 1.0)], $k);
-                                    $float_expr.float_simplify(true);
-                                }
-                            }
-                        }
-                    }
-                }
 
                 if eqs!(x, y) && !gather1.is_empty() {
                     let gather1 = swap_take!(gather1, vec![]);

@@ -1,3 +1,6 @@
+use std::process::abort;
+use colored::Colorize;
+use tokio::task::JoinHandle;
 
 #[derive(Clone)]
 pub struct TraitDefRegistry {
@@ -307,10 +310,20 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
                 .expect_get_or_create((trait_key, mv_a), async move {
                     let variables = Arc::new(Mutex::new(HashMap::new()));
                     let b = TraitImplBuilder::new(ga_2, mv_repo_2, def_2, tir_2, false, variables, vec![]);
-                    let result = self.0.general_implementation(b, mv_a.clone()).await;
-                    match result {
-                        None => None,
-                        Some(result) => result.into_trait10(mv_a),
+                    let handle = tokio::task::spawn(async move {
+                        self.0.general_implementation(b, mv_a.clone()).await?.into_trait10(mv_a)
+                    });
+                    match handle.await {
+                        Ok(s) => s,
+                        Err(_) => {
+                            eprintln!(
+                                "\n{} Attempt debugging with the following snippet:\n\
+                                DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                "Error while registering trait.".red(),
+                                trait_key.as_upper_camel(), mv_a.name()
+                            );
+                            abort()
+                        }
                     }
                 })
                 .await;
@@ -389,10 +402,20 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
                         expr_type: mv_a.clone(),
                         decl: declare_self,
                     };
-                    let result = self.0.general_implementation(b, var_self).await;
-                    match result {
-                        None => None,
-                        Some(result) => result.into_trait11(mv_a),
+                    let handle = tokio::task::spawn(async move {
+                        self.0.general_implementation(b, var_self).await?.into_trait11(mv_a)
+                    });
+                    match handle.await {
+                        Ok(s) => s,
+                        Err(_) => {
+                            eprintln!(
+                                "\n{} Attempt debugging with the following snippet:\n\
+                                DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                "Error while registering trait.".red(),
+                                trait_key.as_upper_camel(), mv_a.name()
+                            );
+                            abort()
+                        }
                     }
                 })
                 .await;
@@ -482,10 +505,20 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
                                 expr_type: mv_a.clone(),
                                 decl: declare_self,
                             };
-                            let result = self.0.general_implementation(b, var_self, mv_b.clone()).await;
-                            match result {
-                                None => None,
-                                Some(result) => result.into_trait21(mv_a, mv_b),
+                            let handle = tokio::task::spawn(async move {
+                                self.0.general_implementation(b, var_self, mv_b.clone()).await?.into_trait21(mv_a, mv_b)
+                            });
+                            match handle.await {
+                                Ok(s) => s,
+                                Err(_) => {
+                                    eprintln!(
+                                        "\n{} Attempt debugging with the following snippet:\n\
+                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}, &{}).await;\n",
+                                        "Error while registering trait.".red(),
+                                        trait_key.as_upper_camel(), mv_a.name(), mv_b.name()
+                                    );
+                                    abort()
+                                }
                             }
                         })
                         .await;
@@ -588,10 +621,20 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
                                 expr_type: mv_b.clone(),
                                 decl: declare_other,
                             };
-                            let result = self.0.general_implementation(b, var_self, var_other).await;
-                            match result {
-                                None => None,
-                                Some(result) => result.into_trait22(mv_a, mv_b),
+                            let handle = tokio::task::spawn(async move {
+                                self.0.general_implementation(b, var_self, var_other).await?.into_trait22(mv_a, mv_b)
+                            });
+                            match handle.await {
+                                Ok(s) => s,
+                                Err(_) => {
+                                    eprintln!(
+                                        "\n{} Attempt debugging with the following snippet:\n\
+                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}, &{}).await;\n",
+                                        "Error while registering trait.".red(),
+                                        trait_key.as_upper_camel(), mv_a.name(), mv_b.name()
+                                    );
+                                    abort()
+                                }
                             }
                         })
                         .await;
@@ -684,10 +727,20 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
                         expr_type: Float,
                         decl: declare_other,
                     };
-                    let result = self.0.general_implementation(b, var_self, var_other).await;
-                    match result {
-                        None => None,
-                        Some(result) => result.into_trait12f(mv_a),
+                    let handle = tokio::task::spawn(async move {
+                        self.0.general_implementation(b, var_self, var_other).await?.into_trait12f(mv_a)
+                    });
+                    match handle.await {
+                        Ok(s) => s,
+                        Err(_) => {
+                            eprintln!(
+                                "\n{} Attempt debugging with the following snippet:\n\
+                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                "Error while registering trait.".red(),
+                                trait_key.as_upper_camel(), mv_a.name()
+                            );
+                            abort()
+                        }
                     }
                 })
                 .await;
@@ -773,10 +826,20 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
                         expr_type: Integer,
                         decl: declare_other,
                     };
-                    let result = self.0.general_implementation(b, var_self, var_other).await;
-                    match result {
-                        None => None,
-                        Some(result) => result.into_trait12i(mv_a),
+                    let handle = tokio::task::spawn(async move {
+                        self.0.general_implementation(b, var_self, var_other).await?.into_trait12i(mv_a)
+                    });
+                    match handle.await {
+                        Ok(s) => s,
+                        Err(_) => {
+                            eprintln!(
+                                "\n{} Attempt debugging with the following snippet:\n\
+                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                "Error while registering trait.".red(),
+                                trait_key.as_upper_camel(), mv_a.name()
+                            );
+                            abort()
+                        }
                     }
                 })
                 .await;

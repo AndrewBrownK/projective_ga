@@ -2,6 +2,8 @@
 pub struct DebugTrait<T>(pub T);
 #[async_trait]
 pub(crate) trait Debug10 {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -19,18 +21,19 @@ impl<T: TraitDef_1_Type_0_Args> Debug10 for DebugTrait<T> {
     ) -> Option<Arc<RawTraitImplementation>> {
         let mv_a = MultiVector::from(mv_a);
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, self.0.def(), TraitImplRegistry::new(), false, Arc::new(Mutex::new(HashMap::new())), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, mv_a).await?;
         tracing_subscriber::fmt()
             .with_max_level(filter)
             .event_format(DebuggableCopyPasta::new())
             .init();
+        let b = self.0.general_implementation(b, mv_a).await?;
         b.into_trait10(mv_a)
     }
 }
 
 #[async_trait]
 pub(crate) trait Debug11 {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -54,18 +57,19 @@ impl<T: TraitDef_1_Type_1_Arg> Debug11 for DebugTrait<T> {
         let var_self: Variable<MultiVector> = Variable { expr_type: mv_a.clone(), decl: declare_self };
         let def = self.0.def();
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, var_self).await?;
         tracing_subscriber::fmt()
             .with_max_level(filter)
             .event_format(DebuggableCopyPasta::new())
             .init();
+        let b = self.0.general_implementation(b, var_self).await?;
         b.into_trait11(mv_a)
     }
 }
 
 #[async_trait]
 pub(crate) trait Debug21 {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -91,18 +95,19 @@ impl<T: TraitDef_2_Types_1_Arg> Debug21 for DebugTrait<T> {
         let var_self: Variable<MultiVector> = Variable { expr_type: mv_a.clone(), decl: declare_self };
         let def = self.0.def();
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, var_self, mv_b).await?;
         tracing_subscriber::fmt()
             .with_max_level(filter)
             .event_format(DebuggableCopyPasta::new())
             .init();
+        let b = self.0.general_implementation(b, var_self, mv_b).await?;
         b.into_trait21(mv_a, mv_b)
     }
 }
 
 #[async_trait]
 pub(crate) trait Debug22 {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -144,6 +149,8 @@ impl<T: TraitDef_2_Types_2_Args> Debug22 for DebugTrait<T> {
 
 #[async_trait]
 pub(crate) trait Debug12f {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -171,18 +178,19 @@ impl<T: TraitDef_1_Type_2_Args_f32> Debug12f for DebugTrait<T> {
 
         let def = self.0.def();
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, var_self, var_other).await?;
         tracing_subscriber::fmt()
             .with_max_level(filter)
             .event_format(DebuggableCopyPasta::new())
             .init();
+        let b = self.0.general_implementation(b, var_self, var_other).await?;
         b.into_trait12f(mv_a)
     }
 }
 
 #[async_trait]
 pub(crate) trait Debug12i {
+    #[allow(unused)]
+    //noinspection Duplicates
     async fn trace_implementation<const AntiScalar: BasisElement>(
         &self,
         filter: Level,
@@ -210,12 +218,11 @@ impl<T: TraitDef_1_Type_2_Args_i32> Debug12i for DebugTrait<T> {
 
         let def = self.0.def();
         let b = TraitImplBuilder::new(mv_repo.ga(), mv_repo, def, TraitImplRegistry::new(), false, Arc::new(Mutex::new(variables)), vec![]);
-        // TODO add tracing in general implementation too.
-        let b = self.0.general_implementation(b, var_self, var_other).await?;
         tracing_subscriber::fmt()
             .with_max_level(filter)
             .event_format(DebuggableCopyPasta::new())
             .init();
+        let b = self.0.general_implementation(b, var_self, var_other).await?;
         b.into_trait12i(mv_a)
     }
 }
