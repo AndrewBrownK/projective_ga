@@ -317,6 +317,14 @@ impl FloatExpr {
         }
     }
 
+    fn is_one_or_zero(&self) -> bool {
+        match self {
+            FloatExpr::Literal(0.0) => true,
+            FloatExpr::Literal(1.0) => true,
+            _ => false,
+        }
+    }
+
     pub(crate) fn is_memory_read_and_not_compute(&self) -> bool {
         match self {
             FloatExpr::Variable(_) => true,
