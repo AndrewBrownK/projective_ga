@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 9
 //
@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0
 //   Median:         2       3       0
 //  Average:         1       3       0
-//  Maximum:         7       8       1
+//  Maximum:         7       8       2
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         2       8       0
-//  Average:         1       9       0
-//  Maximum:         7      26       1
+//  Average:         2       8       0
+//  Maximum:         8      19       2
 impl std::ops::Div<AntiInversePrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: AntiInversePrefixOrPostfix) -> Self::Output {
@@ -51,12 +51,15 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for DualNum {
 }
 impl AntiInverse for DualNum {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //           add/sub      mul      div
+    //      f32        0        0        2
+    //    simd2        0        1        0
+    // Totals...
+    // yes simd        0        1        2
+    //  no simd        0        2        2
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
-        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(f32::powi(self[e1234], -2)) * self.group0())
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(1.0 / self[e1234]) * Simd32x2::from([self[scalar] / self[e1234], 1.0]))
     }
 }
 impl std::ops::Div<AntiInversePrefixOrPostfix> for Flector {
@@ -73,17 +76,17 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for Flector {
 impl AntiInverse for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //      f32        3        1        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        3        3        0
-    //  no simd        3       12        0
+    //  no simd        3        9        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
         Flector::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(other_g0) * self.group0() * Simd32x4::from(-1.0),
+            Simd32x4::from(other_g0 * -1.0) * self.group0(),
             // e423, e431, e412, e321
             Simd32x4::from(other_g0) * self.group1(),
         )
@@ -103,19 +106,19 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for Line {
 impl AntiInverse for Line {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        4        0
+    //      f32        2        2        0
+    //    simd3        0        2        0
     // Totals...
     // yes simd        2        4        0
-    //  no simd        2       12        0
+    //  no simd        2        8        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
         Line::from_groups(
             // e41, e42, e43
-            Simd32x3::from(other_g0) * self.group0() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group0(),
             // e23, e31, e12
-            Simd32x3::from(other_g0) * self.group1() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group1(),
         )
     }
 }
@@ -163,13 +166,13 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for MultiVector {
 impl AntiInverse for MultiVector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        7        0        0
+    //      f32        7        3        0
     //    simd2        0        1        0
-    //    simd3        0        4        0
-    //    simd4        0        3        0
+    //    simd3        0        2        0
+    //    simd4        0        2        0
     // Totals...
     // yes simd        7        8        0
-    //  no simd        7       26        0
+    //  no simd        7       19        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e1234] * self[e1234]
@@ -184,11 +187,11 @@ impl AntiInverse for MultiVector {
             // scalar, e1234
             Simd32x2::from(other_g0) * self.group0(),
             // e1, e2, e3, e4
-            Simd32x4::from(other_g0) * self.group1() * Simd32x4::from(-1.0),
+            Simd32x4::from(other_g0 * -1.0) * self.group1(),
             // e41, e42, e43
-            Simd32x3::from(other_g0) * self.group2() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group2(),
             // e23, e31, e12
-            Simd32x3::from(other_g0) * self.group3() * Simd32x3::from(-1.0),
+            Simd32x3::from(other_g0 * -1.0) * self.group3(),
             // e423, e431, e412, e321
             Simd32x4::from(other_g0) * self.group4(),
         )
@@ -211,7 +214,7 @@ impl AntiInverse for Origin {
     // f32        0        1        1
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
-        Origin::from_groups(/* e4 */ 1.0 / self[e4] * -1.0)
+        Origin::from_groups(/* e4 */ -1.0 / self[e4])
     }
 }
 impl std::ops::Div<AntiInversePrefixOrPostfix> for Plane {
@@ -227,17 +230,16 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for Plane {
 }
 impl AntiInverse for Plane {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    //          add/sub      mul      div
+    //   simd4        2        3        0
+    // no simd        8       12        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
+            (Simd32x4::from([self[e423] * self[e423], self[e431] * self[e431], self[e412] * self[e412], self[e423] * self[e423]]) * self.group0())
+                + (Simd32x4::from([self[e431] * self[e431], self[e423] * self[e423], self[e423] * self[e423], self[e431] * self[e431]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e412] * self[e412]).with_zw(self[e431] * self[e431], self[e412] * self[e412])),
         )
     }
 }
@@ -255,16 +257,17 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for Point {
 impl AntiInverse for Point {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
-    //      f32        0        4        0
+    //      f32        0        1        2
+    //    simd3        0        1        0
     //    simd4        0        1        0
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0        8        0
+    // yes simd        0        3        2
+    //  no simd        0        8        2
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         Point::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(f32::powi(self[e4], -2)) * Simd32x4::from([self[e1] * -1.0, self[e2] * -1.0, self[e3] * -1.0, self[e4] * -1.0]),
+            Simd32x4::from(-1.0 / self[e4]) * (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0),
         )
     }
 }

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 4
 //
 // Yes SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
 //   Median:         0       1       0
-//  Average:         0       0       0
-//  Maximum:         2       1       1
+//  Average:         0       1       0
+//  Maximum:         2       3       1
 //
 //  No SIMD:   add/sub     mul     div
 //  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         0       2       0
-//  Maximum:         2       4       1
+//   Median:         0       3       0
+//  Average:         2       3       0
+//  Maximum:         8      12       1
 impl std::ops::Div<FixPrefixOrPostfix> for Horizon {
     type Output = Horizon;
     fn div(self, _rhs: FixPrefixOrPostfix) -> Self::Output {
@@ -49,13 +49,13 @@ impl Fix for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div
     //      f32        0        0        1
-    //    simd4        0        1        0
+    //    simd3        0        1        0
     // Totals...
     // yes simd        0        1        1
-    //  no simd        0        4        1
+    //  no simd        0        3        1
     fn fix(self) -> Self {
         use crate::elements::*;
-        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(1.0 / self[e321]) * self.group0())
+        Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(1.0 / self[e321]) * self.group0().xyz()).with_w(1.0))
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Point {
@@ -71,17 +71,16 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Point {
 }
 impl Fix for Point {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    //          add/sub      mul      div
+    //   simd4        2        3        0
+    // no simd        8       12        0
     fn fix(self) -> Self {
         use crate::elements::*;
         Point::from_groups(
             // e1, e2, e3, e4
-            Simd32x4::from(self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3]) * self.group0(),
+            (Simd32x4::from([self[e1] * self[e1], self[e2] * self[e2], self[e3] * self[e3], self[e1] * self[e1]]) * self.group0())
+                + (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3])),
         )
     }
 }

@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 impl std::ops::Div<AntiSquareRootPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: AntiSquareRootPrefixOrPostfix) -> Self::Output {
