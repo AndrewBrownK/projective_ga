@@ -59,7 +59,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            this.group4 + float4(float3(0.0), other.e321)
+            float4(this.group4.xyz, other.e321 + this.e321)
         );
     }
 }
@@ -117,7 +117,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 + float4(float3(0.0), other.e4), 
+            float4(this.group1.xyz, this.e4 + other.e4), 
             /* e41, e42, e43 */
             this.group2.xyz, 
             /* e23, e31, e12 */
@@ -173,6 +173,109 @@ public extension MultiVector {
             /* e423, e431, e412, e321 */
             this.group4
         );
+    }
+}
+// Fancy infix trick (first half)
+public BitXorInfixPartial<MultiVector> operator /(MultiVector lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<MultiVector>(lhs);
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<MultiVector> lhs, AntiScalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public AntiScalar bit_xor(AntiScalar other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, DualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(DualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Flector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Flector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Horizon rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Horizon other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Line rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Line other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Motor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Motor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Origin rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Origin other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Plane rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Plane other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Point rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Point other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<MultiVector> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension MultiVector {
+    public MultiVector bit_xor(Scalar other) {
+        return this.wedge(other);
     }
 }
 public extension MultiVector {
@@ -311,7 +414,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            this.group4 + float4(float3(0.0), other.e321 * -1.0)
+            float4(this.group4.xyz, this.e321 - other.e321)
         );
     }
 }
@@ -369,7 +472,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 + float4(float3(0.0), other.e4 * -1.0), 
+            float4(this.group1.xyz, this.e4 - other.e4), 
             /* e41, e42, e43 */
             this.group2.xyz, 
             /* e23, e31, e12 */

@@ -61,7 +61,7 @@ public extension AntiScalar {
     public Motor operator +(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            other.group0 + float4(float3(0.0), this.e1234), 
+            float4(other.group0.xyz, this.e1234 + other.e1234), 
             /* e23, e31, e12, scalar */
             other.group1
         );
@@ -139,6 +139,46 @@ public extension AntiScalar {
         );
     }
 }
+// Fancy infix trick (first half)
+public BitXorInfixPartial<AntiScalar> operator /(AntiScalar lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<AntiScalar>(lhs);
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<AntiScalar> lhs, DualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension AntiScalar {
+    public AntiScalar bit_xor(DualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<AntiScalar> lhs, Motor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension AntiScalar {
+    public AntiScalar bit_xor(Motor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<AntiScalar> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension AntiScalar {
+    public AntiScalar bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<AntiScalar> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension AntiScalar {
+    public AntiScalar bit_xor(Scalar other) {
+        return this.wedge(other);
+    }
+}
 public extension AntiScalar {
     public AntiScalar operator *(DualNum other) {
         return this.geometric_product(other);
@@ -204,7 +244,7 @@ public extension AntiScalar {
     public DualNum operator -(DualNum other) {
         return DualNum(
             /* scalar, e1234 */
-            float2(other.scalar, this.e1234 - other.e1234) * float2(-1.0, 1.0)
+            float2(other.scalar * -1.0, this.e1234 - other.e1234)
         );
     }
 }
@@ -236,7 +276,7 @@ public extension AntiScalar {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0)
+            float4(float3(0.0), other.e321 * -1.0)
         );
     }
 }
@@ -244,7 +284,7 @@ public extension AntiScalar {
     public Motor operator -(Line other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.group0.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group0.xyz * float3(-1.0)), this.e1234), 
             /* e23, e31, e12, scalar */
             float4((other.group1.xyz * float3(-1.0)), 0.0)
         );
@@ -254,7 +294,7 @@ public extension AntiScalar {
     public Motor operator -(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.group0.xyz, this.e1234 - other.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group0.xyz * float3(-1.0)), this.e1234 - other.e1234), 
             /* e23, e31, e12, scalar */
             other.group1 * float4(-1.0)
         );
@@ -264,7 +304,7 @@ public extension AntiScalar {
     public MultiVector operator -(MultiVector other) {
         return MultiVector(
             /* scalar, e1234 */
-            float2(other.scalar, this.e1234 - other.e1234) * float2(-1.0, 1.0), 
+            float2(other.scalar * -1.0, this.e1234 - other.e1234), 
             /* e1, e2, e3, e4 */
             other.group1 * float4(-1.0), 
             /* e41, e42, e43 */
@@ -282,7 +322,7 @@ public extension AntiScalar {
             /* scalar, e1234 */
             float2(0.0, this.e1234), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), other.e4) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e4 * -1.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
@@ -328,7 +368,7 @@ public extension AntiScalar {
     public DualNum operator -(Scalar other) {
         return DualNum(
             /* scalar, e1234 */
-            float2(other.scalar, this.e1234) * float2(-1.0, 1.0)
+            float2(other.scalar * -1.0, this.e1234)
         );
     }
 }

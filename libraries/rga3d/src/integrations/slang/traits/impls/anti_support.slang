@@ -29,7 +29,7 @@ public extension Flector {
             /* e41, e42, e43, e1234 */
             float4(0.0), 
             /* e23, e31, e12, scalar */
-            float4(this.group0.xyz, this.e321 * -1.0) * float4(-1.0)
+            float4((this.group0.xyz * float3(-1.0)), this.e321)
         );
     }
 }
@@ -75,12 +75,11 @@ public Flector operator /(AntiSupportPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public Flector anti_support() {
-        float4 right_dual_g0 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(right_dual_g0.xyz, 0.0), 
+            float4((this.group1.xyz * float3(-1.0)), 0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), right_dual_g0[3])
+            float4(float3(0.0), this.scalar)
         );
     }
 }
@@ -96,7 +95,7 @@ public extension MultiVector {
     public MultiVector anti_support() {
         return MultiVector(
             /* scalar, e1234 */
-            float2(this.e321 * -1.0, 1.0) * float2(-1.0, 0.0), 
+            float2(this.e321, 0.0), 
             /* e1, e2, e3, e4 */
             float4((this.group3.xyz * float3(-1.0)), 0.0), 
             /* e41, e42, e43 */
