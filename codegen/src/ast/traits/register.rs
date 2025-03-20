@@ -318,7 +318,7 @@ impl<T: TraitDef_1_Type_0_Args> Register10 for RegisterTrait<T> {
                         Err(_) => {
                             eprintln!(
                                 "\n{} Attempt debugging with the following snippet:\n\
-                                DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}).await;\n",
                                 "Error while registering trait.".red(),
                                 trait_key.as_upper_camel(), mv_a.name()
                             );
@@ -410,7 +410,7 @@ impl<T: TraitDef_1_Type_1_Arg> Register11 for RegisterTrait<T> {
                         Err(_) => {
                             eprintln!(
                                 "\n{} Attempt debugging with the following snippet:\n\
-                                DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}).await;\n",
                                 "Error while registering trait.".red(),
                                 trait_key.as_upper_camel(), mv_a.name()
                             );
@@ -513,7 +513,7 @@ impl<T: TraitDef_2_Types_1_Arg> Register21 for RegisterTrait<T> {
                                 Err(_) => {
                                     eprintln!(
                                         "\n{} Attempt debugging with the following snippet:\n\
-                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}, &{}).await;\n",
+                                        DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}, &{}).await;\n",
                                         "Error while registering trait.".red(),
                                         trait_key.as_upper_camel(), mv_a.name(), mv_b.name()
                                     );
@@ -629,7 +629,7 @@ impl<T: TraitDef_2_Types_2_Args> Register22 for RegisterTrait<T> {
                                 Err(_) => {
                                     eprintln!(
                                         "\n{} Attempt debugging with the following snippet:\n\
-                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}, &{}).await;\n",
+                                        DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}, &{}).await;\n",
                                         "Error while registering trait.".red(),
                                         trait_key.as_upper_camel(), mv_a.name(), mv_b.name()
                                     );
@@ -735,7 +735,7 @@ impl<T: TraitDef_1_Type_2_Args_f32> Register12f for RegisterTrait<T> {
                         Err(_) => {
                             eprintln!(
                                 "\n{} Attempt debugging with the following snippet:\n\
-                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                        DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}).await;\n",
                                 "Error while registering trait.".red(),
                                 trait_key.as_upper_camel(), mv_a.name()
                             );
@@ -834,7 +834,7 @@ impl<T: TraitDef_1_Type_2_Args_i32> Register12i for RegisterTrait<T> {
                         Err(_) => {
                             eprintln!(
                                 "\n{} Attempt debugging with the following snippet:\n\
-                                        DebugTrait({}).trace_implementation(Level::TRACE, repo, &{}).await;\n",
+                                        DebugTrait({}).trace_implementation(Level::DEBUG, repo, &{}).await;\n",
                                 "Error while registering trait.".red(),
                                 trait_key.as_upper_camel(), mv_a.name()
                             );

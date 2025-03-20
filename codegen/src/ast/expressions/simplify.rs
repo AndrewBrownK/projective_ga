@@ -381,6 +381,7 @@ impl FloatExpr {
                         for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
                             if scanning_group_idx == (*target_group_idx) {
                                 *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
+                                // tracing::trace!("Replaced AccessMultiVecGroup with AccessMultiVecFlat: {:?}", self);
                                 return
                             }
                             flat_idx = flat_idx + g.simd_width();
@@ -849,31 +850,27 @@ impl Vec2Expr {
                     return;
                 }
                 match (f0, f1) {
-                    (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y)) => {
-                        if v4_a == v4_b {
-                            *self = if *x == 0 && *y == 1 {
-                                Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned()))
-                            } else if *x < 2 && *y < 2 {
-                                Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned())), *x, *y)
-                            } else {
-                                Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y, 2, 3)))
-                            };
-                            return;
-                        }
+                    (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y)) if eqs!(v4_a, v4_b) => {
+                        *self = if *x == 0 && *y == 1 {
+                            Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned()))
+                        } else if *x < 2 && *y < 2 {
+                            Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate4to2(Box::new(v4_a.take_as_owned())), *x, *y)
+                        } else {
+                            Vec2Expr::Truncate4to2(Box::new(Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y, 2, 3)))
+                        };
+                        return;
                     }
-                    (AccessVec3(box ref mut v3_a, x), AccessVec3(box ref mut v3_b, y)) => {
-                        if v3_a == v3_b {
-                            *self = if *x == 0 && *y == 1 {
-                                Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned()))
-                            } else if *x < 2 && *y < 2 {
-                                Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned())), *x, *y)
-                            } else {
-                                Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, 2)))
-                            };
-                            return;
-                        }
+                    (AccessVec3(box ref mut v3_a, x), AccessVec3(box ref mut v3_b, y)) if eqs!(v3_a, v3_b) => {
+                        *self = if *x == 0 && *y == 1 {
+                            Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned()))
+                        } else if *x < 2 && *y < 2 {
+                            Vec2Expr::swizzle_vec_2(Vec2Expr::Truncate3to2(Box::new(v3_a.take_as_owned())), *x, *y)
+                        } else {
+                            Vec2Expr::Truncate3to2(Box::new(Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, 2)))
+                        };
+                        return;
                     }
-                    (AccessVec2(box ref mut v2_a, x), AccessVec2(box ref mut v2_b, y)) if v2_a == v2_b => {
+                    (AccessVec2(box ref mut v2_a, x), AccessVec2(box ref mut v2_b, y)) if eqs!(v2_a, v2_b) => {
                         *self = if *x == 0 && *y == 1 {
                             v2_a.take_as_owned()
                         } else {
@@ -1545,13 +1542,11 @@ impl Vec3Expr {
                         };
                         return;
                     }
-                    (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z) => {
-                        if v2_a == v2_b {
-                            let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
-                            v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
-                            *self = Vec3Expr::Extend2to3(v3, z.take_as_owned());
-                            return;
-                        }
+                    (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z) if eqs!(*v2_a, *v2_b) => {
+                        let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
+                        v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
+                        *self = Vec3Expr::Extend2to3(v3, z.take_as_owned());
+                        return;
                     }
                     (
                         AccessMultiVecFlat(x_mve, x_idx),
@@ -2461,31 +2456,25 @@ impl Vec4Expr {
                 }
                 tracing::trace!("attempting match on ({f0:?}, {f1:?}, {f2:?}, {f3:?})");
                 match (f0, f1, f2, f3) {
-                    (AccessVec4(box v4_a, x), AccessVec4(box v4_b, y), AccessVec4(box v4_c, z), AccessVec4(box v4_d, w)) => {
-                        if v4_a == v4_b && v4_a == v4_c && v4_a == v4_d {
-                            *self = if *x == 0 && *y == 1 && *z == 2 && *w == 3 {
-                                v4_a.take_as_owned()
-                            } else {
-                                Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y, *z, *w)
-                            };
-                            return;
-                        }
+                    (AccessVec4(box v4_a, x), AccessVec4(box v4_b, y), AccessVec4(box v4_c, z), AccessVec4(box v4_d, w)) if eqs!(v4_a, v4_b, v4_c, v4_d) => {
+                        *self = if *x == 0 && *y == 1 && *z == 2 && *w == 3 {
+                            v4_a.take_as_owned()
+                        } else {
+                            Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y, *z, *w)
+                        };
+                        return;
                     }
-                    (AccessVec3(box v3_a, x), AccessVec3(box v3_b, y), AccessVec3(box v3_c, z), w) => {
-                        if v3_a == v3_b && v3_a == v3_c {
-                            let mut v3 = Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, *z);
-                            v3.vec3_simplify(true, transpose_simd, force_inline_all_variables);
-                            *self = Vec4Expr::Extend3to4(v3, w.take_as_owned());
-                            return;
-                        }
+                    (AccessVec3(box v3_a, x), AccessVec3(box v3_b, y), AccessVec3(box v3_c, z), w) if eqs!(v3_a, v3_b, v3_c) => {
+                        let mut v3 = Vec3Expr::swizzle_vec_3(v3_a.take_as_owned(), *x, *y, *z);
+                        v3.vec3_simplify(true, transpose_simd, force_inline_all_variables);
+                        *self = Vec4Expr::Extend3to4(v3, w.take_as_owned());
+                        return;
                     }
-                    (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z, w) => {
-                        if v2_a == v2_b {
-                            let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
-                            v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
-                            *self = Vec4Expr::Extend2to4(v3, z.take_as_owned(), w.take_as_owned());
-                            return;
-                        }
+                    (AccessVec2(box v2_a, x), AccessVec2(box v2_b, y), z, w) if eqs!(v2_a, v2_b) => {
+                        let mut v3 = Vec2Expr::swizzle_vec_2(v2_a.take_as_owned(), *x, *y);
+                        v3.vec2_simplify(true, transpose_simd, force_inline_all_variables);
+                        *self = Vec4Expr::Extend2to4(v3, z.take_as_owned(), w.take_as_owned());
+                        return;
                     }
                     (
                         AccessMultiVecFlat(x_mve, x_idx),
@@ -2526,6 +2515,7 @@ impl Vec4Expr {
                                 _ => return
                             };
                             self.vec4_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                            tracing::trace!("Found matching group: {:?}", self);
                             return
                         }
                     }

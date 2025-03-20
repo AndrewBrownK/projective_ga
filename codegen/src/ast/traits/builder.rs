@@ -55,16 +55,25 @@ impl Debug for CommentOrVariableDeclaration {
                     None => write!(f, "todo!(\"variable has no backing\")")?,
                     Some(d) => {
                         let d = d.read();
-                        // TODO it needs to be an actual variable, not just a raw expression
-                        match &*d {
-                            AnyExpression::Int(e) => write!(f, "int_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
-                            AnyExpression::Float(e) => write!(f, "float_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
-                            AnyExpression::Vec2(e) => write!(f, "vec2_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
-                            AnyExpression::Vec3(e) => write!(f, "vec3_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
-                            AnyExpression::Vec4(e) => write!(f, "vec4_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
-                            AnyExpression::Class(e) => {
+                        let i = v.force_inline.load(Acquire);
+                        match (i, &*d) {
+                            (false, AnyExpression::Int(e)) => write!(f, "int_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            (false, AnyExpression::Float(e)) => write!(f, "float_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            (false, AnyExpression::Vec2(e)) => write!(f, "vec2_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            (false, AnyExpression::Vec3(e)) => write!(f, "vec3_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            (false, AnyExpression::Vec4(e)) => write!(f, "vec4_var(\"{derived_name}\", Some({:?}))", DebugExpression::new(true, e))?,
+                            (false, AnyExpression::Class(e)) => {
                                 let mv = e.mv_class.name();
                                 write!(f, "multivec_var(\"{derived_name}\", &{mv}, Some({:?}))", DebugExpression::new(true, e))?
+                            },
+                            (true, AnyExpression::Int(e)) => write!(f, "int_var_will_be_inlined(\"{derived_name}\", {:?})", DebugExpression::new(true, e))?,
+                            (true, AnyExpression::Float(e)) => write!(f, "float_var_will_be_inlined(\"{derived_name}\", {:?})", DebugExpression::new(true, e))?,
+                            (true, AnyExpression::Vec2(e)) => write!(f, "vec2_var_will_be_inlined(\"{derived_name}\", {:?})", DebugExpression::new(true, e))?,
+                            (true, AnyExpression::Vec3(e)) => write!(f, "vec3_var_will_be_inlined(\"{derived_name}\", {:?})", DebugExpression::new(true, e))?,
+                            (true, AnyExpression::Vec4(e)) => write!(f, "vec4_var_will_be_inlined(\"{derived_name}\", {:?})", DebugExpression::new(true, e))?,
+                            (true, AnyExpression::Class(e)) => {
+                                let mv = e.mv_class.name();
+                                write!(f, "multivec_var_will_be_inlined(\"{derived_name}\", &{mv}, {:?})", DebugExpression::new(true, e))?
                             },
                         }
                     }
@@ -240,10 +249,10 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
     }
 
     fn coerce_variable<V: Into<String>, ExprType, Expr: Expression<ExprType>>(&self, name_if_new_var: V, expr: Expr) -> Variable<ExprType> {
-        return match expr.try_into_variable() {
+        match expr.try_into_variable() {
             Some(already_done) => already_done,
             None => self.variable(name_if_new_var, expr),
-        };
+        }
     }
 
     pub fn return_expr<ExprType, Expr: Expression<ExprType>>(self, expr: Expr) -> Option<TraitImplBuilder<AntiScalar, ExprType>> {
@@ -268,7 +277,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
 
     fn comment_return_impl<C: Into<String>, ExprType, Expr: Expression<ExprType>>(self, comment: Option<C>, expr: Expr) -> Option<TraitImplBuilder<AntiScalar, ExprType>> {
         let return_type = expr.expression_type();
-        return Some(TraitImplBuilder {
+        Some(TraitImplBuilder {
             ga: self.ga.clone(),
             mvs: self.mvs.clone(),
             registry: self.registry,
@@ -291,7 +300,7 @@ impl<const AntiScalar: BasisElement> TraitImplBuilder<AntiScalar, HasNotReturned
             return_type,
             specialized: self.specialized,
             is_deep_inlining: self.is_deep_inlining,
-        });
+        })
     }
 
     fn inline_by_copy_existing_10<T: TraitDef_1_Type_0_Args + ?Sized>(&self, trait_key: &TraitKey, raw_impl: Arc<RawTraitImplementation>) -> Option<Variable<T::Output>> {
@@ -561,9 +570,9 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             copy_pasta
         });
         macro_rules! create_copy_pasta {
-            () => {{
+            ($lines:ident) => {{
                 let mut copy_pasta: String = copy_pasta_preamble.clone();
-                for line in lines.iter() {
+                for line in $lines.iter() {
                     copy_pasta = format!("{copy_pasta}{line:?}\n");
                 }
                 copy_pasta.push_str("let mut the_return: ");
@@ -582,9 +591,10 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             }};
         }
         macro_rules! do_copy_pasta {
-            ($n:literal) => {
+            ($n:literal) => { do_copy_pasta!(lines, $n) };
+            ($lines:ident, $n:literal) => {
                 tracing::event!(Level::DEBUG, $n);
-                tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!());
+                tracing::event!(Level::DEBUG, debuggable_copy_pasta = create_copy_pasta!($lines));
             };
         }
 
@@ -650,7 +660,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 }
             }
             drop(span_entered);
-            do_copy_pasta!("Debuggable Copy-Pasta (inlining_variables):");
+            do_copy_pasta!("Debuggable Copy-Pasta (after inlining_variables):");
 
             // Destructuring simplification of variables that are not used in whole
             let mut dv = DestructurableVariables::new();
@@ -682,8 +692,13 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     }
                     continue 'inner
                 }
-
+                if let Some(vd) = &vd.expr {
+                    tracing::debug!("destructure (before):\n{:?}", DebugExpression::new(true, &*vd.read()));
+                }
                 let new_vars = Self::destructure_variable_if_applicable(self.variables.clone(), vd.clone());
+                if let Some(vd) = &vd.expr {
+                    tracing::debug!("destructure (after):\n{:?}", DebugExpression::new(true, &*vd.read()));
+                }
 
                 if new_vars.is_empty() && !vd.force_inline.load(Acquire) {
                     if let Some(e) = &vd.expr {
@@ -697,6 +712,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                     }
                     continue 'inner
                 }
+                // TODO this branch is probably not necessary
                 if let Some(expr) = &vd.expr {
                     let mut expr = expr.write();
                     expr.slice_to_floats();
@@ -749,9 +765,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
 
             if did_destructure {
                 debug_lines.reverse();
-                let lines = debug_lines;
-                do_copy_pasta!("Debuggable Copy-Pasta (destructuring_variables):");
-                drop(lines);
+                do_copy_pasta!(debug_lines, "Debuggable Copy-Pasta (after destructuring_variables):");
+                drop(debug_lines);
                 continue 'outer
             } else {
                 break 'outer;
@@ -869,6 +884,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 );
                 vec![]
             }
+            /*
             // AnyExpression::Vec2(v2) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..))) => {
             //     rvd.force_inline.store(true, Release);
             //     *v2 = Vec2Expr::Gather2(
@@ -901,6 +917,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             //     );
             //     vec![]
             // }
+            */
             AnyExpression::Vec2(Vec2Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
                 (Vec2Expr::Gather1(xy), exponent) if last_factor[0] == last_factor[1] => {
                     rvd.force_inline.store(true, Release);
@@ -918,12 +935,13 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 }
                 (v2, exponent) if matches!(v2, Vec2Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _))  => {
                     rvd.force_inline.store(true, Release);
-                    *v2 = Vec2Expr::Gather2(
+                    *ae = AnyExpression::Vec2(Vec2Expr::Gather2(
                         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.clone(), 0), *exponent)], last_factor[0]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_2(v2.take_as_owned(), 1), *exponent)], last_factor[1]),
-                    );
+                    ));
                     vec![]
                 }
+                /*
                 // (v2, exponent) if matches!(v2, Vec2Expr::Truncate3to2(box Vec3Expr::Variable(..))) => {
                 //     rvd.force_inline.store(true, Release);
                 //     *v2 = Vec2Expr::Gather2(
@@ -956,6 +974,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 //     );
                 //     vec![]
                 // }
+                 */
                 _ => vec![],
             }
             AnyExpression::Vec3(Vec3Expr::Gather1(xyz)) => {
@@ -991,6 +1010,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 );
                 vec![]
             }
+            /*
             // AnyExpression::Vec3(v3) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..))) => {
             //     rvd.force_inline.store(true, Release);
             //     *v3 = Vec3Expr::Gather3(
@@ -1009,6 +1029,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             //     );
             //     vec![]
             // }
+            */
             AnyExpression::Vec3(Vec3Expr::Product(v, last_factor)) if v.len() == 1 => match &mut v[0] {
                 (Vec3Expr::Gather1(xyz), exponent) if last_factor[0] == last_factor[1] && last_factor[0] == last_factor[2] => {
                     rvd.force_inline.store(true, Release);
@@ -1036,13 +1057,14 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 }
                 (v3, exponent) if matches!(v3, Vec3Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
                     rvd.force_inline.store(true, Release);
-                    *v3 = Vec3Expr::Gather3(
+                    *ae = AnyExpression::Vec3(Vec3Expr::Gather3(
                         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 0), *exponent)], last_factor[0]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.clone(), 1), *exponent)], last_factor[1]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_3(v3.take_as_owned(), 2), *exponent)], last_factor[2]),
-                    );
+                    ));
                     vec![]
                 }
+                /*
                 // (v3, exponent) if matches!(v3, Vec3Expr::Truncate4to3(box Vec4Expr::Variable(..))) => {
                 //     rvd.force_inline.store(true, Release);
                 //     *v3 = Vec3Expr::Gather3(
@@ -1061,6 +1083,7 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 //     );
                 //     vec![]
                 // }
+                 */
                 _ => vec![],
             }
             AnyExpression::Vec4(Vec4Expr::Gather1(xyzw)) => {
@@ -1148,12 +1171,12 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
                 }
                 (v4, exponent) if matches!(v4, Vec4Expr::AccessMultiVecGroup(MultiVectorExpr { expr: box MultiVectorVia::Variable(_), .. }, _)) => {
                     rvd.force_inline.store(true, Release);
-                    *v4 = Vec4Expr::Gather4(
+                    *ae = AnyExpression::Vec4(Vec4Expr::Gather4(
                         FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 0), *exponent)], last_factor[0]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 1), *exponent)], last_factor[1]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.clone(), 2), *exponent)], last_factor[2]),
                         FloatExpr::Product(vec![(FloatExpr::access_vec_4(v4.take_as_owned(), 3), *exponent)], last_factor[3]),
-                    );
+                    ));
                     vec![]
                 }
                 _ => vec![],

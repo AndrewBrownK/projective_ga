@@ -41,6 +41,7 @@ impl<ExprType> Variable<ExprType> {
 /// in trait implementations or trait definition registration, since the names are not
 /// checked for uniqueness. These are just intended for test cases and small demo scripts.
 pub mod quick_variables {
+    use std::sync::atomic::Ordering::Release;
     use crate::algebra::basis::BasisElement;
     use crate::ast::datatype::{Float, Integer, MultiVector, Vec2, Vec3, Vec4};
     use crate::ast::expressions::{FloatExpr, IntExpr, MultiVectorExpr, Vec2Expr, Vec3Expr, Vec4Expr};
@@ -69,6 +70,41 @@ pub mod quick_variables {
     ) -> Variable<MultiVector> {
         let mv = MultiVector::from(mv);
         Variable::<MultiVector>::quick_var(name, mv, expr)
+    }
+    pub fn int_var_will_be_inlined(name: &str, expr: IntExpr) -> Variable<Integer> {
+        let v = int_var(name, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
+    }
+    pub fn float_var_will_be_inlined(name: &str, expr: FloatExpr) -> Variable<Float> {
+        let v = float_var(name, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
+    }
+    pub fn vec2_var_will_be_inlined(name: &str, expr: Vec2Expr) -> Variable<Vec2> {
+        let v = vec2_var(name, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
+    }
+    pub fn vec3_var_will_be_inlined(name: &str, expr: Vec3Expr) -> Variable<Vec3> {
+        let v = vec3_var(name, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
+    }
+    pub fn vec4_var_will_be_inlined(name: &str, expr: Vec4Expr) -> Variable<Vec4> {
+        let v = vec4_var(name, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
+    }
+    #[allow(non_upper_case_globals)]
+    pub fn multivec_var_will_be_inlined<const AntiScalar: BasisElement>(
+        name: &str,
+        mv: &'static crate::algebra::multivector::MultiVec<AntiScalar>,
+        expr: MultiVectorExpr
+    ) -> Variable<MultiVector> {
+        let v = multivec_var(name, mv, Some(expr));
+        v.decl.force_inline.store(true, Release);
+        v
     }
 }
 
