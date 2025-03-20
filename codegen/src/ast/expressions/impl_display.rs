@@ -707,40 +707,40 @@ impl Display for MultiVectorExpr {
                 for (i, expr) in v.iter().enumerate() {
                     let group = gs.next().expect("zipping");
                     if i > 0 {
-                        write!(f, ", ")?;
+                        write!(f, ",\n")?;
                     }
                     use BasisElementGroup::*;
                     use MultiVectorGroupExpr::*;
                     match (group, expr) {
                         (G1(be0), JustFloat(f0)) => {
-                            write!(f, "{be0}({f0})")?;
+                            write!(f, "{be0}: {f0}")?;
                         }
                         (G2(be0, be1), Vec2(v2)) => {
-                            write!(f, "{be0}(")?;
+                            write!(f, "{be0}: ")?;
                             v2.display_indexed(f, 0)?;
-                            write!(f, "), {be1}(")?;
+                            write!(f, ",\n {be1}: ")?;
                             v2.display_indexed(f, 1)?;
-                            write!(f, ")")?;
+                            write!(f, "")?;
                         }
                         (G3(be0, be1, be2), Vec3(v3)) => {
-                            write!(f, "{be0}(")?;
+                            write!(f, "{be0}: ")?;
                             v3.display_indexed(f, 0)?;
-                            write!(f, "), {be1}(")?;
+                            write!(f, ",\n{be1}: ")?;
                             v3.display_indexed(f, 1)?;
-                            write!(f, "), {be2}(")?;
+                            write!(f, ",\n{be2}: ")?;
                             v3.display_indexed(f, 2)?;
-                            write!(f, ")")?;
+                            write!(f, "")?;
                         }
                         (G4(be0, be1, be2, be3), Vec4(v4)) => {
-                            write!(f, "{be0}(")?;
+                            write!(f, "{be0}: ")?;
                             v4.display_indexed(f, 0)?;
-                            write!(f, "), {be1}(")?;
+                            write!(f, ",\n{be1}: ")?;
                             v4.display_indexed(f, 1)?;
-                            write!(f, "), {be2}(")?;
+                            write!(f, ",\n{be2}: ")?;
                             v4.display_indexed(f, 2)?;
-                            write!(f, "), {be3}(")?;
+                            write!(f, ",\n{be3}: ")?;
                             v4.display_indexed(f, 3)?;
-                            write!(f, ")")?;
+                            write!(f, "")?;
                         }
                         _ => unreachable!("mv construction groups must match")
                     }

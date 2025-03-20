@@ -3479,6 +3479,8 @@ impl Vec4Expr {
                 }
             }
             Vec4Expr::Sum(sum, last_addend) => {
+                // TODO impl AntiWedge<Line> for Flector
+                //      impl AntiWedge<Motor> for Flector
                 let span = tracing::trace_span!("match_Sum");
                 let _span_entered = span.enter();
                 if sum.is_empty() {

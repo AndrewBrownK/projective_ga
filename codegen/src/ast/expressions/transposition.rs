@@ -881,6 +881,14 @@ fn vec4_product_transpose(
     float_product_3: &mut Vec<(FloatExpr, f32)>,
     mut coalesce_product_literal: [f32; 4],
 ) -> Option<Vec4Expr> {
+    // TODO impl GeometricAntiQuotient<Plane> for AntiScalar
+    //  (Simd32x4::from([
+    //      other[e423] * other[e423] * self[e1234],
+    //      other[e431] * other[e431] * self[e1234],
+    //      other[e412] * other[e412] * self[e1234],
+    //      other[e423] * other[e423] * self[e1234],
+    //  ])
+
     use crate::ast::expressions::FloatExpr::*;
     // See if we can pull out a Vec4Expr::Product
     let mut vec4_product = vec![];

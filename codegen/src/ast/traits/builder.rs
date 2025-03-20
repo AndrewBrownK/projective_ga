@@ -851,6 +851,8 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             make_a_var(expr, suffix.as_str())
         };
 
+        // TODO impl Norm for Flector, impl Unitize for Flector, impl WeightNormSquared for Flector
+
         // TODO there are some cases where a variable gets used as a whole because of swizzling,
         //  but if you inspect the variable it actually has a lot of zeroes in it.
         //  impl AntiProjectViaHorizonOnto<MultiVector> for DualNum
