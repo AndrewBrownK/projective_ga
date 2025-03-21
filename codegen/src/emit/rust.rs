@@ -587,25 +587,31 @@ postgres-types = "0.2.7""#
                     let mut add_w = vec![];
                     let mut mul_w = vec![];
                     let mut div_w = vec![];
+                    // let mut pow_w = vec![];
                     let mut add_wo = vec![];
                     let mut mul_wo = vec![];
                     let mut div_wo = vec![];
+                    let mut pow_wo = vec![];
                     for i in &impls {
                         let w = i.statistics.with_simd();
                         add_w.push(w.add_sub);
                         mul_w.push(w.mul);
                         div_w.push(w.div);
+                        // pow_w.push(w.pow);
                         let wo = i.statistics.without_simd();
                         add_wo.push(wo.add_sub);
                         mul_wo.push(wo.mul);
                         div_wo.push(wo.div);
+                        pow_wo.push(wo.pow);
                     }
                     add_w.sort();
                     mul_w.sort();
                     div_w.sort();
+                    // pow_w.sort();
                     add_wo.sort();
                     mul_wo.sort();
                     div_wo.sort();
+                    pow_wo.sort();
 
                     let add_w_min = add_w.first().cloned().unwrap_or(0);
                     let add_w_max = add_w.last().cloned().unwrap_or(0);
@@ -622,6 +628,11 @@ postgres-types = "0.2.7""#
                     let div_w_med = div_w.get(qty_impls / 2).cloned().unwrap_or(0);
                     let div_w_avg = div_w.into_iter().sum::<usize>() / qty_impls;
 
+                    // let pow_w_min = pow_w.first().cloned().unwrap_or(0);
+                    // let pow_w_max = pow_w.last().cloned().unwrap_or(0);
+                    // let pow_w_med = pow_w.get(qty_impls / 2).cloned().unwrap_or(0);
+                    // let pow_w_avg = pow_w.into_iter().sum::<usize>() / qty_impls;
+
                     let add_wo_min = add_wo.first().cloned().unwrap_or(0);
                     let add_wo_max = add_wo.last().cloned().unwrap_or(0);
                     let add_wo_med = add_wo.get(qty_impls / 2).cloned().unwrap_or(0);
@@ -637,17 +648,22 @@ postgres-types = "0.2.7""#
                     let div_wo_med = div_wo.get(qty_impls / 2).cloned().unwrap_or(0);
                     let div_wo_avg = div_wo.into_iter().sum::<usize>() / qty_impls;
 
+                    let pow_wo_min = pow_wo.first().cloned().unwrap_or(0);
+                    let pow_wo_max = pow_wo.last().cloned().unwrap_or(0);
+                    let pow_wo_med = pow_wo.get(qty_impls / 2).cloned().unwrap_or(0);
+                    let pow_wo_avg = pow_wo.into_iter().sum::<usize>() / qty_impls;
+
                     writeln!(&mut file, "//\n// Total Implementations: {qty_impls}")?;
-                    writeln!(&mut file, "//\n// Yes SIMD:   add/sub     mul     div")?;
-                    writeln!(&mut file, "//  Minimum:   {add_w_min:>7} {mul_w_min:>7} {div_w_min:>7}")?;
-                    writeln!(&mut file, "//   Median:   {add_w_med:>7} {mul_w_med:>7} {div_w_med:>7}")?;
-                    writeln!(&mut file, "//  Average:   {add_w_avg:>7} {mul_w_avg:>7} {div_w_avg:>7}")?;
-                    writeln!(&mut file, "//  Maximum:   {add_w_max:>7} {mul_w_max:>7} {div_w_max:>7}")?;
-                    writeln!(&mut file, "//\n//  No SIMD:   add/sub     mul     div")?;
-                    writeln!(&mut file, "//  Minimum:   {add_wo_min:>7} {mul_wo_min:>7} {div_wo_min:>7}")?;
-                    writeln!(&mut file, "//   Median:   {add_wo_med:>7} {mul_wo_med:>7} {div_wo_med:>7}")?;
-                    writeln!(&mut file, "//  Average:   {add_wo_avg:>7} {mul_wo_avg:>7} {div_wo_avg:>7}")?;
-                    writeln!(&mut file, "//  Maximum:   {add_wo_max:>7} {mul_wo_max:>7} {div_wo_max:>7}")?;
+                    writeln!(&mut file, "//\n// Yes SIMD:   add/sub     mul     div     pow")?;
+                    writeln!(&mut file, "//  Minimum:   {add_w_min:>7} {mul_w_min:>7} {div_w_min:>7}     N/A")?;
+                    writeln!(&mut file, "//   Median:   {add_w_med:>7} {mul_w_med:>7} {div_w_med:>7}     N/A")?;
+                    writeln!(&mut file, "//  Average:   {add_w_avg:>7} {mul_w_avg:>7} {div_w_avg:>7}     N/A")?;
+                    writeln!(&mut file, "//  Maximum:   {add_w_max:>7} {mul_w_max:>7} {div_w_max:>7}     N/A")?;
+                    writeln!(&mut file, "//\n//  No SIMD:   add/sub     mul     div     pow")?;
+                    writeln!(&mut file, "//  Minimum:   {add_wo_min:>7} {mul_wo_min:>7} {div_wo_min:>7} {pow_wo_min:>7}")?;
+                    writeln!(&mut file, "//   Median:   {add_wo_med:>7} {mul_wo_med:>7} {div_wo_med:>7} {pow_wo_med:>7}")?;
+                    writeln!(&mut file, "//  Average:   {add_wo_avg:>7} {mul_wo_avg:>7} {div_wo_avg:>7} {pow_wo_avg:>7}")?;
+                    writeln!(&mut file, "//  Maximum:   {add_wo_max:>7} {mul_wo_max:>7} {div_wo_max:>7} {pow_wo_max:>7}")?;
                 }
 
                 // writeln!(&mut file, "use crate::data::*;")?;
@@ -2821,49 +2837,57 @@ impl<'de> serde::Deserialize<'de> for {ucc} {{
                 } else {
                     "     "
                 };
-                writeln!(w, "//{space}      add/sub      mul      div")?;
+                writeln!(w, "//{space}      add/sub      mul      div      pow")?;
             }
             if !stats.floats.is_zero() {
                 let f_a = stats.floats.add_sub;
                 let f_m = stats.floats.mul;
                 let f_d = stats.floats.div;
+                let f_p = stats.floats.pow;
                 let space = if qty_types > 1 { "     " } else { "" };
-                writeln!(w, "//{space} f32  {f_a:>7}  {f_m:>7}  {f_d:>7}")?;
+                writeln!(w, "//{space} f32  {f_a:>7}  {f_m:>7}  {f_d:>7}  {f_p:>7}")?;
             }
             if !stats.simd2.is_zero() {
                 let s2_a = stats.simd2.add_sub;
                 let s2_m = stats.simd2.mul;
                 let s2_d = stats.simd2.div;
+                // no simd pow, just falls back to floats
                 let space = if qty_types > 1 { " " } else { "" };
-                writeln!(w, "//{space}   simd2  {s2_a:>7}  {s2_m:>7}  {s2_d:>7}")?;
+                writeln!(w, "//{space}   simd2  {s2_a:>7}  {s2_m:>7}  {s2_d:>7}      N/A")?;
             }
             if !stats.simd3.is_zero() {
                 let s3_a = stats.simd3.add_sub;
                 let s3_m = stats.simd3.mul;
                 let s3_d = stats.simd3.div;
+                // no simd pow, just falls back to floats
                 let space = if qty_types > 1 { " " } else { "" };
-                writeln!(w, "//{space}   simd3  {s3_a:>7}  {s3_m:>7}  {s3_d:>7}")?;
+                writeln!(w, "//{space}   simd3  {s3_a:>7}  {s3_m:>7}  {s3_d:>7}      N/A")?;
             }
             if !stats.simd4.is_zero() {
                 let s4_a = stats.simd4.add_sub;
                 let s4_m = stats.simd4.mul;
                 let s4_d = stats.simd4.div;
+                // no simd pow, just falls back to floats
                 let space = if qty_types > 1 { " " } else { "" };
-                writeln!(w, "//{space}   simd4  {s4_a:>7}  {s4_m:>7}  {s4_d:>7}")?;
+                writeln!(w, "//{space}   simd4  {s4_a:>7}  {s4_m:>7}  {s4_d:>7}      N/A")?;
             }
             if has_simd {
                 let y_a = ws.add_sub;
                 let y_m = ws.mul;
                 let y_d = ws.div;
+                // no simd pow, just falls back to floats
+
                 let n_a = wos.add_sub;
                 let n_m = wos.mul;
                 let n_d = wos.div;
+                let n_p = wos.pow;
+
                 if qty_types > 1 {
                     writeln!(w, "// Totals...")?;
-                    writeln!(w, "// yes simd  {y_a:>7}  {y_m:>7}  {y_d:>7}")?;
-                    writeln!(w, "//  no simd  {n_a:>7}  {n_m:>7}  {n_d:>7}")?;
+                    writeln!(w, "// yes simd  {y_a:>7}  {y_m:>7}  {y_d:>7}      N/A")?;
+                    writeln!(w, "//  no simd  {n_a:>7}  {n_m:>7}  {n_d:>7}  {n_p:>7}")?;
                 } else {
-                    writeln!(w, "// no simd  {n_a:>7}  {n_m:>7}  {n_d:>7}")?;
+                    writeln!(w, "// no simd  {n_a:>7}  {n_m:>7}  {n_d:>7}  {n_p:>7}")?;
                 }
             }
         }

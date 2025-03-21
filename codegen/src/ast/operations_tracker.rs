@@ -23,7 +23,7 @@ impl OperationsTracker {
         }
     }
     pub fn is_zero(&self) -> bool {
-        self.add_sub == 0 && self.mul == 0 && self.div == 0
+        self.add_sub == 0 && self.mul == 0 && self.div == 0 && self.pow == 0
     }
 }
 
@@ -44,6 +44,7 @@ impl MulAssign<usize> for OperationsTracker {
         self.add_sub *= rhs;
         self.mul *= rhs;
         self.div *= rhs;
+        self.pow *= rhs;
     }
 }
 impl Add<OperationsTracker> for OperationsTracker {
@@ -63,6 +64,7 @@ impl AddAssign<OperationsTracker> for OperationsTracker {
         self.add_sub += rhs.add_sub;
         self.mul += rhs.mul;
         self.div += rhs.div;
+        self.pow += rhs.pow;
     }
 }
 

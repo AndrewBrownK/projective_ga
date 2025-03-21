@@ -58,22 +58,20 @@ impl TrackOperations for FloatExpr {
                 result
             },
             FloatExpr::Product(v, last_factor) => {
-                // TODO update this branch to better reflect the code generation (and simd products)
                 let mut result = VectoredOperationsTracker::zero();
+                let mut did_division = false;
                 for (i, (f, exp)) in v.iter().enumerate() {
                     result += f.count_operations(lookup);
-                    match exp {
-                        1.0 => {
-                            if i > 0 {
-                                result.floats.mul += 1;
-                            }
-                        }
-                        -1.0 => {
-                            result.floats.div += 1;
-                        }
-                        _ => {
-                            result.floats.pow += 1;
-                        }
+                    if *exp < 0.0 && !did_division {
+                        result.floats.div += 1;
+                        did_division = true;
+                    }
+                    match exp.abs() {
+                        1.0 if i == 0 => {}
+                        2.0 if i == 0 => result.floats.mul += 1,
+                        1.0 => result.floats.mul += 1,
+                        2.0 => result.floats.mul += 2,
+                        _ => result.floats.pow += 1,
                     }
                 }
                 if !v.is_empty() && *last_factor != 1.0 {
@@ -130,20 +128,20 @@ impl TrackOperations for Vec2Expr {
             },
             Vec2Expr::Product(v, last_factor) => {
                 let mut result = VectoredOperationsTracker::zero();
+                let mut did_division = false;
                 for (i, (f, exp)) in v.iter().enumerate() {
                     result += f.count_operations(lookup);
-                    match exp {
-                        1.0 => {
-                            if i > 0 {
-                                result.simd2.mul += 1;
-                            }
-                        }
-                        -1.0 => {
-                            result.simd2.div += 1;
-                        }
-                        _ => {
-                            result.simd2.pow += 1;
-                        }
+                    if *exp < 0.0 && !did_division {
+                        result.simd2.div += 1;
+                        did_division = true;
+                    }
+                    match exp.abs() {
+                        1.0 if i == 0 => {}
+                        2.0 if i == 0 => result.simd2.mul += 1,
+                        1.0 => result.simd2.mul += 1,
+                        2.0 => result.simd2.mul += 2,
+                        // no simd pow, just falls back to floats
+                        _ => result.floats.pow += 2,
                     }
                 }
                 if !v.is_empty() && *last_factor != [1.0; 2] {
@@ -194,20 +192,20 @@ impl TrackOperations for Vec3Expr {
             },
             Vec3Expr::Product(v, last_factor) => {
                 let mut result = VectoredOperationsTracker::zero();
+                let mut did_division = false;
                 for (i, (f, exp)) in v.iter().enumerate() {
                     result += f.count_operations(lookup);
-                    match exp {
-                        1.0 => {
-                            if i > 0 {
-                                result.simd3.mul += 1;
-                            }
-                        }
-                        -1.0 => {
-                            result.simd3.div += 1;
-                        }
-                        _ => {
-                            result.simd3.pow += 1;
-                        }
+                    if *exp < 0.0 && !did_division {
+                        result.simd3.div += 1;
+                        did_division = true;
+                    }
+                    match exp.abs() {
+                        1.0 if i == 0 => {}
+                        2.0 if i == 0 => result.simd3.mul += 1,
+                        1.0 => result.simd3.mul += 1,
+                        2.0 => result.simd3.mul += 2,
+                        // no simd pow, just falls back to floats
+                        _ => result.floats.pow += 3,
                     }
                 }
                 if !v.is_empty() && *last_factor != [1.0; 3] {
@@ -260,20 +258,20 @@ impl TrackOperations for Vec4Expr {
             },
             Vec4Expr::Product(v, last_factor) => {
                 let mut result = VectoredOperationsTracker::zero();
+                let mut did_division = false;
                 for (i, (f, exp)) in v.iter().enumerate() {
                     result += f.count_operations(lookup);
-                    match exp {
-                        1.0 => {
-                            if i > 0 {
-                                result.simd4.mul += 1;
-                            }
-                        }
-                        -1.0 => {
-                            result.simd4.div += 1;
-                        }
-                        _ => {
-                            result.simd4.pow += 1;
-                        }
+                    if *exp < 0.0 && !did_division {
+                        result.simd4.div += 1;
+                        did_division = true;
+                    }
+                    match exp.abs() {
+                        1.0 if i == 0 => {}
+                        2.0 if i == 0 => result.simd4.mul += 1,
+                        1.0 => result.simd4.mul += 1,
+                        2.0 => result.simd4.mul += 2,
+                        // no simd pow, just falls back to floats
+                        _ => result.floats.pow += 4,
                     }
                 }
                 if !v.is_empty() && *last_factor != [1.0; 4] {
