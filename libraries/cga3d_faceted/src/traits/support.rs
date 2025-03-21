@@ -8,13 +8,4 @@ pub trait Support {
     type Output;
     fn support(self) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static support: SupportPrefixOrPostfix = SupportPrefixOrPostfix;
-pub struct SupportPrefixOrPostfix;
-impl<A: Support> std::ops::Div<A> for SupportPrefixOrPostfix {
-    type Output = <A as Support>::Output;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.support()
-    }
-}
 include!("./impls/support.rs");

@@ -3,40 +3,29 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 49
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       2       0
-//  Average:         2       2       0
-//  Maximum:         8      13       1
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         2       6       0     N/A
+//  Average:         2       5       0     N/A
+//  Maximum:         7      19       1     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       8       0
-//  Average:         2       8       0
-//  Maximum:         8      38       1
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleOnOrigin {
-    type Output = AntiCircleOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiCircleOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2      12       0       0
+//  Average:         2      11       0       0
+//  Maximum:        12      40       1       4
 impl Unitize for AntiCircleOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        6        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2        9        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -48,26 +37,15 @@ impl Unitize for AntiCircleOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleRotor {
-    type Output = AntiCircleRotor;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiCircleRotor {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       11        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       14        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -81,26 +59,15 @@ impl Unitize for AntiCircleRotor {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleRotorAligningOrigin {
-    type Output = AntiCircleRotorAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiCircleRotorAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiCircleRotorAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -114,29 +81,18 @@ impl Unitize for AntiCircleRotorAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleRotorOnOrigin {
-    type Output = AntiCircleRotorOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiCircleRotorOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiCircleRotorOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        7        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2       10        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
+        let wedge_g0 = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2];
         AntiCircleRotorOnOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -145,30 +101,18 @@ impl Unitize for AntiCircleRotorOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDipoleInversion {
-    type Output = AntiDipoleInversion;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDipoleInversion {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       15        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       19        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge_g0 = self.group0().with_w(self[e4]).wxyz();
-        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3];
+        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             Simd32x3::from(geometric_anti_product_g0) * self.group0(),
@@ -181,25 +125,14 @@ impl Unitize for AntiDipoleInversion {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDipoleInversionOnOrigin {
-    type Output = AntiDipoleInversionOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDipoleInversionOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiDipoleInversionOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -211,26 +144,15 @@ impl Unitize for AntiDipoleInversionOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
-    type Output = AntiDipoleInversionOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDipoleInversionOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiDipoleInversionOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       11        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       15        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -244,103 +166,58 @@ impl Unitize for AntiDipoleInversionOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDipoleOnOrigin {
-    type Output = AntiDipoleOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDipoleOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for AntiDipoleOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd4        2        3        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    // yes simd        2        6        0      N/A
+    //  no simd        8       15        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
+        let wedge_g0 = self.group0().xyz();
         AntiDipoleOnOrigin::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
+            (Simd32x4::from(wedge_g0[0] * wedge_g0[0]) * self.group0())
+                + (Simd32x4::from(wedge_g0[1] * wedge_g0[1]) * self.group0())
+                + (Simd32x4::from(wedge_g0[2] * wedge_g0[2]) * self.group0()),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiDualNum {
-    type Output = AntiDualNum;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDualNum {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for AntiDualNum {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        2        1
+    //      add/sub      mul      div      pow
+    // f32        0        1        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from(1.0 / self[e1234]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiSphereOnOrigin {
-    type Output = AntiSphereOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiSphereOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        AntiDualNum::from_groups(/* e1234, scalar */ Simd32x2::from([1.0, self[scalar] / self[e1234]]))
     }
 }
 impl Unitize for AntiSphereOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        0        1        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        4        1
+    // yes simd        0        1        1      N/A
+    //  no simd        0        3        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        AntiSphereOnOrigin::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for AntiVersorEvenOnOrigin {
-    type Output = AntiVersorEvenOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiVersorEvenOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        AntiSphereOnOrigin::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))
     }
 }
 impl Unitize for AntiVersorEvenOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         AntiVersorEvenOnOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -349,26 +226,15 @@ impl Unitize for AntiVersorEvenOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for Circle {
-    type Output = Circle;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Circle {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -382,25 +248,14 @@ impl Unitize for Circle {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleAligningOrigin {
-    type Output = CircleAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        3        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2        9        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -414,25 +269,14 @@ impl Unitize for CircleAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleAtOrigin {
-    type Output = CircleAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        6        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2        9        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -444,25 +288,14 @@ impl Unitize for CircleAtOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleOnOrigin {
-    type Output = CircleOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        6        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2        9        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -474,29 +307,18 @@ impl Unitize for CircleOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleOrthogonalOrigin {
-    type Output = CircleOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        7        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2       10        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
+        let wedge_g0 = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2];
         CircleOrthogonalOrigin::from_groups(
             // e423, e431, e412, e321
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -505,26 +327,15 @@ impl Unitize for CircleOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleRotor {
-    type Output = CircleRotor;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleRotor {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       11        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       14        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -538,26 +349,15 @@ impl Unitize for CircleRotor {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleRotorAligningOrigin {
-    type Output = CircleRotorAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleRotorAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleRotorAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -571,29 +371,18 @@ impl Unitize for CircleRotorAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for CircleRotorOnOrigin {
-    type Output = CircleRotorOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleRotorOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for CircleRotorOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        7        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2       10        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
+        let wedge_g0 = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2];
         CircleRotorOnOrigin::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -602,26 +391,15 @@ impl Unitize for CircleRotorOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for Dipole {
-    type Output = Dipole;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Dipole {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for Dipole {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -635,29 +413,18 @@ impl Unitize for Dipole {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleAligningOrigin {
-    type Output = DipoleAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        7        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2       10        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
+        let wedge_g0 = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2];
         DipoleAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -666,25 +433,14 @@ impl Unitize for DipoleAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleAtOrigin {
-    type Output = DipoleAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        6        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2        9        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -696,26 +452,15 @@ impl Unitize for DipoleAtOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversion {
-    type Output = DipoleInversion;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversion {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       15        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       19        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
@@ -731,28 +476,18 @@ impl Unitize for DipoleInversion {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversionAligningOrigin {
-    type Output = DipoleInversionAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversionAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleInversionAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       12        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       16        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         DipoleInversionAligningOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -763,28 +498,18 @@ impl Unitize for DipoleInversionAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversionAtOrigin {
-    type Output = DipoleInversionAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversionAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleInversionAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         DipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -793,28 +518,18 @@ impl Unitize for DipoleInversionAtOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversionOnOrigin {
-    type Output = DipoleInversionOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversionOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleInversionOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         DipoleInversionOnOrigin::from_groups(
             // e41, e42, e43, e45
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -823,29 +538,19 @@ impl Unitize for DipoleInversionOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
-    type Output = DipoleInversionOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversionOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleInversionOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       11        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       15        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         DipoleInversionOrthogonalOrigin::from_groups(
             // e41, e42, e43, e3215
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -856,52 +561,32 @@ impl Unitize for DipoleInversionOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleOnOrigin {
-    type Output = DipoleOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DipoleOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd4        2        3        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    // yes simd        2        6        0      N/A
+    //  no simd        8       15        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
+        let wedge_g0 = self.group0().xyz();
         DipoleOnOrigin::from_groups(
             // e41, e42, e43, e45
-            Simd32x4::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]) * self.group0(),
+            (Simd32x4::from(wedge_g0[0] * wedge_g0[0]) * self.group0())
+                + (Simd32x4::from(wedge_g0[1] * wedge_g0[1]) * self.group0())
+                + (Simd32x4::from(wedge_g0[2] * wedge_g0[2]) * self.group0()),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for DipoleOrthogonalOrigin {
-    type Output = DipoleOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for DipoleOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        3        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2        9        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -915,64 +600,36 @@ impl Unitize for DipoleOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for DualNum {
-    type Output = DualNum;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DualNum {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for DualNum {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        2        1
+    //      add/sub      mul      div      pow
+    // f32        0        1        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        DualNum::from_groups(/* e4, e12345 */ Simd32x2::from(1.0 / self[e4]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for MultiVector {
-    type Output = MultiVector;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for MultiVector {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        DualNum::from_groups(/* e4, e12345 */ Simd32x2::from([1.0, self[e12345] / self[e4]]))
     }
 }
 impl Unitize for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8        2        0
-    //    simd2        0        2        0
-    //    simd3        0        4        0
-    //    simd4        0        5        0
+    //           add/sub      mul      div      pow
+    //      f32        7       10        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        4        0      N/A
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        8       13        0
-    //  no simd        8       38        0
+    // yes simd        7       19        0      N/A
+    //  no simd        7       40        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let wedge_g0 = Simd32x2::from([1.0, self[e1234]]) * Simd32x2::from([0.0, 1.0]);
-        let wedge_g9 = Simd32x4::from([0.0, self[e423], self[e431], self[e412]]) * Simd32x4::from([0.0, 1.0, 1.0, 1.0]);
-        let geometric_anti_product_g0 = wedge_g0[1] * wedge_g0[1]
-            + wedge_g9[1] * wedge_g9[1]
-            + wedge_g9[2] * wedge_g9[2]
-            + wedge_g9[3] * wedge_g9[3]
+        let sub_type_g3_xyz = self.group3().xyz();
+        let geometric_anti_product_g0 = sub_type_g3_xyz[0] * sub_type_g3_xyz[0]
+            + sub_type_g3_xyz[1] * sub_type_g3_xyz[1]
+            + sub_type_g3_xyz[2] * sub_type_g3_xyz[2]
             + self[e4] * self[e4]
-            + self[e41] * self[e41]
-            + self[e42] * self[e42]
-            + self[e43] * self[e43]
-            - wedge_g0[0] * wedge_g0[0];
+            + self[e423] * self[e423]
+            + self[e431] * self[e431]
+            + self[e412] * self[e412]
+            + self[e1234] * self[e1234];
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),
@@ -999,96 +656,59 @@ impl Unitize for MultiVector {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for NullCircleAtOrigin {
-    type Output = NullCircleAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for NullCircleAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for NullCircleAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        5        0        3
+    //    simd3        2        2        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    // yes simd        2        7        0      N/A
+    //  no simd        6       11        0        3
     fn unitize(self) -> Self {
         use crate::elements::*;
         NullCircleAtOrigin::from_groups(
             // e423, e431, e412
-            Simd32x3::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
+            Simd32x3::powi(self.group0(), 3)
+                + (Simd32x3::from([self[e431] * self[e431], self[e423] * self[e423], self[e423] * self[e423]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e412] * self[e412]).with_z(self[e431] * self[e431])),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for NullDipoleAtOrigin {
-    type Output = NullDipoleAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for NullDipoleAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for NullDipoleAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        5        0        3
+    //    simd3        2        2        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    // yes simd        2        7        0      N/A
+    //  no simd        6       11        0        3
     fn unitize(self) -> Self {
         use crate::elements::*;
         NullDipoleAtOrigin::from_groups(
             // e41, e42, e43
-            Simd32x3::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43]) * self.group0(),
+            Simd32x3::powi(self.group0(), 3)
+                + (Simd32x3::from([self[e42] * self[e42], self[e41] * self[e41], self[e41] * self[e41]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e43] * self[e43]).with_z(self[e42] * self[e42])),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for NullDipoleInversionAtOrigin {
-    type Output = NullDipoleInversionAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for NullDipoleInversionAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for NullDipoleInversionAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        9        0        4
+    //    simd4        3        3        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        4        0
+    // yes simd        3       12        0      N/A
+    //  no simd       12       21        0        4
     fn unitize(self) -> Self {
         use crate::elements::*;
         NullDipoleInversionAtOrigin::from_groups(
             // e41, e42, e43, e1234
-            Simd32x4::from(self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234]) * self.group0(),
+            Simd32x4::powi(self.group0(), 3)
+                + (Simd32x4::from([self[e42] * self[e42], self[e41] * self[e41], self[e41] * self[e41], self[e41] * self[e41]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e43] * self[e43]).with_zw(self[e42] * self[e42], self[e42] * self[e42]))
+                + (self.group0() * Simd32x3::from(self[e1234] * self[e1234]).with_w(self[e43] * self[e43])),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for NullSphereAtOrigin {
-    type Output = NullSphereAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for NullSphereAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for NullSphereAtOrigin {
@@ -1096,42 +716,23 @@ impl Unitize for NullSphereAtOrigin {
         NullSphereAtOrigin::from_groups(/* e1234 */ 1.0)
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for NullVersorEvenAtOrigin {
-    type Output = NullVersorEvenAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for NullVersorEvenAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for NullVersorEvenAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd4        3        4        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        4        0
+    // yes simd        3        8        0      N/A
+    //  no simd       12       20        0        0
     fn unitize(self) -> Self {
         let wedge_g0 = self.group0().wxyz();
         NullVersorEvenAtOrigin::from_groups(
             // e423, e431, e412, e4
-            Simd32x4::from(wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3]) * self.group0(),
+            (Simd32x4::from(wedge_g0[0] * wedge_g0[0]) * self.group0())
+                + (Simd32x4::from(wedge_g0[1] * wedge_g0[1]) * self.group0())
+                + (Simd32x4::from(wedge_g0[2] * wedge_g0[2]) * self.group0())
+                + (Simd32x4::from(wedge_g0[3] * wedge_g0[3]) * self.group0()),
         )
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for Origin {
-    type Output = Origin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Origin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
     }
 }
 impl Unitize for Origin {
@@ -1139,25 +740,14 @@ impl Unitize for Origin {
         Origin::from_groups(/* e4 */ 1.0)
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for RoundPoint {
-    type Output = RoundPoint;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for RoundPoint {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for RoundPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        1        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        1
-    //  no simd        0        5        1
+    // yes simd        0        2        1      N/A
+    //  no simd        0        5        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e4];
@@ -1169,49 +759,23 @@ impl Unitize for RoundPoint {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for RoundPointAtOrigin {
-    type Output = RoundPointAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for RoundPointAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for RoundPointAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        2        1
+    //      add/sub      mul      div      pow
+    // f32        0        1        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        RoundPointAtOrigin::from_groups(/* e4, e5 */ Simd32x2::from(1.0 / self[e4]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for Sphere {
-    type Output = Sphere;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Sphere {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        RoundPointAtOrigin::from_groups(/* e4, e5 */ Simd32x2::from([1.0, self[e5] / self[e4]]))
     }
 }
 impl Unitize for Sphere {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        1        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        1
-    //  no simd        0        5        1
+    // yes simd        0        2        1      N/A
+    //  no simd        0        5        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e1234];
@@ -1223,73 +787,36 @@ impl Unitize for Sphere {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for SphereAtOrigin {
-    type Output = SphereAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for SphereAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for SphereAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        2        1
+    //      add/sub      mul      div      pow
+    // f32        0        1        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from(1.0 / self[e1234]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for SphereOnOrigin {
-    type Output = SphereOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for SphereOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        SphereAtOrigin::from_groups(/* e3215, e1234 */ Simd32x2::from([self[e3215] / self[e1234], 1.0]))
     }
 }
 impl Unitize for SphereOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        0        1        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        4        1
+    // yes simd        0        1        1      N/A
+    //  no simd        0        3        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ Simd32x4::from(1.0 / self[e1234]) * self.group0())
-    }
-}
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEven {
-    type Output = VersorEven;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEven {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
+        SphereOnOrigin::from_groups(/* e4235, e4315, e4125, e1234 */ (Simd32x3::from(1.0 / self[e1234]) * self.group0().xyz()).with_w(1.0))
     }
 }
 impl Unitize for VersorEven {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       16        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       20        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -1305,25 +832,14 @@ impl Unitize for VersorEven {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEvenAligningOrigin {
-    type Output = VersorEvenAligningOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEvenAligningOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorEvenAligningOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       12        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       16        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -1337,25 +853,14 @@ impl Unitize for VersorEvenAligningOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEvenAtOrigin {
-    type Output = VersorEvenAtOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEvenAtOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorEvenAtOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         let wedge_g0 = self.group0().wxyz();
         let geometric_anti_product_g0 = wedge_g0[0] * wedge_g0[0] + wedge_g0[1] * wedge_g0[1] + wedge_g0[2] * wedge_g0[2] + wedge_g0[3] * wedge_g0[3];
@@ -1367,25 +872,14 @@ impl Unitize for VersorEvenAtOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEvenOnOrigin {
-    type Output = VersorEvenOnOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEvenOnOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorEvenOnOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -1397,25 +891,14 @@ impl Unitize for VersorEvenOnOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorEvenOrthogonalOrigin {
-    type Output = VersorEvenOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEvenOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorEvenOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       12        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       16        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -1429,28 +912,18 @@ impl Unitize for VersorEvenOrthogonalOrigin {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorOdd {
-    type Output = VersorOdd;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorOdd {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorOdd {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       16        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       20        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -1463,28 +936,18 @@ impl Unitize for VersorOdd {
         )
     }
 }
-impl std::ops::Div<UnitizePrefixOrPostfix> for VersorOddOrthogonalOrigin {
-    type Output = VersorOddOrthogonalOrigin;
-    fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
-        self.unitize()
-    }
-}
-impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorOddOrthogonalOrigin {
-    fn div_assign(&mut self, _rhs: UnitizePrefixOrPostfix) {
-        *self = self.unitize()
-    }
-}
 impl Unitize for VersorOddOrthogonalOrigin {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        3        0
-    //  no simd        3       12        0
+    // yes simd        3        7        0      N/A
+    //  no simd        3       16        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let wedge_g0_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g0_xyz[0] * wedge_g0_xyz[0] + wedge_g0_xyz[1] * wedge_g0_xyz[1] + wedge_g0_xyz[2] * wedge_g0_xyz[2] + self[e1234] * self[e1234];
         VersorOddOrthogonalOrigin::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),

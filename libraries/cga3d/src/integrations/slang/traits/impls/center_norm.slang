@@ -9,9 +9,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, AntiCircleRotor rhs) {
 }
 public extension AntiCircleRotor {
     public Scalar center_norm() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.scalar * this.scalar - this.e45 * this.e45
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.scalar * this.scalar - this.e45 * this.e45
         );
     }
 }
@@ -25,9 +26,11 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, AntiDipoleInversion rhs)
 }
 public extension AntiDipoleInversion {
     public Scalar center_norm() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
+        float3 sub_type_g0 = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e321 * this.e321 - sub_type_g0[0] * sub_type_g0[0] - sub_type_g0[1] * sub_type_g0[1] - sub_type_g0[2] * sub_type_g0[2]
         );
     }
 }
@@ -41,9 +44,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public Scalar center_norm() {
+        float3 sub_type_g0 = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.e321 * this.e321 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435
+            this.e321 * this.e321 - sub_type_g0[0] * sub_type_g0[0] - sub_type_g0[1] * sub_type_g0[1] - sub_type_g0[2] * sub_type_g0[2]
         );
     }
 }
@@ -57,9 +61,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, CircleRotor rhs) {
 }
 public extension CircleRotor {
     public Scalar center_norm() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.e321 * this.e321 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - this.e12345 * this.e12345
+            this.e321 * this.e321 - sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e12345 * this.e12345
         );
     }
 }
@@ -73,9 +78,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public Scalar center_norm() {
+        float3 sub_type_g0 = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] - this.e45 * this.e45
         );
     }
 }
@@ -89,9 +95,11 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, DipoleInversion rhs) {
 }
 public extension DipoleInversion {
     public Scalar center_norm() {
+        float3 sub_type_g0 = this.group1.xyz;
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return Scalar(
             /* scalar */
-            this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] - sub_type_g1_xyz[0] * sub_type_g1_xyz[0] - sub_type_g1_xyz[1] * sub_type_g1_xyz[1] - sub_type_g1_xyz[2] * sub_type_g1_xyz[2] - this.e45 * this.e45
         );
     }
 }
@@ -105,9 +113,12 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public Scalar center_norm() {
+        float3 sub_type_g1_xyz = this.group1.xyz;
+        float3 sub_type_g6_xyz = this.group6.xyz;
+        float3 sub_type_g9_xyz = this.group9.xyz;
         return Scalar(
             /* scalar */
-            this.scalar * this.scalar + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321 - this.e12345 * this.e12345 - this.e45 * this.e45 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321 - sub_type_g6_xyz[0] * sub_type_g6_xyz[0] - sub_type_g6_xyz[1] * sub_type_g6_xyz[1] - sub_type_g6_xyz[2] * sub_type_g6_xyz[2] - sub_type_g9_xyz[0] * sub_type_g9_xyz[0] - sub_type_g9_xyz[1] * sub_type_g9_xyz[1] - sub_type_g9_xyz[2] * sub_type_g9_xyz[2] - this.e12345 * this.e12345 - this.e45 * this.e45
         );
     }
 }
@@ -121,9 +132,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public Scalar center_norm() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return Scalar(
             /* scalar */
-            this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 - this.e12345 * this.e12345 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e321 * this.e321 - this.e12345 * this.e12345 - this.e415 * this.e415 - this.e425 * this.e425 - this.e435 * this.e435
         );
     }
 }
@@ -137,9 +149,10 @@ public Scalar operator /(CenterNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public Scalar center_norm() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return Scalar(
             /* scalar */
-            this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - this.e45 * this.e45 - this.e4235 * this.e4235 - this.e4315 * this.e4315 - this.e4125 * this.e4125
+            this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 - sub_type_g1_xyz[0] * sub_type_g1_xyz[0] - sub_type_g1_xyz[1] * sub_type_g1_xyz[1] - sub_type_g1_xyz[2] * sub_type_g1_xyz[2] - this.e45 * this.e45
         );
     }
 }

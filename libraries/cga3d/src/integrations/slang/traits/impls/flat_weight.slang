@@ -76,7 +76,7 @@ public extension CircleRotor {
     public Motor flat_weight() {
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(this.e415, this.e425, this.e435, this.e12345), 
+            float4(this.group1.xyz, this.e12345), 
             /* e235, e315, e125, e5 */
             float4(0.0)
         );

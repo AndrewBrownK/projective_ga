@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 23
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       1       0
-//  Average:         2       0       0
-//  Maximum:         7       1       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         2       3       0     N/A
+//  Average:         2       3       0     N/A
+//  Maximum:         7       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       3       0
-//  Average:         2       2       0
-//  Maximum:         7       4       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       3       0       0
+//  Average:         2       3       0       0
+//  Maximum:         7       8       0       0
 impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiCircleRotor {
     type Output = Scalar;
     fn div(self, _rhs: FlatBulkNormPrefixOrPostfix) -> Self::Output {
@@ -26,8 +26,8 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiCircleRotor {
 }
 impl FlatBulkNorm for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
         let wedge_g0 = self.group2().xyz();
         Scalar::from_groups(/* scalar */ -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2])
@@ -41,12 +41,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiDipoleInversion {
 }
 impl FlatBulkNorm for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        3        0
+    // yes simd        3        5        0      N/A
+    //  no simd        3        7        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         let wedge_g1_xyz = self.group2().xyz() * Simd32x3::from(-1.0);
@@ -64,8 +64,8 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiDualNum {
 }
 impl FlatBulkNorm for AntiDualNum {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e3215] * -1.0)
@@ -79,12 +79,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiFlatPoint {
 }
 impl FlatBulkNorm for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    // yes simd        2        4        0      N/A
+    //  no simd        2        6        0        0
     fn flat_bulk_norm(self) -> Scalar {
         let wedge_g0_xyz = self.group0().xyz() * Simd32x3::from(-1.0);
         Scalar::from_groups(
@@ -101,12 +101,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiFlector {
 }
 impl FlatBulkNorm for AntiFlector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        3        0
+    // yes simd        3        5        0      N/A
+    //  no simd        3        7        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         let wedge_g1_xyz = self.group0().xyz() * Simd32x3::from(-1.0);
@@ -124,11 +124,11 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiLine {
 }
 impl FlatBulkNorm for AntiLine {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
-        let wedge_g0 = self.group1();
-        Scalar::from_groups(/* scalar */ -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2])
+        use crate::elements::*;
+        Scalar::from_groups(/* scalar */ -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35])
     }
 }
 impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiMotor {
@@ -139,18 +139,14 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for AntiMotor {
 }
 impl FlatBulkNorm for AntiMotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        1        1        0
-    // Totals...
-    // yes simd        4        1        0
-    //  no simd        7        4        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        let wedge_g0 = (Simd32x3::from(0.0).with_w(1.0).wwwx() * self.group1().xyz().with_w(0.0)) + Simd32x3::from(0.0).with_w(self[e3215]);
+        let sub_type_g0_xyz = self.group1().xyz();
         Scalar::from_groups(
             // scalar
-            -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
+            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
         )
     }
 }
@@ -174,18 +170,11 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Circle {
 }
 impl FlatBulkNorm for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
-        let wedge_g0_xyz = self.group2() * Simd32x3::from(-1.0);
-        Scalar::from_groups(
-            // scalar
-            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2],
-        )
+        use crate::elements::*;
+        Scalar::from_groups(/* scalar */ self[e235] * self[e235] + self[e315] * self[e315] + self[e125] * self[e125])
     }
 }
 impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for CircleRotor {
@@ -196,12 +185,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for CircleRotor {
 }
 impl FlatBulkNorm for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    // yes simd        2        4        0      N/A
+    //  no simd        2        6        0        0
     fn flat_bulk_norm(self) -> Scalar {
         let wedge_g0_xyz = self.group2().xyz() * Simd32x3::from(-1.0);
         Scalar::from_groups(
@@ -218,11 +207,11 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Dipole {
 }
 impl FlatBulkNorm for Dipole {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
-        let wedge_g0 = self.group2();
-        Scalar::from_groups(/* scalar */ -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2])
+        use crate::elements::*;
+        Scalar::from_groups(/* scalar */ -self[e15] * self[e15] - self[e25] * self[e25] - self[e35] * self[e35])
     }
 }
 impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for DipoleInversion {
@@ -233,18 +222,14 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for DipoleInversion {
 }
 impl FlatBulkNorm for DipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        1        1        0
-    // Totals...
-    // yes simd        4        1        0
-    //  no simd        7        4        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        let wedge_g0 = (Simd32x3::from(0.0).with_w(1.0).wwwx() * self.group2().xyz().with_w(0.0)) + Simd32x3::from(0.0).with_w(self[e3215]);
+        let sub_type_g0_xyz = self.group2().xyz();
         Scalar::from_groups(
             // scalar
-            -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
+            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
         )
     }
 }
@@ -268,8 +253,8 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for FlatPoint {
 }
 impl FlatBulkNorm for FlatPoint {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
         let wedge_g0 = self.group0().xyz();
         Scalar::from_groups(/* scalar */ -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2])
@@ -283,18 +268,14 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Flector {
 }
 impl FlatBulkNorm for Flector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        1        1        0
-    // Totals...
-    // yes simd        4        1        0
-    //  no simd        7        4        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        let wedge_g0 = (Simd32x3::from(0.0).with_w(1.0).wwwx() * self.group0().xyz().with_w(0.0)) + Simd32x3::from(0.0).with_w(self[e3215]);
+        let sub_type_g0_xyz = self.group0().xyz();
         Scalar::from_groups(
             // scalar
-            -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
+            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
         )
     }
 }
@@ -306,18 +287,11 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Line {
 }
 impl FlatBulkNorm for Line {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        3        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn flat_bulk_norm(self) -> Scalar {
-        let wedge_g0_xyz = self.group1() * Simd32x3::from(-1.0);
-        Scalar::from_groups(
-            // scalar
-            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2],
-        )
+        use crate::elements::*;
+        Scalar::from_groups(/* scalar */ self[e235] * self[e235] + self[e315] * self[e315] + self[e125] * self[e125])
     }
 }
 impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Motor {
@@ -328,12 +302,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Motor {
 }
 impl FlatBulkNorm for Motor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        3        0
+    // yes simd        3        5        0      N/A
+    //  no simd        3        7        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         let wedge_g1_xyz = self.group1().xyz() * Simd32x3::from(-1.0);
@@ -351,24 +325,17 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for MultiVector {
 }
 impl FlatBulkNorm for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7        0        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        7        1        0
-    //  no simd        7        4        0
+    //      add/sub      mul      div      pow
+    // f32        7        8        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        let wedge_g9 = self.group8().with_w(0.0) * Simd32x4::from(-1.0);
+        let sub_type_g3_xyz = self.group3().xyz();
         Scalar::from_groups(
             // scalar
-            self[e5] * self[e5]
-                - wedge_g9[0] * wedge_g9[0]
-                - wedge_g9[1] * wedge_g9[1]
-                - wedge_g9[2] * wedge_g9[2]
-                - self[e15] * self[e15]
-                - self[e25] * self[e25]
-                - self[e35] * self[e35]
+            self[e5] * self[e5] + self[e235] * self[e235] + self[e315] * self[e315] + self[e125] * self[e125]
+                - sub_type_g3_xyz[0] * sub_type_g3_xyz[0]
+                - sub_type_g3_xyz[1] * sub_type_g3_xyz[1]
+                - sub_type_g3_xyz[2] * sub_type_g3_xyz[2]
                 - self[e3215] * self[e3215],
         )
     }
@@ -381,8 +348,8 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Plane {
 }
 impl FlatBulkNorm for Plane {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e3215] * -1.0)
@@ -408,8 +375,8 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for Sphere {
 }
 impl FlatBulkNorm for Sphere {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e3215] * -1.0)
@@ -423,12 +390,12 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for VersorEven {
 }
 impl FlatBulkNorm for VersorEven {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        3        1        0
-    //  no simd        3        3        0
+    // yes simd        3        5        0      N/A
+    //  no simd        3        7        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
         let wedge_g1_xyz = self.group2().xyz() * Simd32x3::from(-1.0);
@@ -446,18 +413,14 @@ impl std::ops::Div<FlatBulkNormPrefixOrPostfix> for VersorOdd {
 }
 impl FlatBulkNorm for VersorOdd {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        1        1        0
-    // Totals...
-    // yes simd        4        1        0
-    //  no simd        7        4        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn flat_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        let wedge_g0 = (Simd32x3::from(0.0).with_w(1.0).wwwx() * self.group2().xyz().with_w(0.0)) + Simd32x3::from(0.0).with_w(self[e3215]);
+        let sub_type_g0_xyz = self.group2().xyz();
         Scalar::from_groups(
             // scalar
-            -wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3],
+            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
         )
     }
 }

@@ -47,9 +47,10 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, AntiDipoleInve
 public extension AntiDipoleInversion {
     public MultiVector flat_norm_squared() {
         float3 wedge_g1_xyz = this.group2.xyz * float3(-1.0);
+        float3 sub_type_g0 = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e5 * this.e5 - wedge_g1_xyz[0] * wedge_g1_xyz[0] - wedge_g1_xyz[1] * wedge_g1_xyz[1] - wedge_g1_xyz[2] * wedge_g1_xyz[2], this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435), 
+            float2(this.e5 * this.e5 - wedge_g1_xyz[0] * wedge_g1_xyz[0] - wedge_g1_xyz[1] * wedge_g1_xyz[1] - wedge_g1_xyz[2] * wedge_g1_xyz[2], sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2]), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -83,10 +84,10 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public MultiVector flat_norm_squared() {
-        float3 wedge_g0_xyz = this.group2.xyz * float3(-1.0);
+        float3 sub_type_g0 = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435), 
+            float2(this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125, sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2]), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -121,9 +122,10 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, CircleRotor rh
 public extension CircleRotor {
     public MultiVector flat_norm_squared() {
         float3 wedge_g0_xyz = this.group2.xyz * float3(-1.0);
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e12345 * this.e12345), 
+            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.e12345 * this.e12345), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -157,10 +159,9 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public MultiVector flat_norm_squared() {
-        float3 wedge_g0 = this.group2.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2], this.e45 * this.e45), 
+            float2(-this.e15 * this.e15 - this.e25 * this.e25 - this.e35 * this.e35, this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -194,10 +195,11 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, DipoleInversio
 }
 public extension DipoleInversion {
     public MultiVector flat_norm_squared() {
-        float4 wedge_g0 = (float4(float3(0.0), 1.0).wwwx * float4(this.group2.xyz, 0.0)) + float4(float3(0.0), this.e3215);
+        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3], this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125), 
+            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -233,7 +235,7 @@ public extension DualNum {
     public MultiVector flat_norm_squared() {
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e5 * this.e5, this.e12345 * this.e12345), 
+            this.group0.xy * this.group0.xy, 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -304,10 +306,11 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public MultiVector flat_norm_squared() {
-        float4 wedge_g0 = (float4(float3(0.0), 1.0).wwwx * float4(this.group0.xyz, 0.0)) + float4(float3(0.0), this.e3215);
+        float3 sub_type_g0_xyz = this.group0.xyz;
+        float3 sub_type_g1_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3], this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125), 
+            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -341,10 +344,9 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Line rhs) {
 }
 public extension Line {
     public MultiVector flat_norm_squared() {
-        float3 wedge_g0_xyz = this.group1.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435), 
+            float2(this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125, this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -415,10 +417,12 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, MultiVector rh
 }
 public extension MultiVector {
     public MultiVector flat_norm_squared() {
-        float4 wedge_g9 = float4(this.group8.xyz, 0.0) * float4(-1.0);
+        float3 sub_type_g3_xyz = this.group3.xyz;
+        float3 sub_type_g6_xyz = this.group6.xyz;
+        float3 sub_type_g9_xyz = this.group9.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e5 * this.e5 - wedge_g9[0] * wedge_g9[0] - wedge_g9[1] * wedge_g9[1] - wedge_g9[2] * wedge_g9[2] - this.e15 * this.e15 - this.e25 * this.e25 - this.e35 * this.e35 - this.e3215 * this.e3215, this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125), 
+            float2(this.e5 * this.e5 + this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125 - sub_type_g3_xyz[0] * sub_type_g3_xyz[0] - sub_type_g3_xyz[1] * sub_type_g3_xyz[1] - sub_type_g3_xyz[2] * sub_type_g3_xyz[2] - this.e3215 * this.e3215, sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e12345 * this.e12345 + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -452,9 +456,10 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public MultiVector flat_norm_squared() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e3215 * this.e3215, this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125) * float2(-1.0, 1.0), 
+            float2(this.e3215 * this.e3215 * -1.0, sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2]), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -488,9 +493,10 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public MultiVector flat_norm_squared() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e3215 * this.e3215, this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125) * float2(-1.0, 1.0), 
+            float2(this.e3215 * this.e3215 * -1.0, sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2]), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -561,10 +567,11 @@ public MultiVector operator /(FlatNormSquaredPrefixOrPostfix lhs, VersorOdd rhs)
 }
 public extension VersorOdd {
     public MultiVector flat_norm_squared() {
-        float4 wedge_g0 = (float4(float3(0.0), 1.0).wwwx * float4(this.group2.xyz, 0.0)) + float4(float3(0.0), this.e3215);
+        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-wedge_g0[0] * wedge_g0[0] - wedge_g0[1] * wedge_g0[1] - wedge_g0[2] * wedge_g0[2] - wedge_g0[3] * wedge_g0[3], this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125), 
+            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */

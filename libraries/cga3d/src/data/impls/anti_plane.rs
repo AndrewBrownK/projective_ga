@@ -1,25 +1,26 @@
 use crate::traits::GeometricProduct;
 use crate::traits::RightDual;
+use crate::traits::Wedge;
 // Note on Operative Statistics:
 // Operative Statistics are not a precise predictor of performance or performance comparisons.
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
-// Total Implementations: 84
+// Total Implementations: 108
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         3       7       0
-//  Maximum:        44      73       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         1       3       0     N/A
+//  Average:         3       5       0     N/A
+//  Maximum:        42      59       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         7      13       0
-//  Maximum:        96     131       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       7       0       0
+//  Average:        10      13       0       0
+//  Maximum:       122     133       0       0
 impl std::ops::Add<AntiCircleRotor> for AntiPlane {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotor) -> Self::Output {
@@ -53,9 +54,9 @@ impl std::ops::Add<AntiCircleRotor> for AntiPlane {
 impl std::ops::Add<AntiDipoleInversion> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn add(self, other: AntiDipoleInversion) -> Self::Output {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -108,9 +109,9 @@ impl std::ops::Add<AntiFlatPoint> for AntiPlane {
 impl std::ops::Add<AntiFlector> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn add(self, other: AntiFlector) -> Self::Output {
         AntiFlector::from_groups(/* e235, e315, e125, e321 */ other.group0(), /* e1, e2, e3, e5 */ other.group1() + self.group0())
     }
@@ -178,9 +179,9 @@ impl std::ops::Add<AntiMotor> for AntiPlane {
 impl std::ops::Add<AntiPlane> for AntiPlane {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn add(self, other: AntiPlane) -> Self::Output {
         AntiPlane::from_groups(/* e1, e2, e3, e5 */ other.group0() + self.group0())
     }
@@ -249,7 +250,7 @@ impl std::ops::Add<Dipole> for AntiPlane {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            other.group2().with_w(other[e45]),
+            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -300,8 +301,8 @@ impl std::ops::Add<DipoleInversion> for AntiPlane {
 impl std::ops::Add<DualNum> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
@@ -394,8 +395,8 @@ impl std::ops::Add<Line> for AntiPlane {
 impl std::ops::Add<Motor> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
@@ -413,19 +414,19 @@ impl std::ops::Add<Motor> for AntiPlane {
 impl std::ops::Add<MultiVector> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        1        0        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        2        0        0
-    //  no simd        4        0        0
+    // yes simd        2        0        0      N/A
+    //  no simd        5        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             other.group0(),
             // e1, e2, e3, e4
-            (self.group0().xyz() + other.group1().xyz()).with_w(other[e4]),
+            other.group1() + self.group0().xyz().with_w(0.0),
             // e5
             self[e5] + other[e5],
             // e15, e25, e35, e45
@@ -480,20 +481,15 @@ impl std::ops::Add<Plane> for AntiPlane {
 impl std::ops::Add<RoundPoint> for AntiPlane {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        1        0        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        2        0        0
-    //  no simd        4        0        0
+    // yes simd        2        0        0      N/A
+    //  no simd        5        0        0        0
     fn add(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
-        RoundPoint::from_groups(
-            // e1, e2, e3, e4
-            (self.group0().xyz() + other.group0().xyz()).with_w(other[e4]),
-            // e5
-            self[e5] + other[e5],
-        )
+        RoundPoint::from_groups(/* e1, e2, e3, e4 */ other.group0() + self.group0().xyz().with_w(0.0), /* e5 */ self[e5] + other[e5])
     }
 }
 impl std::ops::Add<Scalar> for AntiPlane {
@@ -559,12 +555,12 @@ impl std::ops::Add<Sphere> for AntiPlane {
 impl std::ops::Add<VersorEven> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        1        0        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        2        0        0
-    //  no simd        4        0        0
+    // yes simd        2        0        0      N/A
+    //  no simd        5        0        0        0
     fn add(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
@@ -575,7 +571,7 @@ impl std::ops::Add<VersorEven> for AntiPlane {
             // e235, e315, e125, e5
             other.group2().xyz().with_w(self[e5] + other[e5]),
             // e1, e2, e3, e4
-            (self.group0().xyz() + other.group3().xyz()).with_w(other[e4]),
+            other.group3() + self.group0().xyz().with_w(0.0),
         )
     }
 }
@@ -609,16 +605,338 @@ impl std::ops::Add<VersorOdd> for AntiPlane {
         )
     }
 }
+impl std::ops::BitXor<AntiCircleRotor> for AntiPlane {
+    type Output = AntiDipoleInversion;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        1        6        0      N/A
+    //    simd4        4        2        0      N/A
+    // Totals...
+    // yes simd        6       10        0      N/A
+    //  no simd       20       28        0        0
+    fn bitxor(self, other: AntiCircleRotor) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiDipoleInversion> for AntiPlane {
+    type Output = DipoleInversion;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        2        9        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        4        0      N/A
+    //    simd4        5        3        0      N/A
+    // Totals...
+    // yes simd        9       17        0      N/A
+    //  no simd       28       35        0        0
+    fn bitxor(self, other: AntiDipoleInversion) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiDualNum> for AntiPlane {
+    type Output = AntiPlane;
+    // Operative Statistics for this implementation:
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
+    fn bitxor(self, other: AntiDualNum) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXorAssign<AntiDualNum> for AntiPlane {
+    fn bitxor_assign(&mut self, other: AntiDualNum) {
+        *self = self.wedge(other);
+    }
+}
+impl std::ops::BitXor<AntiFlatPoint> for AntiPlane {
+    type Output = AntiDualNum;
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
+    fn bitxor(self, other: AntiFlatPoint) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiFlector> for AntiPlane {
+    type Output = AntiMotor;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        1        3        0      N/A
+    //    simd4        2        1        0      N/A
+    // Totals...
+    // yes simd        5        7        0      N/A
+    //  no simd       13       16        0        0
+    fn bitxor(self, other: AntiFlector) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiLine> for AntiPlane {
+    type Output = AntiFlatPoint;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        3        1        0      N/A
+    // Totals...
+    // yes simd        4        5        0      N/A
+    //  no simd       13       12        0        0
+    fn bitxor(self, other: AntiLine) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiMotor> for AntiPlane {
+    type Output = AntiFlector;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        3        2        0      N/A
+    // Totals...
+    // yes simd        4        6        0      N/A
+    //  no simd       13       16        0        0
+    fn bitxor(self, other: AntiMotor) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<AntiPlane> for AntiPlane {
+    type Output = AntiLine;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        3        3        0      N/A
+    // Totals...
+    // yes simd        3        6        0      N/A
+    //  no simd        9       13        0        0
+    fn bitxor(self, other: AntiPlane) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Circle> for AntiPlane {
+    type Output = Sphere;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        3        5        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        3        2        0      N/A
+    // Totals...
+    // yes simd        6        8        0      N/A
+    //  no simd       15       16        0        0
+    fn bitxor(self, other: Circle) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<CircleRotor> for AntiPlane {
+    type Output = Sphere;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        3        5        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        3        2        0      N/A
+    // Totals...
+    // yes simd        6        8        0      N/A
+    //  no simd       15       16        0        0
+    fn bitxor(self, other: CircleRotor) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Dipole> for AntiPlane {
+    type Output = Circle;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        3        6        0      N/A
+    //    simd4        2        1        0      N/A
+    // Totals...
+    // yes simd        6        9        0      N/A
+    //  no simd       18       24        0        0
+    fn bitxor(self, other: Dipole) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<DipoleInversion> for AntiPlane {
+    type Output = CircleRotor;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        1        4        0      N/A
+    //    simd4        5        3        0      N/A
+    // Totals...
+    // yes simd        8       11        0      N/A
+    //  no simd       25       28        0        0
+    fn bitxor(self, other: DipoleInversion) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<DualNum> for AntiPlane {
+    type Output = FlatPoint;
+    // Operative Statistics for this implementation:
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
+    fn bitxor(self, other: DualNum) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<FlatPoint> for AntiPlane {
+    type Output = Line;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        2        0      N/A
+    // Totals...
+    // yes simd        2        6        0      N/A
+    //  no simd        6       11        0        0
+    fn bitxor(self, other: FlatPoint) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Flector> for AntiPlane {
+    type Output = Motor;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        1        3        0      N/A
+    // Totals...
+    // yes simd        3        7        0      N/A
+    //  no simd        5       13        0        0
+    fn bitxor(self, other: Flector) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Line> for AntiPlane {
+    type Output = Plane;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        2        1        0      N/A
+    // Totals...
+    // yes simd        3        4        0      N/A
+    //  no simd        9        9        0        0
+    fn bitxor(self, other: Line) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Motor> for AntiPlane {
+    type Output = Flector;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
+    // Totals...
+    // yes simd        3        5        0      N/A
+    //  no simd        9       12        0        0
+    fn bitxor(self, other: Motor) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<MultiVector> for AntiPlane {
+    type Output = MultiVector;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        7       19        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        7       11        0      N/A
+    //    simd4        5        3        0      N/A
+    // Totals...
+    // yes simd       19       35        0      N/A
+    //  no simd       48       68        0        0
+    fn bitxor(self, other: MultiVector) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Plane> for AntiPlane {
+    type Output = AntiScalar;
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
+    fn bitxor(self, other: Plane) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<RoundPoint> for AntiPlane {
+    type Output = Dipole;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        0        5        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        3        4        0      N/A
+    // Totals...
+    // yes simd        3       10        0      N/A
+    //  no simd        9       19        0        0
+    fn bitxor(self, other: RoundPoint) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<Scalar> for AntiPlane {
+    type Output = AntiPlane;
+    // Operative Statistics for this implementation:
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
+    fn bitxor(self, other: Scalar) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXorAssign<Scalar> for AntiPlane {
+    fn bitxor_assign(&mut self, other: Scalar) {
+        *self = self.wedge(other);
+    }
+}
+impl std::ops::BitXor<Sphere> for AntiPlane {
+    type Output = AntiScalar;
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
+    fn bitxor(self, other: Sphere) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<VersorEven> for AntiPlane {
+    type Output = DipoleInversion;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        2        9        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        4        0      N/A
+    //    simd4        5        3        0      N/A
+    // Totals...
+    // yes simd        9       17        0      N/A
+    //  no simd       28       35        0        0
+    fn bitxor(self, other: VersorEven) -> Self::Output {
+        self.wedge(other)
+    }
+}
+impl std::ops::BitXor<VersorOdd> for AntiPlane {
+    type Output = VersorEven;
+    // Operative Statistics for this implementation:
+    //           add/sub      mul      div      pow
+    //      f32        3        8        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        3        5        0      N/A
+    //    simd4        4        2        0      N/A
+    // Totals...
+    // yes simd       10       16        0      N/A
+    //  no simd       28       33        0        0
+    fn bitxor(self, other: VersorOdd) -> Self::Output {
+        self.wedge(other)
+    }
+}
 impl std::ops::Mul<AntiCircleRotor> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       21        0
-    //    simd3        1        2        0
-    //    simd4        5        5        0
+    //           add/sub      mul      div      pow
+    //      f32        3        6        0        0
+    //    simd3        1        6        0      N/A
+    //    simd4        9        5        0      N/A
     // Totals...
-    // yes simd       12       28        0
-    //  no simd       29       47        0
+    // yes simd       13       17        0      N/A
+    //  no simd       42       44        0        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -626,12 +944,13 @@ impl std::ops::Mul<AntiCircleRotor> for AntiPlane {
 impl std::ops::Mul<AntiDipoleInversion> for AntiPlane {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       28        0
-    //    simd4        9        9        0
+    //           add/sub      mul      div      pow
+    //      f32        2        7        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       15        9        0      N/A
     // Totals...
-    // yes simd       17       37        0
-    //  no simd       44       64        0
+    // yes simd       17       22        0      N/A
+    //  no simd       62       61        0        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -639,12 +958,13 @@ impl std::ops::Mul<AntiDipoleInversion> for AntiPlane {
 impl std::ops::Mul<AntiDualNum> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        8        0        0
     fn mul(self, other: AntiDualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -652,13 +972,13 @@ impl std::ops::Mul<AntiDualNum> for AntiPlane {
 impl std::ops::Mul<AntiFlatPoint> for AntiPlane {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        0        2        0
-    //    simd4        1        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        3        9        0
-    //  no simd        6       16        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       14        0        0
     fn mul(self, other: AntiFlatPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -666,12 +986,13 @@ impl std::ops::Mul<AntiFlatPoint> for AntiPlane {
 impl std::ops::Mul<AntiFlector> for AntiPlane {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       16        0
-    //    simd4        3        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd       11       19        0
-    //  no simd       20       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn mul(self, other: AntiFlector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -679,12 +1000,13 @@ impl std::ops::Mul<AntiFlector> for AntiPlane {
 impl std::ops::Mul<AntiLine> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5       16        0
-    //    simd4        2        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        5        2        0      N/A
     // Totals...
-    // yes simd        7       18        0
-    //  no simd       13       24        0
+    // yes simd        7        9        0      N/A
+    //  no simd       22       21        0        0
     fn mul(self, other: AntiLine) -> Self::Output {
         self.geometric_product(other)
     }
@@ -692,12 +1014,13 @@ impl std::ops::Mul<AntiLine> for AntiPlane {
 impl std::ops::Mul<AntiMotor> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4       16        0
-    //    simd4        4        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd        8       20        0
-    //  no simd       20       32        0
+    // yes simd        8       11        0      N/A
+    //  no simd       29       29        0        0
     fn mul(self, other: AntiMotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -705,13 +1028,13 @@ impl std::ops::Mul<AntiMotor> for AntiPlane {
 impl std::ops::Mul<AntiPlane> for AntiPlane {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        8        0
-    //    simd3        1        2        0
-    //    simd4        1        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        1        3        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        3       11        0
-    //  no simd        8       18        0
+    // yes simd        4        6        0      N/A
+    //  no simd       12       15        0        0
     fn mul(self, other: AntiPlane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -719,9 +1042,9 @@ impl std::ops::Mul<AntiPlane> for AntiPlane {
 impl std::ops::Mul<AntiScalar> for AntiPlane {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn mul(self, other: AntiScalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -729,13 +1052,13 @@ impl std::ops::Mul<AntiScalar> for AntiPlane {
 impl std::ops::Mul<Circle> for AntiPlane {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5       17        0
-    //    simd3        1        4        0
-    //    simd4        5        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        1        5        0      N/A
+    //    simd4        8        5        0      N/A
     // Totals...
-    // yes simd       11       24        0
-    //  no simd       28       41        0
+    // yes simd       11       16        0      N/A
+    //  no simd       37       41        0        0
     fn mul(self, other: Circle) -> Self::Output {
         self.geometric_product(other)
     }
@@ -743,13 +1066,13 @@ impl std::ops::Mul<Circle> for AntiPlane {
 impl std::ops::Mul<CircleRotor> for AntiPlane {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        9       22        0
-    //    simd3        1        5        0
-    //    simd4        5        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        7        0        0
+    //    simd3        1        6        0      N/A
+    //    simd4        9        5        0      N/A
     // Totals...
-    // yes simd       15       29        0
-    //  no simd       32       45        0
+    // yes simd       13       18        0      N/A
+    //  no simd       42       45        0        0
     fn mul(self, other: CircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -757,13 +1080,13 @@ impl std::ops::Mul<CircleRotor> for AntiPlane {
 impl std::ops::Mul<Dipole> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       23        0
-    //    simd3        1        4        0
-    //    simd4        4        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        6        0        0
+    //    simd3        1        6        0      N/A
+    //    simd4        8        4        0      N/A
     // Totals...
-    // yes simd       11       29        0
-    //  no simd       25       43        0
+    // yes simd       12       16        0      N/A
+    //  no simd       38       40        0        0
     fn mul(self, other: Dipole) -> Self::Output {
         self.geometric_product(other)
     }
@@ -771,13 +1094,13 @@ impl std::ops::Mul<Dipole> for AntiPlane {
 impl std::ops::Mul<DipoleInversion> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       30        0
-    //    simd3        0        2        0
-    //    simd4        9        7        0
+    //           add/sub      mul      div      pow
+    //      f32        2        7        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       15        9        0      N/A
     // Totals...
-    // yes simd       17       39        0
-    //  no simd       44       64        0
+    // yes simd       17       22        0      N/A
+    //  no simd       62       61        0        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -785,12 +1108,12 @@ impl std::ops::Mul<DipoleInversion> for AntiPlane {
 impl std::ops::Mul<DualNum> for AntiPlane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -798,13 +1121,13 @@ impl std::ops::Mul<DualNum> for AntiPlane {
 impl std::ops::Mul<FlatPoint> for AntiPlane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        0        2        0
-    //    simd4        2        2        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd        3        6        0
-    //  no simd        9       16        0
+    // yes simd        3        6        0      N/A
+    //  no simd        9       14        0        0
     fn mul(self, other: FlatPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -812,12 +1135,13 @@ impl std::ops::Mul<FlatPoint> for AntiPlane {
 impl std::ops::Mul<Flector> for AntiPlane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       16        0
-    //    simd4        3        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd       11       19        0
-    //  no simd       20       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -825,12 +1149,13 @@ impl std::ops::Mul<Flector> for AntiPlane {
 impl std::ops::Mul<Line> for AntiPlane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1       10        0
-    //    simd4        3        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        5        3        0      N/A
     // Totals...
-    // yes simd        4       13        0
-    //  no simd       13       22        0
+    // yes simd        6        9        0      N/A
+    //  no simd       21       22        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -838,12 +1163,13 @@ impl std::ops::Mul<Line> for AntiPlane {
 impl std::ops::Mul<Motor> for AntiPlane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       17        0
-    //    simd4        3        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        5        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd       11       20        0
-    //  no simd       20       29        0
+    // yes simd        9       12        0      N/A
+    //  no simd       30       29        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -851,14 +1177,14 @@ impl std::ops::Mul<Motor> for AntiPlane {
 impl std::ops::Mul<MultiVector> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       21       46        0
-    //    simd2        3        3        0
-    //    simd3       11       17        0
-    //    simd4        9        7        0
+    //           add/sub      mul      div      pow
+    //      f32        9       24        0        0
+    //    simd2        3        5        0      N/A
+    //    simd3       13       21        0      N/A
+    //    simd4       17        9        0      N/A
     // Totals...
-    // yes simd       44       73        0
-    //  no simd       96      131        0
+    // yes simd       42       59        0      N/A
+    //  no simd      122      133        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -866,13 +1192,13 @@ impl std::ops::Mul<MultiVector> for AntiPlane {
 impl std::ops::Mul<Plane> for AntiPlane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        8        0
-    //    simd3        1        2        0
-    //    simd4        1        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        1        3        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        3       11        0
-    //  no simd        8       18        0
+    // yes simd        4        6        0      N/A
+    //  no simd       12       15        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -880,13 +1206,14 @@ impl std::ops::Mul<Plane> for AntiPlane {
 impl std::ops::Mul<RoundPoint> for AntiPlane {
     type Output = AntiCircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        4        0
-    //    simd3        1        4        0
-    //    simd4        2        2        0
+    //           add/sub      mul      div      pow
+    //      f32        1        7        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd        4       10        0
-    //  no simd       12       24        0
+    // yes simd        5       12        0      N/A
+    //  no simd       15       23        0        0
     fn mul(self, other: RoundPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -894,9 +1221,9 @@ impl std::ops::Mul<RoundPoint> for AntiPlane {
 impl std::ops::Mul<Scalar> for AntiPlane {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn mul(self, other: Scalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -909,12 +1236,13 @@ impl std::ops::MulAssign<Scalar> for AntiPlane {
 impl std::ops::Mul<Sphere> for AntiPlane {
     type Output = CircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       12        0
-    //    simd3        1        3        0
+    //           add/sub      mul      div      pow
+    //      f32        6       14        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        2        0      N/A
     // Totals...
-    // yes simd        7       15        0
-    //  no simd        9       21        0
+    // yes simd        8       17        0      N/A
+    //  no simd       12       22        0        0
     fn mul(self, other: Sphere) -> Self::Output {
         self.geometric_product(other)
     }
@@ -922,12 +1250,13 @@ impl std::ops::Mul<Sphere> for AntiPlane {
 impl std::ops::Mul<VersorEven> for AntiPlane {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       12       32        0
-    //    simd4        9        9        0
+    //           add/sub      mul      div      pow
+    //      f32        3        8        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4       16        9        0      N/A
     // Totals...
-    // yes simd       21       41        0
-    //  no simd       48       68        0
+    // yes simd       19       24        0      N/A
+    //  no simd       67       65        0        0
     fn mul(self, other: VersorEven) -> Self::Output {
         self.geometric_product(other)
     }
@@ -935,12 +1264,13 @@ impl std::ops::Mul<VersorEven> for AntiPlane {
 impl std::ops::Mul<VersorOdd> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       12       32        0
-    //    simd4        9        9        0
+    //           add/sub      mul      div      pow
+    //      f32        3        8        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4       16        9        0      N/A
     // Totals...
-    // yes simd       21       41        0
-    //  no simd       48       68        0
+    // yes simd       19       24        0      N/A
+    //  no simd       67       65        0        0
     fn mul(self, other: VersorOdd) -> Self::Output {
         self.geometric_product(other)
     }
@@ -948,9 +1278,9 @@ impl std::ops::Mul<VersorOdd> for AntiPlane {
 impl std::ops::Neg for AntiPlane {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn neg(self) -> Self::Output {
         AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -958,9 +1288,8 @@ impl std::ops::Neg for AntiPlane {
 impl std::ops::Not for AntiPlane {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn not(self) -> Self::Output {
         self.right_dual()
     }
@@ -968,24 +1297,23 @@ impl std::ops::Not for AntiPlane {
 impl std::ops::Sub<AntiCircleRotor> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       12        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       11        0        0
     fn sub(self, other: AntiCircleRotor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
+            Simd32x2::from([other[scalar] * -1.0, 0.0]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e5
             self[e5],
             // e15, e25, e35, e45
-            other.group2().xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
+            (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(other[e45] * -1.0),
             // e41, e42, e43
             other.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
@@ -1006,12 +1334,12 @@ impl std::ops::Sub<AntiCircleRotor> for AntiPlane {
 impl std::ops::Sub<AntiDipoleInversion> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        1        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        1        2        0      N/A
     // Totals...
-    // yes simd        1        3        0
-    //  no simd        4       11        0
+    // yes simd        1        3        0      N/A
+    //  no simd        4       11        0        0
     fn sub(self, other: AntiDipoleInversion) -> Self::Output {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -1028,17 +1356,13 @@ impl std::ops::Sub<AntiDipoleInversion> for AntiPlane {
 impl std::ops::Sub<AntiDualNum> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        6        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn sub(self, other: AntiDualNum) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
+            Simd32x2::from([other[scalar] * -1.0, 0.0]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e5
@@ -1056,7 +1380,7 @@ impl std::ops::Sub<AntiDualNum> for AntiPlane {
             // e235, e315, e125
             Simd32x3::from(0.0),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(other[e3215] * -1.0),
             // e1234
             0.0,
         )
@@ -1065,9 +1389,9 @@ impl std::ops::Sub<AntiDualNum> for AntiPlane {
 impl std::ops::Sub<AntiFlatPoint> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: AntiFlatPoint) -> Self::Output {
         AntiFlector::from_groups(/* e235, e315, e125, e321 */ other.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group0())
     }
@@ -1075,9 +1399,9 @@ impl std::ops::Sub<AntiFlatPoint> for AntiPlane {
 impl std::ops::Sub<AntiFlector> for AntiPlane {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        1        0
-    // no simd        4        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        1        0      N/A
+    // no simd        4        4        0        0
     fn sub(self, other: AntiFlector) -> Self::Output {
         AntiFlector::from_groups(
             // e235, e315, e125, e321
@@ -1090,9 +1414,9 @@ impl std::ops::Sub<AntiFlector> for AntiPlane {
 impl std::ops::Sub<AntiLine> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn sub(self, other: AntiLine) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1124,18 +1448,17 @@ impl std::ops::Sub<AntiLine> for AntiPlane {
 impl std::ops::Sub<AntiMotor> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       12        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn sub(self, other: AntiMotor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
+            Simd32x2::from([other[scalar] * -1.0, 0.0]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e5
@@ -1153,7 +1476,7 @@ impl std::ops::Sub<AntiMotor> for AntiPlane {
             // e235, e315, e125
             Simd32x3::from(0.0),
             // e4235, e4315, e4125, e3215
-            Simd32x3::from(0.0).with_w(other[e3215]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(other[e3215] * -1.0),
             // e1234
             0.0,
         )
@@ -1162,9 +1485,9 @@ impl std::ops::Sub<AntiMotor> for AntiPlane {
 impl std::ops::Sub<AntiPlane> for AntiPlane {
     type Output = AntiPlane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn sub(self, other: AntiPlane) -> Self::Output {
         AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() - other.group0())
     }
@@ -1177,14 +1500,13 @@ impl std::ops::SubAssign<AntiPlane> for AntiPlane {
 impl std::ops::Sub<AntiScalar> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125, e5
@@ -1197,12 +1519,12 @@ impl std::ops::Sub<AntiScalar> for AntiPlane {
 impl std::ops::Sub<Circle> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn sub(self, other: Circle) -> Self::Output {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -1219,18 +1541,22 @@ impl std::ops::Sub<Circle> for AntiPlane {
 impl std::ops::Sub<CircleRotor> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        4        0      N/A
+    //  no simd        0       11        0        0
     fn sub(self, other: CircleRotor) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            other.group0().with_w(other[e12345]) * Simd32x4::from(-1.0),
+            (other.group0() * Simd32x3::from(-1.0)).with_w(other[e12345] * -1.0),
             // e415, e425, e435, e321
             other.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
-            other.group2().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e5]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
         )
@@ -1239,12 +1565,12 @@ impl std::ops::Sub<CircleRotor> for AntiPlane {
 impl std::ops::Sub<Dipole> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        3        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       10        0        0
     fn sub(self, other: Dipole) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1255,7 +1581,7 @@ impl std::ops::Sub<Dipole> for AntiPlane {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            other.group2().with_w(other[e45]) * Simd32x4::from(-1.0),
+            (other.group2() * Simd32x3::from(-1.0)).with_w(other[e45] * -1.0),
             // e41, e42, e43
             other.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
@@ -1276,13 +1602,13 @@ impl std::ops::Sub<Dipole> for AntiPlane {
 impl std::ops::Sub<DipoleInversion> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       15        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       15        0        0
     fn sub(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1293,7 +1619,7 @@ impl std::ops::Sub<DipoleInversion> for AntiPlane {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            other.group2().xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
+            (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(other[e45] * -1.0),
             // e41, e42, e43
             other.group0() * Simd32x3::from(-1.0),
             // e23, e31, e12
@@ -1314,17 +1640,13 @@ impl std::ops::Sub<DipoleInversion> for AntiPlane {
 impl std::ops::Sub<DualNum> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        1        1        0
-    //  no simd        1        4        0
+    //      add/sub      mul      div      pow
+    // f32        1        1        0        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125, e5
@@ -1337,9 +1659,9 @@ impl std::ops::Sub<DualNum> for AntiPlane {
 impl std::ops::Sub<FlatPoint> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: FlatPoint) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1371,9 +1693,9 @@ impl std::ops::Sub<FlatPoint> for AntiPlane {
 impl std::ops::Sub<Flector> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1405,9 +1727,9 @@ impl std::ops::Sub<Flector> for AntiPlane {
 impl std::ops::Sub<Line> for AntiPlane {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn sub(self, other: Line) -> Self::Output {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -1424,22 +1746,21 @@ impl std::ops::Sub<Line> for AntiPlane {
 impl std::ops::Sub<Motor> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        1        1        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        1        3        0
-    //  no simd        1       11        0
+    // yes simd        1        3        0      N/A
+    //  no simd        1        7        0        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            Simd32x3::from(0.0).with_w(other[e12345]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(other[e12345] * -1.0),
             // e415, e425, e435, e321
             (other.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e235, e315, e125, e5
-            other.group1().xyz().with_w(self[e5] - other[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (other.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e5] - other[e5]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
         )
@@ -1448,21 +1769,21 @@ impl std::ops::Sub<Motor> for AntiPlane {
 impl std::ops::Sub<MultiVector> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        1        0
-    //    simd2        0        1        0
-    //    simd3        1        4        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        1        4        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        2       10        0
-    //  no simd        4       31        0
+    // yes simd        2       10        0      N/A
+    //  no simd        4       28        0        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
             other.group0() * Simd32x2::from(-1.0),
             // e1, e2, e3, e4
-            (self.group0().xyz() - other.group1().xyz()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            (self.group0().xyz() - other.group1().xyz()).with_w(other[e4] * -1.0),
             // e5
             self[e5] - other[e5],
             // e15, e25, e35, e45
@@ -1487,9 +1808,9 @@ impl std::ops::Sub<MultiVector> for AntiPlane {
 impl std::ops::Sub<Plane> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1521,18 +1842,17 @@ impl std::ops::Sub<Plane> for AntiPlane {
 impl std::ops::Sub<RoundPoint> for AntiPlane {
     type Output = RoundPoint;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        1        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        1        0        0
+    //    simd3        1        0        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        4        4        0
+    // yes simd        2        1        0      N/A
+    //  no simd        4        1        0        0
     fn sub(self, other: RoundPoint) -> Self::Output {
         use crate::elements::*;
         RoundPoint::from_groups(
             // e1, e2, e3, e4
-            (self.group0().xyz() - other.group0().xyz()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            (self.group0().xyz() - other.group0().xyz()).with_w(other[e4] * -1.0),
             // e5
             self[e5] - other[e5],
         )
@@ -1541,14 +1861,13 @@ impl std::ops::Sub<RoundPoint> for AntiPlane {
 impl std::ops::Sub<Scalar> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
+            Simd32x2::from([other[scalar] * -1.0, 0.0]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e5
@@ -1575,12 +1894,12 @@ impl std::ops::Sub<Scalar> for AntiPlane {
 impl std::ops::Sub<Sphere> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn sub(self, other: Sphere) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1612,13 +1931,13 @@ impl std::ops::Sub<Sphere> for AntiPlane {
 impl std::ops::Sub<VersorEven> for AntiPlane {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        1        0        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        1        0        0
+    //    simd3        1        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        2        4        0
-    //  no simd        4       16        0
+    // yes simd        2        4        0      N/A
+    //  no simd        4       12        0        0
     fn sub(self, other: VersorEven) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
@@ -1627,34 +1946,33 @@ impl std::ops::Sub<VersorEven> for AntiPlane {
             // e415, e425, e435, e321
             other.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
-            other.group2().xyz().with_w(self[e5] - other[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e5] - other[e5]),
             // e1, e2, e3, e4
-            (self.group0().xyz() - other.group3().xyz()).with_w(other[e4]) * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            (self.group0().xyz() - other.group3().xyz()).with_w(other[e4] * -1.0),
         )
     }
 }
 impl std::ops::Sub<VersorOdd> for AntiPlane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       17        0
+    // yes simd        0        7        0      N/A
+    //  no simd        0       16        0        0
     fn sub(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([other[scalar], 1.0]) * Simd32x2::from([-1.0, 0.0]),
+            Simd32x2::from([other[scalar] * -1.0, 0.0]),
             // e1, e2, e3, e4
             self.group0().xyz().with_w(0.0),
             // e5
             self[e5],
             // e15, e25, e35, e45
-            other.group2().xyz().with_w(other[e45]) * Simd32x4::from(-1.0),
+            (other.group2().xyz() * Simd32x3::from(-1.0)).with_w(other[e45] * -1.0),
             // e41, e42, e43
             other.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12
@@ -2104,10 +2422,7 @@ impl TryFrom<MultiVector> for AntiPlane {
             error.push('}');
             return Err(error);
         }
-        Ok(AntiPlane::from_groups(
-            // e1, e2, e3, e5
-            Simd32x4::from([multi_vector[e1], multi_vector[e2], multi_vector[e3], multi_vector[e5]]),
-        ))
+        Ok(AntiPlane::from_groups(/* e1, e2, e3, e5 */ multi_vector.group1().xyz().with_w(multi_vector[e5])))
     }
 }
 
@@ -2130,10 +2445,7 @@ impl TryFrom<RoundPoint> for AntiPlane {
             error.push('}');
             return Err(error);
         }
-        Ok(AntiPlane::from_groups(
-            // e1, e2, e3, e5
-            Simd32x4::from([round_point[e1], round_point[e2], round_point[e3], round_point[e5]]),
-        ))
+        Ok(AntiPlane::from_groups(/* e1, e2, e3, e5 */ round_point.group0().xyz().with_w(round_point[e5])))
     }
 }
 

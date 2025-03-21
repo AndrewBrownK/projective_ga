@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 25
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       2       0
-//  Average:         0       1       0
-//  Maximum:         0       6       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       2       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         0       6       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       6       0
-//  Average:         0       6       0
-//  Maximum:         0      20       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       6       0       0
+//  Average:         0       6       0       0
+//  Maximum:         0      20       0       0
 impl std::ops::Div<AntiReversePrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
     fn div(self, _rhs: AntiReversePrefixOrPostfix) -> Self::Output {
@@ -31,12 +31,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiCircleRotor {
 }
 impl AntiReverse for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn anti_reverse(self) -> Self {
         AntiCircleRotor::from_groups(
             // e41, e42, e43
@@ -61,12 +61,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiDipoleInversion {
 }
 impl AntiReverse for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn anti_reverse(self) -> Self {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -109,9 +109,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiFlatPoint {
 }
 impl AntiReverse for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn anti_reverse(self) -> Self {
         AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -129,9 +129,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiFlector {
 }
 impl AntiReverse for AntiFlector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn anti_reverse(self) -> Self {
         AntiFlector::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0), /* e1, e2, e3, e5 */ self.group1())
     }
@@ -149,9 +149,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiLine {
 }
 impl AntiReverse for AntiLine {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn anti_reverse(self) -> Self {
         AntiLine::from_groups(
             // e23, e31, e12
@@ -174,9 +174,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for AntiMotor {
 }
 impl AntiReverse for AntiMotor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn anti_reverse(self) -> Self {
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
@@ -231,12 +231,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Circle {
 }
 impl AntiReverse for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn anti_reverse(self) -> Self {
         Circle::from_groups(
             // e423, e431, e412
@@ -261,12 +261,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for CircleRotor {
 }
 impl AntiReverse for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn anti_reverse(self) -> Self {
         CircleRotor::from_groups(
             // e423, e431, e412
@@ -291,12 +291,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Dipole {
 }
 impl AntiReverse for Dipole {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn anti_reverse(self) -> Self {
         Dipole::from_groups(
             // e41, e42, e43
@@ -321,12 +321,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for DipoleInversion {
 }
 impl AntiReverse for DipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn anti_reverse(self) -> Self {
         DipoleInversion::from_groups(
             // e41, e42, e43
@@ -369,9 +369,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for FlatPoint {
 }
 impl AntiReverse for FlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn anti_reverse(self) -> Self {
         FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -389,9 +389,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Flector {
 }
 impl AntiReverse for Flector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn anti_reverse(self) -> Self {
         Flector::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0), /* e4235, e4315, e4125, e3215 */ self.group1())
     }
@@ -409,9 +409,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Line {
 }
 impl AntiReverse for Line {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn anti_reverse(self) -> Self {
         Line::from_groups(
             // e415, e425, e435
@@ -434,9 +434,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for Motor {
 }
 impl AntiReverse for Motor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn anti_reverse(self) -> Self {
         Motor::from_groups(
             // e415, e425, e435, e12345
@@ -459,12 +459,12 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for MultiVector {
 }
 impl AntiReverse for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        4        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        4        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       20        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       20        0        0
     fn anti_reverse(self) -> Self {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -570,9 +570,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for VersorEven {
 }
 impl AntiReverse for VersorEven {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        3        0      N/A
+    // no simd        0       12        0        0
     fn anti_reverse(self) -> Self {
         VersorEven::from_groups(
             // e423, e431, e412, e12345
@@ -599,9 +599,9 @@ impl std::ops::DivAssign<AntiReversePrefixOrPostfix> for VersorOdd {
 }
 impl AntiReverse for VersorOdd {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        3        0      N/A
+    // no simd        0       12        0        0
     fn anti_reverse(self) -> Self {
         VersorOdd::from_groups(
             // e41, e42, e43, scalar

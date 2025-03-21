@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       1       0
-//  Average:         1       1       0
-//  Maximum:         7       5       1
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         2       5       0     N/A
+//  Average:         1       4       0     N/A
+//  Maximum:         7      13       1     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       4       0
-//  Average:         1       5       0
-//  Maximum:         7      16       1
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       9       0       0
+//  Average:         2       8       0       0
+//  Maximum:         8      24       1       0
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
@@ -47,15 +47,11 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DualNum {
 }
 impl Unitize for DualNum {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        2        1
+    //      add/sub      mul      div      pow
+    // f32        0        1        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(1.0 / self[e1234]) * self.group0())
+        DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from([self[scalar] / self[e1234], 1.0]))
     }
 }
 impl std::ops::Div<UnitizePrefixOrPostfix> for Flector {
@@ -71,15 +67,17 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Flector {
 }
 impl Unitize for Flector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
+        let sub_type_g1_xyz = self.group1().xyz();
+        let geometric_anti_product_g0 =
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e4] * self[e4];
         Flector::from_groups(
             // e1, e2, e3, e4
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -101,12 +99,12 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Line {
 }
 impl Unitize for Line {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        2        2        0
-    //  no simd        2        6        0
+    // yes simd        2        5        0      N/A
+    //  no simd        2        9        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -131,12 +129,12 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Motor {
 }
 impl Unitize for Motor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        3        8        0
+    // yes simd        3        6        0      N/A
+    //  no simd        3       12        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
@@ -161,24 +159,25 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for MultiVector {
 }
 impl Unitize for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7        0        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        7        8        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        7        5        0
-    //  no simd        7       16        0
+    // yes simd        7       13        0      N/A
+    //  no simd        7       24        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e1234] * self[e1234]
+        let sub_type_g4_xyz = self.group4().xyz();
+        let geometric_anti_product_g0 = sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+            + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
+            + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
+            + self[e1234] * self[e1234]
             + self[e4] * self[e4]
             + self[e41] * self[e41]
             + self[e42] * self[e42]
-            + self[e43] * self[e43]
-            + self[e423] * self[e423]
-            + self[e431] * self[e431]
-            + self[e412] * self[e412];
+            + self[e43] * self[e43];
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),
@@ -222,17 +221,19 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Plane {
 }
 impl Unitize for Plane {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd4        2        3        0      N/A
     // Totals...
-    // yes simd        2        1        0
-    //  no simd        2        4        0
+    // yes simd        2        6        0      N/A
+    //  no simd        8       15        0        0
     fn unitize(self) -> Self {
-        use crate::elements::*;
+        let sub_type_g0_xyz = self.group0().xyz();
         Plane::from_groups(
             // e423, e431, e412, e321
-            Simd32x4::from(self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412]) * self.group0(),
+            (Simd32x4::from(sub_type_g0_xyz[0] * sub_type_g0_xyz[0]) * self.group0())
+                + (Simd32x4::from(sub_type_g0_xyz[1] * sub_type_g0_xyz[1]) * self.group0())
+                + (Simd32x4::from(sub_type_g0_xyz[2] * sub_type_g0_xyz[2]) * self.group0()),
         )
     }
 }
@@ -249,14 +250,14 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Point {
 }
 impl Unitize for Point {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        0        1        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        4        1
+    // yes simd        0        1        1      N/A
+    //  no simd        0        3        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(1.0 / self[e4]) * self.group0())
+        Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))
     }
 }

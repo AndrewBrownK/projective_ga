@@ -33,11 +33,11 @@ public extension AntiDipoleInversion {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e321 * -1.0), 
             /* e15, e25, e35, e1234 */
-            this.group2 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group2.xyz, this.e4 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            this.group3 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group3.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -69,7 +69,7 @@ public extension AntiFlatPoint {
     public FlatPoint right_anti_dual() {
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group0.xyz, this.e321 * -1.0)
         );
     }
 }
@@ -85,9 +85,9 @@ public extension AntiFlector {
     public Flector right_anti_dual() {
         return Flector(
             /* e15, e25, e35, e45 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e321 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group1.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -139,7 +139,7 @@ public extension AntiPlane {
     public Plane right_anti_dual() {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group0.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -173,7 +173,7 @@ public extension Circle {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e321 * -1.0), 
             /* e15, e25, e35 */
             this.group2.xyz
         );
@@ -193,9 +193,9 @@ public extension CircleRotor {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e321 * -1.0), 
             /* e15, e25, e35, scalar */
-            this.group2 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group2.xyz, this.e12345 * -1.0)
         );
     }
 }
@@ -321,9 +321,9 @@ public extension Motor {
     public AntiMotor right_anti_dual() {
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e12345 * -1.0), 
             /* e15, e25, e35, e3215 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group1.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -341,7 +341,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.yx * float2(-1.0, 1.0), 
             /* e1, e2, e3, e4 */
-            float4(this.group9.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group9.xyz * float3(-1.0)), this.e1234), 
             /* e5 */
             this.e3215, 
             /* e15, e25, e35, e45 */
@@ -351,13 +351,13 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group6.xyz, 
             /* e415, e425, e435, e321 */
-            float4(this.group5.xyz, this.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group5.xyz * float3(-1.0)), this.e45), 
             /* e423, e431, e412 */
             this.group4.xyz * float3(-1.0), 
             /* e235, e315, e125 */
             this.group3.xyz * float3(-1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.group1.xyz, this.e5) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e5 * -1.0), 
             /* e1234 */
             this.e4 * -1.0
         );
@@ -391,7 +391,7 @@ public extension RoundPoint {
     public Sphere right_anti_dual() {
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.group0.xyz, this.e5) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e5 * -1.0), 
             /* e1234 */
             this.e4 * -1.0
         );
@@ -425,7 +425,7 @@ public extension Sphere {
     public RoundPoint right_anti_dual() {
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(this.group0.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group0.xyz * float3(-1.0)), this.e1234), 
             /* e5 */
             this.e3215
         );
@@ -443,13 +443,13 @@ public extension VersorEven {
     public VersorOdd right_anti_dual() {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            this.group0 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, this.e12345 * -1.0), 
             /* e23, e31, e12, e45 */
-            this.group1 * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group1.xyz, this.e321 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.group2.xyz, this.e4) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group2.xyz, this.e4 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.group3.xyz, this.e5) * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group3.xyz, this.e5 * -1.0)
         );
     }
 }
@@ -469,9 +469,9 @@ public extension VersorOdd {
             /* e415, e425, e435, e321 */
             this.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.group2.xyz, this.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group2.xyz * float3(-1.0)), this.e3215), 
             /* e1, e2, e3, e4 */
-            float4(this.group3.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4((this.group3.xyz * float3(-1.0)), this.e1234)
         );
     }
 }

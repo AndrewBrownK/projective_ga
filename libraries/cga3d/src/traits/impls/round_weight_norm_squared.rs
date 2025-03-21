@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 11
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         2       0       0
-//  Maximum:         7       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0     N/A
+//   Median:         2       3       0     N/A
+//  Average:         2       3       0     N/A
+//  Maximum:         7       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         2       0       0
-//  Maximum:         7       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0       0
+//   Median:         2       3       0       0
+//  Average:         2       3       0       0
+//  Maximum:         7       8       0       0
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiScalar;
     fn div(self, _rhs: RoundWeightNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -26,8 +26,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiCircleRotor {
 }
 impl RoundWeightNormSquared for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
@@ -41,8 +41,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for AntiDipoleInversio
 }
 impl RoundWeightNormSquared for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4])
@@ -56,8 +56,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Circle {
 }
 impl RoundWeightNormSquared for Circle {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
@@ -71,8 +71,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for CircleRotor {
 }
 impl RoundWeightNormSquared for CircleRotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
@@ -86,8 +86,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Dipole {
 }
 impl RoundWeightNormSquared for Dipole {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
@@ -101,8 +101,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for DipoleInversion {
 }
 impl RoundWeightNormSquared for DipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
@@ -116,8 +116,8 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for MultiVector {
 }
 impl RoundWeightNormSquared for MultiVector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        7        0        0
+    //      add/sub      mul      div      pow
+    // f32        7        8        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(
@@ -140,6 +140,9 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for RoundPoint {
     }
 }
 impl RoundWeightNormSquared for RoundPoint {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e4] * self[e4])
@@ -152,6 +155,9 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for Sphere {
     }
 }
 impl RoundWeightNormSquared for Sphere {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e1234] * self[e1234])
@@ -165,11 +171,14 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorEven {
 }
 impl RoundWeightNormSquared for VersorEven {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e12345 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4])
+        AntiScalar::from_groups(
+            // e12345
+            self.group0()[0] * self.group0()[0] + self.group0()[1] * self.group0()[1] + self.group0()[2] * self.group0()[2] + self[e4] * self[e4],
+        )
     }
 }
 impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -180,10 +189,14 @@ impl std::ops::Div<RoundWeightNormSquaredPrefixOrPostfix> for VersorOdd {
 }
 impl RoundWeightNormSquared for VersorOdd {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e12345 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
+        let sub_type_g0 = self.group0().xyz();
+        AntiScalar::from_groups(
+            // e12345
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + self[e1234] * self[e1234],
+        )
     }
 }

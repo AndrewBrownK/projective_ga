@@ -11,7 +11,7 @@ public extension AntiCircleRotor {
     public Sphere support() {
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4((this.group2 * float4(-1.0, -1.0, -1.0, 1.0)).xyz, 0.0), 
+            float4((this.group2.xyz * float3(-1.0)), 0.0), 
             /* e1234 */
             this.e45
         );
@@ -29,9 +29,9 @@ public extension AntiDipoleInversion {
     public CircleRotor support() {
         return CircleRotor(
             /* e423, e431, e412 */
-            (this.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, 
+            this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4((this.group2 * float4(1.0, 1.0, 1.0, -1.0)).xyz, 0.0), 
+            float4(this.group2[0], this.group2[1], this.group2[2], 0.0), 
             /* e235, e315, e125, e12345 */
             float4(float3(0.0), this.e5 * -1.0)
         );
@@ -65,7 +65,7 @@ public extension AntiFlatPoint {
     public Line support() {
         return Line(
             /* e415, e425, e435 */
-            (this.group0 * float4(1.0, 1.0, 1.0, -1.0)).xyz, 
+            this.group0.xyz, 
             /* e235, e315, e125 */
             float3(0.0)
         );
@@ -81,10 +81,9 @@ public Motor operator /(SupportPrefixOrPostfix lhs, AntiFlector rhs) {
 }
 public extension AntiFlector {
     public Motor support() {
-        float4 right_anti_dual_g1 = this.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return Motor(
             /* e415, e425, e435, e12345 */
-            (float4(float3(0.0), 1.0).wwwx * float4((this.group0 * float4(1.0, 1.0, 1.0, -1.0)).xyz, right_anti_dual_g1[0])) + float4(float3(0.0), right_anti_dual_g1[3]), 
+            float4(this.group0.xyz, this.e5 * -1.0), 
             /* e235, e315, e125, e5 */
             float4(0.0)
         );
@@ -116,12 +115,11 @@ public Flector operator /(SupportPrefixOrPostfix lhs, AntiMotor rhs) {
 }
 public extension AntiMotor {
     public Flector support() {
-        float4 right_anti_dual_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(float3(0.0), right_anti_dual_g1[3]), 
+            float4(float3(0.0), this.e3215), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual_g1.xyz, 0.0)
+            float4((this.group1.xyz * float3(-1.0)), 0.0)
         );
     }
 }
@@ -171,7 +169,7 @@ public extension Circle {
     public Circle support() {
         return Circle(
             /* e423, e431, e412 */
-            (this.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, 
+            this.group1.xyz, 
             /* e415, e425, e435, e321 */
             float4(this.group2.xyz, 0.0), 
             /* e235, e315, e125 */
@@ -189,14 +187,13 @@ public AntiDipoleInversion operator /(SupportPrefixOrPostfix lhs, CircleRotor rh
 }
 public extension CircleRotor {
     public AntiDipoleInversion support() {
-        float4 right_anti_dual_g2 = this.group2 * float4(1.0, 1.0, 1.0, -1.0);
         return AntiDipoleInversion(
             /* e423, e431, e412 */
-            (this.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, 
+            this.group1.xyz, 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual_g2.xyz, 0.0), 
+            float4(this.group2[0], this.group2[1], this.group2[2], 0.0), 
             /* e235, e315, e125, e4 */
-            float4(float3(0.0), right_anti_dual_g2[3]), 
+            float4(float3(0.0), this.e12345 * -1.0), 
             /* e1, e2, e3, e5 */
             float4(0.0)
         );
@@ -230,16 +227,15 @@ public DipoleInversion operator /(SupportPrefixOrPostfix lhs, DipoleInversion rh
 }
 public extension DipoleInversion {
     public DipoleInversion support() {
-        float4 right_anti_dual_g3 = this.group3 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            right_anti_dual_g3.xyz, 
+            this.group3.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), right_anti_dual_g3[3]), 
+            float4(float3(0.0), this.e3215), 
             /* e15, e25, e35, e1234 */
             float4(float3(0.0), this.e45), 
             /* e4235, e4315, e4125, e3215 */
-            float4((this.group2 * float4(-1.0, -1.0, -1.0, 1.0)).xyz, 0.0)
+            float4((this.group2.xyz * float3(-1.0)), 0.0)
         );
     }
 }
@@ -253,16 +249,15 @@ public VersorEven operator /(SupportPrefixOrPostfix lhs, DualNum rhs) {
 }
 public extension DualNum {
     public VersorEven support() {
-        float2 right_anti_dual_g0 = this.group0.xy * float2(-1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(float3(0.0), right_anti_dual_g0[0]), 
+            float4(float3(0.0), this.e5 * -1.0), 
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
             float4(0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), right_anti_dual_g0[1])
+            float4(float3(0.0), this.e12345 * -1.0)
         );
     }
 }
@@ -276,12 +271,11 @@ public Sphere operator /(SupportPrefixOrPostfix lhs, FlatPoint rhs) {
 }
 public extension FlatPoint {
     public Sphere support() {
-        float4 right_anti_dual_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual_g0.xyz, 0.0), 
+            float4((this.group0.xyz * float3(-1.0)), 0.0), 
             /* e1234 */
-            right_anti_dual_g0[3]
+            this.e45
         );
     }
 }
@@ -295,17 +289,15 @@ public DipoleInversion operator /(SupportPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public DipoleInversion support() {
-        float4 right_anti_dual_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
-        float4 right_anti_dual_g1 = this.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            right_anti_dual_g1.xyz, 
+            this.group1.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), right_anti_dual_g1[3]), 
+            float4(float3(0.0), this.e3215), 
             /* e15, e25, e35, e1234 */
-            float4(float3(0.0), right_anti_dual_g0[3]), 
+            float4(float3(0.0), this.e45), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual_g0.xyz, 0.0)
+            float4((this.group0.xyz * float3(-1.0)), 0.0)
         );
     }
 }
@@ -339,17 +331,15 @@ public VersorEven operator /(SupportPrefixOrPostfix lhs, Motor rhs) {
 }
 public extension Motor {
     public VersorEven support() {
-        float4 right_anti_dual_g0 = this.group0 * float4(1.0, 1.0, 1.0, -1.0);
-        float4 right_anti_dual_g1 = this.group1 * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(right_anti_dual_g0.xyz, right_anti_dual_g1[3]), 
+            float4(this.group0.xyz, this.e5 * -1.0), 
             /* e415, e425, e435, e321 */
-            float4(right_anti_dual_g1.xyz, 0.0), 
+            float4(this.group1[0], this.group1[1], this.group1[2], 0.0), 
             /* e235, e315, e125, e5 */
             float4(0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), right_anti_dual_g0[3])
+            float4(float3(0.0), this.e12345 * -1.0)
         );
     }
 }
@@ -367,13 +357,13 @@ public extension MultiVector {
             /* scalar, e12345 */
             float2(0.0, this.e5 * -1.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), this.group0.yx[0] * -1.0), 
+            float4(float3(0.0), this.e12345 * -1.0), 
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
             float4(float3(0.0), this.e3215), 
             /* e41, e42, e43 */
-            (float4(this.group9.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0)).xyz, 
+            this.group9.xyz * float3(-1.0), 
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
@@ -399,12 +389,11 @@ public Dipole operator /(SupportPrefixOrPostfix lhs, Plane rhs) {
 }
 public extension Plane {
     public Dipole support() {
-        float4 right_anti_dual_g0 = this.group0 * float4(-1.0, -1.0, -1.0, 1.0);
         return Dipole(
             /* e41, e42, e43 */
-            right_anti_dual_g0.xyz, 
+            this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), right_anti_dual_g0[3]), 
+            float4(float3(0.0), this.e3215), 
             /* e15, e25, e35 */
             float3(0.0)
         );
@@ -438,7 +427,7 @@ public extension Sphere {
     public Dipole support() {
         return Dipole(
             /* e41, e42, e43 */
-            (float4(this.group0.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0)).xyz, 
+            this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
             float4(float3(0.0), this.e3215), 
             /* e15, e25, e35 */
@@ -456,12 +445,11 @@ public VersorEven operator /(SupportPrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public VersorEven support() {
-        float4 right_anti_dual_g3 = float4(this.group3.xyz, this.e5) * float4(1.0, 1.0, 1.0, -1.0);
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            (float4(float3(0.0), 1.0).wwwy * float4((this.group1 * float4(1.0, 1.0, 1.0, -1.0)).xyz, right_anti_dual_g3[1])) + float4(float3(0.0), right_anti_dual_g3[0]) + float4(float3(0.0), right_anti_dual_g3[3]), 
+            float4(this.group1.xyz, this.e5 * -1.0), 
             /* e415, e425, e435, e321 */
-            float4((float4(this.group2.xyz, this.e4) * float4(1.0, 1.0, 1.0, -1.0)).xyz, 0.0), 
+            float4(this.group2[0], this.group2[1], this.group2[2], 0.0), 
             /* e235, e315, e125, e5 */
             float4(0.0), 
             /* e1, e2, e3, e4 */
@@ -479,16 +467,15 @@ public DipoleInversion operator /(SupportPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public DipoleInversion support() {
-        float4 right_anti_dual_g2 = float4(this.group2.xyz, this.e3215) * float4(-1.0, -1.0, -1.0, 1.0);
         return DipoleInversion(
             /* e41, e42, e43 */
-            (float4(this.group3.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0)).xyz, 
+            this.group3.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), right_anti_dual_g2[3]), 
+            float4(float3(0.0), this.e3215), 
             /* e15, e25, e35, e1234 */
             float4(float3(0.0), this.e45), 
             /* e4235, e4315, e4125, e3215 */
-            float4(right_anti_dual_g2.xyz, 0.0)
+            float4((this.group2.xyz * float3(-1.0)), 0.0)
         );
     }
 }

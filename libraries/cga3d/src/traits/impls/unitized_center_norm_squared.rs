@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         3       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         2       9       0     N/A
+//  Average:         1       8       0     N/A
+//  Maximum:         3      12       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         3       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       9       0       0
+//  Average:         1       8       0       0
+//  Maximum:         3      12       0       0
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for AntiCircleRotor {
     type Output = f32;
     fn div(self, _rhs: UnitizedCenterNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -26,14 +26,15 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for AntiCircleRotor
 }
 impl UnitizedCenterNormSquared for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3       12        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e41] * self[e41] * f32::powi(self[e23], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e31], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e12], 2))
-            + (self[e41] * self[e41] * f32::powi(self[scalar], 2))
+        let sub_type_g0_xyz = self.group1().xyz();
+        (sub_type_g0_xyz[0] * sub_type_g0_xyz[0] * self[e41] * self[e41])
+            + (sub_type_g0_xyz[1] * sub_type_g0_xyz[1] * self[e41] * self[e41])
+            + (sub_type_g0_xyz[2] * sub_type_g0_xyz[2] * self[e41] * self[e41])
+            + (self[e41] * self[e41] * self[scalar] * self[scalar])
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -44,14 +45,15 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for AntiDipoleInver
 }
 impl UnitizedCenterNormSquared for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3       12        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e321] * self[e321] * f32::powi(self[e4], 2))
-            + (self[e4] * self[e4] * f32::powi(self[e1], 2))
-            + (self[e4] * self[e4] * f32::powi(self[e2], 2))
-            + (self[e4] * self[e4] * f32::powi(self[e3], 2))
+        let sub_type_g1_xyz = self.group3().xyz();
+        (sub_type_g1_xyz[0] * sub_type_g1_xyz[0] * self[e4] * self[e4])
+            + (sub_type_g1_xyz[1] * sub_type_g1_xyz[1] * self[e4] * self[e4])
+            + (sub_type_g1_xyz[2] * sub_type_g1_xyz[2] * self[e4] * self[e4])
+            + (self[e321] * self[e321] * self[e4] * self[e4])
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for Circle {
@@ -61,9 +63,12 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for Circle {
     }
 }
 impl UnitizedCenterNormSquared for Circle {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        3        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e423] * self[e423] * f32::powi(self[e321], 2)
+        self[e423] * self[e423] * self[e321] * self[e321]
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -73,9 +78,12 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for CircleRotor {
     }
 }
 impl UnitizedCenterNormSquared for CircleRotor {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        3        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e423] * self[e423] * f32::powi(self[e321], 2)
+        self[e423] * self[e423] * self[e321] * self[e321]
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for Dipole {
@@ -86,11 +94,14 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for Dipole {
 }
 impl UnitizedCenterNormSquared for Dipole {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        9        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2))
+        let sub_type_g0 = self.group1().xyz();
+        (sub_type_g0[0] * sub_type_g0[0] * self[e41] * self[e41])
+            + (sub_type_g0[1] * sub_type_g0[1] * self[e41] * self[e41])
+            + (sub_type_g0[2] * sub_type_g0[2] * self[e41] * self[e41])
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -101,11 +112,14 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for DipoleInversion
 }
 impl UnitizedCenterNormSquared for DipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        9        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e41] * self[e41] * f32::powi(self[e23], 2)) + (self[e41] * self[e41] * f32::powi(self[e31], 2)) + (self[e41] * self[e41] * f32::powi(self[e12], 2))
+        let sub_type_g0 = self.group1().xyz();
+        (sub_type_g0[0] * sub_type_g0[0] * self[e41] * self[e41])
+            + (sub_type_g0[1] * sub_type_g0[1] * self[e41] * self[e41])
+            + (sub_type_g0[2] * sub_type_g0[2] * self[e41] * self[e41])
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for MultiVector {
@@ -127,14 +141,15 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for VersorEven {
 }
 impl UnitizedCenterNormSquared for VersorEven {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3       12        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e321] * self[e321] * f32::powi(self[e4], 2))
-            + (self[e1] * self[e1] * f32::powi(self[e4], 2))
-            + (self[e2] * self[e2] * f32::powi(self[e4], 2))
-            + (self[e3] * self[e3] * f32::powi(self[e4], 2))
+        let sub_type_g1_xyz = self.group3().xyz();
+        (sub_type_g1_xyz[0] * sub_type_g1_xyz[0] * self[e4] * self[e4])
+            + (sub_type_g1_xyz[1] * sub_type_g1_xyz[1] * self[e4] * self[e4])
+            + (sub_type_g1_xyz[2] * sub_type_g1_xyz[2] * self[e4] * self[e4])
+            + (self[e321] * self[e321] * self[e4] * self[e4])
     }
 }
 impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -145,13 +160,14 @@ impl std::ops::Div<UnitizedCenterNormSquaredPrefixOrPostfix> for VersorOdd {
 }
 impl UnitizedCenterNormSquared for VersorOdd {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3       12        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
-        (self[e41] * self[e41] * f32::powi(self[scalar], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e23], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e31], 2))
-            + (self[e41] * self[e41] * f32::powi(self[e12], 2))
+        let sub_type_g0 = self.group0().xyz();
+        (sub_type_g0[0] * sub_type_g0[0] * self[scalar] * self[scalar])
+            + (sub_type_g0[0] * sub_type_g0[0] * self[e23] * self[e23])
+            + (sub_type_g0[0] * sub_type_g0[0] * self[e31] * self[e31])
+            + (sub_type_g0[0] * sub_type_g0[0] * self[e12] * self[e12])
     }
 }

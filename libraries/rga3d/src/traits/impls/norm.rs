@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 5
 //
@@ -30,7 +30,11 @@ impl Norm for Flector {
     // f32        3        4        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
+        let sub_type_g1_xyz = self.group1().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e4] * self[e4],
+        )
     }
 }
 impl std::ops::Div<NormPrefixOrPostfix> for Line {
@@ -75,16 +79,17 @@ impl Norm for MultiVector {
     // f32        7        8        0        0
     fn norm(self) -> AntiScalar {
         use crate::elements::*;
+        let sub_type_g4_xyz = self.group4().xyz();
         AntiScalar::from_groups(
             // e1234
-            self[e1234] * self[e1234]
+            sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+                + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
+                + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
+                + self[e1234] * self[e1234]
                 + self[e4] * self[e4]
                 + self[e41] * self[e41]
                 + self[e42] * self[e42]
-                + self[e43] * self[e43]
-                + self[e423] * self[e423]
-                + self[e431] * self[e431]
-                + self[e412] * self[e412],
+                + self[e43] * self[e43],
         )
     }
 }

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 17
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       0       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       0       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       0       0       0
+//  Average:         0       0       0       0
+//  Maximum:         0       0       0       0
 impl std::ops::Div<FlatWeightPrefixOrPostfix> for AntiCircleRotor {
     type Output = FlatPoint;
     fn div(self, _rhs: FlatWeightPrefixOrPostfix) -> Self::Output {
@@ -84,7 +84,7 @@ impl FlatWeight for CircleRotor {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]),
+            self.group1().xyz().with_w(self[e12345]),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
         )

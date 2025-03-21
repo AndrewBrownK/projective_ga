@@ -3,7 +3,7 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 9
 //
@@ -65,7 +65,11 @@ impl WeightNormSquared for Flector {
     // f32        3        4        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
+        let sub_type_g1_xyz = self.group1().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e4] * self[e4],
+        )
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Line {
@@ -110,16 +114,17 @@ impl WeightNormSquared for MultiVector {
     // f32        7        8        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
+        let sub_type_g4_xyz = self.group4().xyz();
         AntiScalar::from_groups(
             // e1234
-            self[e1234] * self[e1234]
+            sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+                + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
+                + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
+                + self[e1234] * self[e1234]
                 + self[e4] * self[e4]
                 + self[e41] * self[e41]
                 + self[e42] * self[e42]
-                + self[e43] * self[e43]
-                + self[e423] * self[e423]
-                + self[e431] * self[e431]
-                + self[e412] * self[e412],
+                + self[e43] * self[e43],
         )
     }
 }
@@ -149,8 +154,11 @@ impl WeightNormSquared for Plane {
     //      add/sub      mul      div      pow
     // f32        2        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
-        use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
+        let sub_type_g0_xyz = self.group0().xyz();
+        AntiScalar::from_groups(
+            // e1234
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2],
+        )
     }
 }
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Point {

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 17
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       0       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       0       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       0       0       0
+//  Average:         0       0       0       0
+//  Maximum:         0       0       0       0
 impl std::ops::Div<RoundBulkPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiMotor;
     fn div(self, _rhs: RoundBulkPrefixOrPostfix) -> Self::Output {
@@ -30,7 +30,7 @@ impl RoundBulk for AntiCircleRotor {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x4::from([self[e23], self[e31], self[e12], self[scalar]]),
+            self.group1().xyz().with_w(self[scalar]),
             // e15, e25, e35, e3215
             Simd32x4::from(0.0),
         )

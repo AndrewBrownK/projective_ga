@@ -7,17 +7,17 @@
 //
 // Total Implementations: 117
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         0       3       0
-//  Average:         4       7       0
-//  Maximum:        73      84       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0     N/A
+//   Median:         0       3       0     N/A
+//  Average:         4       7       0     N/A
+//  Maximum:        73      84       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         0       8       0
-//  Average:        13      17       0
-//  Maximum:       198     192       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0       0
+//   Median:         0       8       0       0
+//  Average:        13      17       0       0
+//  Maximum:       198     192       0       0
 impl std::ops::Div<GeometricAntiProductInfix> for AntiScalar {
     type Output = GeometricAntiProductInfixPartial<AntiScalar>;
     fn div(self, _rhs: GeometricAntiProductInfix) -> Self::Output {
@@ -27,8 +27,8 @@ impl std::ops::Div<GeometricAntiProductInfix> for AntiScalar {
 impl GeometricAntiProduct<AntiScalar> for AntiScalar {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
@@ -37,9 +37,9 @@ impl GeometricAntiProduct<AntiScalar> for AntiScalar {
 impl GeometricAntiProduct<DualNum> for AntiScalar {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(self[e1234]) * other.group0())
@@ -48,9 +48,9 @@ impl GeometricAntiProduct<DualNum> for AntiScalar {
 impl GeometricAntiProduct<Flector> for AntiScalar {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -64,8 +64,8 @@ impl GeometricAntiProduct<Flector> for AntiScalar {
 impl GeometricAntiProduct<Horizon> for AntiScalar {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e1234] * other[e321])
@@ -74,9 +74,9 @@ impl GeometricAntiProduct<Horizon> for AntiScalar {
 impl GeometricAntiProduct<Line> for AntiScalar {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -90,9 +90,9 @@ impl GeometricAntiProduct<Line> for AntiScalar {
 impl GeometricAntiProduct<Motor> for AntiScalar {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -106,13 +106,13 @@ impl GeometricAntiProduct<Motor> for AntiScalar {
 impl GeometricAntiProduct<MultiVector> for AntiScalar {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -132,8 +132,8 @@ impl GeometricAntiProduct<MultiVector> for AntiScalar {
 impl GeometricAntiProduct<Origin> for AntiScalar {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e1234] * other[e4])
@@ -142,9 +142,9 @@ impl GeometricAntiProduct<Origin> for AntiScalar {
 impl GeometricAntiProduct<Plane> for AntiScalar {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e1234]) * other.group0())
@@ -153,9 +153,9 @@ impl GeometricAntiProduct<Plane> for AntiScalar {
 impl GeometricAntiProduct<Point> for AntiScalar {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(self[e1234]) * other.group0())
@@ -164,8 +164,8 @@ impl GeometricAntiProduct<Point> for AntiScalar {
 impl GeometricAntiProduct<Scalar> for AntiScalar {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e1234] * other[scalar])
@@ -180,9 +180,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for DualNum {
 impl GeometricAntiProduct<AntiScalar> for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[e1234]) * self.group0())
@@ -191,8 +191,8 @@ impl GeometricAntiProduct<AntiScalar> for DualNum {
 impl GeometricAntiProduct<DualNum> for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        3        0
+    //      add/sub      mul      div      pow
+    // f32        1        3        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(
@@ -204,12 +204,12 @@ impl GeometricAntiProduct<DualNum> for DualNum {
 impl GeometricAntiProduct<Flector> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        1        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        1        3        0      N/A
     // Totals...
-    // yes simd        2        6        0
-    //  no simd        4       12        0
+    // yes simd        2        6        0      N/A
+    //  no simd        4       12        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -223,8 +223,8 @@ impl GeometricAntiProduct<Flector> for DualNum {
 impl GeometricAntiProduct<Horizon> for DualNum {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e1234] * other[e321])
@@ -233,9 +233,9 @@ impl GeometricAntiProduct<Horizon> for DualNum {
 impl GeometricAntiProduct<Line> for DualNum {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        3        0
-    // no simd        3        9        0
+    //          add/sub      mul      div      pow
+    //   simd3        1        3        0      N/A
+    // no simd        3        9        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -249,9 +249,9 @@ impl GeometricAntiProduct<Line> for DualNum {
 impl GeometricAntiProduct<Motor> for DualNum {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        3        0      N/A
+    // no simd        4       12        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -265,12 +265,12 @@ impl GeometricAntiProduct<Motor> for DualNum {
 impl GeometricAntiProduct<MultiVector> for DualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        2        6        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        2        6        0      N/A
     // Totals...
-    // yes simd        4       12        0
-    //  no simd        8       24        0
+    // yes simd        4       12        0      N/A
+    //  no simd        8       24        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -290,8 +290,8 @@ impl GeometricAntiProduct<MultiVector> for DualNum {
 impl GeometricAntiProduct<Origin> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -305,12 +305,12 @@ impl GeometricAntiProduct<Origin> for DualNum {
 impl GeometricAntiProduct<Plane> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        7        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -324,12 +324,12 @@ impl GeometricAntiProduct<Plane> for DualNum {
 impl GeometricAntiProduct<Point> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -343,8 +343,8 @@ impl GeometricAntiProduct<Point> for DualNum {
 impl GeometricAntiProduct<Scalar> for DualNum {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e1234] * other[scalar])
@@ -359,9 +359,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for Flector {
 impl GeometricAntiProduct<AntiScalar> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -375,12 +375,12 @@ impl GeometricAntiProduct<AntiScalar> for Flector {
 impl GeometricAntiProduct<DualNum> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        1        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        1        3        0      N/A
     // Totals...
-    // yes simd        2        6        0
-    //  no simd        4       12        0
+    // yes simd        2        6        0      N/A
+    //  no simd        4       12        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -394,13 +394,13 @@ impl GeometricAntiProduct<DualNum> for Flector {
 impl GeometricAntiProduct<Flector> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4       12        8        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4       12        8        0      N/A
     // Totals...
-    // yes simd       14       16        0
-    //  no simd       50       48        0
+    // yes simd       14       16        0      N/A
+    //  no simd       50       48        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -425,9 +425,9 @@ impl GeometricAntiProduct<Flector> for Flector {
 impl GeometricAntiProduct<Horizon> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -441,13 +441,13 @@ impl GeometricAntiProduct<Horizon> for Flector {
 impl GeometricAntiProduct<Line> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        7        0
-    //    simd3        0        7        0
-    //    simd4        8        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        7        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4        8        2        0      N/A
     // Totals...
-    // yes simd       10       16        0
-    //  no simd       34       36        0
+    // yes simd       10       16        0      N/A
+    //  no simd       34       36        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -469,13 +469,13 @@ impl GeometricAntiProduct<Line> for Flector {
 impl GeometricAntiProduct<Motor> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd3        0        4        0
-    //    simd4       11        8        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4       11        8        0      N/A
     // Totals...
-    // yes simd       14       16        0
-    //  no simd       47       48        0
+    // yes simd       14       16        0      N/A
+    //  no simd       47       48        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -500,14 +500,14 @@ impl GeometricAntiProduct<Motor> for Flector {
 impl GeometricAntiProduct<MultiVector> for Flector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       16        0
-    //    simd2        4        8        0
-    //    simd3       12       15        0
-    //    simd4       11        5        0
+    //           add/sub      mul      div      pow
+    //      f32        8       16        0        0
+    //    simd2        4        8        0      N/A
+    //    simd3       12       15        0      N/A
+    //    simd4       11        5        0      N/A
     // Totals...
-    // yes simd       35       44        0
-    //  no simd       96       97        0
+    // yes simd       35       44        0      N/A
+    //  no simd       96       97        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -553,12 +553,12 @@ impl GeometricAntiProduct<MultiVector> for Flector {
 impl GeometricAntiProduct<Origin> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       10        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -572,13 +572,13 @@ impl GeometricAntiProduct<Origin> for Flector {
 impl GeometricAntiProduct<Plane> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -598,13 +598,13 @@ impl GeometricAntiProduct<Plane> for Flector {
 impl GeometricAntiProduct<Point> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        2        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd        5        8        0
-    //  no simd       17       21        0
+    // yes simd        5        8        0      N/A
+    //  no simd       17       21        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -622,12 +622,12 @@ impl GeometricAntiProduct<Point> for Flector {
 impl GeometricAntiProduct<Scalar> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -647,8 +647,8 @@ impl std::ops::Div<GeometricAntiProductInfix> for Horizon {
 impl GeometricAntiProduct<AntiScalar> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e1234] * self[e321])
@@ -657,8 +657,8 @@ impl GeometricAntiProduct<AntiScalar> for Horizon {
 impl GeometricAntiProduct<DualNum> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e1234] * self[e321])
@@ -667,12 +667,12 @@ impl GeometricAntiProduct<DualNum> for Horizon {
 impl GeometricAntiProduct<Flector> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -686,9 +686,9 @@ impl GeometricAntiProduct<Flector> for Horizon {
 impl GeometricAntiProduct<Line> for Horizon {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(self[e321]) * other.group0()).with_w(0.0))
@@ -697,12 +697,12 @@ impl GeometricAntiProduct<Line> for Horizon {
 impl GeometricAntiProduct<Motor> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -716,12 +716,12 @@ impl GeometricAntiProduct<Motor> for Horizon {
 impl GeometricAntiProduct<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -741,8 +741,8 @@ impl GeometricAntiProduct<MultiVector> for Horizon {
 impl GeometricAntiProduct<Origin> for Horizon {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e321] * other[e4] * -1.0)
@@ -751,12 +751,12 @@ impl GeometricAntiProduct<Origin> for Horizon {
 impl GeometricAntiProduct<Plane> for Horizon {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -770,8 +770,8 @@ impl GeometricAntiProduct<Plane> for Horizon {
 impl GeometricAntiProduct<Point> for Horizon {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e321] * other[e4] * -1.0)
@@ -786,9 +786,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for Line {
 impl GeometricAntiProduct<AntiScalar> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -802,9 +802,9 @@ impl GeometricAntiProduct<AntiScalar> for Line {
 impl GeometricAntiProduct<DualNum> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        3        0
-    // no simd        3        9        0
+    //          add/sub      mul      div      pow
+    //   simd3        1        3        0      N/A
+    // no simd        3        9        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -818,13 +818,13 @@ impl GeometricAntiProduct<DualNum> for Line {
 impl GeometricAntiProduct<Flector> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        8        0
-    //    simd3        0        7        0
-    //    simd4        9        2        0
+    //           add/sub      mul      div      pow
+    //      f32        4        8        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4        9        2        0      N/A
     // Totals...
-    // yes simd       13       17        0
-    //  no simd       40       37        0
+    // yes simd       13       17        0      N/A
+    //  no simd       40       37        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -847,9 +847,9 @@ impl GeometricAntiProduct<Flector> for Line {
 impl GeometricAntiProduct<Horizon> for Line {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(other[e321]) * self.group0()).with_w(0.0))
@@ -858,13 +858,13 @@ impl GeometricAntiProduct<Horizon> for Line {
 impl GeometricAntiProduct<Line> for Line {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        6        0
-    //    simd4        6        0        0
+    //           add/sub      mul      div      pow
+    //      f32        4        9        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        6        0        0      N/A
     // Totals...
-    // yes simd       10       15        0
-    //  no simd       28       27        0
+    // yes simd       10       15        0      N/A
+    //  no simd       28       27        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -883,13 +883,13 @@ impl GeometricAntiProduct<Line> for Line {
 impl GeometricAntiProduct<Motor> for Line {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4        9        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        9        3        0      N/A
     // Totals...
-    // yes simd       13       15        0
-    //  no simd       40       36        0
+    // yes simd       13       15        0      N/A
+    //  no simd       40       36        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -912,14 +912,14 @@ impl GeometricAntiProduct<Motor> for Line {
 impl GeometricAntiProduct<MultiVector> for Line {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       11        0
-    //    simd2        3        3        0
-    //    simd3        7       16        0
-    //    simd4        9        2        0
+    //           add/sub      mul      div      pow
+    //      f32        6       11        0        0
+    //    simd2        3        3        0      N/A
+    //    simd3        7       16        0      N/A
+    //    simd4        9        2        0      N/A
     // Totals...
-    // yes simd       25       32        0
-    //  no simd       69       73        0
+    // yes simd       25       32        0      N/A
+    //  no simd       69       73        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -956,9 +956,9 @@ impl GeometricAntiProduct<MultiVector> for Line {
 impl GeometricAntiProduct<Origin> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -972,13 +972,13 @@ impl GeometricAntiProduct<Origin> for Line {
 impl GeometricAntiProduct<Plane> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        3        0
-    //    simd4        5        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        5        2        0      N/A
     // Totals...
-    // yes simd        7        9        0
-    //  no simd       22       21        0
+    // yes simd        7        9        0      N/A
+    //  no simd       22       21        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -996,13 +996,13 @@ impl GeometricAntiProduct<Plane> for Line {
 impl GeometricAntiProduct<Point> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        3        0
-    //    simd3        0        4        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       15        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       15        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1017,9 +1017,9 @@ impl GeometricAntiProduct<Point> for Line {
 impl GeometricAntiProduct<Scalar> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ Simd32x3::from(other[scalar]) * self.group0())
@@ -1034,9 +1034,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for Motor {
 impl GeometricAntiProduct<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1050,9 +1050,9 @@ impl GeometricAntiProduct<AntiScalar> for Motor {
 impl GeometricAntiProduct<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        3        0      N/A
+    // no simd        4       12        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1066,13 +1066,13 @@ impl GeometricAntiProduct<DualNum> for Motor {
 impl GeometricAntiProduct<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        8        0
-    //    simd3        0        7        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        4        8        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       16       20        0
-    //  no simd       52       49        0
+    // yes simd       16       20        0      N/A
+    //  no simd       52       49        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1099,12 +1099,12 @@ impl GeometricAntiProduct<Flector> for Motor {
 impl GeometricAntiProduct<Horizon> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1118,13 +1118,13 @@ impl GeometricAntiProduct<Horizon> for Motor {
 impl GeometricAntiProduct<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4        9        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        9        3        0      N/A
     // Totals...
-    // yes simd       13       15        0
-    //  no simd       40       36        0
+    // yes simd       13       15        0      N/A
+    //  no simd       40       36        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1147,13 +1147,13 @@ impl GeometricAntiProduct<Line> for Motor {
 impl GeometricAntiProduct<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4       12        6        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       12        6        0      N/A
     // Totals...
-    // yes simd       16       18        0
-    //  no simd       52       48        0
+    // yes simd       16       18        0      N/A
+    //  no simd       52       48        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1179,14 +1179,14 @@ impl GeometricAntiProduct<Motor> for Motor {
 impl GeometricAntiProduct<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       12        0
-    //    simd2        4        4        0
-    //    simd3       10       19        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        8       12        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       19        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       34       40        0
-    //  no simd       94       97        0
+    // yes simd       34       40        0      N/A
+    //  no simd       94       97        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1237,9 +1237,9 @@ impl GeometricAntiProduct<MultiVector> for Motor {
 impl GeometricAntiProduct<Origin> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1253,13 +1253,13 @@ impl GeometricAntiProduct<Origin> for Motor {
 impl GeometricAntiProduct<Plane> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1280,13 +1280,13 @@ impl GeometricAntiProduct<Plane> for Motor {
 impl GeometricAntiProduct<Point> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        7        0
-    //    simd2        0        1        0
-    //    simd3        4        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        7        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        4        4        0      N/A
     // Totals...
-    // yes simd        7       12        0
-    //  no simd       15       21        0
+    // yes simd        7       12        0      N/A
+    //  no simd       15       21        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1305,9 +1305,9 @@ impl GeometricAntiProduct<Point> for Motor {
 impl GeometricAntiProduct<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1327,13 +1327,13 @@ impl std::ops::Div<GeometricAntiProductInfix> for MultiVector {
 impl GeometricAntiProduct<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1353,12 +1353,12 @@ impl GeometricAntiProduct<AntiScalar> for MultiVector {
 impl GeometricAntiProduct<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        2        6        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        2        6        0      N/A
     // Totals...
-    // yes simd        4       12        0
-    //  no simd        8       24        0
+    // yes simd        4       12        0      N/A
+    //  no simd        8       24        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1378,14 +1378,14 @@ impl GeometricAntiProduct<DualNum> for MultiVector {
 impl GeometricAntiProduct<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        9       17        0
-    //    simd2        4        8        0
-    //    simd3       12       15        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        9       17        0        0
+    //    simd2        4        8        0      N/A
+    //    simd3       12       15        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       37       45        0
-    //  no simd      101       98        0
+    // yes simd       37       45        0      N/A
+    //  no simd      101       98        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1432,12 +1432,12 @@ impl GeometricAntiProduct<Flector> for MultiVector {
 impl GeometricAntiProduct<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1457,14 +1457,14 @@ impl GeometricAntiProduct<Horizon> for MultiVector {
 impl GeometricAntiProduct<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd2        3        3        0
-    //    simd3        7       16        0
-    //    simd4        8        2        0
+    //           add/sub      mul      div      pow
+    //      f32        4       10        0        0
+    //    simd2        3        3        0      N/A
+    //    simd3        7       16        0      N/A
+    //    simd4        8        2        0      N/A
     // Totals...
-    // yes simd       22       31        0
-    //  no simd       63       72        0
+    // yes simd       22       31        0      N/A
+    //  no simd       63       72        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1500,14 +1500,14 @@ impl GeometricAntiProduct<Line> for MultiVector {
 impl GeometricAntiProduct<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        0
-    //    simd2        4        4        0
-    //    simd3       10       16        0
-    //    simd4       11        8        0
+    //           add/sub      mul      div      pow
+    //      f32        6        8        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       16        0      N/A
+    //    simd4       11        8        0      N/A
     // Totals...
-    // yes simd       31       36        0
-    //  no simd       88       96        0
+    // yes simd       31       36        0      N/A
+    //  no simd       88       96        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1550,14 +1550,14 @@ impl GeometricAntiProduct<Motor> for MultiVector {
 impl GeometricAntiProduct<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       18       28        0
-    //    simd2        8       14        0
-    //    simd3       24       32        0
-    //    simd4       23       10        0
+    //           add/sub      mul      div      pow
+    //      f32       18       28        0        0
+    //    simd2        8       14        0      N/A
+    //    simd3       24       32        0      N/A
+    //    simd4       23       10        0      N/A
     // Totals...
-    // yes simd       73       84        0
-    //  no simd      198      192        0
+    // yes simd       73       84        0      N/A
+    //  no simd      198      192        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1649,14 +1649,14 @@ impl GeometricAntiProduct<MultiVector> for MultiVector {
 impl GeometricAntiProduct<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        8        0
-    //  no simd        0       19        0
+    // yes simd        0        8        0      N/A
+    //  no simd        0       19        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1676,14 +1676,14 @@ impl GeometricAntiProduct<Origin> for MultiVector {
 impl GeometricAntiProduct<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        9        0
-    //    simd2        3        5        0
-    //    simd3        7        9        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        9        0        0
+    //    simd2        3        5        0      N/A
+    //    simd3        7        9        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd       19       26        0
-    //  no simd       57       58        0
+    // yes simd       19       26        0      N/A
+    //  no simd       57       58        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1717,13 +1717,13 @@ impl GeometricAntiProduct<Plane> for MultiVector {
 impl GeometricAntiProduct<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       14        0
-    //    simd2        0        2        0
-    //    simd3        7        8        0
+    //           add/sub      mul      div      pow
+    //      f32        7       14        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        7        8        0      N/A
     // Totals...
-    // yes simd       14       24        0
-    //  no simd       28       42        0
+    // yes simd       14       24        0      N/A
+    //  no simd       28       42        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1752,12 +1752,12 @@ impl GeometricAntiProduct<Point> for MultiVector {
 impl GeometricAntiProduct<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1783,8 +1783,8 @@ impl std::ops::Div<GeometricAntiProductInfix> for Origin {
 impl GeometricAntiProduct<AntiScalar> for Origin {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ other[e1234] * self[e4])
@@ -1793,8 +1793,8 @@ impl GeometricAntiProduct<AntiScalar> for Origin {
 impl GeometricAntiProduct<DualNum> for Origin {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        3        0
+    //      add/sub      mul      div      pow
+    // f32        0        3        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1808,12 +1808,12 @@ impl GeometricAntiProduct<DualNum> for Origin {
 impl GeometricAntiProduct<Flector> for Origin {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1827,8 +1827,8 @@ impl GeometricAntiProduct<Flector> for Origin {
 impl GeometricAntiProduct<Horizon> for Origin {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[e321] * self[e4])
@@ -1837,12 +1837,12 @@ impl GeometricAntiProduct<Horizon> for Origin {
 impl GeometricAntiProduct<Line> for Origin {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        7        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        7        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1856,12 +1856,12 @@ impl GeometricAntiProduct<Line> for Origin {
 impl GeometricAntiProduct<Motor> for Origin {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       15        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       15        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1875,14 +1875,14 @@ impl GeometricAntiProduct<Motor> for Origin {
 impl GeometricAntiProduct<MultiVector> for Origin {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        2        0
-    //    simd3        0        3        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        0        3        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        9        0
-    //  no simd        0       26        0
+    // yes simd        0        9        0      N/A
+    //  no simd        0       26        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1902,8 +1902,8 @@ impl GeometricAntiProduct<MultiVector> for Origin {
 impl GeometricAntiProduct<Origin> for Origin {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e4] * self[e4] * -1.0)
@@ -1912,12 +1912,12 @@ impl GeometricAntiProduct<Origin> for Origin {
 impl GeometricAntiProduct<Plane> for Origin {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        5        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1931,12 +1931,12 @@ impl GeometricAntiProduct<Plane> for Origin {
 impl GeometricAntiProduct<Point> for Origin {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        5        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1950,8 +1950,8 @@ impl GeometricAntiProduct<Point> for Origin {
 impl GeometricAntiProduct<Scalar> for Origin {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e4] * other[scalar] * -1.0)
@@ -1966,9 +1966,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for Plane {
 impl GeometricAntiProduct<AntiScalar> for Plane {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(other[e1234]) * self.group0())
@@ -1977,13 +1977,13 @@ impl GeometricAntiProduct<AntiScalar> for Plane {
 impl GeometricAntiProduct<DualNum> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        8        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1997,13 +1997,13 @@ impl GeometricAntiProduct<DualNum> for Plane {
 impl GeometricAntiProduct<Flector> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2023,9 +2023,9 @@ impl GeometricAntiProduct<Flector> for Plane {
 impl GeometricAntiProduct<Horizon> for Plane {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ Simd32x3::from(other[e321]) * self.group0().xyz())
@@ -2034,13 +2034,13 @@ impl GeometricAntiProduct<Horizon> for Plane {
 impl GeometricAntiProduct<Line> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        3        0
-    //    simd4        5        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        5        2        0      N/A
     // Totals...
-    // yes simd        7        9        0
-    //  no simd       22       21        0
+    // yes simd        7        9        0      N/A
+    //  no simd       22       21        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2059,13 +2059,13 @@ impl GeometricAntiProduct<Line> for Plane {
 impl GeometricAntiProduct<Motor> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        4        0
-    //    simd3        0        3        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd        8       11        0
-    //  no simd       29       29        0
+    // yes simd        8       11        0      N/A
+    //  no simd       29       29        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2086,14 +2086,14 @@ impl GeometricAntiProduct<Motor> for Plane {
 impl GeometricAntiProduct<MultiVector> for Plane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       15        0
-    //    simd2        0        2        0
-    //    simd3        7        8        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        6       15        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        7        8        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd       20       29        0
-    //  no simd       55       59        0
+    // yes simd       20       29        0      N/A
+    //  no simd       55       59        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2127,12 +2127,12 @@ impl GeometricAntiProduct<MultiVector> for Plane {
 impl GeometricAntiProduct<Origin> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2146,13 +2146,13 @@ impl GeometricAntiProduct<Origin> for Plane {
 impl GeometricAntiProduct<Plane> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        1        3        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        1        3        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        6        0
-    //  no simd       12       15        0
+    // yes simd        4        6        0      N/A
+    //  no simd       12       15        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2167,13 +2167,13 @@ impl GeometricAntiProduct<Plane> for Plane {
 impl GeometricAntiProduct<Point> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       14        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       14        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2188,12 +2188,12 @@ impl GeometricAntiProduct<Point> for Plane {
 impl GeometricAntiProduct<Scalar> for Plane {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(other[scalar] * -1.0) * self.group0().xyz()).with_w(0.0))
@@ -2208,9 +2208,9 @@ impl std::ops::Div<GeometricAntiProductInfix> for Point {
 impl GeometricAntiProduct<AntiScalar> for Point {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[e1234]) * self.group0())
@@ -2219,12 +2219,12 @@ impl GeometricAntiProduct<AntiScalar> for Point {
 impl GeometricAntiProduct<DualNum> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        6        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2238,13 +2238,13 @@ impl GeometricAntiProduct<DualNum> for Point {
 impl GeometricAntiProduct<Flector> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        2        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd        5        8        0
-    //  no simd       17       21        0
+    // yes simd        5        8        0      N/A
+    //  no simd       17       21        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2262,8 +2262,8 @@ impl GeometricAntiProduct<Flector> for Point {
 impl GeometricAntiProduct<Horizon> for Point {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[e321] * self[e4])
@@ -2272,13 +2272,13 @@ impl GeometricAntiProduct<Horizon> for Point {
 impl GeometricAntiProduct<Line> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        3        0
-    //    simd3        0        4        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       15        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       15        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2294,13 +2294,13 @@ impl GeometricAntiProduct<Line> for Point {
 impl GeometricAntiProduct<Motor> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        7        0
-    //    simd2        0        1        0
-    //    simd3        4        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        7        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        4        4        0      N/A
     // Totals...
-    // yes simd        7       12        0
-    //  no simd       15       21        0
+    // yes simd        7       12        0      N/A
+    //  no simd       15       21        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2317,13 +2317,13 @@ impl GeometricAntiProduct<Motor> for Point {
 impl GeometricAntiProduct<MultiVector> for Point {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       14        0
-    //    simd2        0        2        0
-    //    simd3        7        8        0
+    //           add/sub      mul      div      pow
+    //      f32        7       14        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        7        8        0      N/A
     // Totals...
-    // yes simd       14       24        0
-    //  no simd       28       42        0
+    // yes simd       14       24        0      N/A
+    //  no simd       28       42        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2353,12 +2353,12 @@ impl GeometricAntiProduct<MultiVector> for Point {
 impl GeometricAntiProduct<Origin> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2372,13 +2372,13 @@ impl GeometricAntiProduct<Origin> for Point {
 impl GeometricAntiProduct<Plane> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       14        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       14        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2393,12 +2393,12 @@ impl GeometricAntiProduct<Plane> for Point {
 impl GeometricAntiProduct<Point> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        1        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        1        2        0      N/A
     // Totals...
-    // yes simd        1        4        0
-    //  no simd        3        8        0
+    // yes simd        1        4        0      N/A
+    //  no simd        3        8        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2412,8 +2412,8 @@ impl GeometricAntiProduct<Point> for Point {
 impl GeometricAntiProduct<Scalar> for Point {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_anti_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e4] * other[scalar] * -1.0)
@@ -2428,8 +2428,8 @@ impl std::ops::Div<GeometricAntiProductInfix> for Scalar {
 impl GeometricAntiProduct<AntiScalar> for Scalar {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[e1234] * self[scalar])
@@ -2438,8 +2438,8 @@ impl GeometricAntiProduct<AntiScalar> for Scalar {
 impl GeometricAntiProduct<DualNum> for Scalar {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[e1234] * self[scalar])
@@ -2448,12 +2448,12 @@ impl GeometricAntiProduct<DualNum> for Scalar {
 impl GeometricAntiProduct<Flector> for Scalar {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_anti_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2467,9 +2467,9 @@ impl GeometricAntiProduct<Flector> for Scalar {
 impl GeometricAntiProduct<Line> for Scalar {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ Simd32x3::from(self[scalar]) * other.group0())
@@ -2478,9 +2478,9 @@ impl GeometricAntiProduct<Line> for Scalar {
 impl GeometricAntiProduct<Motor> for Scalar {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_anti_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2494,12 +2494,12 @@ impl GeometricAntiProduct<Motor> for Scalar {
 impl GeometricAntiProduct<MultiVector> for Scalar {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_anti_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2519,8 +2519,8 @@ impl GeometricAntiProduct<MultiVector> for Scalar {
 impl GeometricAntiProduct<Origin> for Scalar {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e4] * self[scalar])
@@ -2529,9 +2529,9 @@ impl GeometricAntiProduct<Origin> for Scalar {
 impl GeometricAntiProduct<Plane> for Scalar {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_anti_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(self[scalar]) * other.group0().xyz()).with_w(0.0))
@@ -2540,8 +2540,8 @@ impl GeometricAntiProduct<Plane> for Scalar {
 impl GeometricAntiProduct<Point> for Scalar {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_anti_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e4] * self[scalar])

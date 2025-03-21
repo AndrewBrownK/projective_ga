@@ -11,7 +11,7 @@ public extension AntiFlatPoint {
     public AntiFlatPoint anti_fix() {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(1.0/this.e321 * -1.0) * this.group0
+            float4((float3(-1.0 / this.e321) * this.group0.xyz), -1.0)
         );
     }
 }
@@ -27,7 +27,7 @@ public extension AntiPlane {
     public AntiPlane anti_fix() {
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(-this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3) * this.group0
+            -(float4(this.e1 * this.e1, this.e2 * this.e2, this.e3 * this.e3, this.e1 * this.e1) * this.group0) - (float4(this.e2 * this.e2, this.e1 * this.e1, this.e1 * this.e1, this.e2 * this.e2) * this.group0) - (this.group0 * float4(float2(this.e3 * this.e3), this.e2 * this.e2, this.e3 * this.e3))
         );
     }
 }
@@ -59,7 +59,7 @@ public extension FlatPoint {
     public FlatPoint anti_fix() {
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(1.0/this.e45) * this.group0
+            float4((float3(1.0 / this.e45) * this.group0.xyz), 1.0)
         );
     }
 }
@@ -75,7 +75,7 @@ public extension Plane {
     public Plane anti_fix() {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125) * this.group0
+            (float4(this.e4235 * this.e4235, this.e4315 * this.e4315, this.e4125 * this.e4125, this.e4235 * this.e4235) * this.group0) + (float4(this.e4315 * this.e4315, this.e4235 * this.e4235, this.e4235 * this.e4235, this.e4315 * this.e4315) * this.group0) + (this.group0 * float4(float2(this.e4125 * this.e4125), this.e4315 * this.e4315, this.e4125 * this.e4125))
         );
     }
 }

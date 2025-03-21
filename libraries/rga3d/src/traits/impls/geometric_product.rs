@@ -7,17 +7,17 @@
 //
 // Total Implementations: 117
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         0       3       0
-//  Average:         4       7       0
-//  Maximum:        73      84       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0     N/A
+//   Median:         0       3       0     N/A
+//  Average:         4       7       0     N/A
+//  Maximum:        73      84       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       1       0
-//   Median:         0       8       0
-//  Average:        13      17       0
-//  Maximum:       198     192       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0       0
+//   Median:         0       8       0       0
+//  Average:        13      17       0       0
+//  Maximum:       198     192       0       0
 impl std::ops::Div<GeometricProductInfix> for AntiScalar {
     type Output = GeometricProductInfixPartial<AntiScalar>;
     fn div(self, _rhs: GeometricProductInfix) -> Self::Output {
@@ -27,8 +27,8 @@ impl std::ops::Div<GeometricProductInfix> for AntiScalar {
 impl GeometricProduct<DualNum> for AntiScalar {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e1234] * other[scalar])
@@ -37,12 +37,12 @@ impl GeometricProduct<DualNum> for AntiScalar {
 impl GeometricProduct<Flector> for AntiScalar {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -56,8 +56,8 @@ impl GeometricProduct<Flector> for AntiScalar {
 impl GeometricProduct<Horizon> for AntiScalar {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e1234] * other[e321] * -1.0)
@@ -66,9 +66,9 @@ impl GeometricProduct<Horizon> for AntiScalar {
 impl GeometricProduct<Line> for AntiScalar {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(self[e1234]) * other.group1(), /* e23, e31, e12 */ Simd32x3::from(0.0))
@@ -77,9 +77,9 @@ impl GeometricProduct<Line> for AntiScalar {
 impl GeometricProduct<Motor> for AntiScalar {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -93,12 +93,12 @@ impl GeometricProduct<Motor> for AntiScalar {
 impl GeometricProduct<MultiVector> for AntiScalar {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -118,8 +118,8 @@ impl GeometricProduct<MultiVector> for AntiScalar {
 impl GeometricProduct<Plane> for AntiScalar {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e1234] * other[e321] * -1.0)
@@ -128,12 +128,12 @@ impl GeometricProduct<Plane> for AntiScalar {
 impl GeometricProduct<Point> for AntiScalar {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(self[e1234] * -1.0) * other.group0().xyz()).with_w(0.0))
@@ -142,8 +142,8 @@ impl GeometricProduct<Point> for AntiScalar {
 impl GeometricProduct<Scalar> for AntiScalar {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e1234] * other[scalar])
@@ -158,8 +158,8 @@ impl std::ops::Div<GeometricProductInfix> for DualNum {
 impl GeometricProduct<AntiScalar> for DualNum {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e1234] * self[scalar])
@@ -168,8 +168,8 @@ impl GeometricProduct<AntiScalar> for DualNum {
 impl GeometricProduct<DualNum> for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        3        0
+    //      add/sub      mul      div      pow
+    // f32        1        3        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(
@@ -181,12 +181,12 @@ impl GeometricProduct<DualNum> for DualNum {
 impl GeometricProduct<Flector> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        1        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        1        3        0      N/A
     // Totals...
-    // yes simd        2        6        0
-    //  no simd        4       12        0
+    // yes simd        2        6        0      N/A
+    //  no simd        4       12        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -200,8 +200,8 @@ impl GeometricProduct<Flector> for DualNum {
 impl GeometricProduct<Horizon> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        3        0
+    //      add/sub      mul      div      pow
+    // f32        0        3        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -215,9 +215,9 @@ impl GeometricProduct<Horizon> for DualNum {
 impl GeometricProduct<Line> for DualNum {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        3        0
-    // no simd        3        9        0
+    //          add/sub      mul      div      pow
+    //   simd3        1        3        0      N/A
+    // no simd        3        9        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -231,9 +231,9 @@ impl GeometricProduct<Line> for DualNum {
 impl GeometricProduct<Motor> for DualNum {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        3        0      N/A
+    // no simd        4       12        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -247,12 +247,12 @@ impl GeometricProduct<Motor> for DualNum {
 impl GeometricProduct<MultiVector> for DualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        2        6        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        2        6        0      N/A
     // Totals...
-    // yes simd        4       12        0
-    //  no simd        8       24        0
+    // yes simd        4       12        0      N/A
+    //  no simd        8       24        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -272,8 +272,8 @@ impl GeometricProduct<MultiVector> for DualNum {
 impl GeometricProduct<Origin> for DualNum {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[scalar] * other[e4])
@@ -282,12 +282,12 @@ impl GeometricProduct<Origin> for DualNum {
 impl GeometricProduct<Plane> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        6        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -301,13 +301,13 @@ impl GeometricProduct<Plane> for DualNum {
 impl GeometricProduct<Point> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        8        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -321,9 +321,9 @@ impl GeometricProduct<Point> for DualNum {
 impl GeometricProduct<Scalar> for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(other[scalar]) * self.group0())
@@ -338,12 +338,12 @@ impl std::ops::Div<GeometricProductInfix> for Flector {
 impl GeometricProduct<AntiScalar> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -357,12 +357,12 @@ impl GeometricProduct<AntiScalar> for Flector {
 impl GeometricProduct<DualNum> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        1        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        1        3        0      N/A
     // Totals...
-    // yes simd        2        6        0
-    //  no simd        4       12        0
+    // yes simd        2        6        0      N/A
+    //  no simd        4       12        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -376,13 +376,13 @@ impl GeometricProduct<DualNum> for Flector {
 impl GeometricProduct<Flector> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4       12        8        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4       12        8        0      N/A
     // Totals...
-    // yes simd       14       16        0
-    //  no simd       50       48        0
+    // yes simd       14       16        0      N/A
+    //  no simd       50       48        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -407,12 +407,12 @@ impl GeometricProduct<Flector> for Flector {
 impl GeometricProduct<Horizon> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -426,13 +426,13 @@ impl GeometricProduct<Horizon> for Flector {
 impl GeometricProduct<Line> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        8        0
-    //    simd3        0        7        0
-    //    simd4        9        2        0
+    //           add/sub      mul      div      pow
+    //      f32        4        8        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4        9        2        0      N/A
     // Totals...
-    // yes simd       13       17        0
-    //  no simd       40       37        0
+    // yes simd       13       17        0      N/A
+    //  no simd       40       37        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -455,13 +455,13 @@ impl GeometricProduct<Line> for Flector {
 impl GeometricProduct<Motor> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        7        0
-    //    simd3        0        6        0
-    //    simd4       12        6        0
+    //           add/sub      mul      div      pow
+    //      f32        4        7        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       12        6        0      N/A
     // Totals...
-    // yes simd       16       19        0
-    //  no simd       52       49        0
+    // yes simd       16       19        0      N/A
+    //  no simd       52       49        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -488,14 +488,14 @@ impl GeometricProduct<Motor> for Flector {
 impl GeometricProduct<MultiVector> for Flector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        9       17        0
-    //    simd2        4        8        0
-    //    simd3       12       15        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        9       17        0        0
+    //    simd2        4        8        0      N/A
+    //    simd3       12       15        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       37       45        0
-    //  no simd      101       98        0
+    // yes simd       37       45        0      N/A
+    //  no simd      101       98        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -543,12 +543,12 @@ impl GeometricProduct<MultiVector> for Flector {
 impl GeometricProduct<Origin> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -562,13 +562,13 @@ impl GeometricProduct<Origin> for Flector {
 impl GeometricProduct<Plane> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        2        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd        5        8        0
-    //  no simd       17       21        0
+    // yes simd        5        8        0      N/A
+    //  no simd       17       21        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -586,13 +586,13 @@ impl GeometricProduct<Plane> for Flector {
 impl GeometricProduct<Point> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -612,9 +612,9 @@ impl GeometricProduct<Point> for Flector {
 impl GeometricProduct<Scalar> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -634,8 +634,8 @@ impl std::ops::Div<GeometricProductInfix> for Horizon {
 impl GeometricProduct<AntiScalar> for Horizon {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ other[e1234] * self[e321])
@@ -644,8 +644,8 @@ impl GeometricProduct<AntiScalar> for Horizon {
 impl GeometricProduct<DualNum> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -659,12 +659,12 @@ impl GeometricProduct<DualNum> for Horizon {
 impl GeometricProduct<Flector> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       10        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -678,8 +678,8 @@ impl GeometricProduct<Flector> for Horizon {
 impl GeometricProduct<Horizon> for Horizon {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[e321] * self[e321] * -1.0)
@@ -688,9 +688,9 @@ impl GeometricProduct<Horizon> for Horizon {
 impl GeometricProduct<Line> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -704,9 +704,9 @@ impl GeometricProduct<Line> for Horizon {
 impl GeometricProduct<Motor> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -720,14 +720,14 @@ impl GeometricProduct<Motor> for Horizon {
 impl GeometricProduct<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        8        0
-    //  no simd        0       19        0
+    // yes simd        0        8        0      N/A
+    //  no simd        0       19        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -747,8 +747,8 @@ impl GeometricProduct<MultiVector> for Horizon {
 impl GeometricProduct<Origin> for Horizon {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e321] * other[e4] * -1.0)
@@ -757,12 +757,12 @@ impl GeometricProduct<Origin> for Horizon {
 impl GeometricProduct<Plane> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -776,12 +776,12 @@ impl GeometricProduct<Plane> for Horizon {
 impl GeometricProduct<Point> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -795,8 +795,8 @@ impl GeometricProduct<Point> for Horizon {
 impl GeometricProduct<Scalar> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e321] * other[scalar])
@@ -811,9 +811,9 @@ impl std::ops::Div<GeometricProductInfix> for Line {
 impl GeometricProduct<AntiScalar> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(other[e1234]) * self.group1(), /* e23, e31, e12 */ Simd32x3::from(0.0))
@@ -822,9 +822,9 @@ impl GeometricProduct<AntiScalar> for Line {
 impl GeometricProduct<DualNum> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        1        3        0
-    // no simd        3        9        0
+    //          add/sub      mul      div      pow
+    //   simd3        1        3        0      N/A
+    // no simd        3        9        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -838,13 +838,13 @@ impl GeometricProduct<DualNum> for Line {
 impl GeometricProduct<Flector> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        7        0
-    //    simd3        0        7        0
-    //    simd4        8        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        7        0        0
+    //    simd3        0        7        0      N/A
+    //    simd4        8        2        0      N/A
     // Totals...
-    // yes simd       10       16        0
-    //  no simd       34       36        0
+    // yes simd       10       16        0      N/A
+    //  no simd       34       36        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -866,12 +866,12 @@ impl GeometricProduct<Flector> for Line {
 impl GeometricProduct<Horizon> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        7        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        7        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -885,13 +885,13 @@ impl GeometricProduct<Horizon> for Line {
 impl GeometricProduct<Line> for Line {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        9        0
-    //    simd3        0        6        0
-    //    simd4        6        0        0
+    //           add/sub      mul      div      pow
+    //      f32        4        9        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        6        0        0      N/A
     // Totals...
-    // yes simd       10       15        0
-    //  no simd       28       27        0
+    // yes simd       10       15        0      N/A
+    //  no simd       28       27        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -910,13 +910,13 @@ impl GeometricProduct<Line> for Line {
 impl GeometricProduct<Motor> for Line {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4        9        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        9        3        0      N/A
     // Totals...
-    // yes simd       13       15        0
-    //  no simd       40       36        0
+    // yes simd       13       15        0      N/A
+    //  no simd       40       36        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -939,14 +939,14 @@ impl GeometricProduct<Motor> for Line {
 impl GeometricProduct<MultiVector> for Line {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4       10        0
-    //    simd2        3        3        0
-    //    simd3        7       16        0
-    //    simd4        8        2        0
+    //           add/sub      mul      div      pow
+    //      f32        4       10        0        0
+    //    simd2        3        3        0      N/A
+    //    simd3        7       16        0      N/A
+    //    simd4        8        2        0      N/A
     // Totals...
-    // yes simd       22       31        0
-    //  no simd       63       72        0
+    // yes simd       22       31        0      N/A
+    //  no simd       63       72        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -982,9 +982,9 @@ impl GeometricProduct<MultiVector> for Line {
 impl GeometricProduct<Origin> for Line {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(other[e4]) * self.group1()).with_w(0.0))
@@ -993,13 +993,13 @@ impl GeometricProduct<Origin> for Line {
 impl GeometricProduct<Plane> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        3        0
-    //    simd3        0        4        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       15        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       15        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1015,13 +1015,13 @@ impl GeometricProduct<Plane> for Line {
 impl GeometricProduct<Point> for Line {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        3        0
-    //    simd4        5        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        5        2        0      N/A
     // Totals...
-    // yes simd        7        9        0
-    //  no simd       22       21        0
+    // yes simd        7        9        0      N/A
+    //  no simd       22       21        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1039,9 +1039,9 @@ impl GeometricProduct<Point> for Line {
 impl GeometricProduct<Scalar> for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -1061,9 +1061,9 @@ impl std::ops::Div<GeometricProductInfix> for Motor {
 impl GeometricProduct<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1077,9 +1077,9 @@ impl GeometricProduct<AntiScalar> for Motor {
 impl GeometricProduct<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        3        0      N/A
+    // no simd        4       12        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1093,13 +1093,13 @@ impl GeometricProduct<DualNum> for Motor {
 impl GeometricProduct<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        5        0
-    //    simd3        0        5        0
-    //    simd4       11        7        0
+    //           add/sub      mul      div      pow
+    //      f32        4        5        0        0
+    //    simd3        0        5        0      N/A
+    //    simd4       11        7        0      N/A
     // Totals...
-    // yes simd       15       17        0
-    //  no simd       48       48        0
+    // yes simd       15       17        0      N/A
+    //  no simd       48       48        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1125,12 +1125,12 @@ impl GeometricProduct<Flector> for Motor {
 impl GeometricProduct<Horizon> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       15        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       15        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1144,13 +1144,13 @@ impl GeometricProduct<Horizon> for Motor {
 impl GeometricProduct<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4        9        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        9        3        0      N/A
     // Totals...
-    // yes simd       13       15        0
-    //  no simd       40       36        0
+    // yes simd       13       15        0      N/A
+    //  no simd       40       36        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1173,13 +1173,13 @@ impl GeometricProduct<Line> for Motor {
 impl GeometricProduct<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4       12        6        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       12        6        0      N/A
     // Totals...
-    // yes simd       16       18        0
-    //  no simd       52       48        0
+    // yes simd       16       18        0      N/A
+    //  no simd       52       48        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1205,14 +1205,14 @@ impl GeometricProduct<Motor> for Motor {
 impl GeometricProduct<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        0
-    //    simd2        4        4        0
-    //    simd3       10       16        0
-    //    simd4       11        8        0
+    //           add/sub      mul      div      pow
+    //      f32        6        8        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       16        0      N/A
+    //    simd4       11        8        0      N/A
     // Totals...
-    // yes simd       31       36        0
-    //  no simd       88       96        0
+    // yes simd       31       36        0      N/A
+    //  no simd       88       96        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1255,12 +1255,12 @@ impl GeometricProduct<MultiVector> for Motor {
 impl GeometricProduct<Origin> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1274,13 +1274,13 @@ impl GeometricProduct<Origin> for Motor {
 impl GeometricProduct<Plane> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        7        0
-    //    simd2        0        1        0
-    //    simd3        4        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        7        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        4        4        0      N/A
     // Totals...
-    // yes simd        7       12        0
-    //  no simd       15       21        0
+    // yes simd        7       12        0      N/A
+    //  no simd       15       21        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1298,13 +1298,13 @@ impl GeometricProduct<Plane> for Motor {
 impl GeometricProduct<Point> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        4        0
-    //    simd3        0        3        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd        8       11        0
-    //  no simd       29       29        0
+    // yes simd        8       11        0      N/A
+    //  no simd       29       29        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1325,9 +1325,9 @@ impl GeometricProduct<Point> for Motor {
 impl GeometricProduct<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1347,12 +1347,12 @@ impl std::ops::Div<GeometricProductInfix> for MultiVector {
 impl GeometricProduct<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1372,12 +1372,12 @@ impl GeometricProduct<AntiScalar> for MultiVector {
 impl GeometricProduct<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        2        6        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        2        6        0      N/A
     // Totals...
-    // yes simd        4       12        0
-    //  no simd        8       24        0
+    // yes simd        4       12        0      N/A
+    //  no simd        8       24        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1397,14 +1397,14 @@ impl GeometricProduct<DualNum> for MultiVector {
 impl GeometricProduct<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       16        0
-    //    simd2        4        8        0
-    //    simd3       12       15        0
-    //    simd4       11        5        0
+    //           add/sub      mul      div      pow
+    //      f32        8       16        0        0
+    //    simd2        4        8        0      N/A
+    //    simd3       12       15        0      N/A
+    //    simd4       11        5        0      N/A
     // Totals...
-    // yes simd       35       44        0
-    //  no simd       96       97        0
+    // yes simd       35       44        0      N/A
+    //  no simd       96       97        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1450,14 +1450,14 @@ impl GeometricProduct<Flector> for MultiVector {
 impl GeometricProduct<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        2        0
-    //    simd3        0        3        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        0        3        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        9        0
-    //  no simd        0       26        0
+    // yes simd        0        9        0      N/A
+    //  no simd        0       26        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1477,14 +1477,14 @@ impl GeometricProduct<Horizon> for MultiVector {
 impl GeometricProduct<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       11        0
-    //    simd2        3        3        0
-    //    simd3        7       16        0
-    //    simd4        9        2        0
+    //           add/sub      mul      div      pow
+    //      f32        6       11        0        0
+    //    simd2        3        3        0      N/A
+    //    simd3        7       16        0      N/A
+    //    simd4        9        2        0      N/A
     // Totals...
-    // yes simd       25       32        0
-    //  no simd       69       73        0
+    // yes simd       25       32        0      N/A
+    //  no simd       69       73        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1521,14 +1521,14 @@ impl GeometricProduct<Line> for MultiVector {
 impl GeometricProduct<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       12        0
-    //    simd2        4        4        0
-    //    simd3       10       19        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        7       12        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       19        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       33       40        0
-    //  no simd       93       97        0
+    // yes simd       33       40        0      N/A
+    //  no simd       93       97        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1573,14 +1573,14 @@ impl GeometricProduct<Motor> for MultiVector {
 impl GeometricProduct<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       18       28        0
-    //    simd2        8       14        0
-    //    simd3       24       32        0
-    //    simd4       23       10        0
+    //           add/sub      mul      div      pow
+    //      f32       18       28        0        0
+    //    simd2        8       14        0      N/A
+    //    simd3       24       32        0      N/A
+    //    simd4       23       10        0      N/A
     // Totals...
-    // yes simd       73       84        0
-    //  no simd      198      192        0
+    // yes simd       73       84        0      N/A
+    //  no simd      198      192        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1672,12 +1672,12 @@ impl GeometricProduct<MultiVector> for MultiVector {
 impl GeometricProduct<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1697,13 +1697,13 @@ impl GeometricProduct<Origin> for MultiVector {
 impl GeometricProduct<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       14        0
-    //    simd2        0        1        0
-    //    simd3        7        9        0
+    //           add/sub      mul      div      pow
+    //      f32        6       14        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        7        9        0      N/A
     // Totals...
-    // yes simd       13       24        0
-    //  no simd       27       43        0
+    // yes simd       13       24        0      N/A
+    //  no simd       27       43        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1731,14 +1731,14 @@ impl GeometricProduct<Plane> for MultiVector {
 impl GeometricProduct<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       15        0
-    //    simd2        0        3        0
-    //    simd3        7        7        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        7       15        0        0
+    //    simd2        0        3        0      N/A
+    //    simd3        7        7        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd       21       29        0
-    //  no simd       56       58        0
+    // yes simd       21       29        0      N/A
+    //  no simd       56       58        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1774,13 +1774,13 @@ impl GeometricProduct<Point> for MultiVector {
 impl GeometricProduct<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1806,8 +1806,8 @@ impl std::ops::Div<GeometricProductInfix> for Origin {
 impl GeometricProduct<DualNum> for Origin {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ other[scalar] * self[e4])
@@ -1816,9 +1816,9 @@ impl GeometricProduct<DualNum> for Origin {
 impl GeometricProduct<Flector> for Origin {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1832,8 +1832,8 @@ impl GeometricProduct<Flector> for Origin {
 impl GeometricProduct<Horizon> for Origin {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e321] * self[e4])
@@ -1842,9 +1842,9 @@ impl GeometricProduct<Horizon> for Origin {
 impl GeometricProduct<Line> for Origin {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(self[e4]) * other.group1()).with_w(0.0))
@@ -1853,12 +1853,12 @@ impl GeometricProduct<Line> for Origin {
 impl GeometricProduct<Motor> for Origin {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1872,12 +1872,12 @@ impl GeometricProduct<Motor> for Origin {
 impl GeometricProduct<MultiVector> for Origin {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1897,8 +1897,8 @@ impl GeometricProduct<MultiVector> for Origin {
 impl GeometricProduct<Plane> for Origin {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e4] * other[e321])
@@ -1907,9 +1907,9 @@ impl GeometricProduct<Plane> for Origin {
 impl GeometricProduct<Point> for Origin {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(self[e4]) * other.group0().xyz(), /* e23, e31, e12 */ Simd32x3::from(0.0))
@@ -1918,8 +1918,8 @@ impl GeometricProduct<Point> for Origin {
 impl GeometricProduct<Scalar> for Origin {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e4] * other[scalar])
@@ -1934,8 +1934,8 @@ impl std::ops::Div<GeometricProductInfix> for Plane {
 impl GeometricProduct<AntiScalar> for Plane {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ other[e1234] * self[e321])
@@ -1944,12 +1944,12 @@ impl GeometricProduct<AntiScalar> for Plane {
 impl GeometricProduct<DualNum> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -1963,13 +1963,13 @@ impl GeometricProduct<DualNum> for Plane {
 impl GeometricProduct<Flector> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        2        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd        5        8        0
-    //  no simd       17       21        0
+    // yes simd        5        8        0      N/A
+    //  no simd       17       21        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -1987,12 +1987,12 @@ impl GeometricProduct<Flector> for Plane {
 impl GeometricProduct<Horizon> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        5        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2006,13 +2006,13 @@ impl GeometricProduct<Horizon> for Plane {
 impl GeometricProduct<Line> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        3        0
-    //    simd3        0        4        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       15        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       15        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2027,13 +2027,13 @@ impl GeometricProduct<Line> for Plane {
 impl GeometricProduct<Motor> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        7        0
-    //    simd2        0        2        0
-    //    simd3        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        7        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        4        3        0      N/A
     // Totals...
-    // yes simd        8       12        0
-    //  no simd       16       20        0
+    // yes simd        8       12        0      N/A
+    //  no simd       16       20        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2053,13 +2053,13 @@ impl GeometricProduct<Motor> for Plane {
 impl GeometricProduct<MultiVector> for Plane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       14        0
-    //    simd2        0        1        0
-    //    simd3        7        9        0
+    //           add/sub      mul      div      pow
+    //      f32        6       14        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        7        9        0      N/A
     // Totals...
-    // yes simd       13       24        0
-    //  no simd       27       43        0
+    // yes simd       13       24        0      N/A
+    //  no simd       27       43        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2086,8 +2086,8 @@ impl GeometricProduct<MultiVector> for Plane {
 impl GeometricProduct<Origin> for Plane {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e4] * self[e321] * -1.0)
@@ -2096,12 +2096,12 @@ impl GeometricProduct<Origin> for Plane {
 impl GeometricProduct<Plane> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        1        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        1        2        0      N/A
     // Totals...
-    // yes simd        1        4        0
-    //  no simd        3        8        0
+    // yes simd        1        4        0      N/A
+    //  no simd        3        8        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2115,13 +2115,13 @@ impl GeometricProduct<Plane> for Plane {
 impl GeometricProduct<Point> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       14        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       14        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2136,9 +2136,9 @@ impl GeometricProduct<Point> for Plane {
 impl GeometricProduct<Scalar> for Plane {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(other[scalar]) * self.group0())
@@ -2153,9 +2153,9 @@ impl std::ops::Div<GeometricProductInfix> for Point {
 impl GeometricProduct<AntiScalar> for Point {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(other[e1234]) * self.group0().xyz()).with_w(0.0))
@@ -2164,12 +2164,12 @@ impl GeometricProduct<AntiScalar> for Point {
 impl GeometricProduct<DualNum> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        7        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2183,13 +2183,13 @@ impl GeometricProduct<DualNum> for Point {
 impl GeometricProduct<Flector> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2209,12 +2209,12 @@ impl GeometricProduct<Flector> for Point {
 impl GeometricProduct<Horizon> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        5        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0        5        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2228,13 +2228,13 @@ impl GeometricProduct<Horizon> for Point {
 impl GeometricProduct<Line> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        3        0
-    //    simd4        5        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        5        2        0      N/A
     // Totals...
-    // yes simd        7        9        0
-    //  no simd       22       21        0
+    // yes simd        7        9        0      N/A
+    //  no simd       22       21        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2252,13 +2252,13 @@ impl GeometricProduct<Line> for Point {
 impl GeometricProduct<Motor> for Point {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        4        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd        9       11        0
-    //  no simd       30       28        0
+    // yes simd        9       11        0      N/A
+    //  no simd       30       28        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2279,14 +2279,14 @@ impl GeometricProduct<Motor> for Point {
 impl GeometricProduct<MultiVector> for Point {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        9        0
-    //    simd2        3        6        0
-    //    simd3        7        8        0
-    //    simd4        7        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        9        0        0
+    //    simd2        3        6        0      N/A
+    //    simd3        7        8        0      N/A
+    //    simd4        7        3        0      N/A
     // Totals...
-    // yes simd       20       26        0
-    //  no simd       58       57        0
+    // yes simd       20       26        0      N/A
+    //  no simd       58       57        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2322,12 +2322,12 @@ impl GeometricProduct<MultiVector> for Point {
 impl GeometricProduct<Origin> for Point {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -2341,13 +2341,13 @@ impl GeometricProduct<Origin> for Point {
 impl GeometricProduct<Plane> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        4        0
-    //    simd3        0        2        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        7        0
-    //  no simd       10       14        0
+    // yes simd        4        7        0      N/A
+    //  no simd       10       14        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2362,13 +2362,13 @@ impl GeometricProduct<Plane> for Point {
 impl GeometricProduct<Point> for Point {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        1        3        0
-    //    simd4        2        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        1        3        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        6        0
-    //  no simd       12       15        0
+    // yes simd        4        6        0      N/A
+    //  no simd       12       15        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2383,9 +2383,9 @@ impl GeometricProduct<Point> for Point {
 impl GeometricProduct<Scalar> for Point {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(other[scalar]) * self.group0())
@@ -2400,8 +2400,8 @@ impl std::ops::Div<GeometricProductInfix> for Scalar {
 impl GeometricProduct<AntiScalar> for Scalar {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ other[e1234] * self[scalar])
@@ -2410,9 +2410,9 @@ impl GeometricProduct<AntiScalar> for Scalar {
 impl GeometricProduct<DualNum> for Scalar {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn geometric_product(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         DualNum::from_groups(/* scalar, e1234 */ Simd32x2::from(self[scalar]) * other.group0())
@@ -2421,9 +2421,9 @@ impl GeometricProduct<DualNum> for Scalar {
 impl GeometricProduct<Flector> for Scalar {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_product(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -2437,8 +2437,8 @@ impl GeometricProduct<Flector> for Scalar {
 impl GeometricProduct<Horizon> for Scalar {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e321] * self[scalar])
@@ -2447,9 +2447,9 @@ impl GeometricProduct<Horizon> for Scalar {
 impl GeometricProduct<Line> for Scalar {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn geometric_product(self, other: Line) -> Self::Output {
         use crate::elements::*;
         Line::from_groups(
@@ -2463,9 +2463,9 @@ impl GeometricProduct<Line> for Scalar {
 impl GeometricProduct<Motor> for Scalar {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn geometric_product(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -2479,13 +2479,13 @@ impl GeometricProduct<Motor> for Scalar {
 impl GeometricProduct<MultiVector> for Scalar {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn geometric_product(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -2505,8 +2505,8 @@ impl GeometricProduct<MultiVector> for Scalar {
 impl GeometricProduct<Origin> for Scalar {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ other[e4] * self[scalar])
@@ -2515,9 +2515,9 @@ impl GeometricProduct<Origin> for Scalar {
 impl GeometricProduct<Plane> for Scalar {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[scalar]) * other.group0())
@@ -2526,9 +2526,9 @@ impl GeometricProduct<Plane> for Scalar {
 impl GeometricProduct<Point> for Scalar {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn geometric_product(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ Simd32x4::from(self[scalar]) * other.group0())
@@ -2537,8 +2537,8 @@ impl GeometricProduct<Point> for Scalar {
 impl GeometricProduct<Scalar> for Scalar {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn geometric_product(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ other[scalar] * self[scalar])

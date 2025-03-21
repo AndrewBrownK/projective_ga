@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 25
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       2       0
-//  Average:         0       1       0
-//  Maximum:         0       6       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       2       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         0       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       7       0
-//  Average:         0       6       0
-//  Maximum:         0      20       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       6       0       0
+//  Average:         0       5       0       0
+//  Maximum:         0      20       0       0
 impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotor {
     type Output = CircleRotor;
     fn div(self, _rhs: ComplementPrefixOrPostfix) -> Self::Output {
@@ -27,12 +27,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiCircleRotor {
 impl Complement for AntiCircleRotor {
     type Output = CircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         CircleRotor::from_groups(
@@ -41,7 +41,7 @@ impl Complement for AntiCircleRotor {
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e12345
-            self.group0().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0() * Simd32x3::from(-1.0)).with_w(self[scalar]),
         )
     }
 }
@@ -54,12 +54,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiDipoleInversion {
 impl Complement for AntiDipoleInversion {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         DipoleInversion::from_groups(
@@ -68,7 +68,7 @@ impl Complement for AntiDipoleInversion {
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
-            self.group0().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0() * Simd32x3::from(-1.0)).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from([self[e1], self[e2], self[e3], self[e4]]),
         )
@@ -105,19 +105,19 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlatPoint {
 impl Complement for AntiFlatPoint {
     type Output = Dipole;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
             self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(self[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e321] * -1.0),
             // e15, e25, e35
             Simd32x3::from(0.0),
         )
@@ -132,19 +132,19 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiFlector {
 impl Complement for AntiFlector {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0().xyz() * Simd32x3::from(-1.0),
             // e23, e31, e12, e45
-            Simd32x3::from(0.0).with_w(self[e321]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e321] * -1.0),
             // e15, e25, e35, e1234
             Simd32x3::from(0.0).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
@@ -161,9 +161,9 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiLine {
 impl Complement for AntiLine {
     type Output = Circle;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn complement(self) -> Self::Output {
         Circle::from_groups(
             // e423, e431, e412
@@ -184,17 +184,14 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for AntiMotor {
 impl Complement for AntiMotor {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            self.group1().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[scalar]),
             // e415, e425, e435, e321
             (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e235, e315, e125, e5
@@ -239,12 +236,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Circle {
 impl Complement for Circle {
     type Output = Dipole;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         Dipole::from_groups(
             // e41, e42, e43
@@ -265,12 +262,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for CircleRotor {
 impl Complement for CircleRotor {
     type Output = AntiCircleRotor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         AntiCircleRotor::from_groups(
@@ -279,7 +276,7 @@ impl Complement for CircleRotor {
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, scalar
-            self.group0().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0() * Simd32x3::from(-1.0)).with_w(self[e12345]),
         )
     }
 }
@@ -292,12 +289,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Dipole {
 impl Complement for Dipole {
     type Output = Circle;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         Circle::from_groups(
             // e423, e431, e412
@@ -318,12 +315,12 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for DipoleInversion {
 impl Complement for DipoleInversion {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
@@ -332,7 +329,7 @@ impl Complement for DipoleInversion {
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e4
-            self.group0().with_w(self[e3215]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0() * Simd32x3::from(-1.0)).with_w(self[e3215]),
             // e1, e2, e3, e5
             Simd32x4::from([self[e4235], self[e4315], self[e4125], self[e1234]]),
         )
@@ -369,19 +366,19 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for FlatPoint {
 impl Complement for FlatPoint {
     type Output = Circle;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         Circle::from_groups(
             // e423, e431, e412
             self.group0().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(self[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e45] * -1.0),
             // e235, e315, e125
             Simd32x3::from(0.0),
         )
@@ -396,19 +393,19 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Flector {
 impl Complement for Flector {
     type Output = AntiDipoleInversion;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
-            Simd32x3::from(0.0).with_w(self[e45]) * Simd32x4::from([0.0, 0.0, 0.0, -1.0]),
+            Simd32x3::from(0.0).with_w(self[e45] * -1.0),
             // e235, e315, e125, e4
             Simd32x3::from(0.0).with_w(self[e3215]),
             // e1, e2, e3, e5
@@ -425,9 +422,9 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Line {
 impl Complement for Line {
     type Output = Dipole;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn complement(self) -> Self::Output {
         Dipole::from_groups(
             // e41, e42, e43
@@ -448,17 +445,14 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for Motor {
 impl Complement for Motor {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            self.group1().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e12345]),
             // e23, e31, e12, e45
             (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e15, e25, e35, e1234
@@ -482,12 +476,12 @@ impl std::ops::DivAssign<ComplementPrefixOrPostfix> for MultiVector {
 impl Complement for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        4        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        6        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       20        0
+    // yes simd        0        8        0      N/A
+    //  no simd        0       20        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -498,13 +492,13 @@ impl Complement for MultiVector {
             // e5
             self[e1234],
             // e15, e25, e35, e45
-            self.group7().with_w(self[e321]) * Simd32x4::from(-1.0),
+            (self.group7() * Simd32x3::from(-1.0)).with_w(self[e321] * -1.0),
             // e41, e42, e43
             self.group8() * Simd32x3::from(-1.0),
             // e23, e31, e12
             self.group6().xyz() * Simd32x3::from(-1.0),
             // e415, e425, e435, e321
-            self.group5().with_w(self[e45]) * Simd32x4::from(-1.0),
+            (self.group5() * Simd32x3::from(-1.0)).with_w(self[e45] * -1.0),
             // e423, e431, e412
             self.group3().xyz() * Simd32x3::from(-1.0),
             // e235, e315, e125
@@ -576,18 +570,21 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for VersorEven {
 impl Complement for VersorEven {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            self.group2().xyz().with_w(self[e12345]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[e12345]),
             // e23, e31, e12, e45
             self.group1() * Simd32x4::from(-1.0),
             // e15, e25, e35, e1234
-            self.group0().xyz().with_w(self[e5]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
             self.group3(),
         )
@@ -602,18 +599,21 @@ impl std::ops::Div<ComplementPrefixOrPostfix> for VersorOdd {
 impl Complement for VersorOdd {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn complement(self) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            self.group2().xyz().with_w(self[scalar]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group2().xyz() * Simd32x3::from(-1.0)).with_w(self[scalar]),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from(-1.0),
             // e235, e315, e125, e5
-            self.group0().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e1, e2, e3, e4
             self.group3(),
         )

@@ -25,9 +25,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, AntiDipol
 }
 public extension AntiDipoleInversion {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g0 = this.group1.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2]
         );
     }
 }
@@ -57,9 +58,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, Circle rh
 }
 public extension Circle {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g0 = this.group1.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2]
         );
     }
 }
@@ -73,9 +75,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, CircleRot
 }
 public extension CircleRotor {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e12345 * this.e12345
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.e12345 * this.e12345
         );
     }
 }
@@ -105,9 +108,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, DipoleInv
 }
 public extension DipoleInversion {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45
         );
     }
 }
@@ -153,9 +157,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, Flector r
 }
 public extension Flector {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g1_xyz = this.group1.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45
         );
     }
 }
@@ -201,9 +206,11 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, MultiVect
 }
 public extension MultiVector {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g6_xyz = this.group6.xyz;
+        float3 sub_type_g9_xyz = this.group9.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e12345 * this.e12345 + this.e45 * this.e45
         );
     }
 }
@@ -217,9 +224,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, Plane rhs
 }
 public extension Plane {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2]
         );
     }
 }
@@ -233,9 +241,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, Sphere rh
 }
 public extension Sphere {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2]
         );
     }
 }
@@ -265,9 +274,10 @@ public AntiScalar operator /(FlatWeightNormSquaredPrefixOrPostfix lhs, VersorOdd
 }
 public extension VersorOdd {
     public AntiScalar flat_weight_norm_squared() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e45 * this.e45 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45
         );
     }
 }

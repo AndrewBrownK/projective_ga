@@ -11,7 +11,7 @@ public extension AntiCircleRotor {
     public AntiMotor round_bulk() {
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(this.e23, this.e31, this.e12, this.scalar), 
+            float4(this.group1.xyz, this.scalar), 
             /* e15, e25, e35, e3215 */
             float4(0.0)
         );

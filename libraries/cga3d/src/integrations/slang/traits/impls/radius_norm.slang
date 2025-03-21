@@ -345,10 +345,7 @@ public Scalar operator /(RadiusNormPrefixOrPostfix lhs, Scalar rhs) {
 }
 public extension Scalar {
     public Scalar radius_norm() {
-        return Scalar(
-            /* scalar */
-            this.scalar
-        );
+        return this;
     }
 }
 // Fancy postfix trick

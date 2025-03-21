@@ -8,13 +8,4 @@ pub trait Complement {
     type Output;
     fn complement(self) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static complement: ComplementPrefixOrPostfix = ComplementPrefixOrPostfix;
-pub struct ComplementPrefixOrPostfix;
-impl<A: Complement> std::ops::Div<A> for ComplementPrefixOrPostfix {
-    type Output = <A as Complement>::Output;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.complement()
-    }
-}
 include!("./impls/complement.rs");

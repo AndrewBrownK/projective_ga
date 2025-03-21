@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 18
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       2       0
-//  Average:         0       1       0
-//  Maximum:         0       4       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         0       4       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         0       4       0
-//  Maximum:         0       9       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       2       0       0
+//  Average:         0       2       0       0
+//  Maximum:         0       8       0       0
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for AntiCircleRotor {
     type Output = Plane;
     fn div(self, _rhs: CoCarrierPrefixOrPostfix) -> Self::Output {
@@ -27,9 +27,9 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for AntiCircleRotor {
 impl CoCarrier for AntiCircleRotor {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e4235, e4315, e4125, e3215 */ (self.group0() * Simd32x3::from(-1.0)).with_w(self[e45]))
@@ -44,19 +44,15 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for AntiDipoleInversion {
 impl CoCarrier for AntiDipoleInversion {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0().with_w(self[e4] * -1.0),
             // e235, e315, e125, e5
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(0.0),
+            Simd32x4::from([self.group1()[0], self.group1()[1], self.group1()[2], 0.0]),
         )
     }
 }
@@ -69,15 +65,11 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for AntiScalar {
 impl CoCarrier for AntiScalar {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        3        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e12345] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e12345] * -1.0, 0.0]))
     }
 }
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for Circle {
@@ -88,17 +80,8 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for Circle {
 }
 impl CoCarrier for Circle {
     type Output = Line;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
     fn co_carrier(self) -> Self::Output {
-        Line::from_groups(
-            // e415, e425, e435
-            self.group0(),
-            // e235, e315, e125
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz(),
-        )
+        Line::from_groups(/* e415, e425, e435 */ self.group0(), /* e235, e315, e125 */ self.group1().xyz())
     }
 }
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for CircleRotor {
@@ -110,19 +93,15 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for CircleRotor {
 impl CoCarrier for CircleRotor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
             self.group0().with_w(0.0),
             // e235, e315, e125, e5
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(self[e12345] * -1.0),
+            self.group1().xyz().with_w(self[e12345] * -1.0),
         )
     }
 }
@@ -135,9 +114,9 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for Dipole {
 impl CoCarrier for Dipole {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e4235, e4315, e4125, e3215 */ (self.group0() * Simd32x3::from(-1.0)).with_w(self[e45]))
@@ -152,17 +131,14 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for DipoleInversion {
 impl CoCarrier for DipoleInversion {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            (self.group3() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e1234]),
+            (self.group3().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
             (self.group0() * Simd32x3::from(-1.0)).with_w(self[e45]),
         )
@@ -182,15 +158,11 @@ impl std::ops::DivAssign<CoCarrierPrefixOrPostfix> for DualNum {
 impl CoCarrier for DualNum {
     type Output = DualNum;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        3        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e12345] * -1.0, 1.0]) * Simd32x2::from([1.0, 0.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e12345] * -1.0, 0.0]))
     }
 }
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for FlatPoint {
@@ -201,13 +173,9 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for FlatPoint {
 }
 impl CoCarrier for FlatPoint {
     type Output = AntiDualNum;
-    // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
-        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e45], 1.0]) * Simd32x2::from([1.0, 0.0]))
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e45], 0.0]))
     }
 }
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for Flector {
@@ -224,14 +192,14 @@ impl std::ops::DivAssign<CoCarrierPrefixOrPostfix> for Flector {
 impl CoCarrier for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            (self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(0.0),
+            (self.group1().xyz() * Simd32x3::from(-1.0)).with_w(0.0),
             // e4235, e4315, e4125, e3215
             Simd32x3::from(0.0).with_w(self[e45]),
         )
@@ -258,16 +226,15 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for Motor {
 impl CoCarrier for Motor {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
+        use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            right_anti_dual_g0.xyz().with_w(0.0),
+            Simd32x4::from([self.group0()[0], self.group0()[1], self.group0()[2], 0.0]),
             // e1, e2, e3, e5
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0[3]),
+            Simd32x3::from(0.0).with_w(self[e12345] * -1.0),
         )
     }
 }
@@ -285,13 +252,12 @@ impl std::ops::DivAssign<CoCarrierPrefixOrPostfix> for MultiVector {
 impl CoCarrier for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        9        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -300,9 +266,9 @@ impl CoCarrier for MultiVector {
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
-            self.group0().yx()[0] * -1.0,
+            self.group0()[1] * -1.0,
             // e15, e25, e35, e45
-            self.group9().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group9().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12
@@ -329,9 +295,9 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for Plane {
 impl CoCarrier for Plane {
     type Output = FlatPoint;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn co_carrier(self) -> Self::Output {
         FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(0.0))
     }
@@ -345,8 +311,8 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for RoundPoint {
 impl CoCarrier for RoundPoint {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e4] * -1.0)
@@ -361,11 +327,12 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for Sphere {
 impl CoCarrier for Sphere {
     type Output = FlatPoint;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
-        FlatPoint::from_groups(/* e15, e25, e35, e45 */ Simd32x4::from([self[e4235] * -1.0, self[e4315] * -1.0, self[e4125] * -1.0, self[e1234]]))
+        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]))
     }
 }
 impl std::ops::Div<CoCarrierPrefixOrPostfix> for VersorEven {
@@ -377,20 +344,15 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for VersorEven {
 impl CoCarrier for VersorEven {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        2        0
-    // Totals...
-    // yes simd        0        3        0
-    //  no simd        0        9        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
-        let right_anti_dual_g0 = self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]);
         Motor::from_groups(
             // e415, e425, e435, e12345
-            right_anti_dual_g0.xyz().with_w(self[e4] * -1.0),
+            self.group0().xyz().with_w(self[e4] * -1.0),
             // e235, e315, e125, e5
-            (self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0])).xyz().with_w(right_anti_dual_g0[3]),
+            self.group1().xyz().with_w(self[e12345] * -1.0),
         )
     }
 }
@@ -403,16 +365,16 @@ impl std::ops::Div<CoCarrierPrefixOrPostfix> for VersorOdd {
 impl CoCarrier for VersorOdd {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn co_carrier(self) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            self.group3().xyz().with_w(self[e1234]) * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
+            (self.group3().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e4235, e4315, e4125, e3215
-            (self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0])).xyz().with_w(self[e45]),
+            (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e45]),
         )
     }
 }

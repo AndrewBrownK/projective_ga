@@ -155,7 +155,7 @@ public extension VersorEven {
     public AntiScalar round_weight_norm_squared() {
         return AntiScalar(
             /* e12345 */
-            this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4
+            this.group0[0] * this.group0[0] + this.group0[1] * this.group0[1] + this.group0[2] * this.group0[2] + this.e4 * this.e4
         );
     }
 }
@@ -169,9 +169,10 @@ public AntiScalar operator /(RoundWeightNormSquaredPrefixOrPostfix lhs, VersorOd
 }
 public extension VersorOdd {
     public AntiScalar round_weight_norm_squared() {
+        float3 sub_type_g0 = this.group0.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234
+            sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + this.e1234 * this.e1234
         );
     }
 }

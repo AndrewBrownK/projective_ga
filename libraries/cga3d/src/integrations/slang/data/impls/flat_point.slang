@@ -5,7 +5,7 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            other.group1 + float4(float3(0.0), this.e45), 
+            float4(other.group1.xyz, other.e45 + this.e45), 
             /* e15, e25, e35, scalar */
             other.group2 + float4(this.group0.xyz, 0.0)
         );
@@ -253,7 +253,7 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            other.group1 + float4(float3(0.0), this.e45), 
+            float4(other.group1.xyz, other.e45 + this.e45), 
             /* e15, e25, e35 */
             other.group2.xyz + this.group0.xyz
         );
@@ -265,7 +265,7 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12, e45 */
-            other.group1 + float4(float3(0.0), this.e45), 
+            float4(other.group1.xyz, other.e45 + this.e45), 
             /* e15, e25, e35, e1234 */
             other.group2 + float4(this.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -503,10 +503,167 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4(other.group1.xyz, this.e45 + other.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.xyz + other.group2.xyz), other.e1234), 
+            other.group2 + float4(this.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3
         );
+    }
+}
+// Fancy infix trick (first half)
+public BitXorInfixPartial<FlatPoint> operator /(FlatPoint lhs, BitXorInfix rhs) {
+    return BitXorInfixPartial<FlatPoint>(lhs);
+}
+// Fancy infix trick (second half)
+public Flector operator /(BitXorInfixPartial<FlatPoint> lhs, AntiCircleRotor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Flector bit_xor(AntiCircleRotor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<FlatPoint> lhs, AntiDipoleInversion rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Motor bit_xor(AntiDipoleInversion other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public FlatPoint operator /(BitXorInfixPartial<FlatPoint> lhs, AntiDualNum rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public FlatPoint bit_xor(AntiDualNum other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<FlatPoint> lhs, AntiFlatPoint rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public AntiScalar bit_xor(AntiFlatPoint other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<FlatPoint> lhs, AntiFlector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Motor bit_xor(AntiFlector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<FlatPoint> lhs, AntiLine rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Plane bit_xor(AntiLine other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Flector operator /(BitXorInfixPartial<FlatPoint> lhs, AntiMotor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Flector bit_xor(AntiMotor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<FlatPoint> lhs, AntiPlane rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Line bit_xor(AntiPlane other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<FlatPoint> lhs, Circle rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public AntiScalar bit_xor(Circle other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public AntiScalar operator /(BitXorInfixPartial<FlatPoint> lhs, CircleRotor rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public AntiScalar bit_xor(CircleRotor other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<FlatPoint> lhs, Dipole rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Plane bit_xor(Dipole other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Plane operator /(BitXorInfixPartial<FlatPoint> lhs, DipoleInversion rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Plane bit_xor(DipoleInversion other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public MultiVector operator /(BitXorInfixPartial<FlatPoint> lhs, MultiVector rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public MultiVector bit_xor(MultiVector other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Line operator /(BitXorInfixPartial<FlatPoint> lhs, RoundPoint rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Line bit_xor(RoundPoint other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public FlatPoint operator /(BitXorInfixPartial<FlatPoint> lhs, Scalar rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public FlatPoint bit_xor(Scalar other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Motor operator /(BitXorInfixPartial<FlatPoint> lhs, VersorEven rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Motor bit_xor(VersorEven other) {
+        return this.wedge(other);
+    }
+}
+// Fancy infix trick (second half)
+public Flector operator /(BitXorInfixPartial<FlatPoint> lhs, VersorOdd rhs) {
+    return lhs.a.bit_xor(rhs);
+}
+public extension FlatPoint {
+    public Flector bit_xor(VersorOdd other) {
+        return this.wedge(other);
     }
 }
 public extension FlatPoint {
@@ -653,9 +810,9 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group1.xyz, this.e45 - other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, scalar */
-            float4((this.group0.xyz - other.group2.xyz), other.scalar) * float4(1.0, 1.0, 1.0, -1.0)
+            float4((this.group0.xyz - other.group2.xyz), other.scalar * -1.0)
         );
     }
 }
@@ -665,7 +822,7 @@ public extension FlatPoint {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.group3.xyz, other.e4) * float4(-1.0), 
+            float4((other.group3.xyz * float3(-1.0)), other.e4 * -1.0), 
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
@@ -691,13 +848,13 @@ public extension FlatPoint {
     public VersorOdd operator -(AntiDualNum other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.scalar * -1.0), 
             /* e23, e31, e12, e45 */
             float4(float3(0.0), this.e45), 
             /* e15, e25, e35, e1234 */
             float4(this.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
+            float4(float3(0.0), other.e3215 * -1.0)
         );
     }
 }
@@ -717,7 +874,7 @@ public extension FlatPoint {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e321 * -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -745,7 +902,7 @@ public extension FlatPoint {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), other.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.e321 * -1.0), 
             /* e423, e431, e412 */
             float3(0.0), 
             /* e235, e315, e125 */
@@ -763,7 +920,7 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group0.xyz, this.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group0.xyz * float3(-1.0)), this.e45), 
             /* e15, e25, e35 */
             this.group0.xyz - other.group1.xyz
         );
@@ -773,13 +930,13 @@ public extension FlatPoint {
     public VersorOdd operator -(AntiMotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(float3(0.0), other.scalar) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), other.scalar * -1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group0.xyz, this.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group0.xyz * float3(-1.0)), this.e45), 
             /* e15, e25, e35, e1234 */
             float4((this.group0.xyz - other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
-            float4(float3(0.0), other.e3215) * float4(0.0, 0.0, 0.0, -1.0)
+            float4(float3(0.0), other.e3215 * -1.0)
         );
     }
 }
@@ -815,7 +972,7 @@ public extension FlatPoint {
     public MultiVector operator -(AntiScalar other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(1.0, other.e12345) * float2(0.0, -1.0), 
+            float2(0.0, other.e12345 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -871,7 +1028,7 @@ public extension FlatPoint {
     public MultiVector operator -(CircleRotor other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(1.0, other.e12345) * float2(0.0, -1.0), 
+            float2(0.0, other.e12345 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -901,7 +1058,7 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group1.xyz, this.e45 - other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35 */
             this.group0.xyz - other.group2.xyz
         );
@@ -913,9 +1070,9 @@ public extension FlatPoint {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group1.xyz, this.e45 - other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.xyz - other.group2.xyz), other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group2.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );
@@ -925,7 +1082,7 @@ public extension FlatPoint {
     public MultiVector operator -(DualNum other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(1.0, other.e12345) * float2(0.0, -1.0), 
+            float2(0.0, other.e12345 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -999,7 +1156,7 @@ public extension FlatPoint {
     public MultiVector operator -(Motor other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(1.0, other.e12345) * float2(0.0, -1.0), 
+            float2(0.0, other.e12345 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -1097,7 +1254,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4(float3(0.0), this.e45), 
             /* e15, e25, e35, scalar */
-            float4(this.group0.xyz, other.scalar) * float4(1.0, 1.0, 1.0, -1.0)
+            float4(this.group0.xyz, other.scalar * -1.0)
         );
     }
 }
@@ -1109,7 +1266,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4(float3(0.0), this.e45), 
             /* e15, e25, e35, e1234 */
-            float4(this.group0.xyz, other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4(this.group0.xyz, other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group0 * float4(-1.0)
         );
@@ -1119,7 +1276,7 @@ public extension FlatPoint {
     public MultiVector operator -(VersorEven other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(1.0, other.e12345) * float2(0.0, -1.0), 
+            float2(0.0, other.e12345 * -1.0), 
             /* e1, e2, e3, e4 */
             other.group3 * float4(-1.0), 
             /* e5 */
@@ -1149,9 +1306,9 @@ public extension FlatPoint {
             /* e41, e42, e43, scalar */
             other.group0 * float4(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(other.group1.xyz, this.e45 - other.e45) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.xyz - other.group2.xyz), other.e1234) * float4(1.0, 1.0, 1.0, -1.0), 
+            float4((this.group0.xyz - other.group2.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );

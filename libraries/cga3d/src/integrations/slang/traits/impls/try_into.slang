@@ -110,7 +110,7 @@ public extension AntiMotor {
         }
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(anti_circle_rotor.e23, anti_circle_rotor.e31, anti_circle_rotor.e12, anti_circle_rotor.scalar), 
+            float4(anti_circle_rotor.group1.xyz, anti_circle_rotor.scalar), 
             /* e15, e25, e35, e3215 */
             float4(anti_circle_rotor.group2.xyz, 0.0)
         );
@@ -704,7 +704,7 @@ public extension Motor {
             /* e415, e425, e435, e12345 */
             float4(anti_dipole_inversion.group1.xyz, 0.0), 
             /* e235, e315, e125, e5 */
-            float4(anti_dipole_inversion.e235, anti_dipole_inversion.e315, anti_dipole_inversion.e125, anti_dipole_inversion.e5)
+            float4(anti_dipole_inversion.group2.xyz, anti_dipole_inversion.e5)
         );
     }
 }
@@ -1160,7 +1160,7 @@ public extension Motor {
             /* e415, e425, e435, e12345 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(anti_flector.e235, anti_flector.e315, anti_flector.e125, anti_flector.e5)
+            float4(anti_flector.group0.xyz, anti_flector.e5)
         );
     }
 }
@@ -1666,7 +1666,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(circle.group2.xyz, circle.e321)
+            float4(circle.e235, circle.e315, circle.e125, circle.e321)
         );
     }
 }
@@ -1704,7 +1704,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(circle.group2.xyz, circle.e321), 
+            float4(circle.e235, circle.e315, circle.e125, circle.e321), 
             /* e1, e2, e3, e5 */
             float4(0.0)
         );
@@ -2076,7 +2076,7 @@ public extension Motor {
         }
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(circle_rotor.e415, circle_rotor.e425, circle_rotor.e435, circle_rotor.e12345), 
+            float4(circle_rotor.group1.xyz, circle_rotor.e12345), 
             /* e235, e315, e125, e5 */
             float4(circle_rotor.group2.xyz, 0.0)
         );
@@ -2180,7 +2180,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(dipole.group2.xyz, dipole.e45)
+            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45)
         );
     }
 }
@@ -2218,7 +2218,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(dipole.group2.xyz, dipole.e45), 
+            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45), 
             /* e4235, e4315, e4125, e3215 */
             float4(0.0)
         );
@@ -2428,7 +2428,7 @@ public extension AntiMotor {
             /* e23, e31, e12, scalar */
             float4(dipole_inversion.group1.xyz, 0.0), 
             /* e15, e25, e35, e3215 */
-            float4(dipole_inversion.e15, dipole_inversion.e25, dipole_inversion.e35, dipole_inversion.e3215)
+            float4(dipole_inversion.group2.xyz, dipole_inversion.e3215)
         );
     }
 }
@@ -2988,7 +2988,7 @@ public extension AntiMotor {
             /* e23, e31, e12, scalar */
             float4(0.0), 
             /* e15, e25, e35, e3215 */
-            float4(flector.e15, flector.e25, flector.e35, flector.e3215)
+            float4(flector.group0.xyz, flector.e3215)
         );
     }
 }
@@ -3598,7 +3598,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             float4(multi_vector.group5.xyz, multi_vector.e45), 
             /* e15, e25, e35, scalar */
-            float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.scalar)
+            float4(multi_vector.group3.xyz, multi_vector.scalar)
         );
     }
 }
@@ -3686,7 +3686,7 @@ public extension AntiDipoleInversion {
             /* e235, e315, e125, e4 */
             float4(multi_vector.group8.xyz, multi_vector.e4), 
             /* e1, e2, e3, e5 */
-            float4(multi_vector.e1, multi_vector.e2, multi_vector.e3, multi_vector.e5)
+            float4(multi_vector.group1.xyz, multi_vector.e5)
         );
     }
 }
@@ -4058,7 +4058,7 @@ public extension AntiFlector {
             /* e235, e315, e125, e321 */
             float4(multi_vector.group8.xyz, multi_vector.e321), 
             /* e1, e2, e3, e5 */
-            float4(multi_vector.e1, multi_vector.e2, multi_vector.e3, multi_vector.e5)
+            float4(multi_vector.group1.xyz, multi_vector.e5)
         );
     }
 }
@@ -4290,7 +4290,7 @@ public extension AntiMotor {
             /* e23, e31, e12, scalar */
             float4(multi_vector.group5.xyz, multi_vector.scalar), 
             /* e15, e25, e35, e3215 */
-            float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e3215)
+            float4(multi_vector.group3.xyz, multi_vector.e3215)
         );
     }
 }
@@ -4416,7 +4416,7 @@ public extension AntiPlane {
         }
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(multi_vector.e1, multi_vector.e2, multi_vector.e3, multi_vector.e5)
+            float4(multi_vector.group1.xyz, multi_vector.e5)
         );
     }
 }
@@ -4954,7 +4954,7 @@ public extension DipoleInversion {
             /* e23, e31, e12, e45 */
             float4(multi_vector.group5.xyz, multi_vector.e45), 
             /* e15, e25, e35, e1234 */
-            float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e1234), 
+            float4(multi_vector.group3.xyz, multi_vector.e1234), 
             /* e4235, e4315, e4125, e3215 */
             multi_vector.group9
         );
@@ -5558,7 +5558,7 @@ public extension Motor {
         }
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(multi_vector.e415, multi_vector.e425, multi_vector.e435, multi_vector.e12345), 
+            float4(multi_vector.group6.xyz, multi_vector.e12345), 
             /* e235, e315, e125, e5 */
             float4(multi_vector.group8.xyz, multi_vector.e5)
         );
@@ -6238,7 +6238,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             float4(multi_vector.group5.xyz, multi_vector.e45), 
             /* e15, e25, e35, e1234 */
-            float4(multi_vector.e15, multi_vector.e25, multi_vector.e35, multi_vector.e1234), 
+            float4(multi_vector.group3.xyz, multi_vector.e1234), 
             /* e4235, e4315, e4125, e3215 */
             multi_vector.group9
         );
@@ -6314,7 +6314,7 @@ public extension AntiFlector {
             /* e235, e315, e125, e321 */
             float4(0.0), 
             /* e1, e2, e3, e5 */
-            float4(round_point.e1, round_point.e2, round_point.e3, round_point.e5)
+            float4(round_point.group0.xyz, round_point.e5)
         );
     }
 }
@@ -6332,7 +6332,7 @@ public extension AntiPlane {
         }
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(round_point.e1, round_point.e2, round_point.e3, round_point.e5)
+            float4(round_point.group0.xyz, round_point.e5)
         );
     }
 }
@@ -6516,7 +6516,7 @@ public extension AntiDipoleInversion {
             /* e415, e425, e435, e321 */
             versor_even.group1, 
             /* e235, e315, e125, e4 */
-            float4(versor_even.e235, versor_even.e315, versor_even.e125, versor_even.e4), 
+            float4(versor_even.group2.xyz, versor_even.e4), 
             /* e1, e2, e3, e5 */
             float4(versor_even.e1, versor_even.e2, versor_even.e3, versor_even.e5)
         );
@@ -6844,7 +6844,7 @@ public extension CircleRotor {
             /* e415, e425, e435, e321 */
             versor_even.group1, 
             /* e235, e315, e125, e12345 */
-            float4(versor_even.e235, versor_even.e315, versor_even.e125, versor_even.e12345)
+            float4(versor_even.group2.xyz, versor_even.e12345)
         );
     }
 }
@@ -7116,7 +7116,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             versor_odd.group1, 
             /* e15, e25, e35, scalar */
-            float4(versor_odd.e15, versor_odd.e25, versor_odd.e35, versor_odd.scalar)
+            float4(versor_odd.group2.xyz, versor_odd.scalar)
         );
     }
 }
@@ -7290,7 +7290,7 @@ public extension AntiMotor {
             /* e23, e31, e12, scalar */
             float4(versor_odd.e23, versor_odd.e31, versor_odd.e12, versor_odd.scalar), 
             /* e15, e25, e35, e3215 */
-            float4(versor_odd.e15, versor_odd.e25, versor_odd.e35, versor_odd.e3215)
+            float4(versor_odd.group2.xyz, versor_odd.e3215)
         );
     }
 }

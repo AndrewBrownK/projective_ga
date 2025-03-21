@@ -8,13 +8,4 @@ pub trait RightAntiDual {
     type Output;
     fn right_anti_dual(self) -> Self::Output;
 }
-#[allow(non_upper_case_globals, dead_code)]
-pub static right_anti_dual: RightAntiDualPrefixOrPostfix = RightAntiDualPrefixOrPostfix;
-pub struct RightAntiDualPrefixOrPostfix;
-impl<A: RightAntiDual> std::ops::Div<A> for RightAntiDualPrefixOrPostfix {
-    type Output = <A as RightAntiDual>::Output;
-    fn div(self, rhs: A) -> Self::Output {
-        rhs.right_anti_dual()
-    }
-}
 include!("./impls/right_anti_dual.rs");

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 25
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         0       6       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         0       6       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       4       0
-//  Maximum:         0      17       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       1       0       0
+//  Average:         0       4       0       0
+//  Maximum:         0      17       0       0
 impl std::ops::Div<AutoMorphismPrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
     fn div(self, _rhs: AutoMorphismPrefixOrPostfix) -> Self::Output {
@@ -47,12 +47,12 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for AntiDipoleInversion {
 }
 impl AutoMorphism for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       15        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       15        0        0
     fn auto_morphism(self) -> Self {
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
@@ -95,9 +95,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for AntiFlatPoint {
 }
 impl AutoMorphism for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn auto_morphism(self) -> Self {
         AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -115,9 +115,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for AntiFlector {
 }
 impl AutoMorphism for AntiFlector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn auto_morphism(self) -> Self {
         AntiFlector::from_groups(
             // e235, e315, e125, e321
@@ -172,9 +172,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for AntiPlane {
 }
 impl AutoMorphism for AntiPlane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn auto_morphism(self) -> Self {
         AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -192,8 +192,8 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for AntiScalar {
 }
 impl AutoMorphism for AntiScalar {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn auto_morphism(self) -> Self {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e12345] * -1.0)
@@ -212,12 +212,12 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for Circle {
 }
 impl AutoMorphism for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn auto_morphism(self) -> Self {
         Circle::from_groups(
             // e423, e431, e412
@@ -242,12 +242,12 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for CircleRotor {
 }
 impl AutoMorphism for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       11        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn auto_morphism(self) -> Self {
         CircleRotor::from_groups(
             // e423, e431, e412
@@ -304,9 +304,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for DualNum {
 }
 impl AutoMorphism for DualNum {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn auto_morphism(self) -> Self {
         DualNum::from_groups(/* e5, e12345 */ self.group0() * Simd32x2::from(-1.0))
     }
@@ -356,9 +356,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for Line {
 }
 impl AutoMorphism for Line {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn auto_morphism(self) -> Self {
         Line::from_groups(
             // e415, e425, e435
@@ -381,9 +381,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for Motor {
 }
 impl AutoMorphism for Motor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn auto_morphism(self) -> Self {
         Motor::from_groups(
             // e415, e425, e435, e12345
@@ -406,14 +406,14 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for MultiVector {
 }
 impl AutoMorphism for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       17        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       17        0        0
     fn auto_morphism(self) -> Self {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -471,12 +471,12 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for RoundPoint {
 }
 impl AutoMorphism for RoundPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        5        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn auto_morphism(self) -> Self {
         use crate::elements::*;
         RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0), /* e5 */ self[e5] * -1.0)
@@ -527,9 +527,9 @@ impl std::ops::DivAssign<AutoMorphismPrefixOrPostfix> for VersorEven {
 }
 impl AutoMorphism for VersorEven {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        4        0
-    // no simd        0       16        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        4        0      N/A
+    // no simd        0       16        0        0
     fn auto_morphism(self) -> Self {
         VersorEven::from_groups(
             // e423, e431, e412, e12345

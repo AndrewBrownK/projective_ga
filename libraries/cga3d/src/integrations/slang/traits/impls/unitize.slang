@@ -176,7 +176,7 @@ public RoundPoint operator /(UnitizePrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public RoundPoint unitize() {
-        float geometric_anti_product_g0 = 1.0/this.e4;
+        float geometric_anti_product_g0 = 1.0 / this.e4;
         return RoundPoint(
             /* e1, e2, e3, e4 */
             float4(geometric_anti_product_g0) * this.group0, 
@@ -195,7 +195,7 @@ public Sphere operator /(UnitizePrefixOrPostfix lhs, Sphere rhs) {
 }
 public extension Sphere {
     public Sphere unitize() {
-        float geometric_anti_product_g0 = 1.0/this.e1234;
+        float geometric_anti_product_g0 = 1.0 / this.e1234;
         return Sphere(
             /* e4235, e4315, e4125, e3215 */
             float4(geometric_anti_product_g0) * this.group0, 
@@ -214,7 +214,7 @@ public VersorEven operator /(UnitizePrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public VersorEven unitize() {
-        float geometric_anti_product_g0 = this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4;
+        float geometric_anti_product_g0 = this.group0[0] * this.group0[0] + this.group0[1] * this.group0[1] + this.group0[2] * this.group0[2] + this.e4 * this.e4;
         return VersorEven(
             /* e423, e431, e412, e12345 */
             float4(geometric_anti_product_g0) * this.group0, 
@@ -237,7 +237,8 @@ public VersorOdd operator /(UnitizePrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public VersorOdd unitize() {
-        float geometric_anti_product_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234;
+        float3 sub_type_g0 = this.group0.xyz;
+        float geometric_anti_product_g0 = sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + this.e1234 * this.e1234;
         return VersorOdd(
             /* e41, e42, e43, scalar */
             float4(geometric_anti_product_g0) * this.group0, 

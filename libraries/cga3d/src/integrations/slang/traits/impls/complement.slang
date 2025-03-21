@@ -15,7 +15,7 @@ public extension AntiCircleRotor {
             /* e415, e425, e435, e321 */
             this.group1 * float4(-1.0), 
             /* e235, e315, e125, e12345 */
-            float4(this.group0.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4((this.group0.xyz * float3(-1.0)), this.scalar)
         );
     }
 }
@@ -35,7 +35,7 @@ public extension AntiDipoleInversion {
             /* e23, e31, e12, e45 */
             this.group1 * float4(-1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.group0.xyz, this.e5) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group0.xyz * float3(-1.0)), this.e5), 
             /* e4235, e4315, e4125, e3215 */
             float4(this.e1, this.e2, this.e3, this.e4)
         );
@@ -77,7 +77,7 @@ public extension AntiFlatPoint {
             /* e41, e42, e43 */
             this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e321 * -1.0), 
             /* e15, e25, e35 */
             float3(0.0)
         );
@@ -97,7 +97,7 @@ public extension AntiFlector {
             /* e41, e42, e43 */
             this.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4(float3(0.0), this.e321) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e321 * -1.0), 
             /* e15, e25, e35, e1234 */
             float4(float3(0.0), this.e5), 
             /* e4235, e4315, e4125, e3215 */
@@ -137,7 +137,7 @@ public extension AntiMotor {
     public VersorEven complement() {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.group1.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group1.xyz * float3(-1.0)), this.scalar), 
             /* e415, e425, e435, e321 */
             float4((this.group0.xyz * float3(-1.0)), 0.0), 
             /* e235, e315, e125, e5 */
@@ -217,7 +217,7 @@ public extension CircleRotor {
             /* e23, e31, e12, e45 */
             this.group1 * float4(-1.0), 
             /* e15, e25, e35, scalar */
-            float4(this.group0.xyz, this.e12345) * float4(-1.0, -1.0, -1.0, 1.0)
+            float4((this.group0.xyz * float3(-1.0)), this.e12345)
         );
     }
 }
@@ -257,7 +257,7 @@ public extension DipoleInversion {
             /* e415, e425, e435, e321 */
             this.group1 * float4(-1.0), 
             /* e235, e315, e125, e4 */
-            float4(this.group0.xyz, this.e3215) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group0.xyz * float3(-1.0)), this.e3215), 
             /* e1, e2, e3, e5 */
             float4(this.e4235, this.e4315, this.e4125, this.e1234)
         );
@@ -299,7 +299,7 @@ public extension FlatPoint {
             /* e423, e431, e412 */
             this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e45) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e45 * -1.0), 
             /* e235, e315, e125 */
             float3(0.0)
         );
@@ -319,7 +319,7 @@ public extension Flector {
             /* e423, e431, e412 */
             this.group0.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(float3(0.0), this.e45) * float4(0.0, 0.0, 0.0, -1.0), 
+            float4(float3(0.0), this.e45 * -1.0), 
             /* e235, e315, e125, e4 */
             float4(float3(0.0), this.e3215), 
             /* e1, e2, e3, e5 */
@@ -359,7 +359,7 @@ public extension Motor {
     public VersorOdd complement() {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.group1.xyz, this.e12345) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group1.xyz * float3(-1.0)), this.e12345), 
             /* e23, e31, e12, e45 */
             float4((this.group0.xyz * float3(-1.0)), 0.0), 
             /* e15, e25, e35, e1234 */
@@ -387,13 +387,13 @@ public extension MultiVector {
             /* e5 */
             this.e1234, 
             /* e15, e25, e35, e45 */
-            float4(this.group7.xyz, this.e321) * float4(-1.0), 
+            float4((this.group7.xyz * float3(-1.0)), this.e321 * -1.0), 
             /* e41, e42, e43 */
             this.group8.xyz * float3(-1.0), 
             /* e23, e31, e12 */
             this.group6.xyz * float3(-1.0), 
             /* e415, e425, e435, e321 */
-            float4(this.group5.xyz, this.e45) * float4(-1.0), 
+            float4((this.group5.xyz * float3(-1.0)), this.e45 * -1.0), 
             /* e423, e431, e412 */
             this.group3.xyz * float3(-1.0), 
             /* e235, e315, e125 */
@@ -487,11 +487,11 @@ public extension VersorEven {
     public VersorOdd complement() {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.group2.xyz, this.e12345) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group2.xyz * float3(-1.0)), this.e12345), 
             /* e23, e31, e12, e45 */
             this.group1 * float4(-1.0), 
             /* e15, e25, e35, e1234 */
-            float4(this.group0.xyz, this.e5) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group0.xyz * float3(-1.0)), this.e5), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -509,11 +509,11 @@ public extension VersorOdd {
     public VersorEven complement() {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.group2.xyz, this.scalar) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group2.xyz * float3(-1.0)), this.scalar), 
             /* e415, e425, e435, e321 */
             this.group1 * float4(-1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.group0.xyz, this.e1234) * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4((this.group0.xyz * float3(-1.0)), this.e1234), 
             /* e1, e2, e3, e4 */
             this.group3
         );

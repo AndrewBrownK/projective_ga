@@ -9,9 +9,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, AntiCircleRotor rhs)
 }
 public extension AntiCircleRotor {
     public MultiVector round_norm() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.scalar * this.scalar, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43), 
+            float2(sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.scalar * this.scalar, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -45,9 +46,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, AntiDipoleInversion 
 }
 public extension AntiDipoleInversion {
     public MultiVector round_norm() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4), 
+            float2(sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e321 * this.e321, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -153,9 +155,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public MultiVector round_norm() {
+        float3 sub_type_g0 = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43), 
+            float2(sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2], this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -189,9 +192,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, DipoleInversion rhs)
 }
 public extension DipoleInversion {
     public MultiVector round_norm() {
+        float3 sub_type_g0 = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234), 
+            float2(sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2], this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -225,9 +229,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector round_norm() {
+        float3 sub_type_g1_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * this.scalar + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3 + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321, this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234), 
+            float2(sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321, this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -261,9 +266,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, RoundPoint rhs) {
 }
 public extension RoundPoint {
     public MultiVector round_norm() {
+        float3 sub_type_g0_xyz = this.group0.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3, this.e4), 
+            float2(sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2], this.e4), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -297,9 +303,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public MultiVector round_norm() {
+        float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e321 * this.e321 + this.e1 * this.e1 + this.e2 * this.e2 + this.e3 * this.e3, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4), 
+            float2(sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e321 * this.e321, this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -333,9 +340,10 @@ public MultiVector operator /(RoundNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public MultiVector round_norm() {
+        float3 sub_type_g0 = this.group0.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e1234 * this.e1234), 
+            float2(this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12, sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + this.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */

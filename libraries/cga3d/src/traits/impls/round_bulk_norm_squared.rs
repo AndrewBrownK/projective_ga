@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 17
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         2       0       0
-//  Maximum:         7       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0     N/A
+//   Median:         2       3       0     N/A
+//  Average:         2       3       0     N/A
+//  Maximum:         7       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         2       0       0
-//  Maximum:         7       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0       0
+//   Median:         2       3       0       0
+//  Average:         2       3       0       0
+//  Maximum:         7       8       0       0
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiCircleRotor {
     type Output = Scalar;
     fn div(self, _rhs: RoundBulkNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -26,11 +26,15 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiCircleRotor {
 }
 impl RoundBulkNormSquared for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
+        let sub_type_g0_xyz = self.group1().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[scalar] * self[scalar],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiDipoleInversion {
@@ -41,11 +45,15 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiDipoleInversion 
 }
 impl RoundBulkNormSquared for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
+        let sub_type_g1_xyz = self.group3().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e321] * self[e321],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiDualNum {
@@ -55,6 +63,9 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiDualNum {
     }
 }
 impl RoundBulkNormSquared for AntiDualNum {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[scalar] * self[scalar])
@@ -67,6 +78,9 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiFlatPoint {
     }
 }
 impl RoundBulkNormSquared for AntiFlatPoint {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e321] * self[e321])
@@ -80,11 +94,15 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiFlector {
 }
 impl RoundBulkNormSquared for AntiFlector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
+        let sub_type_g1_xyz = self.group1().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e321] * self[e321],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiLine {
@@ -95,8 +113,8 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiLine {
 }
 impl RoundBulkNormSquared for AntiLine {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
@@ -110,8 +128,8 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiMotor {
 }
 impl RoundBulkNormSquared for AntiMotor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12] + self[scalar] * self[scalar])
@@ -125,11 +143,14 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for AntiPlane {
 }
 impl RoundBulkNormSquared for AntiPlane {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
-        use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
+        let sub_type_g0_xyz = self.group0().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for Circle {
@@ -139,6 +160,9 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for Circle {
     }
 }
 impl RoundBulkNormSquared for Circle {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e321] * self[e321])
@@ -151,6 +175,9 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for CircleRotor {
     }
 }
 impl RoundBulkNormSquared for CircleRotor {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[e321] * self[e321])
@@ -164,11 +191,11 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for Dipole {
 }
 impl RoundBulkNormSquared for Dipole {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
-        use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
+        let sub_type_g0 = self.group1().xyz();
+        Scalar::from_groups(/* scalar */ sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2])
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for DipoleInversion {
@@ -179,11 +206,11 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for DipoleInversion {
 }
 impl RoundBulkNormSquared for DipoleInversion {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
-        use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
+        let sub_type_g0 = self.group1().xyz();
+        Scalar::from_groups(/* scalar */ sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2])
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for MultiVector {
@@ -194,16 +221,17 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for MultiVector {
 }
 impl RoundBulkNormSquared for MultiVector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        7        0        0
+    //      add/sub      mul      div      pow
+    // f32        7        8        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
+        let sub_type_g1_xyz = self.group1().xyz();
         Scalar::from_groups(
             // scalar
-            self[scalar] * self[scalar]
-                + self[e1] * self[e1]
-                + self[e2] * self[e2]
-                + self[e3] * self[e3]
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
+                + sub_type_g1_xyz[1] * sub_type_g1_xyz[1]
+                + sub_type_g1_xyz[2] * sub_type_g1_xyz[2]
+                + self[scalar] * self[scalar]
                 + self[e23] * self[e23]
                 + self[e31] * self[e31]
                 + self[e12] * self[e12]
@@ -219,11 +247,14 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for RoundPoint {
 }
 impl RoundBulkNormSquared for RoundPoint {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
-        use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
+        let sub_type_g0_xyz = self.group0().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for Scalar {
@@ -238,6 +269,9 @@ impl std::ops::DivAssign<RoundBulkNormSquaredPrefixOrPostfix> for Scalar {
     }
 }
 impl RoundBulkNormSquared for Scalar {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[scalar] * self[scalar])
@@ -251,11 +285,15 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for VersorEven {
 }
 impl RoundBulkNormSquared for VersorEven {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e321] * self[e321] + self[e1] * self[e1] + self[e2] * self[e2] + self[e3] * self[e3])
+        let sub_type_g1_xyz = self.group3().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e321] * self[e321],
+        )
     }
 }
 impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for VersorOdd {
@@ -266,8 +304,8 @@ impl std::ops::Div<RoundBulkNormSquaredPrefixOrPostfix> for VersorOdd {
 }
 impl RoundBulkNormSquared for VersorOdd {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn round_bulk_norm_squared(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])

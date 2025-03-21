@@ -92,7 +92,7 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             from_anti_dipole_inversion.group1, 
             /* e235, e315, e125, e5 */
-            float4(from_anti_dipole_inversion.e235, from_anti_dipole_inversion.e315, from_anti_dipole_inversion.e125, from_anti_dipole_inversion.e5), 
+            float4(from_anti_dipole_inversion.group2.xyz, from_anti_dipole_inversion.e5), 
             /* e1, e2, e3, e4 */
             float4(from_anti_dipole_inversion.e1, from_anti_dipole_inversion.e2, from_anti_dipole_inversion.e3, from_anti_dipole_inversion.e4)
         );
@@ -350,7 +350,7 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             float4(float3(0.0), from_anti_flector.e321), 
             /* e235, e315, e125, e5 */
-            float4(from_anti_flector.e235, from_anti_flector.e315, from_anti_flector.e125, from_anti_flector.e5), 
+            float4(from_anti_flector.group0.xyz, from_anti_flector.e5), 
             /* e1, e2, e3, e4 */
             float4(from_anti_flector.group1.xyz, 0.0)
         );
@@ -917,7 +917,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_dipole.group2.xyz, from_dipole.e45), 
+            float4(from_dipole.e15, from_dipole.e25, from_dipole.e35, from_dipole.e45), 
             /* e41, e42, e43 */
             from_dipole.group0.xyz, 
             /* e23, e31, e12 */
@@ -1552,7 +1552,7 @@ public extension AntiDipoleInversion {
             /* e235, e315, e125, e4 */
             float4(float3(0.0), from_round_point.e4), 
             /* e1, e2, e3, e5 */
-            float4(from_round_point.e1, from_round_point.e2, from_round_point.e3, from_round_point.e5)
+            float4(from_round_point.group0.xyz, from_round_point.e5)
         );
     }
 }

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 25
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       2       0
-//  Average:         0       1       0
-//  Maximum:         0       6       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       2       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         0       6       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       6       0
-//  Average:         0       6       0
-//  Maximum:         0      18       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       4       0       0
+//  Average:         0       5       0       0
+//  Maximum:         0      18       0       0
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
     fn div(self, _rhs: ConformalConjugatePrefixOrPostfix) -> Self::Output {
@@ -31,15 +31,19 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiCircleRotor 
 }
 impl ConformalConjugate for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         AntiCircleRotor::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e45] * -1.0),
             // e15, e25, e35, scalar
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
         )
@@ -58,10 +62,14 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiDipoleInvers
 }
 impl ConformalConjugate for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         AntiDipoleInversion::from_groups(
             // e423, e431, e412
             self.group0(),
@@ -70,7 +78,7 @@ impl ConformalConjugate for AntiDipoleInversion {
             // e235, e315, e125, e4
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
-            self.group3() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group3().xyz().with_w(self[e5] * -1.0),
         )
     }
 }
@@ -87,9 +95,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiDualNum {
 }
 impl ConformalConjugate for AntiDualNum {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn conformal_conjugate(self) -> Self {
         AntiDualNum::from_groups(/* e3215, scalar */ self.group0() * Simd32x2::from([-1.0, 1.0]))
     }
@@ -107,9 +115,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiFlatPoint {
 }
 impl ConformalConjugate for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
         AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
@@ -127,15 +135,19 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiFlector {
 }
 impl ConformalConjugate for AntiFlector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        2        0      N/A
+    //  no simd        0        5        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
             self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e1, e2, e3, e5
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e5] * -1.0),
         )
     }
 }
@@ -152,9 +164,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiLine {
 }
 impl ConformalConjugate for AntiLine {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn conformal_conjugate(self) -> Self {
         AntiLine::from_groups(/* e23, e31, e12 */ self.group0(), /* e15, e25, e35 */ self.group1() * Simd32x3::from(-1.0))
     }
@@ -172,9 +184,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiMotor {
 }
 impl ConformalConjugate for AntiMotor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
         AntiMotor::from_groups(/* e23, e31, e12, scalar */ self.group0(), /* e15, e25, e35, e3215 */ self.group1() * Simd32x4::from(-1.0))
     }
@@ -192,11 +204,11 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiPlane {
 }
 impl ConformalConjugate for AntiPlane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn conformal_conjugate(self) -> Self {
-        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]))
+        use crate::elements::*;
+        AntiPlane::from_groups(/* e1, e2, e3, e5 */ self.group0().xyz().with_w(self[e5] * -1.0))
     }
 }
 impl std::ops::Div<ConformalConjugatePrefixOrPostfix> for AntiScalar {
@@ -212,8 +224,8 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for AntiScalar {
 }
 impl ConformalConjugate for AntiScalar {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
         AntiScalar::from_groups(/* e12345 */ self[e12345] * -1.0)
@@ -232,12 +244,12 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Circle {
 }
 impl ConformalConjugate for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        7        0        0
     fn conformal_conjugate(self) -> Self {
         Circle::from_groups(
             // e423, e431, e412
@@ -262,9 +274,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for CircleRotor {
 }
 impl ConformalConjugate for CircleRotor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn conformal_conjugate(self) -> Self {
         CircleRotor::from_groups(
             // e423, e431, e412
@@ -289,18 +301,19 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Dipole {
 }
 impl ConformalConjugate for Dipole {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        7        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         Dipole::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e45] * -1.0),
             // e15, e25, e35
             self.group2() * Simd32x3::from(-1.0),
         )
@@ -319,15 +332,19 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for DipoleInversion 
 }
 impl ConformalConjugate for DipoleInversion {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         DipoleInversion::from_groups(
             // e41, e42, e43
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e45] * -1.0),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215
@@ -348,9 +365,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for DualNum {
 }
 impl ConformalConjugate for DualNum {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn conformal_conjugate(self) -> Self {
         DualNum::from_groups(/* e5, e12345 */ self.group0() * Simd32x2::from(-1.0))
     }
@@ -368,9 +385,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for FlatPoint {
 }
 impl ConformalConjugate for FlatPoint {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
         FlatPoint::from_groups(/* e15, e25, e35, e45 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -388,9 +405,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Flector {
 }
 impl ConformalConjugate for Flector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn conformal_conjugate(self) -> Self {
         Flector::from_groups(
             // e15, e25, e35, e45
@@ -413,9 +430,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Line {
 }
 impl ConformalConjugate for Line {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn conformal_conjugate(self) -> Self {
         Line::from_groups(
             // e415, e425, e435
@@ -438,9 +455,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Motor {
 }
 impl ConformalConjugate for Motor {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn conformal_conjugate(self) -> Self {
         Motor::from_groups(
             // e415, e425, e435, e12345
@@ -463,14 +480,14 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for MultiVector {
 }
 impl ConformalConjugate for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        1        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       18        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       18        0        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -512,9 +529,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Plane {
 }
 impl ConformalConjugate for Plane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
         Plane::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -532,8 +549,8 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for RoundPoint {
 }
 impl ConformalConjugate for RoundPoint {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
         RoundPoint::from_groups(/* e1, e2, e3, e4 */ self.group0(), /* e5 */ self[e5] * -1.0)
@@ -568,9 +585,9 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for Sphere {
 }
 impl ConformalConjugate for Sphere {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn conformal_conjugate(self) -> Self {
         use crate::elements::*;
         Sphere::from_groups(/* e4235, e4315, e4125, e3215 */ self.group0() * Simd32x4::from(-1.0), /* e1234 */ self[e1234])
@@ -589,13 +606,17 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for VersorEven {
 }
 impl ConformalConjugate for VersorEven {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            self.group0() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group0().xyz().with_w(self[e12345] * -1.0),
             // e415, e425, e435, e321
             self.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e235, e315, e125, e5
@@ -618,15 +639,19 @@ impl std::ops::DivAssign<ConformalConjugatePrefixOrPostfix> for VersorOdd {
 }
 impl ConformalConjugate for VersorOdd {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        3        0
-    // no simd        0       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd4        0        2        0      N/A
+    // Totals...
+    // yes simd        0        3        0      N/A
+    //  no simd        0        9        0        0
     fn conformal_conjugate(self) -> Self {
+        use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
             self.group0(),
             // e23, e31, e12, e45
-            self.group1() * Simd32x4::from([1.0, 1.0, 1.0, -1.0]),
+            self.group1().xyz().with_w(self[e45] * -1.0),
             // e15, e25, e35, e1234
             self.group2() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]),
             // e4235, e4315, e4125, e3215

@@ -3,21 +3,21 @@
 // This is due to varying hardware capabilities and compiler optimizations.
 // As always, where performance is a concern, there is no substitute for
 // real measurements on real work-loads on real hardware.
-// Disclaimer aside, enjoy the fun information =)
+// Disclaimer aside, enjoy the fun information 😁
 //
 // Total Implementations: 11
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       2       0
-//   Median:         2       3       0
-//  Average:         2       3       0
-//  Maximum:         7      11       1
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       2       0     N/A
+//   Median:         2       6       0     N/A
+//  Average:         2       7       0     N/A
+//  Maximum:         7      19       1     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       5       0
-//   Median:         2      11       0
-//  Average:         2      13       0
-//  Maximum:         7      32       1
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       5       0       0
+//   Median:         2      14       0       0
+//  Average:         2      16       0       0
+//  Maximum:         7      40       1       0
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
     fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
@@ -31,13 +31,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiCircleRotor {
 }
 impl Unitize for AntiCircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       11        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       14        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -64,13 +64,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for AntiDipoleInversion {
 }
 impl Unitize for AntiDipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       15        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       19        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
@@ -99,13 +99,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Circle {
 }
 impl Unitize for Circle {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -132,13 +132,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for CircleRotor {
 }
 impl Unitize for CircleRotor {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        1        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       11        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       14        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412];
@@ -165,13 +165,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Dipole {
 }
 impl Unitize for Dipole {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        0        0
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        2        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        2        3        0
-    //  no simd        2       10        0
+    // yes simd        2        6        0      N/A
+    //  no simd        2       13        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43];
@@ -198,13 +198,13 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for DipoleInversion {
 }
 impl Unitize for DipoleInversion {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       15        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       19        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
@@ -233,14 +233,14 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for MultiVector {
 }
 impl Unitize for MultiVector {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7        2        0
-    //    simd2        0        1        0
-    //    simd3        0        4        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        7       10        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        4        0      N/A
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        7       11        0
-    //  no simd        7       32        0
+    // yes simd        7       19        0      N/A
+    //  no simd        7       40        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = self[e4] * self[e4]
@@ -290,12 +290,12 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for RoundPoint {
 }
 impl Unitize for RoundPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        1        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        1
-    //  no simd        0        5        1
+    // yes simd        0        2        1      N/A
+    //  no simd        0        5        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e4];
@@ -320,12 +320,12 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Sphere {
 }
 impl Unitize for Sphere {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        1
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        1        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        1
-    //  no simd        0        5        1
+    // yes simd        0        2        1      N/A
+    //  no simd        0        5        1        0
     fn unitize(self) -> Self {
         use crate::elements::*;
         let geometric_anti_product_g0 = 1.0 / self[e1234];
@@ -350,15 +350,15 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorEven {
 }
 impl Unitize for VersorEven {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       16        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       20        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4];
+        let geometric_anti_product_g0 = self.group0()[0] * self.group0()[0] + self.group0()[1] * self.group0()[1] + self.group0()[2] * self.group0()[2] + self[e4] * self[e4];
         VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
@@ -384,15 +384,16 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for VersorOdd {
 }
 impl Unitize for VersorOdd {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        0        0
-    //    simd4        0        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        3        4        0
-    //  no simd        3       16        0
+    // yes simd        3        8        0      N/A
+    //  no simd        3       20        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234];
+        let sub_type_g0 = self.group0().xyz();
+        let geometric_anti_product_g0 = sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + self[e1234] * self[e1234];
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),
