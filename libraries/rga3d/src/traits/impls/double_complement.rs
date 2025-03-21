@@ -7,17 +7,17 @@
 //
 // Total Implementations: 11
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       0       0
-//  Maximum:         0       2       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       2       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       2       0
-//  Maximum:         0       8       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       1       0       0
+//  Average:         0       2       0       0
+//  Maximum:         0       8       0       0
 impl std::ops::Div<DoubleComplementPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: DoubleComplementPrefixOrPostfix) -> Self::Output {
@@ -63,9 +63,9 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Flector {
 }
 impl DoubleComplement for Flector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn double_complement(self) -> Self {
         Flector::from_groups(
             // e1, e2, e3, e4
@@ -88,8 +88,8 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Horizon {
 }
 impl DoubleComplement for Horizon {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn double_complement(self) -> Self {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e321] * -1.0)
@@ -140,9 +140,9 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for MultiVector {
 }
 impl DoubleComplement for MultiVector {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn double_complement(self) -> Self {
         MultiVector::from_groups(
             // scalar, e1234
@@ -171,8 +171,8 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Origin {
 }
 impl DoubleComplement for Origin {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn double_complement(self) -> Self {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e4] * -1.0)
@@ -191,9 +191,9 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Plane {
 }
 impl DoubleComplement for Plane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn double_complement(self) -> Self {
         Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -211,9 +211,9 @@ impl std::ops::DivAssign<DoubleComplementPrefixOrPostfix> for Point {
 }
 impl DoubleComplement for Point {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn double_complement(self) -> Self {
         Point::from_groups(/* e1, e2, e3, e4 */ self.group0() * Simd32x4::from(-1.0))
     }

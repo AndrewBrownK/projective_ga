@@ -10,22 +10,22 @@ use crate::traits::Wedge;
 //
 // Total Implementations: 51
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         2       3       0
-//  Maximum:        31      36       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         2       3       0     N/A
+//  Maximum:        31      36       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       4       0
-//  Average:         8       9       0
-//  Maximum:        88      96       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       4       0       0
+//  Average:         8       9       0       0
+//  Maximum:        88      96       0       0
 impl std::ops::Add<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -50,8 +50,8 @@ impl std::ops::AddAssign<AntiScalar> for Motor {
 impl std::ops::Add<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        0        0        0
     fn add(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -112,9 +112,9 @@ impl std::ops::Add<Horizon> for Motor {
 impl std::ops::Add<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn add(self, other: Line) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -137,9 +137,9 @@ impl std::ops::AddAssign<Line> for Motor {
 impl std::ops::Add<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn add(self, other: Motor) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -162,12 +162,12 @@ impl std::ops::AddAssign<Motor> for Motor {
 impl std::ops::Add<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        1        0        0
-    //    simd3        2        0        0
+    //           add/sub      mul      div      pow
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
     // Totals...
-    // yes simd        3        0        0
-    //  no simd        8        0        0
+    // yes simd        3        0        0      N/A
+    //  no simd        8        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -241,8 +241,8 @@ impl std::ops::Add<Point> for Motor {
 impl std::ops::Add<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -267,8 +267,8 @@ impl std::ops::AddAssign<Scalar> for Motor {
 impl std::ops::BitXor<AntiScalar> for Motor {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: AntiScalar) -> Self::Output {
         self.wedge(other)
     }
@@ -276,13 +276,13 @@ impl std::ops::BitXor<AntiScalar> for Motor {
 impl std::ops::BitXor<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        1        4        0
-    //  no simd        1        9        0
+    // yes simd        1        4        0      N/A
+    //  no simd        1        9        0        0
     fn bitxor(self, other: DualNum) -> Self::Output {
         self.wedge(other)
     }
@@ -295,13 +295,13 @@ impl std::ops::BitXorAssign<DualNum> for Motor {
 impl std::ops::BitXor<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        0        2        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd        5        7        0
-    //  no simd       17       20        0
+    // yes simd        5        7        0      N/A
+    //  no simd       17       20        0        0
     fn bitxor(self, other: Flector) -> Self::Output {
         self.wedge(other)
     }
@@ -309,8 +309,8 @@ impl std::ops::BitXor<Flector> for Motor {
 impl std::ops::BitXor<Horizon> for Motor {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: Horizon) -> Self::Output {
         self.wedge(other)
     }
@@ -318,12 +318,12 @@ impl std::ops::BitXor<Horizon> for Motor {
 impl std::ops::BitXor<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        6        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        5        6        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        5        8        0
-    //  no simd        5       12        0
+    // yes simd        5        8        0      N/A
+    //  no simd        5       12        0        0
     fn bitxor(self, other: Line) -> Self::Output {
         self.wedge(other)
     }
@@ -336,13 +336,13 @@ impl std::ops::BitXorAssign<Line> for Motor {
 impl std::ops::BitXor<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        5        7        0
-    //    simd3        1        2        0
-    //    simd4        2        2        0
+    //           add/sub      mul      div      pow
+    //      f32        5        7        0        0
+    //    simd3        1        2        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd        8       11        0
-    //  no simd       16       21        0
+    // yes simd        8       11        0      N/A
+    //  no simd       16       21        0        0
     fn bitxor(self, other: Motor) -> Self::Output {
         self.wedge(other)
     }
@@ -355,13 +355,13 @@ impl std::ops::BitXorAssign<Motor> for Motor {
 impl std::ops::BitXor<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       11        0
-    //    simd3        2        6        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        8       11        0        0
+    //    simd3        2        6        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd       14       20        0
-    //  no simd       30       41        0
+    // yes simd       14       20        0      N/A
+    //  no simd       30       41        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -369,12 +369,12 @@ impl std::ops::BitXor<MultiVector> for Motor {
 impl std::ops::BitXor<Origin> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn bitxor(self, other: Origin) -> Self::Output {
         self.wedge(other)
     }
@@ -382,9 +382,9 @@ impl std::ops::BitXor<Origin> for Motor {
 impl std::ops::BitXor<Plane> for Motor {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn bitxor(self, other: Plane) -> Self::Output {
         self.wedge(other)
     }
@@ -392,13 +392,13 @@ impl std::ops::BitXor<Plane> for Motor {
 impl std::ops::BitXor<Point> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        2        0
-    //    simd3        0        2        0
-    //    simd4        3        2        0
+    //           add/sub      mul      div      pow
+    //      f32        1        2        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        3        2        0      N/A
     // Totals...
-    // yes simd        4        6        0
-    //  no simd       13       16        0
+    // yes simd        4        6        0      N/A
+    //  no simd       13       16        0        0
     fn bitxor(self, other: Point) -> Self::Output {
         self.wedge(other)
     }
@@ -406,9 +406,9 @@ impl std::ops::BitXor<Point> for Motor {
 impl std::ops::BitXor<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn bitxor(self, other: Scalar) -> Self::Output {
         self.wedge(other)
     }
@@ -468,9 +468,9 @@ impl From<Scalar> for Motor {
 impl std::ops::Mul<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn mul(self, other: AntiScalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -483,9 +483,9 @@ impl std::ops::MulAssign<AntiScalar> for Motor {
 impl std::ops::Mul<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        3        0
-    // no simd        4       12        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        3        0      N/A
+    // no simd        4       12        0        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -498,13 +498,13 @@ impl std::ops::MulAssign<DualNum> for Motor {
 impl std::ops::Mul<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        5        0
-    //    simd3        0        5        0
-    //    simd4       11        7        0
+    //           add/sub      mul      div      pow
+    //      f32        4        5        0        0
+    //    simd3        0        5        0      N/A
+    //    simd4       11        7        0      N/A
     // Totals...
-    // yes simd       15       17        0
-    //  no simd       48       48        0
+    // yes simd       15       17        0      N/A
+    //  no simd       48       48        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -512,12 +512,12 @@ impl std::ops::Mul<Flector> for Motor {
 impl std::ops::Mul<Horizon> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        1        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       15        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       15        0        0
     fn mul(self, other: Horizon) -> Self::Output {
         self.geometric_product(other)
     }
@@ -525,13 +525,13 @@ impl std::ops::Mul<Horizon> for Motor {
 impl std::ops::Mul<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4        9        3        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4        9        3        0      N/A
     // Totals...
-    // yes simd       13       15        0
-    //  no simd       40       36        0
+    // yes simd       13       15        0      N/A
+    //  no simd       40       36        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -544,13 +544,13 @@ impl std::ops::MulAssign<Line> for Motor {
 impl std::ops::Mul<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        6        0
-    //    simd3        0        6        0
-    //    simd4       12        6        0
+    //           add/sub      mul      div      pow
+    //      f32        4        6        0        0
+    //    simd3        0        6        0      N/A
+    //    simd4       12        6        0      N/A
     // Totals...
-    // yes simd       16       18        0
-    //  no simd       52       48        0
+    // yes simd       16       18        0      N/A
+    //  no simd       52       48        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -563,14 +563,14 @@ impl std::ops::MulAssign<Motor> for Motor {
 impl std::ops::Mul<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        0
-    //    simd2        4        4        0
-    //    simd3       10       16        0
-    //    simd4       11        8        0
+    //           add/sub      mul      div      pow
+    //      f32        6        8        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       16        0      N/A
+    //    simd4       11        8        0      N/A
     // Totals...
-    // yes simd       31       36        0
-    //  no simd       88       96        0
+    // yes simd       31       36        0      N/A
+    //  no simd       88       96        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -578,12 +578,12 @@ impl std::ops::Mul<MultiVector> for Motor {
 impl std::ops::Mul<Origin> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn mul(self, other: Origin) -> Self::Output {
         self.geometric_product(other)
     }
@@ -591,13 +591,13 @@ impl std::ops::Mul<Origin> for Motor {
 impl std::ops::Mul<Plane> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        7        0
-    //    simd2        0        1        0
-    //    simd3        4        4        0
+    //           add/sub      mul      div      pow
+    //      f32        3        7        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        4        4        0      N/A
     // Totals...
-    // yes simd        7       12        0
-    //  no simd       15       21        0
+    // yes simd        7       12        0      N/A
+    //  no simd       15       21        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -605,13 +605,13 @@ impl std::ops::Mul<Plane> for Motor {
 impl std::ops::Mul<Point> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        4        0
-    //    simd3        0        3        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        1        4        0        0
+    //    simd3        0        3        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd        8       11        0
-    //  no simd       29       29        0
+    // yes simd        8       11        0      N/A
+    //  no simd       29       29        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }
@@ -619,9 +619,9 @@ impl std::ops::Mul<Point> for Motor {
 impl std::ops::Mul<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn mul(self, other: Scalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -634,9 +634,9 @@ impl std::ops::MulAssign<Scalar> for Motor {
 impl std::ops::Neg for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn neg(self) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -649,9 +649,9 @@ impl std::ops::Neg for Motor {
 impl std::ops::Not for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn not(self) -> Self::Output {
         self.right_dual()
     }
@@ -659,8 +659,8 @@ impl std::ops::Not for Motor {
 impl std::ops::Sub<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -685,8 +685,8 @@ impl std::ops::SubAssign<AntiScalar> for Motor {
 impl std::ops::Sub<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        0        0        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -711,9 +711,9 @@ impl std::ops::SubAssign<DualNum> for Motor {
 impl std::ops::Sub<Flector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -733,8 +733,8 @@ impl std::ops::Sub<Flector> for Motor {
 impl std::ops::Sub<Horizon> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -754,9 +754,9 @@ impl std::ops::Sub<Horizon> for Motor {
 impl std::ops::Sub<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn sub(self, other: Line) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -779,9 +779,9 @@ impl std::ops::SubAssign<Line> for Motor {
 impl std::ops::Sub<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn sub(self, other: Motor) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -804,13 +804,13 @@ impl std::ops::SubAssign<Motor> for Motor {
 impl std::ops::Sub<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        1        0        0
-    //    simd3        2        0        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        8        8        0
+    // yes simd        3        2        0      N/A
+    //  no simd        8        8        0        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -830,8 +830,8 @@ impl std::ops::Sub<MultiVector> for Motor {
 impl std::ops::Sub<Origin> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -851,9 +851,9 @@ impl std::ops::Sub<Origin> for Motor {
 impl std::ops::Sub<Plane> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -873,9 +873,9 @@ impl std::ops::Sub<Plane> for Motor {
 impl std::ops::Sub<Point> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: Point) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -895,8 +895,8 @@ impl std::ops::Sub<Point> for Motor {
 impl std::ops::Sub<Scalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(

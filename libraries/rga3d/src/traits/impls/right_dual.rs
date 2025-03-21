@@ -7,17 +7,17 @@
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       0       0
-//  Maximum:         0       2       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       2       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         0       4       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       1       0       0
+//  Average:         0       1       0       0
+//  Maximum:         0       4       0       0
 impl std::ops::Div<RightDualPrefixOrPostfix> for DualNum {
     type Output = AntiScalar;
     fn div(self, _rhs: RightDualPrefixOrPostfix) -> Self::Output {
@@ -45,8 +45,8 @@ impl std::ops::DivAssign<RightDualPrefixOrPostfix> for Flector {
 impl RightDual for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn right_dual(self) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -66,8 +66,8 @@ impl std::ops::Div<RightDualPrefixOrPostfix> for Horizon {
 impl RightDual for Horizon {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn right_dual(self) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e321] * -1.0)
@@ -87,9 +87,9 @@ impl std::ops::DivAssign<RightDualPrefixOrPostfix> for Line {
 impl RightDual for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn right_dual(self) -> Self::Output {
         Line::from_groups(/* e41, e42, e43 */ self.group1() * Simd32x3::from(-1.0), /* e23, e31, e12 */ Simd32x3::from(0.0))
     }
@@ -108,9 +108,9 @@ impl std::ops::DivAssign<RightDualPrefixOrPostfix> for Motor {
 impl RightDual for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn right_dual(self) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -134,12 +134,12 @@ impl std::ops::DivAssign<RightDualPrefixOrPostfix> for MultiVector {
 impl RightDual for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn right_dual(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -165,8 +165,8 @@ impl std::ops::Div<RightDualPrefixOrPostfix> for Plane {
 impl RightDual for Plane {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn right_dual(self) -> Self::Output {
         use crate::elements::*;
         Origin::from_groups(/* e4 */ self[e321] * -1.0)

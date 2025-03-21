@@ -7,17 +7,17 @@
 //
 // Total Implementations: 11
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       0       0
-//  Maximum:         0       3       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       3       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       3       0
-//  Maximum:         0      10       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       1       0       0
+//  Average:         0       3       0       0
+//  Maximum:         0      10       0       0
 impl std::ops::Div<LeftComplementPrefixOrPostfix> for AntiScalar {
     type Output = Scalar;
     fn div(self, _rhs: LeftComplementPrefixOrPostfix) -> Self::Output {
@@ -62,9 +62,9 @@ impl std::ops::DivAssign<LeftComplementPrefixOrPostfix> for Flector {
 impl LeftComplement for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn left_complement(self) -> Self::Output {
         Flector::from_groups(/* e1, e2, e3, e4 */ self.group1(), /* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }
@@ -96,9 +96,9 @@ impl std::ops::DivAssign<LeftComplementPrefixOrPostfix> for Line {
 impl LeftComplement for Line {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn left_complement(self) -> Self::Output {
         Line::from_groups(
             // e41, e42, e43
@@ -122,9 +122,9 @@ impl std::ops::DivAssign<LeftComplementPrefixOrPostfix> for Motor {
 impl LeftComplement for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn left_complement(self) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -148,12 +148,12 @@ impl std::ops::DivAssign<LeftComplementPrefixOrPostfix> for MultiVector {
 impl LeftComplement for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd3        0        2        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        3        0
-    //  no simd        0       10        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       10        0        0
     fn left_complement(self) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -178,8 +178,8 @@ impl std::ops::Div<LeftComplementPrefixOrPostfix> for Origin {
 impl LeftComplement for Origin {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn left_complement(self) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e4] * -1.0)
@@ -206,9 +206,9 @@ impl std::ops::Div<LeftComplementPrefixOrPostfix> for Point {
 impl LeftComplement for Point {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn left_complement(self) -> Self::Output {
         Plane::from_groups(/* e423, e431, e412, e321 */ self.group0() * Simd32x4::from(-1.0))
     }

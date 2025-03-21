@@ -7,17 +7,17 @@
 //
 // Total Implementations: 5
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       2       0
-//   Median:         3       8       0
-//  Average:         4      11       0
-//  Maximum:        16      35       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       2       0     N/A
+//   Median:         3       8       0     N/A
+//  Average:         4      11       0     N/A
+//  Maximum:        16      35       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       2       0
-//   Median:         3       8       0
-//  Average:         7      16       0
-//  Maximum:        28      57       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       2       0       0
+//   Median:         3       8       0       0
+//  Average:         7      16       0       0
+//  Maximum:        28      57       0       0
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DualNum {
     type Output = AntiScalar;
     fn div(self, _rhs: ConstraintViolationPrefixOrPostfix) -> Self::Output {
@@ -27,8 +27,8 @@ impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DualNum {
 impl ConstraintViolation for DualNum {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[scalar] * self[e1234] * 2.0)
@@ -43,8 +43,8 @@ impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Flector {
 impl ConstraintViolation for Flector {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        8        0
+    //      add/sub      mul      div      pow
+    // f32        3        8        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(
@@ -62,8 +62,8 @@ impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Line {
 impl ConstraintViolation for Line {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        6        0
+    //      add/sub      mul      div      pow
+    // f32        2        6        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ 2.0 * (self[e41] * self[e23]) + 2.0 * (self[e42] * self[e31]) + 2.0 * (self[e43] * self[e12]))
@@ -78,8 +78,8 @@ impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for Motor {
 impl ConstraintViolation for Motor {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        8        0
+    //      add/sub      mul      div      pow
+    // f32        3        8        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         AntiScalar::from_groups(
@@ -102,13 +102,13 @@ impl std::ops::DivAssign<ConstraintViolationPrefixOrPostfix> for MultiVector {
 impl ConstraintViolation for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       12       27        0
-    //    simd3        0        2        0
-    //    simd4        4        6        0
+    //           add/sub      mul      div      pow
+    //      f32       12       27        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        4        6        0      N/A
     // Totals...
-    // yes simd       16       35        0
-    //  no simd       28       57        0
+    // yes simd       16       35        0      N/A
+    //  no simd       28       57        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(

@@ -10,17 +10,17 @@ use crate::traits::Wedge;
 //
 // Total Implementations: 45
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         1       8       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       1       0     N/A
+//  Maximum:         1       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       2       0
-//  Maximum:         1      19       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       1       0       0
+//  Average:         0       2       0       0
+//  Maximum:         1      19       0       0
 impl std::ops::Add<AntiScalar> for Horizon {
     type Output = MultiVector;
     fn add(self, other: AntiScalar) -> Self::Output {
@@ -60,8 +60,8 @@ impl std::ops::Add<DualNum> for Horizon {
 impl std::ops::Add<Flector> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -75,8 +75,8 @@ impl std::ops::Add<Flector> for Horizon {
 impl std::ops::Add<Horizon> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ other[e321] + self[e321])
@@ -127,8 +127,8 @@ impl std::ops::Add<Motor> for Horizon {
 impl std::ops::Add<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -160,8 +160,8 @@ impl std::ops::Add<Origin> for Horizon {
 impl std::ops::Add<Plane> for Horizon {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ other.group0().xyz().with_w(self[e321] + other[e321]))
@@ -195,8 +195,8 @@ impl std::ops::Add<Scalar> for Horizon {
 impl std::ops::BitXor<DualNum> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: DualNum) -> Self::Output {
         self.wedge(other)
     }
@@ -209,8 +209,8 @@ impl std::ops::BitXorAssign<DualNum> for Horizon {
 impl std::ops::BitXor<Flector> for Horizon {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn bitxor(self, other: Flector) -> Self::Output {
         self.wedge(other)
     }
@@ -218,8 +218,8 @@ impl std::ops::BitXor<Flector> for Horizon {
 impl std::ops::BitXor<Motor> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: Motor) -> Self::Output {
         self.wedge(other)
     }
@@ -232,8 +232,8 @@ impl std::ops::BitXorAssign<Motor> for Horizon {
 impl std::ops::BitXor<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        3        0
+    //      add/sub      mul      div      pow
+    // f32        0        3        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -241,8 +241,8 @@ impl std::ops::BitXor<MultiVector> for Horizon {
 impl std::ops::BitXor<Origin> for Horizon {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn bitxor(self, other: Origin) -> Self::Output {
         self.wedge(other)
     }
@@ -250,8 +250,8 @@ impl std::ops::BitXor<Origin> for Horizon {
 impl std::ops::BitXor<Point> for Horizon {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn bitxor(self, other: Point) -> Self::Output {
         self.wedge(other)
     }
@@ -259,8 +259,8 @@ impl std::ops::BitXor<Point> for Horizon {
 impl std::ops::BitXor<Scalar> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: Scalar) -> Self::Output {
         self.wedge(other)
     }
@@ -273,8 +273,8 @@ impl std::ops::BitXorAssign<Scalar> for Horizon {
 impl std::ops::Mul<AntiScalar> for Horizon {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn mul(self, other: AntiScalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -282,8 +282,8 @@ impl std::ops::Mul<AntiScalar> for Horizon {
 impl std::ops::Mul<DualNum> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -291,12 +291,12 @@ impl std::ops::Mul<DualNum> for Horizon {
 impl std::ops::Mul<Flector> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0       10        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       10        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -304,8 +304,8 @@ impl std::ops::Mul<Flector> for Horizon {
 impl std::ops::Mul<Horizon> for Horizon {
     type Output = Scalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn mul(self, other: Horizon) -> Self::Output {
         self.geometric_product(other)
     }
@@ -313,9 +313,9 @@ impl std::ops::Mul<Horizon> for Horizon {
 impl std::ops::Mul<Line> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -323,9 +323,9 @@ impl std::ops::Mul<Line> for Horizon {
 impl std::ops::Mul<Motor> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        2        0
-    // no simd        0        8        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        2        0      N/A
+    // no simd        0        8        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -333,14 +333,14 @@ impl std::ops::Mul<Motor> for Horizon {
 impl std::ops::Mul<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        8        0
-    //  no simd        0       19        0
+    // yes simd        0        8        0      N/A
+    //  no simd        0       19        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -348,8 +348,8 @@ impl std::ops::Mul<MultiVector> for Horizon {
 impl std::ops::Mul<Origin> for Horizon {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn mul(self, other: Origin) -> Self::Output {
         self.geometric_product(other)
     }
@@ -357,12 +357,12 @@ impl std::ops::Mul<Origin> for Horizon {
 impl std::ops::Mul<Plane> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -370,12 +370,12 @@ impl std::ops::Mul<Plane> for Horizon {
 impl std::ops::Mul<Point> for Horizon {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        3        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        3        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        6        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        6        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }
@@ -383,8 +383,8 @@ impl std::ops::Mul<Point> for Horizon {
 impl std::ops::Mul<Scalar> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn mul(self, other: Scalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -397,8 +397,8 @@ impl std::ops::MulAssign<Scalar> for Horizon {
 impl std::ops::Neg for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn neg(self) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e321] * -1.0)
@@ -407,8 +407,8 @@ impl std::ops::Neg for Horizon {
 impl std::ops::Not for Horizon {
     type Output = Origin;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn not(self) -> Self::Output {
         self.right_dual()
     }
@@ -416,8 +416,8 @@ impl std::ops::Not for Horizon {
 impl std::ops::Sub<AntiScalar> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -437,9 +437,9 @@ impl std::ops::Sub<AntiScalar> for Horizon {
 impl std::ops::Sub<DualNum> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        0        1        0
-    // no simd        0        2        0
+    //          add/sub      mul      div      pow
+    //   simd2        0        1        0      N/A
+    // no simd        0        2        0        0
     fn sub(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -459,13 +459,13 @@ impl std::ops::Sub<DualNum> for Horizon {
 impl std::ops::Sub<Flector> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        0        1        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        1        2        0
-    //  no simd        1        7        0
+    // yes simd        1        2        0      N/A
+    //  no simd        1        7        0        0
     fn sub(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -479,8 +479,8 @@ impl std::ops::Sub<Flector> for Horizon {
 impl std::ops::Sub<Horizon> for Horizon {
     type Output = Horizon;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         Horizon::from_groups(/* e321 */ self[e321] - other[e321])
@@ -495,9 +495,9 @@ impl std::ops::SubAssign<Horizon> for Horizon {
 impl std::ops::Sub<Line> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn sub(self, other: Line) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -517,12 +517,12 @@ impl std::ops::Sub<Line> for Horizon {
 impl std::ops::Sub<Motor> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -542,14 +542,14 @@ impl std::ops::Sub<Motor> for Horizon {
 impl std::ops::Sub<MultiVector> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd2        0        1        0
-    //    simd3        0        3        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        0        3        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        1        5        0
-    //  no simd        1       15        0
+    // yes simd        1        5        0      N/A
+    //  no simd        1       15        0        0
     fn sub(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -569,8 +569,8 @@ impl std::ops::Sub<MultiVector> for Horizon {
 impl std::ops::Sub<Origin> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -584,12 +584,12 @@ impl std::ops::Sub<Origin> for Horizon {
 impl std::ops::Sub<Plane> for Horizon {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        0        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        1        0        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        1        1        0
-    //  no simd        1        3        0
+    // yes simd        1        1        0      N/A
+    //  no simd        1        3        0        0
     fn sub(self, other: Plane) -> Self::Output {
         use crate::elements::*;
         Plane::from_groups(/* e423, e431, e412, e321 */ (other.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e321] - other[e321]))
@@ -598,9 +598,9 @@ impl std::ops::Sub<Plane> for Horizon {
 impl std::ops::Sub<Point> for Horizon {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        0        1        0
-    // no simd        0        4        0
+    //          add/sub      mul      div      pow
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn sub(self, other: Point) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -614,8 +614,8 @@ impl std::ops::Sub<Point> for Horizon {
 impl std::ops::Sub<Scalar> for Horizon {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(

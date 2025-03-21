@@ -7,17 +7,17 @@
 //
 // Total Implementations: 4
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       1       0
-//  Maximum:         2       3       1
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       3       0     N/A
+//  Maximum:         2      14       1     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       3       0
-//  Average:         2       3       0
-//  Maximum:         8      12       1
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       3       0       0
+//  Average:         2       6       0       0
+//  Maximum:         8      23       1       0
 impl std::ops::Div<AntiFixPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: AntiFixPrefixOrPostfix) -> Self::Output {
@@ -63,9 +63,12 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Plane {
 }
 impl AntiFix for Plane {
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        3        0
-    // no simd        8       12        0
+    //           add/sub      mul      div      pow
+    //      f32        0       11        0        0
+    //    simd4        2        3        0      N/A
+    // Totals...
+    // yes simd        2       14        0      N/A
+    //  no simd        8       23        0        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
@@ -89,12 +92,12 @@ impl std::ops::DivAssign<AntiFixPrefixOrPostfix> for Point {
 }
 impl AntiFix for Point {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        0        1
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        0        1        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        1        1
-    //  no simd        0        3        1
+    // yes simd        0        1        1      N/A
+    //  no simd        0        3        1        0
     fn anti_fix(self) -> Self {
         use crate::elements::*;
         Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))

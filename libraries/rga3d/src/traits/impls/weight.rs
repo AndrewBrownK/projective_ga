@@ -7,17 +7,17 @@
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       0       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       0       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       0       0
-//  Average:         0       0       0
-//  Maximum:         0       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       0       0       0
+//  Average:         0       0       0       0
+//  Maximum:         0       0       0       0
 impl std::ops::Div<WeightPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: WeightPrefixOrPostfix) -> Self::Output {

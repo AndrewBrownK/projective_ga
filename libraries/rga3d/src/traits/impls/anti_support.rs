@@ -7,17 +7,17 @@
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       1       0
-//  Average:         0       0       0
-//  Maximum:         0       2       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         0       1       0     N/A
+//  Average:         0       0       0     N/A
+//  Maximum:         0       2       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         0       3       0
-//  Average:         0       2       0
-//  Maximum:         0       6       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         0       3       0       0
+//  Average:         0       2       0       0
+//  Maximum:         0       6       0       0
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for DualNum {
     type Output = Horizon;
     fn div(self, _rhs: AntiSupportPrefixOrPostfix) -> Self::Output {
@@ -40,9 +40,9 @@ impl std::ops::Div<AntiSupportPrefixOrPostfix> for Flector {
 impl AntiSupport for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
         Motor::from_groups(
@@ -75,9 +75,9 @@ impl std::ops::Div<AntiSupportPrefixOrPostfix> for Line {
 impl AntiSupport for Line {
     type Output = Point;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn anti_support(self) -> Self::Output {
         Point::from_groups(/* e1, e2, e3, e4 */ (self.group1() * Simd32x3::from(-1.0)).with_w(0.0))
     }
@@ -91,9 +91,9 @@ impl std::ops::Div<AntiSupportPrefixOrPostfix> for Motor {
 impl AntiSupport for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
         Flector::from_groups(
@@ -118,9 +118,9 @@ impl std::ops::DivAssign<AntiSupportPrefixOrPostfix> for MultiVector {
 impl AntiSupport for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        2        0
-    // no simd        0        6        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        0      N/A
+    // no simd        0        6        0        0
     fn anti_support(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -159,9 +159,9 @@ impl std::ops::Div<AntiSupportPrefixOrPostfix> for Point {
 impl AntiSupport for Point {
     type Output = Line;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        0        1        0
-    // no simd        0        3        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        0      N/A
+    // no simd        0        3        0        0
     fn anti_support(self) -> Self::Output {
         Line::from_groups(/* e41, e42, e43 */ Simd32x3::from(0.0), /* e23, e31, e12 */ self.group0().xyz() * Simd32x3::from(-1.0))
     }

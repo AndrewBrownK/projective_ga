@@ -7,17 +7,17 @@
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         7       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0     N/A
+//   Median:         2       3       0     N/A
+//  Average:         1       2       0     N/A
+//  Maximum:         7       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         7       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       1       0       0
+//   Median:         2       3       0       0
+//  Average:         1       2       0       0
+//  Maximum:         7       8       0       0
 impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: WeightNormSquaredPrefixOrPostfix) -> Self::Output {
@@ -30,6 +30,9 @@ impl std::ops::DivAssign<WeightNormSquaredPrefixOrPostfix> for AntiScalar {
     }
 }
 impl WeightNormSquared for AntiScalar {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234])
@@ -42,6 +45,9 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for DualNum {
     }
 }
 impl WeightNormSquared for DualNum {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e1234] * self[e1234])
@@ -55,8 +61,8 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Flector {
 }
 impl WeightNormSquared for Flector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
@@ -70,8 +76,8 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Line {
 }
 impl WeightNormSquared for Line {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
@@ -85,8 +91,8 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Motor {
 }
 impl WeightNormSquared for Motor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
@@ -100,8 +106,8 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for MultiVector {
 }
 impl WeightNormSquared for MultiVector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        7        0        0
+    //      add/sub      mul      div      pow
+    // f32        7        8        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(
@@ -124,6 +130,9 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Origin {
     }
 }
 impl WeightNormSquared for Origin {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4])
@@ -137,8 +146,8 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Plane {
 }
 impl WeightNormSquared for Plane {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
@@ -151,6 +160,9 @@ impl std::ops::Div<WeightNormSquaredPrefixOrPostfix> for Point {
     }
 }
 impl WeightNormSquared for Point {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4])

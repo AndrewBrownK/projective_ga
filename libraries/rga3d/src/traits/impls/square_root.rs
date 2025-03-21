@@ -16,6 +16,9 @@ impl std::ops::DivAssign<SquareRootPrefixOrPostfix> for Scalar {
     }
 }
 impl SquareRoot for Scalar {
+    // Operative Statistics for this implementation:
+    //      add/sub      mul      div      pow
+    // f32        0        0        0        1
     fn square_root(self) -> Scalar {
         use crate::elements::*;
         Scalar::from_groups(/* scalar */ f32::powf(self[scalar], 0.5))

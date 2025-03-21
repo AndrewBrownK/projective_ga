@@ -7,17 +7,17 @@
 //
 // Total Implementations: 9
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         7       0       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         2       3       0     N/A
+//  Average:         1       2       0     N/A
+//  Maximum:         7       8       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:         1       0       0
-//  Maximum:         7       0       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       3       0       0
+//  Average:         1       2       0       0
+//  Maximum:         7       8       0       0
 impl std::ops::Div<WeightNormPrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: WeightNormPrefixOrPostfix) -> Self::Output {
@@ -54,8 +54,8 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Flector {
 }
 impl WeightNorm for Flector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e4] * self[e4] + self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])
@@ -69,8 +69,8 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Line {
 }
 impl WeightNorm for Line {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43])
@@ -84,8 +84,8 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Motor {
 }
 impl WeightNorm for Motor {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        3        0        0
+    //      add/sub      mul      div      pow
+    // f32        3        4        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e41] * self[e41] + self[e42] * self[e42] + self[e43] * self[e43] + self[e1234] * self[e1234])
@@ -99,8 +99,8 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for MultiVector {
 }
 impl WeightNorm for MultiVector {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        7        0        0
+    //      add/sub      mul      div      pow
+    // f32        7        8        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(
@@ -136,8 +136,8 @@ impl std::ops::Div<WeightNormPrefixOrPostfix> for Plane {
 }
 impl WeightNorm for Plane {
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        2        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        3        0        0
     fn weight_norm(self) -> AntiScalar {
         use crate::elements::*;
         AntiScalar::from_groups(/* e1234 */ self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412])

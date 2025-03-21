@@ -10,23 +10,23 @@ use crate::traits::Wedge;
 //
 // Total Implementations: 56
 //
-// Yes SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         1       0       0
-//  Average:         5       7       0
-//  Maximum:        73      84       0
+// Yes SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0     N/A
+//   Median:         1       0       0     N/A
+//  Average:         5       7       0     N/A
+//  Maximum:        73      84       0     N/A
 //
-//  No SIMD:   add/sub     mul     div
-//  Minimum:         0       0       0
-//   Median:         2       0       0
-//  Average:        15      16       0
-//  Maximum:       198     192       0
+//  No SIMD:   add/sub     mul     div     pow
+//  Minimum:         0       0       0       0
+//   Median:         2       0       0       0
+//  Average:        15      16       0       0
+//  Maximum:       198     192       0       0
 impl std::ops::Add<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        1        0        0
-    // no simd        2        0        0
+    //          add/sub      mul      div      pow
+    //   simd2        1        0        0      N/A
+    // no simd        2        0        0        0
     fn add(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -63,9 +63,9 @@ impl std::ops::AddAssign<AntiScalar> for MultiVector {
 impl std::ops::Add<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        1        0        0
-    // no simd        2        0        0
+    //          add/sub      mul      div      pow
+    //   simd2        1        0        0      N/A
+    // no simd        2        0        0        0
     fn add(self, other: DualNum) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -100,9 +100,9 @@ impl std::ops::AddAssign<DualNum> for MultiVector {
 impl std::ops::Add<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn add(self, other: Flector) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -137,8 +137,8 @@ impl std::ops::AddAssign<Flector> for MultiVector {
 impl std::ops::Add<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -175,9 +175,9 @@ impl std::ops::AddAssign<Horizon> for MultiVector {
 impl std::ops::Add<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        2        0        0
-    // no simd        6        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        2        0        0      N/A
+    // no simd        6        0        0        0
     fn add(self, other: Line) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -212,12 +212,12 @@ impl std::ops::AddAssign<Line> for MultiVector {
 impl std::ops::Add<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        1        0        0
-    //    simd3        2        0        0
+    //           add/sub      mul      div      pow
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
     // Totals...
-    // yes simd        3        0        0
-    //  no simd        8        0        0
+    // yes simd        3        0        0      N/A
+    //  no simd        8        0        0        0
     fn add(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -254,13 +254,13 @@ impl std::ops::AddAssign<Motor> for MultiVector {
 impl std::ops::Add<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        1        0        0
-    //    simd3        2        0        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        5        0        0
-    //  no simd       16        0        0
+    // yes simd        5        0        0      N/A
+    //  no simd       16        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -295,8 +295,8 @@ impl std::ops::AddAssign<MultiVector> for MultiVector {
 impl std::ops::Add<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn add(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -333,9 +333,9 @@ impl std::ops::AddAssign<Origin> for MultiVector {
 impl std::ops::Add<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn add(self, other: Plane) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -370,9 +370,9 @@ impl std::ops::AddAssign<Plane> for MultiVector {
 impl std::ops::Add<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn add(self, other: Point) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -407,9 +407,9 @@ impl std::ops::AddAssign<Point> for MultiVector {
 impl std::ops::Add<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        1        0        0
-    // no simd        2        0        0
+    //          add/sub      mul      div      pow
+    //   simd2        1        0        0      N/A
+    // no simd        2        0        0        0
     fn add(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -446,8 +446,8 @@ impl std::ops::AddAssign<Scalar> for MultiVector {
 impl std::ops::BitXor<AntiScalar> for MultiVector {
     type Output = AntiScalar;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        1        0
+    //      add/sub      mul      div      pow
+    // f32        0        1        0        0
     fn bitxor(self, other: AntiScalar) -> Self::Output {
         self.wedge(other)
     }
@@ -455,13 +455,13 @@ impl std::ops::BitXor<AntiScalar> for MultiVector {
 impl std::ops::BitXor<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        1        3        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        1        3        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        1        7        0
-    //  no simd        1       17        0
+    // yes simd        1        7        0      N/A
+    //  no simd        1       17        0        0
     fn bitxor(self, other: DualNum) -> Self::Output {
         self.wedge(other)
     }
@@ -474,14 +474,14 @@ impl std::ops::BitXorAssign<DualNum> for MultiVector {
 impl std::ops::BitXor<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       12        0
-    //    simd2        0        1        0
-    //    simd3        3        5        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        8       12        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        3        5        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd       15       21        0
-    //  no simd       33       41        0
+    // yes simd       15       21        0      N/A
+    //  no simd       33       41        0        0
     fn bitxor(self, other: Flector) -> Self::Output {
         self.wedge(other)
     }
@@ -494,8 +494,8 @@ impl std::ops::BitXorAssign<Flector> for MultiVector {
 impl std::ops::BitXor<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        0        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        0        0
     fn bitxor(self, other: Horizon) -> Self::Output {
         self.wedge(other)
     }
@@ -508,13 +508,13 @@ impl std::ops::BitXorAssign<Horizon> for MultiVector {
 impl std::ops::BitXor<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6        8        0
-    //    simd3        0        4        0
-    //    simd4        3        1        0
+    //           add/sub      mul      div      pow
+    //      f32        6        8        0        0
+    //    simd3        0        4        0      N/A
+    //    simd4        3        1        0      N/A
     // Totals...
-    // yes simd        9       13        0
-    //  no simd       18       24        0
+    // yes simd        9       13        0      N/A
+    //  no simd       18       24        0        0
     fn bitxor(self, other: Line) -> Self::Output {
         self.wedge(other)
     }
@@ -527,13 +527,13 @@ impl std::ops::BitXorAssign<Line> for MultiVector {
 impl std::ops::BitXor<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       11        0
-    //    simd3        2        6        0
-    //    simd4        4        3        0
+    //           add/sub      mul      div      pow
+    //      f32        8       11        0        0
+    //    simd3        2        6        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd       14       20        0
-    //  no simd       30       41        0
+    // yes simd       14       20        0      N/A
+    //  no simd       30       41        0        0
     fn bitxor(self, other: Motor) -> Self::Output {
         self.wedge(other)
     }
@@ -546,14 +546,14 @@ impl std::ops::BitXorAssign<Motor> for MultiVector {
 impl std::ops::BitXor<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       19       23        0
-    //    simd2        0        2        0
-    //    simd3        7       10        0
-    //    simd4        9        6        0
+    //           add/sub      mul      div      pow
+    //      f32       19       23        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        7       10        0      N/A
+    //    simd4        9        6        0      N/A
     // Totals...
-    // yes simd       35       41        0
-    //  no simd       76       81        0
+    // yes simd       35       41        0      N/A
+    //  no simd       76       81        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -566,12 +566,12 @@ impl std::ops::BitXorAssign<MultiVector> for MultiVector {
 impl std::ops::BitXor<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn bitxor(self, other: Origin) -> Self::Output {
         self.wedge(other)
     }
@@ -584,12 +584,12 @@ impl std::ops::BitXorAssign<Origin> for MultiVector {
 impl std::ops::BitXor<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        3        4        0
-    //    simd4        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        3        4        0        0
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        3        5        0
-    //  no simd        3        8        0
+    // yes simd        3        5        0      N/A
+    //  no simd        3        8        0        0
     fn bitxor(self, other: Plane) -> Self::Output {
         self.wedge(other)
     }
@@ -602,14 +602,14 @@ impl std::ops::BitXorAssign<Plane> for MultiVector {
 impl std::ops::BitXor<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        4        8        0
-    //    simd2        0        1        0
-    //    simd3        3        5        0
-    //    simd4        3        2        0
+    //           add/sub      mul      div      pow
+    //      f32        4        8        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        3        5        0      N/A
+    //    simd4        3        2        0      N/A
     // Totals...
-    // yes simd       10       16        0
-    //  no simd       25       33        0
+    // yes simd       10       16        0      N/A
+    //  no simd       25       33        0        0
     fn bitxor(self, other: Point) -> Self::Output {
         self.wedge(other)
     }
@@ -622,13 +622,13 @@ impl std::ops::BitXorAssign<Point> for MultiVector {
 impl std::ops::BitXor<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn bitxor(self, other: Scalar) -> Self::Output {
         self.wedge(other)
     }
@@ -816,12 +816,12 @@ impl From<Scalar> for MultiVector {
 impl std::ops::Mul<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        4        0
-    //  no simd        0        8        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0        8        0        0
     fn mul(self, other: AntiScalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -834,12 +834,12 @@ impl std::ops::MulAssign<AntiScalar> for MultiVector {
 impl std::ops::Mul<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        2        6        0
-    //    simd3        2        6        0
+    //           add/sub      mul      div      pow
+    //      f32        2        6        0        0
+    //    simd3        2        6        0      N/A
     // Totals...
-    // yes simd        4       12        0
-    //  no simd        8       24        0
+    // yes simd        4       12        0      N/A
+    //  no simd        8       24        0        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -852,14 +852,14 @@ impl std::ops::MulAssign<DualNum> for MultiVector {
 impl std::ops::Mul<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        8       16        0
-    //    simd2        4        8        0
-    //    simd3       12       15        0
-    //    simd4       11        5        0
+    //           add/sub      mul      div      pow
+    //      f32        8       16        0        0
+    //    simd2        4        8        0      N/A
+    //    simd3       12       15        0      N/A
+    //    simd4       11        5        0      N/A
     // Totals...
-    // yes simd       35       44        0
-    //  no simd       96       97        0
+    // yes simd       35       44        0      N/A
+    //  no simd       96       97        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -872,14 +872,14 @@ impl std::ops::MulAssign<Flector> for MultiVector {
 impl std::ops::Mul<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        0        2        0
-    //    simd3        0        3        0
-    //    simd4        0        3        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        0        2        0      N/A
+    //    simd3        0        3        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        9        0
-    //  no simd        0       26        0
+    // yes simd        0        9        0      N/A
+    //  no simd        0       26        0        0
     fn mul(self, other: Horizon) -> Self::Output {
         self.geometric_product(other)
     }
@@ -892,14 +892,14 @@ impl std::ops::MulAssign<Horizon> for MultiVector {
 impl std::ops::Mul<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       11        0
-    //    simd2        3        3        0
-    //    simd3        7       16        0
-    //    simd4        9        2        0
+    //           add/sub      mul      div      pow
+    //      f32        6       11        0        0
+    //    simd2        3        3        0      N/A
+    //    simd3        7       16        0      N/A
+    //    simd4        9        2        0      N/A
     // Totals...
-    // yes simd       25       32        0
-    //  no simd       69       73        0
+    // yes simd       25       32        0      N/A
+    //  no simd       69       73        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -912,14 +912,14 @@ impl std::ops::MulAssign<Line> for MultiVector {
 impl std::ops::Mul<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       12        0
-    //    simd2        4        4        0
-    //    simd3       10       19        0
-    //    simd4       12        5        0
+    //           add/sub      mul      div      pow
+    //      f32        7       12        0        0
+    //    simd2        4        4        0      N/A
+    //    simd3       10       19        0      N/A
+    //    simd4       12        5        0      N/A
     // Totals...
-    // yes simd       33       40        0
-    //  no simd       93       97        0
+    // yes simd       33       40        0      N/A
+    //  no simd       93       97        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -932,14 +932,14 @@ impl std::ops::MulAssign<Motor> for MultiVector {
 impl std::ops::Mul<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32       18       28        0
-    //    simd2        8       14        0
-    //    simd3       24       32        0
-    //    simd4       23       10        0
+    //           add/sub      mul      div      pow
+    //      f32       18       28        0        0
+    //    simd2        8       14        0      N/A
+    //    simd3       24       32        0      N/A
+    //    simd4       23       10        0      N/A
     // Totals...
-    // yes simd       73       84        0
-    //  no simd      198      192        0
+    // yes simd       73       84        0      N/A
+    //  no simd      198      192        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -952,12 +952,12 @@ impl std::ops::MulAssign<MultiVector> for MultiVector {
 impl std::ops::Mul<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        4        0
-    //    simd3        0        2        0
+    //           add/sub      mul      div      pow
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
     // Totals...
-    // yes simd        0        6        0
-    //  no simd        0       10        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       10        0        0
     fn mul(self, other: Origin) -> Self::Output {
         self.geometric_product(other)
     }
@@ -970,13 +970,13 @@ impl std::ops::MulAssign<Origin> for MultiVector {
 impl std::ops::Mul<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        6       14        0
-    //    simd2        0        1        0
-    //    simd3        7        9        0
+    //           add/sub      mul      div      pow
+    //      f32        6       14        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        7        9        0      N/A
     // Totals...
-    // yes simd       13       24        0
-    //  no simd       27       43        0
+    // yes simd       13       24        0      N/A
+    //  no simd       27       43        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -989,14 +989,14 @@ impl std::ops::MulAssign<Plane> for MultiVector {
 impl std::ops::Mul<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        7       15        0
-    //    simd2        0        3        0
-    //    simd3        7        7        0
-    //    simd4        7        4        0
+    //           add/sub      mul      div      pow
+    //      f32        7       15        0        0
+    //    simd2        0        3        0      N/A
+    //    simd3        7        7        0      N/A
+    //    simd4        7        4        0      N/A
     // Totals...
-    // yes simd       21       29        0
-    //  no simd       56       58        0
+    // yes simd       21       29        0      N/A
+    //  no simd       56       58        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1009,13 +1009,13 @@ impl std::ops::MulAssign<Point> for MultiVector {
 impl std::ops::Mul<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn mul(self, other: Scalar) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1028,13 +1028,13 @@ impl std::ops::MulAssign<Scalar> for MultiVector {
 impl std::ops::Neg for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        0        1        0
-    //    simd3        0        2        0
-    //    simd4        0        2        0
+    //           add/sub      mul      div      pow
+    //    simd2        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        5        0
-    //  no simd        0       16        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn neg(self) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1053,12 +1053,12 @@ impl std::ops::Neg for MultiVector {
 impl std::ops::Not for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd3        0        1        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd3        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0
-    //  no simd        0        4        0
+    // yes simd        0        2        0      N/A
+    //  no simd        0        4        0        0
     fn not(self) -> Self::Output {
         self.right_dual()
     }
@@ -1066,12 +1066,12 @@ impl std::ops::Not for MultiVector {
 impl std::ops::Sub<AntiScalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        1        0        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        1        0        0      N/A
     // Totals...
-    // yes simd        1        1        0
-    //  no simd        2        1        0
+    // yes simd        1        1        0      N/A
+    //  no simd        2        1        0        0
     fn sub(self, other: AntiScalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1108,9 +1108,9 @@ impl std::ops::SubAssign<AntiScalar> for MultiVector {
 impl std::ops::Sub<DualNum> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd2        1        0        0
-    // no simd        2        0        0
+    //          add/sub      mul      div      pow
+    //   simd2        1        0        0      N/A
+    // no simd        2        0        0        0
     fn sub(self, other: DualNum) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1145,9 +1145,9 @@ impl std::ops::SubAssign<DualNum> for MultiVector {
 impl std::ops::Sub<Flector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        2        0        0
-    // no simd        8        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        2        0        0      N/A
+    // no simd        8        0        0        0
     fn sub(self, other: Flector) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1182,8 +1182,8 @@ impl std::ops::SubAssign<Flector> for MultiVector {
 impl std::ops::Sub<Horizon> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn sub(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1220,9 +1220,9 @@ impl std::ops::SubAssign<Horizon> for MultiVector {
 impl std::ops::Sub<Line> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd3        2        0        0
-    // no simd        6        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        2        0        0      N/A
+    // no simd        6        0        0        0
     fn sub(self, other: Line) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1257,13 +1257,13 @@ impl std::ops::SubAssign<Line> for MultiVector {
 impl std::ops::Sub<Motor> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        2        0
-    //    simd2        1        0        0
-    //    simd3        2        0        0
+    //           add/sub      mul      div      pow
+    //      f32        0        2        0        0
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
     // Totals...
-    // yes simd        3        2        0
-    //  no simd        8        2        0
+    // yes simd        3        2        0      N/A
+    //  no simd        8        2        0        0
     fn sub(self, other: Motor) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1300,13 +1300,13 @@ impl std::ops::SubAssign<Motor> for MultiVector {
 impl std::ops::Sub<MultiVector> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //    simd2        1        0        0
-    //    simd3        2        0        0
-    //    simd4        2        0        0
+    //           add/sub      mul      div      pow
+    //    simd2        1        0        0      N/A
+    //    simd3        2        0        0      N/A
+    //    simd4        2        0        0      N/A
     // Totals...
-    // yes simd        5        0        0
-    //  no simd       16        0        0
+    // yes simd        5        0        0      N/A
+    //  no simd       16        0        0        0
     fn sub(self, other: MultiVector) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1341,8 +1341,8 @@ impl std::ops::SubAssign<MultiVector> for MultiVector {
 impl std::ops::Sub<Origin> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //      add/sub      mul      div
-    // f32        1        0        0
+    //      add/sub      mul      div      pow
+    // f32        1        0        0        0
     fn sub(self, other: Origin) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
@@ -1379,9 +1379,9 @@ impl std::ops::SubAssign<Origin> for MultiVector {
 impl std::ops::Sub<Plane> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn sub(self, other: Plane) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1416,9 +1416,9 @@ impl std::ops::SubAssign<Plane> for MultiVector {
 impl std::ops::Sub<Point> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div
-    //   simd4        1        0        0
-    // no simd        4        0        0
+    //          add/sub      mul      div      pow
+    //   simd4        1        0        0      N/A
+    // no simd        4        0        0        0
     fn sub(self, other: Point) -> Self::Output {
         MultiVector::from_groups(
             // scalar, e1234
@@ -1453,12 +1453,12 @@ impl std::ops::SubAssign<Point> for MultiVector {
 impl std::ops::Sub<Scalar> for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div
-    //      f32        0        1        0
-    //    simd2        1        0        0
+    //           add/sub      mul      div      pow
+    //      f32        0        1        0        0
+    //    simd2        1        0        0      N/A
     // Totals...
-    // yes simd        1        1        0
-    //  no simd        2        1        0
+    // yes simd        1        1        0      N/A
+    //  no simd        2        1        0        0
     fn sub(self, other: Scalar) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
