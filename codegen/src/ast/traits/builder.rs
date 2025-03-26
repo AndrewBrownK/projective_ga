@@ -606,13 +606,6 @@ impl<const AntiScalar: BasisElement, ExprType> TraitImplBuilder<AntiScalar, Expr
             'inner: loop {
                 // Scan through the lines in reverse, drop unused variables
 
-                // TODO I think it should be possible to add a flag to the TraitImplBuilder
-                //  that indicates whether or not extra-aggressive simplification should be used
-                //  and then we read that flag here and maybe don't slice_to_float unless necessary.
-                //  We can then use git diffs to see which traits need it on, and trigger the flag
-                //  in those implementations. Why though? Because simplification is expensive
-                //  enough as it is, it is annoying to undo and redo transposition over and over.
-
                 return_expr.slice_to_floats();
                 return_expr.transposing_simplify();
 

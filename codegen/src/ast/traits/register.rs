@@ -241,7 +241,9 @@ pub fn progress_style() -> indicatif::ProgressStyle {
         .progress_chars("#>-")
 }
 pub fn tokio_rt() -> tokio::runtime::Runtime {
-    tokio::runtime::Runtime::new().expect("Tokio should work")
+    // TODO go back to multithreaded
+    //  tokio::runtime::Runtime::new().expect("Tokio should work")
+    tokio::runtime::Builder::new_current_thread().build().expect("Tokio should work")
 }
 pub fn tokio_joinset<T>() -> JoinSet<T> {
     JoinSet::new()

@@ -64,106 +64,106 @@ fn main() {
     };
     let repo = base_documentation(register_multi_vecs(cga3d)).finished();
     let traits = codegen::register_all! { e12345 repo;
-        Zero One AntiOne Unit
-        Grade AntiGrade Into TryInto
-        RightDual RightAntiDual Reverse AntiReverse
-        Wedge AntiWedge
-        GeometricProduct GeometricAntiProduct
-        Sandwich AntiSandwich
-        DotProduct AntiDotProduct
-        Inverse AntiInverse
-        GeometricQuotient GeometricAntiQuotient
-
-        BulkExpansion BulkContraction WeightExpansion WeightContraction
-        Fix AntiFix
-        ConstraintViolation AntiConstraintViolation
-        ConstraintValid AntiConstraintValid
-        AutoMorphism AntiAutoMorphism
-        Conjugation ConformalConjugate
-
-        Complement DoubleComplement
-        Carrier CoCarrier
-
-        RoundBulk
-        RoundWeight
-        FlatBulk
-        FlatWeight
-
-        RoundNormSquared
-            RoundBulkNormSquared
-            RoundWeightNormSquared
-            UnitizedRoundNormSquared
-        FlatNormSquared
-            FlatBulkNormSquared
-            FlatWeightNormSquared
-            UnitizedFlatNormSquared
-
-        RoundNorm
-            RoundBulkNorm
-            RoundWeightNorm
-            UnitizedRoundNorm
-        FlatNorm
-            FlatBulkNorm
-            FlatWeightNorm
-            UnitizedFlatNorm
-
-        RadiusNormSquared
-        UnitizedRadiusNormSquared
-        CenterNormSquared
-        UnitizedCenterNormSquared
-
-        RadiusNorm
-        UnitizedRadiusNorm
-        CenterNorm
-        UnitizedCenterNorm
-
-        ProjectOrthogonallyOnto AntiProjectOrthogonallyOnto
-        ProjectViaOriginOnto AntiProjectViaHorizonOnto
-        RejectOrthogonallyFrom AntiRejectOrthogonallyFrom
-        RejectViaOriginFrom AntiRejectViaHorizonFrom
-        Support AntiSupport
-        Unitize
+        // Zero One AntiOne Unit
+        // Grade AntiGrade Into TryInto
+        // RightDual RightAntiDual Reverse AntiReverse
+        // Wedge AntiWedge
+        // GeometricProduct GeometricAntiProduct
+        Sandwich //AntiSandwich
+        // DotProduct AntiDotProduct
+        // Inverse AntiInverse
+        GeometricQuotient //GeometricAntiQuotient
+        //
+        // BulkExpansion BulkContraction WeightExpansion WeightContraction
+        // Fix AntiFix
+        // ConstraintViolation AntiConstraintViolation
+        // ConstraintValid AntiConstraintValid
+        // AutoMorphism AntiAutoMorphism
+        // Conjugation ConformalConjugate
+        //
+        // Complement DoubleComplement
+        // Carrier CoCarrier
+        //
+        // RoundBulk
+        // RoundWeight
+        // FlatBulk
+        // FlatWeight
+        //
+        // RoundNormSquared
+        //     RoundBulkNormSquared
+        //     RoundWeightNormSquared
+        //     UnitizedRoundNormSquared
+        // FlatNormSquared
+        //     FlatBulkNormSquared
+        //     FlatWeightNormSquared
+        //     UnitizedFlatNormSquared
+        //
+        // RoundNorm
+        //     RoundBulkNorm
+        //     RoundWeightNorm
+        //     UnitizedRoundNorm
+        // FlatNorm
+        //     FlatBulkNorm
+        //     FlatWeightNorm
+        //     UnitizedFlatNorm
+        //
+        // RadiusNormSquared
+        // UnitizedRadiusNormSquared
+        // CenterNormSquared
+        // UnitizedCenterNormSquared
+        //
+        // RadiusNorm
+        // UnitizedRadiusNorm
+        // CenterNorm
+        // UnitizedCenterNorm
+        //
+        // ProjectOrthogonallyOnto AntiProjectOrthogonallyOnto
+        // ProjectViaOriginOnto AntiProjectViaHorizonOnto
+        // RejectOrthogonallyFrom AntiRejectOrthogonallyFrom
+        // RejectViaOriginFrom AntiRejectViaHorizonFrom
+        // Support AntiSupport
+        // Unitize
     };
-    codegen::operators! { e12345 repo, traits;
-        fancy_infix => Div;
-
-        binary
-        Add => Addition,
-        Sub => Subtraction,
-        BitXor => Wedge,
-        Mul => GeometricProduct;
-
-        unary
-        Neg => Negation,
-        Not => RightDual;
-    }
+    // codegen::operators! { e12345 repo, traits;
+    //     fancy_infix => Div;
+    //
+    //     binary
+    //     Add => Addition,
+    //     Sub => Subtraction,
+    //     BitXor => Wedge,
+    //     Mul => GeometricProduct;
+    //
+    //     unary
+    //     Neg => Negation,
+    //     Not => RightDual;
+    // }
     let traits = traits.finish();
 
-    let slang = codegen::Slang::new();
-    slang.write_src(
-        "libraries/cga3d/src",
-        "cga3d",
-        repo.clone(),
-        traits.clone()
-    );
-
-    let mut rust = codegen::Rust::new(true).all_features();
-    rust.sql = false;
-    rust.wgsl = false;
-    rust.glsl = false;
-    rust.write_crate(
-        "libraries/cga3d/",
-        "cga3d",
-        1,
-        0,
-        0,
-        "",
-        "Latest generated test case",
-        "https://github.com/AndrewBrownK/projective_ga/",
-        &[],
-        repo,
-        traits,
-    );
+    // let slang = codegen::Slang::new();
+    // slang.write_src(
+    //     "libraries/cga3d/src",
+    //     "cga3d",
+    //     repo.clone(),
+    //     traits.clone()
+    // );
+    //
+    // let mut rust = codegen::Rust::new(true).all_features();
+    // rust.sql = false;
+    // rust.wgsl = false;
+    // rust.glsl = false;
+    // rust.write_crate(
+    //     "libraries/cga3d/",
+    //     "cga3d",
+    //     1,
+    //     0,
+    //     0,
+    //     "",
+    //     "Latest generated test case",
+    //     "https://github.com/AndrewBrownK/projective_ga/",
+    //     &[],
+    //     repo,
+    //     traits,
+    // );
 }
 
 fn base_documentation(mut declarations: DeclareMultiVecs<e12345>) -> DeclareMultiVecs<e12345> {

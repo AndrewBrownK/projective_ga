@@ -1,7 +1,10 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused)]
 
+use tracing::Level;
 use crate::algebra::multivector::DeclareMultiVecs;
+use crate::ast::traits::{Debug10, Debug11, Debug22, Debug12f, Debug12i, Debug21, DebugTrait};
+use crate::build_scripts::common_traits::{ConstraintViolation, Sandwich};
 use crate::elements::{e12345};
 
 crate::multi_vecs! { e12345;
@@ -37,15 +40,13 @@ crate::multi_vecs! { e12345;
     VersorEven as e423, e431, e412, e12345 | e415, e425, e435, e321 | e235, e315, e125, e5 | e1, e2, e3, e4;
     // 5 reflections
     VersorOdd  as e41, e42, e43, scalar | e23, e31, e12, e45 | e15, e25, e35, e1234 | e4235, e4315, e4125, e3215;
+
+    // Full breadth MultiVector
+    MultiVector as scalar, e12345 | e1, e2, e3, e4 | e5 | e41, e42, e43, e45 | e15, e25, e35 | e23, e31, e12 | e415, e425, e435, e321 | e423, e431, e412 | e235, e315, e125 | e1234, e4235, e4315, e4125 | e3215;
 }
 
-#[test]
-fn debug_stuff() {
-    use crate::emit::rust::Rust;
-    use crate::ast::datatype::ExpressionType;
-    use std::collections::BTreeSet;;
-
-
+#[tokio::test]
+async fn multi_line_simplification_debugger() {
     let cga3d = crate::ga! { e12345;
         1 => e1, e2, e3, eP;
         -1 => eM;
@@ -55,37 +56,9 @@ fn debug_stuff() {
     };
     let decls = register_multi_vecs(cga3d);
     let repo = generate_variants(decls).finished();
-    let traits = crate::register_all! { e12345 repo;
-        Wedge
-    };
-    let traits = traits.finish();
-
-
-    let mut rust = Rust::new(true).all_features();
-    rust.sql = false;
-    let mut infix_dummy = BTreeSet::new();
-
-    let rt = tokio::runtime::Runtime::new().expect("tokio works");
-    let result: Option<()> = rt.block_on(async move {
-        let impls = traits.get_impls().await;
-        for i in impls {
-            let ExpressionType::Class(owner) = i.owner.0.clone() else { continue };
-            let Some((ExpressionType::Class(other), _)) = i.other_params.get(0).cloned() else { continue };
-
-            if owner.name() == "AntiPlane" && other.name() == "AntiFlectorOnOrigin" {
-                let r = &i.return_expr;
-                println!("{r:?}");
-
-                let mut buffer = Vec::new();
-                rust.declare_trait_impl(&mut buffer, i, &mut infix_dummy).unwrap();
-                let mut rust_output = String::from_utf8(buffer).unwrap();
-                println!("{rust_output}");
-            }
-        }
-        Some(())
-    });
-    result.expect("Entire script must complete")
+    DebugTrait(Sandwich).trace_implementation(Level::DEBUG, repo, &MultiVector, &MultiVector).await;
 }
+
 
 
 fn generate_variants(mut declarations: DeclareMultiVecs<e12345>) -> DeclareMultiVecs<e12345> {
