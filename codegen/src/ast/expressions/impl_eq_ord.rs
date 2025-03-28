@@ -11,7 +11,6 @@ impl PartialEq for FloatExpr {
             (AccessVec3(a, ai), AccessVec3(b, bi)) => a == b && ai == bi,
             (AccessVec4(a, ai), AccessVec4(b, bi)) => a == b && ai == bi,
             (AccessMultiVecGroup(a, ai), AccessMultiVecGroup(b, bi)) => a == b && ai == bi,
-            (AccessMultiVecFlat(a, ai), AccessMultiVecFlat(b, bi)) => a == b && ai == bi,
             (TraitInvoke11ToFloat(ak, a), TraitInvoke11ToFloat(bk, b)) => ak == bk && a == b,
             (Product(a, al), Product(b, bl)) => {
                 if FloatOrd(*al) != FloatOrd(*bl) {
@@ -65,8 +64,6 @@ impl PartialEq for FloatExpr {
             (_, AccessVec4(..)) => false,
             (AccessMultiVecGroup(..), _) => false,
             (_, AccessMultiVecGroup(..)) => false,
-            (AccessMultiVecFlat(..), _) => false,
-            (_, AccessMultiVecFlat(..)) => false,
             (TraitInvoke11ToFloat(..), _) => false,
             (_, TraitInvoke11ToFloat(..)) => false,
             (Product(..), _) => false,
@@ -97,7 +94,6 @@ impl Ord for FloatExpr {
             (AccessVec3(a, ai), AccessVec3(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
             (AccessVec4(a, ai), AccessVec4(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
             (AccessMultiVecGroup(a, ai), AccessMultiVecGroup(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
-            (AccessMultiVecFlat(a, ai), AccessMultiVecFlat(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
             (TraitInvoke11ToFloat(ak, a), TraitInvoke11ToFloat(bk, b)) => ak.cmp(bk).then_with(|| a.cmp(b)),
             (Product(a, al), Product(b, bl)) => {
                 let c =  FloatOrd(*al).cmp(&FloatOrd(*bl));
@@ -146,8 +142,6 @@ impl Ord for FloatExpr {
             (_, AccessVec4(_, _)) => Ordering::Greater,
             (AccessMultiVecGroup(_, _), _) => Ordering::Less,
             (_, AccessMultiVecGroup(_, _)) => Ordering::Greater,
-            (AccessMultiVecFlat(_, _), _) => Ordering::Less,
-            (_, AccessMultiVecFlat(_, _)) => Ordering::Greater,
             (TraitInvoke11ToFloat(_, _), _) => Ordering::Less,
             (_, TraitInvoke11ToFloat(_, _)) => Ordering::Greater,
             (Product(_, _), _) => Ordering::Less,

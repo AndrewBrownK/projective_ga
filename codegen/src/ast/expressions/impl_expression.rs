@@ -100,7 +100,6 @@ impl Expression<Float> for FloatExpr {
             FloatExpr::AccessVec4(v, _) => v.substitute_variable(old.clone(), new.clone()),
             FloatExpr::TraitInvoke11ToFloat(_, mvc) => mvc.substitute_variable(old.clone(), new.clone()),
             FloatExpr::AccessMultiVecGroup(mve, _) => mve.substitute_variable(old.clone(), new.clone()),
-            FloatExpr::AccessMultiVecFlat(mve, _) => mve.substitute_variable(old.clone(), new.clone()),
             FloatExpr::Product(v, _last_factor) => {
                 for (v, _) in v.iter_mut() {
                     v.substitute_variable(old.clone(), new.clone());

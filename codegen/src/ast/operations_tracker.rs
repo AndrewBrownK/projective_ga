@@ -75,8 +75,7 @@ pub struct VectoredOperationsTracker {
     pub simd3: OperationsTracker,
     pub simd4: OperationsTracker,
     pub basis_element_struct_access: bool,
-    pub mv_vars_access_flat: BTreeSet<(String, usize)>,
-    pub mv_vars_access_grouped: BTreeSet<(String, usize)>,
+    pub mv_vars_access: BTreeSet<(String, usize)>,
 }
 impl VectoredOperationsTracker {
     pub fn zero() -> Self {
@@ -86,8 +85,7 @@ impl VectoredOperationsTracker {
             simd3: OperationsTracker::zero(),
             simd4: OperationsTracker::zero(),
             basis_element_struct_access: false,
-            mv_vars_access_flat: BTreeSet::new(),
-            mv_vars_access_grouped: BTreeSet::new(),
+            mv_vars_access: BTreeSet::new(),
         }
     }
 
@@ -112,12 +110,8 @@ impl Add<VectoredOperationsTracker> for VectoredOperationsTracker {
     type Output = Self;
 
     fn add(self, rhs: VectoredOperationsTracker) -> Self::Output {
-        let mut mv_vars_access_flat = self.mv_vars_access_flat.clone();
-        for b in rhs.mv_vars_access_flat.iter() {
-            mv_vars_access_flat.insert(b.clone());
-        }
-        let mut mv_vars_access_grouped = self.mv_vars_access_grouped.clone();
-        for b in rhs.mv_vars_access_grouped.iter() {
+        let mut mv_vars_access_grouped = self.mv_vars_access.clone();
+        for b in rhs.mv_vars_access.iter() {
             mv_vars_access_grouped.insert(b.clone());
         }
         Self {
@@ -126,8 +120,7 @@ impl Add<VectoredOperationsTracker> for VectoredOperationsTracker {
             simd3: self.simd3 + rhs.simd3,
             simd4: self.simd4 + rhs.simd4,
             basis_element_struct_access: self.basis_element_struct_access || rhs.basis_element_struct_access,
-            mv_vars_access_flat,
-            mv_vars_access_grouped,
+            mv_vars_access: mv_vars_access_grouped,
         }
     }
 }
@@ -138,11 +131,8 @@ impl AddAssign<VectoredOperationsTracker> for VectoredOperationsTracker {
         self.simd3 += rhs.simd3;
         self.simd4 += rhs.simd4;
         self.basis_element_struct_access |= rhs.basis_element_struct_access;
-        for b in rhs.mv_vars_access_flat.iter() {
-            self.mv_vars_access_flat.insert(b.clone());
-        }
-        for b in rhs.mv_vars_access_grouped.iter() {
-            self.mv_vars_access_grouped.insert(b.clone());
+        for b in rhs.mv_vars_access.iter() {
+            self.mv_vars_access.insert(b.clone());
         }
     }
 }

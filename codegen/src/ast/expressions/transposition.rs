@@ -42,77 +42,6 @@ impl ExtractionStrength {
     ];
 }
 
-impl FloatExpr {
-    fn undo_flat_access(&mut self) {
-        if let FloatExpr::AccessMultiVecFlat(mve, flat_idx) = self {
-            let mut flat_idx = *flat_idx;
-            for (group_idx, group) in mve.mv_class.groups().into_iter().enumerate() {
-                let group_width = group.simd_width();
-                if flat_idx >= group_width {
-                    flat_idx -= group_width;
-                    continue
-                }
-                let mve = mve.take_as_owned();
-                *self = match group {
-                    BasisElementGroup::G1(_) => FloatExpr::AccessMultiVecGroup(mve, group_idx),
-                    BasisElementGroup::G2(_, _) => FloatExpr::AccessVec2(Box::new(Vec2Expr::AccessMultiVecGroup(mve, group_idx)), flat_idx),
-                    BasisElementGroup::G3(_, _, _) => FloatExpr::AccessVec3(Box::new(Vec3Expr::AccessMultiVecGroup(mve, group_idx)), flat_idx),
-                    BasisElementGroup::G4(_, _, _, _) => FloatExpr::AccessVec4(Box::new(Vec4Expr::AccessMultiVecGroup(mve, group_idx)), flat_idx),
-                };
-                return
-            }
-        }
-    }
-    
-    fn redo_flat_access(&mut self) {
-        match self {
-            FloatExpr::AccessVec2(box Vec2Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
-                let mut flat_idx = 0;
-                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
-                    if scanning_group_idx == (*target_group_idx) {
-                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
-                        return
-                    }
-                    flat_idx = flat_idx + g.simd_width();
-                }
-            }
-            FloatExpr::AccessVec3(box Vec3Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
-                let mut flat_idx = 0;
-                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
-                    if scanning_group_idx == (*target_group_idx) {
-                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
-                        return
-                    }
-                    flat_idx = flat_idx + g.simd_width();
-                }
-            }
-            FloatExpr::AccessVec4(box Vec4Expr::AccessMultiVecGroup(mve, target_group_idx), idx_in_vec) => {
-                let mut flat_idx = 0;
-                for (scanning_group_idx, g) in mve.mv_class.groups().into_iter().enumerate() {
-                    if scanning_group_idx == (*target_group_idx) {
-                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx + *idx_in_vec);
-                        return
-                    }
-                    flat_idx = flat_idx + g.simd_width();
-                }
-            }
-            FloatExpr::AccessMultiVecGroup(mve, idx) => {
-                let idx = *idx;
-                let mv = mve.mv_class;
-                let mut flat_idx = 0;
-                for (i, g) in mv.groups().into_iter().enumerate() {
-                    if i == idx {
-                        *self = FloatExpr::AccessMultiVecFlat(mve.take_as_owned(), flat_idx);
-                        return
-                    }
-                    flat_idx = flat_idx + g.simd_width();
-                }
-            }
-            _ => {}
-        }
-    }
-}
-
 fn closest_to_zero(arr: &[f32]) -> f32 {
     arr.iter().copied().fold(arr[0], |acc, x| {
         if x.abs() < acc.abs() { x } else { acc }
@@ -152,9 +81,6 @@ fn vec2_product_transpose(
     }
 
     if vec2_product.is_empty() && coalesce_product_literal == [1.0; 2] {
-        // Revert to flat access, from the extraction-converted group access
-        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         tracing::trace!("no extractions");
         return None;
     }
@@ -234,8 +160,6 @@ fn vec2_product_extract(
     if extraction_strength >= Gather1 && xy && eqs!(x, y) {
         do_extract!(Vec2Expr::Gather1(x.clone()));
     }
-    x.undo_flat_access();
-    y.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?})");
     match (x, y) {
         (
@@ -386,8 +310,6 @@ fn vec2_sum_extract(
     if extraction_strength >= Gather1 && xy && eqs!(x, y) {
         do_extract!(Vec2Expr::Gather1(x.clone()));
     }
-    x.undo_flat_access();
-    y.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?})");
     match (x, y) {
         (
@@ -465,10 +387,6 @@ fn vec3_product_transpose(
     }
 
     if vec3_product.is_empty() && coalesce_product_literal == [1.0; 3] {
-        // Revert to flat access, from the extraction-converted group access
-        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         tracing::trace!("no extractions");
         return None;
     }
@@ -589,9 +507,6 @@ fn vec3_product_extract(
     // if extraction_strength >= Gather1 && xy_z && xy_is_zero {
     //     do_extract!(Vec3Expr::Gather1(z.clone()));
     // }
-    x.undo_flat_access();
-    y.undo_flat_access();
-    z.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?})");
     match (x, y, z) {
         (
@@ -804,9 +719,6 @@ fn vec3_sum_extract(
     if extraction_strength >= Gather1 && xyz && eqs!(x, y, z) {
         do_extract!(Vec3Expr::Gather1(x.clone()));
     }
-    x.undo_flat_access();
-    y.undo_flat_access();
-    z.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?})");
     match (x, y, z) {
         (
@@ -922,11 +834,6 @@ fn vec4_product_transpose(
     }
 
     if vec4_product.is_empty() && coalesce_product_literal == [1.0; 4] {
-        // Revert to flat access, from the extraction-converted group access
-        float_product_0.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_1.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_2.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
-        float_product_3.iter_mut().for_each(|(e0, _)| { e0.redo_flat_access() });
         tracing::trace!("no extractions");
         return None;
     }
@@ -1157,10 +1064,6 @@ fn vec4_product_extract(
     if extraction_strength >= Gather1 && xy_zw && eqs!(x, y) && z_is_zero && w_is_zero {
         do_extract!(Vec4Expr::Gather1(x.clone()));
     }
-    x.undo_flat_access();
-    y.undo_flat_access();
-    z.undo_flat_access();
-    w.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?}, {w:?})");
     match (x, y, z, w) {
         (
@@ -1470,10 +1373,6 @@ fn vec4_sum_extract(
     if extraction_strength >= Gather1 && xyzw && eqs!(x, y, z, w) {
         do_extract!(Vec4Expr::Gather1(x.clone()));
     }
-    x.undo_flat_access();
-    y.undo_flat_access();
-    z.undo_flat_access();
-    w.undo_flat_access();
     tracing::trace!("attempting match on ({x:?}, {y:?}, {z:?}, {w:?})");
     match (x, y, z, w) {
         (

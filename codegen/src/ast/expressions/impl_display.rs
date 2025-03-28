@@ -95,23 +95,6 @@ impl Display for FloatExpr {
                     }
                 }
             }
-            FloatExpr::AccessMultiVecFlat(mv, i) => {
-                let gs: Vec<_> = mv.elements().collect();
-                let (float, el) = &gs[*i];
-                match mv.expr.as_ref() {
-                    MultiVectorVia::Variable(v) => {
-                        let (n, i) = &v.decl.name;
-                        if *i == 0 {
-                            write!(f, "{n}[{el}]")?;
-                        } else {
-                            let i = i + 1;
-                            write!(f, "{n}_{i}[{el}]")?;
-                        }
-                    }
-                    // TODO is this even right? I think it is a stack overflow
-                    _ => write!(f, "{el}({float})")?,
-                }
-            }
             FloatExpr::TraitInvoke11ToFloat(t, mv) => {
                 let n = t.as_lower_snake();
                 write!(f, "({mv} {n})")?

@@ -182,10 +182,6 @@ impl<'e> Debug for DebugExpression<'e, FloatExpr> {
                 let mve = self.also(mve);
                 write!(f, "AccessMultiVecGroup({mve:?}, {i:?})")?;
             },
-            FloatExpr::AccessMultiVecFlat(mve, i) => {
-                let mve = self.also(mve);
-                write!(f, "AccessMultiVecFlat({mve:?}, {i:?})")?;
-            },
             FloatExpr::TraitInvoke11ToFloat(t, m) => {
                 let m = self.also(m);
                 write!(f, "TraitInvoke11ToFloat({t:?}, {m:?})")?;

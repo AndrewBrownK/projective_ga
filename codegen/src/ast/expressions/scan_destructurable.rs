@@ -163,13 +163,6 @@ impl FloatExpr {
                     mv.scan_for_destructurable_variables(tracker);
                 }
             }
-            FloatExpr::AccessMultiVecFlat(mv, _i) => {
-                if let box MultiVectorVia::Variable(v) = &mv.expr {
-                    tracker.note_partial_variable_use(&v);
-                } else {
-                    mv.scan_for_destructurable_variables(tracker);
-                }
-            }
             FloatExpr::TraitInvoke11ToFloat(_t, mv) => {
                 if let box MultiVectorVia::Variable(v) = &mv.expr {
                     tracker.note_whole_variable_use(&v);

@@ -1,16 +1,13 @@
 #![allow(non_upper_case_globals)]
 #![allow(unused)]
 
-use std::sync::atomic::Ordering::Release;
-use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
+use crate::ast::expressions::{DebugExpression, Vec4Expr};
 use crate::ast::quick_variables::*;
-use crate::ast::traits::{Debug10, Debug11, Debug22, Debug12f, Debug12i, Debug21, DebugTrait};
-use crate::build_scripts::common_traits::{AntiAutoMorphism, AntiConstraintViolation, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, ConstraintViolation, DotProduct, GeometricAntiProduct, GeometricProduct, ProjectOrthogonallyOnto, SquareRoot, Subtraction};
+use crate::ast::traits::{Debug22, DebugTrait};
+use crate::build_scripts::common_traits::{GeometricAntiQuotient, GeometricQuotient};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
-use tracing_subscriber::fmt::format::Format;
-use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
 crate::multi_vecs! { e1234;
@@ -67,6 +64,6 @@ async fn multi_line_simplification_debugger() {
         0 => e4
     };
     let repo = register_multi_vecs(rga3d).finished();
-    DebugTrait(ConstraintViolation).trace_implementation(Level::DEBUG, repo, &Flector).await;
+    DebugTrait(GeometricQuotient).trace_implementation(Level::DEBUG, repo, &Origin, &Flector).await;
 }
 

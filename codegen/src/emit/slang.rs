@@ -12,7 +12,7 @@ use indicatif::ProgressFinish;
 use tokio::task::JoinSet;
 
 use crate::algebra::basis::BasisElement;
-use crate::algebra::multivector::{MultiVec, MultiVecRepository};
+use crate::algebra::multivector::{BasisElementGroup, MultiVec, MultiVecRepository};
 use crate::ast::datatype::{ExpressionType, MultiVector};
 use crate::ast::expressions::{AnyExpression, FloatExpr, IntExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::traits::{progress_style, BinaryOps, CommentOrVariableDeclaration, RawTraitDefinition, RawTraitImplementation, TraitArity, TraitImplRegistry, TraitKey, TraitTypeConsensus};
@@ -500,26 +500,55 @@ internal bool lessThanOrEqualsHelper<T: IComparable>(T a, T b) {{
                 self.write_int(w, i)?;
                 write!(w, ")")?;
             }
-            FloatExpr::AccessVec2(v, i) => {
-                self.write_vec2(w, v.as_ref(), false)?;
-                write!(w, "[{i}]")?;
+            FloatExpr::AccessVec2(box v, i) => {
+                if let Vec2Expr::AccessMultiVecGroup(mv, g) = &v {
+                    self.write_multi_vec(w, mv)?;
+                    let groups = mv.mv_class.groups();
+                    let el = match &groups[*g] {
+                        BasisElementGroup::G2(a, b) => [*a, *b][*i],
+                        _ => panic!("group {g} is not just a vec2")
+                    };
+                    write!(w, ".{el}")?;
+                } else {
+                    self.write_vec2(w, v, false)?;
+                    write!(w, "[{i}]")?;
+                }
             }
-            FloatExpr::AccessVec3(v, i) => {
-                self.write_vec3(w, v.as_ref(), false)?;
-                write!(w, "[{i}]")?;
+            FloatExpr::AccessVec3(box v, i) => {
+                if let Vec3Expr::AccessMultiVecGroup(mv, g) = &v {
+                    self.write_multi_vec(w, mv)?;
+                    let groups = mv.mv_class.groups();
+                    let el = match &groups[*g] {
+                        BasisElementGroup::G3(a, b, c) => [*a, *b, *c][*i],
+                        _ => panic!("group {g} is not just a vec3")
+                    };
+                    write!(w, ".{el}")?;
+                } else {
+                    self.write_vec3(w, v, false)?;
+                    write!(w, "[{i}]")?;
+                }
             }
-            FloatExpr::AccessVec4(v, i) => {
-                self.write_vec4(w, v.as_ref(), false)?;
-                write!(w, "[{i}]")?;
+            FloatExpr::AccessVec4(box v, i) => {
+                if let Vec4Expr::AccessMultiVecGroup(mv, g) = &v {
+                    self.write_multi_vec(w, mv)?;
+                    let groups = mv.mv_class.groups();
+                    let el = match &groups[*g] {
+                        BasisElementGroup::G4(a, b, c, d) => [*a, *b, *c, *d][*i],
+                        _ => panic!("group {g} is not just a vec4")
+                    };
+                    write!(w, ".{el}")?;
+                } else {
+                    self.write_vec4(w, v, false)?;
+                    write!(w, "[{i}]")?;
+                }
             }
             FloatExpr::AccessMultiVecGroup(mv, i) => {
                 self.write_multi_vec(w, mv)?;
-                let el = mv.mv_class.elements()[*i as usize];
-                write!(w, ".{el}")?;
-            }
-            FloatExpr::AccessMultiVecFlat(mv, i) => {
-                self.write_multi_vec(w, mv)?;
-                let el = mv.mv_class.elements()[*i as usize];
+                let groups = mv.mv_class.groups();
+                let el = match &groups[*i] {
+                    BasisElementGroup::G1(g) => g,
+                    _ => panic!("group {i} is not just a float ")
+                };
                 write!(w, ".{el}")?;
             }
             FloatExpr::TraitInvoke11ToFloat(t, arg) => {

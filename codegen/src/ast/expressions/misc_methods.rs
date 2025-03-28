@@ -230,7 +230,6 @@ impl FloatExpr {
             FloatExpr::AccessVec3(v, _i) => v.is_memory_read_and_not_compute(),
             FloatExpr::AccessVec4(v, _i) => v.is_memory_read_and_not_compute(),
             FloatExpr::AccessMultiVecGroup(mve, _i) => mve.is_memory_read_and_not_compute(),
-            FloatExpr::AccessMultiVecFlat(mve, _i) => mve.is_memory_read_and_not_compute(),
             FloatExpr::TraitInvoke11ToFloat(_, _) => false,
             FloatExpr::Product(_, _) => false,
             FloatExpr::Sum(_, _) => false,
@@ -256,17 +255,7 @@ impl Vec2Expr {
             },
             Vec2Expr::AccessMultiVecGroup(mve, g_idx) => match *mve.expr {
                 MultiVectorVia::Construct(mut groups) => groups[g_idx].take_part_as_owned(idx),
-                _ => {
-                    let mut flat_idx = 0;
-                    for (scan_g_idx, (_, g)) in mve.groups().enumerate() {
-                        if scan_g_idx == g_idx {
-                            flat_idx = flat_idx + idx;
-                            break
-                        }
-                        flat_idx = flat_idx + g.simd_width();
-                    }
-                    FloatExpr::AccessMultiVecFlat(mve, flat_idx)
-                },
+                via_expr => FloatExpr::access_vec_2(Vec2Expr::AccessMultiVecGroup(MultiVectorExpr::new(mve.mv_class, via_expr), g_idx), idx),
             }
             Vec2Expr::Product(v_factors, v_lits) => {
                 let mut f_factors = vec![];
@@ -335,17 +324,7 @@ impl Vec3Expr {
             },
             Vec3Expr::AccessMultiVecGroup(mve, g_idx) => match *mve.expr {
                 MultiVectorVia::Construct(mut groups) => groups[g_idx].take_part_as_owned(idx),
-                _ => {
-                    let mut flat_idx = 0;
-                    for (scan_g_idx, (_, g)) in mve.groups().enumerate() {
-                        if scan_g_idx == g_idx {
-                            flat_idx = flat_idx + idx;
-                            break
-                        }
-                        flat_idx = flat_idx + g.simd_width();
-                    }
-                    FloatExpr::AccessMultiVecFlat(mve, flat_idx)
-                },
+                via_expr => FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(MultiVectorExpr::new(mve.mv_class, via_expr), g_idx), idx),
             }
             Vec3Expr::Product(v_factors, v_lits) => {
                 let mut f_factors = vec![];
@@ -420,17 +399,7 @@ impl Vec4Expr {
             },
             Vec4Expr::AccessMultiVecGroup(mve, g_idx) => match *mve.expr {
                 MultiVectorVia::Construct(mut groups) => groups[g_idx].take_part_as_owned(idx),
-                _ => {
-                    let mut flat_idx = 0;
-                    for (scan_g_idx, (_, g)) in mve.groups().enumerate() {
-                        if scan_g_idx == g_idx {
-                            flat_idx = flat_idx + idx;
-                            break
-                        }
-                        flat_idx = flat_idx + g.simd_width();
-                    }
-                    FloatExpr::AccessMultiVecFlat(mve, flat_idx)
-                },
+                via_expr => FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(MultiVectorExpr::new(mve.mv_class, via_expr), g_idx), idx),
             }
             Vec4Expr::Product(v_factors, v_lits) => {
                 let mut f_factors = vec![];

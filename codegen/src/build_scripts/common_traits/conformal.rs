@@ -655,8 +655,8 @@ pub mod impls {
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let numerator = center_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
+            let numerator = FloatExpr::AccessMultiVecGroup(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecGroup(denominator.into(), 0);
             let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -690,8 +690,8 @@ pub mod impls {
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let numerator = flat_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let denominator = flat_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
+            let numerator = FloatExpr::AccessMultiVecGroup(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecGroup(denominator.into(), 0);
             let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -725,8 +725,8 @@ pub mod impls {
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let numerator = RadiusNormSquared.inline(&mut builder, slf.clone()).await?;
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
+            let numerator = FloatExpr::AccessMultiVecGroup(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecGroup(denominator.into(), 0);
             let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }
@@ -760,8 +760,8 @@ pub mod impls {
         ) -> Option<TraitImplBuilder<AntiScalar, Self::Output>> {
             let numerator = round_bulk_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
             let denominator = round_weight_norm_squared(self.origin, self.infinity).inline(&mut builder, slf.clone()).await?;
-            let numerator = FloatExpr::AccessMultiVecFlat(numerator.into(), 0);
-            let denominator = FloatExpr::AccessMultiVecFlat(denominator.into(), 0);
+            let numerator = FloatExpr::AccessMultiVecGroup(numerator.into(), 0);
+            let denominator = FloatExpr::AccessMultiVecGroup(denominator.into(), 0);
             let divide = FloatExpr::product(vec![(numerator, 1.0), (denominator, -1.0)], 1.0);
             builder.return_expr(divide)
         }

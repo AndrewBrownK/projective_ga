@@ -30,24 +30,33 @@ impl TrackOperations for FloatExpr {
         match self {
             FloatExpr::Variable(_) => VectoredOperationsTracker::zero(),
             FloatExpr::Literal(_) => VectoredOperationsTracker::zero(),
-            FloatExpr::AccessVec2(v, _) => v.count_operations(lookup),
-            FloatExpr::AccessVec3(v, _) => v.count_operations(lookup),
-            FloatExpr::AccessVec4(v, _) => v.count_operations(lookup),
+            FloatExpr::AccessVec2(box v, _) => {
+                let mut result = v.count_operations(lookup);
+                if let Vec2Expr::AccessMultiVecGroup(_, _) = &v {
+                    result.basis_element_struct_access = true;
+                }
+                result
+            },
+            FloatExpr::AccessVec3(box v, _) => {
+                let mut result = v.count_operations(lookup);
+                if let Vec3Expr::AccessMultiVecGroup(_, _) = &v {
+                    result.basis_element_struct_access = true;
+                }
+                result
+            },
+            FloatExpr::AccessVec4(box v, _) => {
+                let mut result = v.count_operations(lookup);
+                if let Vec4Expr::AccessMultiVecGroup(_, _) = &v {
+                    result.basis_element_struct_access = true;
+                }
+                result
+            },
             FloatExpr::AccessMultiVecGroup(m, _) => {
                 let mut result = m.count_operations(lookup);
                 result.basis_element_struct_access = true;
                 if let box MultiVectorVia::Variable(raw) = &m.expr {
                     let n = raw.decl.name.clone();
-                    result.mv_vars_access_grouped.insert(n);
-                }
-                result
-            }
-            FloatExpr::AccessMultiVecFlat(m, _) => {
-                let mut result = m.count_operations(lookup);
-                result.basis_element_struct_access = true;
-                if let box MultiVectorVia::Variable(raw) = &m.expr {
-                    let n = raw.decl.name.clone();
-                    result.mv_vars_access_flat.insert(n);
+                    result.mv_vars_access.insert(n);
                 }
                 result
             }
@@ -122,7 +131,7 @@ impl TrackOperations for Vec2Expr {
                 let mut result = m.count_operations(lookup);
                 if let box MultiVectorVia::Variable(raw) = &m.expr {
                     let n = raw.decl.name.clone();
-                    result.mv_vars_access_grouped.insert(n);
+                    result.mv_vars_access.insert(n);
                 }
                 result
             },
@@ -186,7 +195,7 @@ impl TrackOperations for Vec3Expr {
                 let mut result = m.count_operations(lookup);
                 if let box MultiVectorVia::Variable(raw) = &m.expr {
                     let n = raw.decl.name.clone();
-                    result.mv_vars_access_grouped.insert(n);
+                    result.mv_vars_access.insert(n);
                 }
                 result
             },
@@ -252,7 +261,7 @@ impl TrackOperations for Vec4Expr {
                 let mut result = m.count_operations(lookup);
                 if let box MultiVectorVia::Variable(raw) = &m.expr {
                     let n = raw.decl.name.clone();
-                    result.mv_vars_access_grouped.insert(n);
+                    result.mv_vars_access.insert(n);
                 }
                 result
             },

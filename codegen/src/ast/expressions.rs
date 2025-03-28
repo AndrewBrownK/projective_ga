@@ -226,7 +226,6 @@ pub enum FloatExpr {
     AccessVec3(Box<Vec3Expr>, usize),
     AccessVec4(Box<Vec4Expr>, usize),
     AccessMultiVecGroup(MultiVectorExpr, usize),
-    AccessMultiVecFlat(MultiVectorExpr, usize),
     // e.g. UnitizedNorm
     TraitInvoke11ToFloat(TraitKey, MultiVectorExpr),
     Product(Vec<(FloatExpr, f32)>, f32),
