@@ -151,7 +151,7 @@ public extension Horizon {
     public Scalar dot_product(MultiVector other) {
         return Scalar(
             /* scalar */
-            this.e321 * other.e321
+            other.e321 * this.e321
         );
     }
 }
@@ -163,7 +163,7 @@ public extension Horizon {
     public Scalar dot_product(Plane other) {
         return Scalar(
             /* scalar */
-            this.e321 * other.e321
+            other.e321 * this.e321
         );
     }
 }
@@ -255,7 +255,7 @@ public extension Motor {
     public Scalar dot_product(MultiVector other) {
         return Scalar(
             /* scalar */
-            (this.e23 * other.e23) + (this.e31 * other.e31) + (this.e12 * other.e12) + (this.scalar * other.scalar)
+            (other.scalar * this.scalar) + (other.e23 * this.e23) + (other.e31 * this.e31) + (other.e12 * this.e12)
         );
     }
 }
@@ -307,7 +307,7 @@ public extension MultiVector {
     public Scalar dot_product(Horizon other) {
         return Scalar(
             /* scalar */
-            other.e321 * this.e321
+            this.e321 * other.e321
         );
     }
 }
@@ -331,7 +331,7 @@ public extension MultiVector {
     public Scalar dot_product(Motor other) {
         return Scalar(
             /* scalar */
-            (other.e23 * this.e23) + (other.e31 * this.e31) + (other.e12 * this.e12) + (other.scalar * this.scalar)
+            (this.scalar * other.scalar) + (this.e23 * other.e23) + (this.e31 * other.e31) + (this.e12 * other.e12)
         );
     }
 }
@@ -343,7 +343,7 @@ public extension MultiVector {
     public Scalar dot_product(MultiVector other) {
         return Scalar(
             /* scalar */
-            (other.scalar * this.scalar) + (other.e1 * this.e1) + (other.e2 * this.e2) + (other.e3 * this.e3) + (other.e23 * this.e23) + (other.e31 * this.e31) + (other.e12 * this.e12) + (other.e321 * this.e321)
+            (other.scalar * this.scalar) + (other.e23 * this.e23) + (other.e31 * this.e31) + (other.e12 * this.e12) + (other.e1 * this.e1) + (other.e2 * this.e2) + (other.e3 * this.e3) + (other.e321 * this.e321)
         );
     }
 }
@@ -407,7 +407,7 @@ public extension Plane {
     public Scalar dot_product(Horizon other) {
         return Scalar(
             /* scalar */
-            other.e321 * this.e321
+            this.e321 * other.e321
         );
     }
 }

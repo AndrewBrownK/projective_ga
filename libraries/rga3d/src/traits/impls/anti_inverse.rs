@@ -176,10 +176,10 @@ impl AntiInverse for MultiVector {
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[e1234] * self[e1234]
-            + self[e4] * self[e4]
             + self[e41] * self[e41]
             + self[e42] * self[e42]
             + self[e43] * self[e43]
+            + self[e4] * self[e4]
             + self[e423] * self[e423]
             + self[e431] * self[e431]
             + self[e412] * self[e412];

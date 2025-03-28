@@ -98,7 +98,7 @@ public MultiVector operator /(AntiInversePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector anti_inverse() {
-        float other_g0 = this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
+        float other_g0 = this.e1234 * this.e1234 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e4 * this.e4 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412;
         return MultiVector(
             /* scalar, e1234 */
             float2(other_g0) * this.group0.xy, 

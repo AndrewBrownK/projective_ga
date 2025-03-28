@@ -77,7 +77,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(0.0, (this.scalar * this.e1234) + 2.0 * (this.e41 * this.e23) + 2.0 * (this.e42 * this.e31) + 2.0 * (this.e43 * this.e12) - 2.0 * (this.e1 * this.e423) - 2.0 * (this.e2 * this.e431) - 2.0 * (this.e3 * this.e412) - 2.0 * (this.e4 * this.e321)), 
             /* e1, e2, e3, e4 */
-            float4(2.0)*(float4(this.scalar) * this.group1) + float4(2.0)*(this.group1.yzxx * float4(this.group3.zxy, this.e41)) + float4(float3(0.0), 2.0*(this.e1234 * this.e321) + 2.0 * (this.e2 * this.e42) + 2.0 * (this.e3 * this.e43) + 2.0 * (this.e23 * this.e423) + 2.0 * (this.e31 * this.e431) + 2.0 * (this.e12 * this.e412)) - float4(2.0)*float4((float3(this.e321) * this.group3.xyz), 0.0) - float4(2.0)*float4((this.group3.yzx * this.group1.zxy), 0.0), 
+            float4(2.0)*(float4(this.scalar) * this.group1) + float4(2.0)*(this.group1.yzxx * float4(this.group3.zxy, this.e41)) + float4(float3(0.0), 2.0*(this.e1234 * this.e321) + 2.0 * (this.e42 * this.e2) + 2.0 * (this.e43 * this.e3) + 2.0 * (this.e23 * this.e423) + 2.0 * (this.e31 * this.e431) + 2.0 * (this.e12 * this.e412)) - float4(2.0)*float4((this.group3.xyx * float3(float2(this.e321), this.e2)), 0.0) - float4(2.0)*float4((this.group3.yzz * float3(this.group1.zx, this.e321)), 0.0), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */

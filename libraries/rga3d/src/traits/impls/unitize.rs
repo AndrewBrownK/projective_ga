@@ -170,14 +170,14 @@ impl Unitize for MultiVector {
     fn unitize(self) -> Self {
         use crate::elements::*;
         let sub_type_g4_xyz = self.group4().xyz();
-        let geometric_anti_product_g0 = sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+        let geometric_anti_product_g0 = self[e1234] * self[e1234]
+            + sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
             + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
             + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
-            + self[e1234] * self[e1234]
-            + self[e4] * self[e4]
             + self[e41] * self[e41]
             + self[e42] * self[e42]
-            + self[e43] * self[e43];
+            + self[e43] * self[e43]
+            + self[e4] * self[e4];
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from(geometric_anti_product_g0) * self.group0(),

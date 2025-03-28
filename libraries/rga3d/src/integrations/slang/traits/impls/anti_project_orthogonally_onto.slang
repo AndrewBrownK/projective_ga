@@ -11,7 +11,7 @@ public extension AntiScalar {
     public AntiScalar anti_project_orthogonally_onto(DualNum other) {
         return AntiScalar(
             /* e1234 */
-            this.e1234 * other.scalar * other.scalar
+            other.scalar * other.scalar * this.e1234
         );
     }
 }
@@ -21,7 +21,7 @@ public Motor operator /(AntiProjectOrthogonallyOntoInfixPartial<AntiScalar> lhs,
 }
 public extension AntiScalar {
     public Motor anti_project_orthogonally_onto(Flector other) {
-        float anti_wedge_g0_w = this.e1234 * other.e321 * -1.0;
+        float anti_wedge_g0_w = other.e321 * this.e1234 * -1.0;
         float3 anti_wedge_g1_xyz = float3(this.e1234) * other.group0.xyz;
         return Motor(
             /* e41, e42, e43, e1234 */
@@ -77,12 +77,12 @@ public MultiVector operator /(AntiProjectOrthogonallyOntoInfixPartial<AntiScalar
 }
 public extension AntiScalar {
     public MultiVector anti_project_orthogonally_onto(MultiVector other) {
-        float anti_wedge_g1_w = this.e1234 * other.e321 * -1.0;
+        float anti_wedge_g1_w = other.e321 * this.e1234 * -1.0;
         float3 anti_wedge_g2 = float3(this.e1234 * -1.0) * other.group3.xyz;
         float3 anti_wedge_g4_xyz = float3(this.e1234) * other.group1.xyz;
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, (anti_wedge_g4_xyz[0] * other.e1) + (anti_wedge_g4_xyz[1] * other.e2) + (anti_wedge_g4_xyz[2] * other.e3) + (this.e1234 * other.scalar * other.scalar) - (anti_wedge_g1_w * other.e321) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12)), 
+            float2(0.0, (anti_wedge_g4_xyz[0] * other.e1) + (anti_wedge_g4_xyz[1] * other.e2) + (anti_wedge_g4_xyz[2] * other.e3) + (other.scalar * other.scalar * this.e1234) - (anti_wedge_g1_w * other.e321) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12)), 
             /* e1, e2, e3, e4 */
             float4(float3(0.0), anti_wedge_g1_w * other.scalar), 
             /* e41, e42, e43 */
@@ -102,7 +102,7 @@ public extension AntiScalar {
     public AntiScalar anti_project_orthogonally_onto(Plane other) {
         return AntiScalar(
             /* e1234 */
-            this.e1234 * other.e321 * other.e321
+            other.e321 * other.e321 * this.e1234
         );
     }
 }
@@ -197,7 +197,7 @@ public extension DualNum {
     public Motor anti_project_orthogonally_onto(Motor other) {
         float4 right_anti_dual_g0 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         float4 anti_wedge_g0 = right_anti_dual_g0 * float4(this.e1234);
-        float anti_wedge_g1_w = right_anti_dual_g0[3] * this.scalar;
+        float anti_wedge_g1_w = this.scalar * right_anti_dual_g0[3];
         return Motor(
             /* e41, e42, e43, e1234 */
             (anti_wedge_g0 * float4(other.scalar)) + (float4(anti_wedge_g1_w) * other.group0) + float4(float3(0.0), -(anti_wedge_g0[0] * other.e23) - (anti_wedge_g0[1] * other.e31) - (anti_wedge_g0[2] * other.e12)), 
@@ -226,7 +226,7 @@ public extension DualNum {
             /* e23, e31, e12 */
             (float3(anti_wedge_g0[0]) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0[0]) * other.group4) + float4(float3(0.0), (anti_wedge_g1[2] * other.e12) * -1.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - float4((anti_wedge_g2.zxy * other.group1.yzx), anti_wedge_g1[1] * other.e31)
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0[0]) * other.group4) + float4(float3(0.0), (other.e12 * anti_wedge_g1[2]) * -1.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - float4((anti_wedge_g2.zxy * other.group1.yzx), other.e31 * anti_wedge_g1[1])
         );
     }
 }
@@ -292,13 +292,13 @@ public Flector operator /(AntiProjectOrthogonallyOntoInfixPartial<Flector> lhs, 
 public extension Flector {
     public Flector anti_project_orthogonally_onto(Flector other) {
         float3 right_anti_dual_g1_xyz = other.group0.xyz;
-        float3 anti_wedge_g0_xyz = (right_anti_dual_g1_xyz.yzx * this.group1.zxy) - (right_anti_dual_g1_xyz.zxy * this.group1.yzx);
+        float4 anti_wedge_g0 = float4(((right_anti_dual_g1_xyz.yzx * this.group1.zxy) - (right_anti_dual_g1_xyz.zxy * this.group1.yzx)), 0.0);
         float4 anti_wedge_g1 = float4(right_anti_dual_g1_xyz[0] * this.e321 * -1.0, right_anti_dual_g1_xyz[1] * this.e321 * -1.0, right_anti_dual_g1_xyz[2] * this.e321 * -1.0, (right_anti_dual_g1_xyz[0] * this.e1) + (right_anti_dual_g1_xyz[1] * this.e2) + (right_anti_dual_g1_xyz[2] * this.e3) + (other.e321 * this.e321));
         return Flector(
             /* e1, e2, e3, e4 */
             float4(anti_wedge_g1[3]) * other.group0, 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g1 * float4(float3(other.e4), other.e321)) + float4(float3(0.0), -(anti_wedge_g1[1] * other.e2) - (anti_wedge_g1[2] * other.e3)) + float4((float3(anti_wedge_g1[3]) * other.group1.xyz), 0.0) + float4((anti_wedge_g0_xyz.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0_xyz.zxy, anti_wedge_g1[0]))
+            (anti_wedge_g1 * float4(float3(other.e4), other.e321)) + float4(float3(0.0), -(anti_wedge_g1[1] * other.e2) - (anti_wedge_g1[2] * other.e3)) + float4((float3(anti_wedge_g1[3]) * other.group1.xyz), 0.0) + float4((anti_wedge_g0.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0.zxy, anti_wedge_g1[0]))
         );
     }
 }
@@ -368,7 +368,7 @@ public extension Flector {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
         );
     }
 }
@@ -391,7 +391,7 @@ public Flector operator /(AntiProjectOrthogonallyOntoInfixPartial<Flector> lhs, 
 public extension Flector {
     public Flector anti_project_orthogonally_onto(Point other) {
         float3 right_anti_dual_g0_xyz = other.group0.xyz;
-        float3 anti_wedge_g0_xyz = (right_anti_dual_g0_xyz.yzx * this.group1.zxy) - (right_anti_dual_g0_xyz.zxy * this.group1.yzx);
+        float4 anti_wedge_g0 = float4(((right_anti_dual_g0_xyz.yzx * this.group1.zxy) - (right_anti_dual_g0_xyz.zxy * this.group1.yzx)), 0.0);
         float anti_wedge_g1_x = right_anti_dual_g0_xyz[0] * this.e321 * -1.0;
         float anti_wedge_g1_y = right_anti_dual_g0_xyz[1] * this.e321 * -1.0;
         float anti_wedge_g1_z = right_anti_dual_g0_xyz[2] * this.e321 * -1.0;
@@ -399,7 +399,7 @@ public extension Flector {
             /* e1, e2, e3, e4 */
             (float4(right_anti_dual_g0_xyz[0] * this.e1) * other.group0) + (float4(right_anti_dual_g0_xyz[1] * this.e2) * other.group0) + (float4(right_anti_dual_g0_xyz[2] * this.e3) * other.group0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), -(anti_wedge_g1_y * other.e2) - (anti_wedge_g1_z * other.e3)) + float4((float3(other.e4) * float3(anti_wedge_g1_x, anti_wedge_g1_y, anti_wedge_g1_z)), 0.0) + float4((anti_wedge_g0_xyz.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0_xyz.zxy, anti_wedge_g1_x))
+            float4(float3(0.0), -(anti_wedge_g1_y * other.e2) - (anti_wedge_g1_z * other.e3)) + float4((float3(other.e4) * float3(anti_wedge_g1_x, anti_wedge_g1_y, anti_wedge_g1_z)), 0.0) + float4((anti_wedge_g0.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0.zxy, anti_wedge_g1_x))
         );
     }
 }
@@ -494,10 +494,10 @@ public MultiVector operator /(AntiProjectOrthogonallyOntoInfixPartial<Horizon> l
 }
 public extension Horizon {
     public MultiVector anti_project_orthogonally_onto(MultiVector other) {
-        float anti_wedge_g0_x = this.e321 * other.e321;
+        float anti_wedge_g0_x = other.e321 * this.e321;
         float4 anti_wedge_g1 = float4((float3(this.e321 * -1.0) * other.group3.xyz), 0.0);
         float3 anti_wedge_g3 = float3(this.e321 * -1.0) * other.group1.xyz;
-        float4 anti_wedge_g4 = float4(float3(0.0), this.e321 * other.scalar);
+        float4 anti_wedge_g4 = float4(float3(0.0), other.scalar * this.e321);
         return MultiVector(
             /* scalar, e1234 */
             float2(anti_wedge_g0_x * other.scalar, (anti_wedge_g0_x * other.e1234) + (anti_wedge_g4[0] * other.e1) + (anti_wedge_g4[1] * other.e2) + (anti_wedge_g4[2] * other.e3) + (anti_wedge_g4[3] * other.e4) - (anti_wedge_g3[0] * other.e41) - (anti_wedge_g3[1] * other.e42) - (anti_wedge_g3[2] * other.e43) - (anti_wedge_g1[0] * other.e423) - (anti_wedge_g1[1] * other.e431) - (anti_wedge_g1[2] * other.e412) - (anti_wedge_g1[3] * other.e321)), 
@@ -508,7 +508,7 @@ public extension Horizon {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[0] * other.e1) - (anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx)
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[0] * other.e1) - (anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23))
         );
     }
 }
@@ -520,7 +520,7 @@ public extension Horizon {
     public Plane anti_project_orthogonally_onto(Plane other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.e321 * other.e321) * other.group0
+            float4(other.e321 * this.e321) * other.group0
         );
     }
 }
@@ -636,7 +636,7 @@ public extension Line {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
+            (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
         );
     }
 }
@@ -684,7 +684,7 @@ public extension Motor {
         float4 anti_wedge_g1 = float4(other.scalar) * this.group1;
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((float2(other.scalar) * anti_wedge_g0.xy), anti_wedge_g0[2] * other.scalar, (anti_wedge_g0[3] * other.scalar) + (anti_wedge_g1[3] * other.e1234)), 
+            float4((float3(other.scalar) * anti_wedge_g0.xyz), (other.scalar * anti_wedge_g0[3]) + (other.e1234 * anti_wedge_g1[3])), 
             /* e23, e31, e12, scalar */
             anti_wedge_g1 * float4(other.scalar)
         );
@@ -701,7 +701,7 @@ public extension Motor {
         float3 anti_wedge_g1_xyz = right_anti_dual_g1_xyz * float3(this.e1234);
         return Motor(
             /* e41, e42, e43, e1234 */
-            (float4(anti_wedge_g0[0], anti_wedge_g0[1], anti_wedge_g0[2], anti_wedge_g1_xyz[0]) * other.group0.wwwx) + float4(float3(0.0), (anti_wedge_g1_xyz[1] * other.e2) + (anti_wedge_g1_xyz[2] * other.e3) - (anti_wedge_g0[0] * other.e423) - (anti_wedge_g0[1] * other.e431) - (anti_wedge_g0[2] * other.e412)) - (float4(anti_wedge_g0[3]) * float4(other.group0.xyz, other.e321)), 
+            (other.group0.wwwx * float4(anti_wedge_g0.xyz, anti_wedge_g1_xyz[0])) + float4(float3(0.0), (anti_wedge_g1_xyz[1] * other.e2) + (anti_wedge_g1_xyz[2] * other.e3) - (anti_wedge_g0[0] * other.e423) - (anti_wedge_g0[1] * other.e431) - (anti_wedge_g0[2] * other.e412)) - (float4(anti_wedge_g0[3]) * float4(other.group0.xyz, other.e321)), 
             /* e23, e31, e12, scalar */
             float4(((anti_wedge_g0.zxy * other.group0.yzx) - (anti_wedge_g0.yzx * other.group0.zxy)), 0.0)
         );
@@ -715,7 +715,7 @@ public extension Motor {
     public AntiScalar anti_project_orthogonally_onto(Horizon other) {
         return AntiScalar(
             /* e1234 */
-            other.e321 * other.e321 * this.e1234
+            this.e1234 * other.e321 * other.e321
         );
     }
 }
@@ -761,14 +761,14 @@ public extension Motor {
     public MultiVector anti_project_orthogonally_onto(MultiVector other) {
         float3 right_anti_dual_g2 = other.group3.xyz * float3(-1.0);
         float3 right_anti_dual_g4_xyz = other.group1.xyz;
-        float anti_wedge_g0_x = (this.scalar * other.scalar) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12);
+        float anti_wedge_g0_x = (other.scalar * this.scalar) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12);
         float4 anti_wedge_g1 = float4(float3(0.0), -(right_anti_dual_g4_xyz[1] * this.e42) - (right_anti_dual_g4_xyz[2] * this.e43) - (this.e1234 * other.e321)) + float4((right_anti_dual_g4_xyz.zxy * this.group1.yzx), 0.0) - float4((right_anti_dual_g4_xyz.yzx * this.group1.zxy), right_anti_dual_g4_xyz[0] * this.e41);
         float3 anti_wedge_g2 = (right_anti_dual_g2 * float3(this.e1234)) + (float3(other.scalar) * this.group0.xyz);
         float3 anti_wedge_g3 = float3(other.scalar) * this.group1.xyz;
         float4 anti_wedge_g4 = float4((right_anti_dual_g4_xyz * float3(this.e1234)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2(anti_wedge_g0_x * other.scalar, (anti_wedge_g0_x * other.e1234) + (anti_wedge_g4[0] * other.e1) + (anti_wedge_g4[1] * other.e2) + (anti_wedge_g4[2] * other.e3) + (anti_wedge_g4[3] * other.e4) + (this.e1234 * other.scalar * other.scalar) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12) - (anti_wedge_g3[0] * other.e41) - (anti_wedge_g3[1] * other.e42) - (anti_wedge_g3[2] * other.e43) - (anti_wedge_g1[0] * other.e423) - (anti_wedge_g1[1] * other.e431) - (anti_wedge_g1[2] * other.e412) - (anti_wedge_g1[3] * other.e321)), 
+            float2(anti_wedge_g0_x * other.scalar, (anti_wedge_g0_x * other.e1234) + (anti_wedge_g4[0] * other.e1) + (anti_wedge_g4[1] * other.e2) + (anti_wedge_g4[2] * other.e3) + (anti_wedge_g4[3] * other.e4) + (other.scalar * other.scalar * this.e1234) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12) - (anti_wedge_g3[0] * other.e41) - (anti_wedge_g3[1] * other.e42) - (anti_wedge_g3[2] * other.e43) - (anti_wedge_g1[0] * other.e423) - (anti_wedge_g1[1] * other.e431) - (anti_wedge_g1[2] * other.e412) - (anti_wedge_g1[3] * other.e321)), 
             /* e1, e2, e3, e4 */
             (anti_wedge_g1 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group1), 
             /* e41, e42, e43 */
@@ -776,7 +776,7 @@ public extension Motor {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
         );
     }
 }
@@ -803,7 +803,7 @@ public extension Motor {
         float3 anti_wedge_g1_xyz = right_anti_dual_g0_xyz * float3(this.e1234);
         return Motor(
             /* e41, e42, e43, e1234 */
-            (float4(anti_wedge_g0[0], anti_wedge_g0[1], anti_wedge_g0[2], anti_wedge_g1_xyz[0]) * other.group0.wwwx) + float4(float3(0.0), (anti_wedge_g1_xyz[1] * other.e2) + (anti_wedge_g1_xyz[2] * other.e3)) - float4((float3(anti_wedge_g0[3]) * other.group0.xyz), 0.0), 
+            (other.group0.wwwx * float4(anti_wedge_g0.xyz, anti_wedge_g1_xyz[0])) + float4(float3(0.0), (anti_wedge_g1_xyz[1] * other.e2) + (anti_wedge_g1_xyz[2] * other.e3)) - float4((float3(anti_wedge_g0[3]) * other.group0.xyz), 0.0), 
             /* e23, e31, e12, scalar */
             float4(((anti_wedge_g0.zxy * other.group0.yzx) - (anti_wedge_g0.yzx * other.group0.zxy)), 0.0)
         );
@@ -884,7 +884,7 @@ public extension MultiVector {
         float right_anti_dual_g0 = other.e321 * -1.0;
         return MultiVector(
             /* scalar, e1234 */
-            float2(0.0, right_anti_dual_g0 * other.e321 * this.e1234 * -1.0), 
+            float2(0.0, right_anti_dual_g0 * this.e1234 * other.e321 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e41, e42, e43 */
@@ -892,7 +892,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(float3(0.0), right_anti_dual_g0 * other.e321 * this.e321 * -1.0)
+            float4(float3(0.0), right_anti_dual_g0 * this.e321 * other.e321 * -1.0)
         );
     }
 }
@@ -927,14 +927,14 @@ public MultiVector operator /(AntiProjectOrthogonallyOntoInfixPartial<MultiVecto
 public extension MultiVector {
     public MultiVector anti_project_orthogonally_onto(Motor other) {
         float4 right_anti_dual_g0 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
-        float anti_wedge_g0_x = (right_anti_dual_g0[3] * this.scalar) - (right_anti_dual_g0[0] * this.e23) - (right_anti_dual_g0[1] * this.e31) - (right_anti_dual_g0[2] * this.e12);
+        float anti_wedge_g0_x = (this.scalar * right_anti_dual_g0[3]) - (this.e23 * right_anti_dual_g0[0]) - (this.e31 * right_anti_dual_g0[1]) - (this.e12 * right_anti_dual_g0[2]);
         float4 anti_wedge_g1 = (right_anti_dual_g0 * float4(float3(this.e321), this.e4)) + float4(float3(0.0), -(right_anti_dual_g0[0] * this.e423) - (right_anti_dual_g0[1] * this.e431) - (right_anti_dual_g0[2] * this.e412)) + float4((float3(right_anti_dual_g0[3]) * this.group1.xyz), 0.0);
-        float3 anti_wedge_g2 = (float3(right_anti_dual_g0[3]) * this.group2.xyz) + (float3(this.e1234) * right_anti_dual_g0.xyz);
+        float3 anti_wedge_g2 = (float3(this.e1234) * right_anti_dual_g0.xyz) + (float3(right_anti_dual_g0[3]) * this.group2.xyz);
         float3 anti_wedge_g3 = float3(right_anti_dual_g0[3]) * this.group3.xyz;
         float4 anti_wedge_g4 = float4(right_anti_dual_g0[3]) * this.group4;
         return MultiVector(
             /* scalar, e1234 */
-            float2(anti_wedge_g0_x * other.scalar, (anti_wedge_g0_x * other.e1234) + (right_anti_dual_g0[3] * other.scalar * this.e1234) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12) - (anti_wedge_g3[0] * other.e41) - (anti_wedge_g3[1] * other.e42) - (anti_wedge_g3[2] * other.e43)), 
+            float2(anti_wedge_g0_x * other.scalar, (anti_wedge_g0_x * other.e1234) + (this.e1234 * right_anti_dual_g0[3] * other.scalar) - (anti_wedge_g2[0] * other.e23) - (anti_wedge_g2[1] * other.e31) - (anti_wedge_g2[2] * other.e12) - (anti_wedge_g3[0] * other.e41) - (anti_wedge_g3[1] * other.e42) - (anti_wedge_g3[2] * other.e43)), 
             /* e1, e2, e3, e4 */
             anti_wedge_g1 * float4(other.scalar), 
             /* e41, e42, e43 */
@@ -955,10 +955,10 @@ public extension MultiVector {
         float4 right_anti_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_anti_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_anti_dual_g4 = float4(other.group1.xyz, 0.0);
-        float anti_wedge_g0_x = (right_anti_dual_g4[0] * this.e1) + (right_anti_dual_g4[1] * this.e2) + (right_anti_dual_g4[2] * this.e3) + (right_anti_dual_g4[3] * this.e4) + (other.scalar * this.scalar) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321);
-        float4 anti_wedge_g1 = (right_anti_dual_g1 * float4(this.e1234)) + (float4(other.scalar) * this.group1) + float4(float3(0.0), -(right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (right_anti_dual_g4[1] * this.e42) - (right_anti_dual_g4[2] * this.e43)) + float4((right_anti_dual_g2 * float3(this.e321)), 0.0) + float4((float3(right_anti_dual_g4[3]) * this.group2.xyz), 0.0) + float4((this.group3.yzx * right_anti_dual_g4.zxy), 0.0) - (right_anti_dual_g4.yzxx * float4(this.group3.zxy, this.e41));
+        float anti_wedge_g0_x = (other.scalar * this.scalar) + (right_anti_dual_g4[0] * this.e1) + (right_anti_dual_g4[1] * this.e2) + (right_anti_dual_g4[2] * this.e3) + (right_anti_dual_g4[3] * this.e4) - (right_anti_dual_g2[0] * this.e23) - (right_anti_dual_g2[1] * this.e31) - (right_anti_dual_g2[2] * this.e12) - (right_anti_dual_g1[0] * this.e423) - (right_anti_dual_g1[1] * this.e431) - (right_anti_dual_g1[2] * this.e412) - (right_anti_dual_g1[3] * this.e321);
+        float4 anti_wedge_g1 = (right_anti_dual_g1 * float4(this.e1234)) + (float4(other.scalar) * this.group1) + float4(float3(0.0), -(right_anti_dual_g2[0] * this.e423) - (right_anti_dual_g2[1] * this.e431) - (right_anti_dual_g2[2] * this.e412) - (this.e42 * right_anti_dual_g4[1]) - (this.e43 * right_anti_dual_g4[2])) + float4((right_anti_dual_g2 * float3(this.e321)), 0.0) + float4((float3(right_anti_dual_g4[3]) * this.group2.xyz), 0.0) + float4((this.group3.yzx * right_anti_dual_g4.zxy), 0.0) - (right_anti_dual_g4.yzxx * float4(this.group3.zxy, this.e41));
         float3 anti_wedge_g2 = (right_anti_dual_g2 * float3(this.e1234)) + (float3(other.scalar) * this.group2.xyz) + float3(float2(0.0), (right_anti_dual_g4[0] * this.e431) - (right_anti_dual_g4[1] * this.e423)) + float3((right_anti_dual_g4.yz * this.group4.zx), 0.0) - float3((right_anti_dual_g4.zx * this.group4.yz), 0.0);
-        float3 anti_wedge_g3 = (float3(right_anti_dual_g4[3]) * this.group4.xyz) + (float3(other.scalar) * this.group3.xyz) - (float3(this.e321) * right_anti_dual_g4.xyz);
+        float3 anti_wedge_g3 = (float3(other.scalar) * this.group3.xyz) + (float3(right_anti_dual_g4[3]) * this.group4.xyz) - (float3(this.e321) * right_anti_dual_g4.xyz);
         float4 anti_wedge_g4 = (right_anti_dual_g4 * float4(this.e1234)) + (float4(other.scalar) * this.group4);
         return MultiVector(
             /* scalar, e1234 */
@@ -970,7 +970,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
         );
     }
 }
@@ -1127,13 +1127,13 @@ public Flector operator /(AntiProjectOrthogonallyOntoInfixPartial<Plane> lhs, Fl
 public extension Plane {
     public Flector anti_project_orthogonally_onto(Flector other) {
         float3 right_anti_dual_g1_xyz = other.group0.xyz;
-        float3 anti_wedge_g0_xyz = (right_anti_dual_g1_xyz.yzx * this.group0.zxy) - (right_anti_dual_g1_xyz.zxy * this.group0.yzx);
+        float4 anti_wedge_g0 = float4(((right_anti_dual_g1_xyz.yzx * this.group0.zxy) - (right_anti_dual_g1_xyz.zxy * this.group0.yzx)), 0.0);
         float4 anti_wedge_g1 = float4(right_anti_dual_g1_xyz[0] * this.e321 * -1.0, right_anti_dual_g1_xyz[1] * this.e321 * -1.0, right_anti_dual_g1_xyz[2] * this.e321 * -1.0, other.e321 * this.e321);
         return Flector(
             /* e1, e2, e3, e4 */
             float4(anti_wedge_g1[3]) * other.group0, 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g1 * float4(float3(other.e4), other.e321)) + float4(float3(0.0), -(anti_wedge_g1[1] * other.e2) - (anti_wedge_g1[2] * other.e3)) + float4((float3(anti_wedge_g1[3]) * other.group1.xyz), 0.0) + float4((anti_wedge_g0_xyz.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0_xyz.zxy, anti_wedge_g1[0]))
+            (anti_wedge_g1 * float4(float3(other.e4), other.e321)) + float4(float3(0.0), -(anti_wedge_g1[1] * other.e2) - (anti_wedge_g1[2] * other.e3)) + float4((float3(anti_wedge_g1[3]) * other.group1.xyz), 0.0) + float4((anti_wedge_g0.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(anti_wedge_g0.zxy, anti_wedge_g1[0]))
         );
     }
 }
@@ -1145,7 +1145,7 @@ public extension Plane {
     public Horizon anti_project_orthogonally_onto(Horizon other) {
         return Horizon(
             /* e321 */
-            other.e321 * other.e321 * this.e321
+            this.e321 * other.e321 * other.e321
         );
     }
 }
@@ -1202,7 +1202,7 @@ public extension Plane {
             /* e23, e31, e12 */
             (anti_wedge_g3 * float3(other.scalar)) + (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
+            (anti_wedge_g4 * float4(other.scalar)) + (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g3[1] * other.e2) - (anti_wedge_g3[2] * other.e3) - (other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((anti_wedge_g3 * float3(other.e4)), 0.0) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((anti_wedge_g2.yzx * other.group1.zxy), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23)) - (other.group1.yzxx * float4(anti_wedge_g2.zxy, anti_wedge_g3[0]))
         );
     }
 }
@@ -1311,7 +1311,7 @@ public extension Point {
             /* e23, e31, e12 */
             (float3(anti_wedge_g0_x) * other.group3.xyz) + float3(float2(0.0), (anti_wedge_g1[1] * other.e1) - (anti_wedge_g1[0] * other.e2)) + float3((anti_wedge_g1.zx * other.group1.yz), 0.0) - float3((anti_wedge_g1.yz * other.group1.zx), 0.0), 
             /* e423, e431, e412, e321 */
-            (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(anti_wedge_g1[1] * other.e31) - (anti_wedge_g1[2] * other.e12)) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * anti_wedge_g1.yzxx)
+            (float4(anti_wedge_g0_x) * other.group4) + float4(float3(0.0), -(other.e31 * anti_wedge_g1[1]) - (other.e12 * anti_wedge_g1[2])) + float4((float3(anti_wedge_g1[3]) * other.group3.xyz), 0.0) + float4((other.group2.yzx * anti_wedge_g1.zxy), 0.0) - (anti_wedge_g1.yzxx * float4(other.group2.zxy, other.e23))
         );
     }
 }

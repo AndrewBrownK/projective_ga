@@ -104,7 +104,7 @@ impl std::ops::Add<Motor> for AntiScalar {
         use crate::elements::*;
         Motor::from_groups(
             // e41, e42, e43, e1234
-            other.group0().xyz().with_w(self[e1234] + other[e1234]),
+            other.group0().xyz().with_w(other[e1234] + self[e1234]),
             // e23, e31, e12, scalar
             other.group1(),
         )

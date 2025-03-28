@@ -59,7 +59,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group3.xyz, 
             /* e423, e431, e412, e321 */
-            float4(this.group4.xyz, other.e321 + this.e321)
+            float4(this.group4.xyz, this.e321 + other.e321)
         );
     }
 }

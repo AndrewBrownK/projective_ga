@@ -126,14 +126,14 @@ impl ConstraintViolation for MultiVector {
                 + Simd32x4::from(2.0) * (self.group1().yzxx() * self.group3().zxy().with_w(self[e41]))
                 + Simd32x3::from(0.0).with_w(
                     2.0 * (self[e1234] * self[e321])
-                        + 2.0 * (self[e2] * self[e42])
-                        + 2.0 * (self[e3] * self[e43])
+                        + 2.0 * (self[e42] * self[e2])
+                        + 2.0 * (self[e43] * self[e3])
                         + 2.0 * (self[e23] * self[e423])
                         + 2.0 * (self[e31] * self[e431])
                         + 2.0 * (self[e12] * self[e412]),
                 )
-                - Simd32x4::from(2.0) * (Simd32x3::from(self[e321]) * self.group3()).with_w(0.0)
-                - Simd32x4::from(2.0) * (self.group3().yzx() * self.group1().zxy()).with_w(0.0),
+                - Simd32x4::from(2.0) * (self.group3().xyx() * Simd32x2::from(self[e321]).with_z(self[e2])).with_w(0.0)
+                - Simd32x4::from(2.0) * (self.group3().yzz() * self.group1().zx().with_z(self[e321])).with_w(0.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12

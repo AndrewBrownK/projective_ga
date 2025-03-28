@@ -73,13 +73,13 @@ impl std::ops::Add<Horizon> for Plane {
     // f32        1        0        0        0
     fn add(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(other[e321] + self[e321]))
+        Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(self[e321] + other[e321]))
     }
 }
 impl std::ops::AddAssign<Horizon> for Plane {
     fn add_assign(&mut self, other: Horizon) {
         use crate::elements::*;
-        *self = Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(other[e321] + self[e321]));
+        *self = Plane::from_groups(/* e423, e431, e412, e321 */ self.group0().xyz().with_w(self[e321] + other[e321]));
     }
 }
 impl std::ops::Add<Line> for Plane {

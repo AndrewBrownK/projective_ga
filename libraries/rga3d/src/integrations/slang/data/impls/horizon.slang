@@ -93,7 +93,7 @@ public extension Horizon {
             /* e23, e31, e12 */
             other.group3.xyz, 
             /* e423, e431, e412, e321 */
-            float4(other.group4.xyz, this.e321 + other.e321)
+            float4(other.group4.xyz, other.e321 + this.e321)
         );
     }
 }
@@ -111,7 +111,7 @@ public extension Horizon {
     public Plane operator +(Plane other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(other.group0.xyz, this.e321 + other.e321)
+            float4(other.group0.xyz, other.e321 + this.e321)
         );
     }
 }

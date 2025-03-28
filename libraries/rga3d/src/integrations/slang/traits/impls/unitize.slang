@@ -100,7 +100,7 @@ public MultiVector operator /(UnitizePrefixOrPostfix lhs, MultiVector rhs) {
 public extension MultiVector {
     public MultiVector unitize() {
         float3 sub_type_g4_xyz = this.group4.xyz;
-        float geometric_anti_product_g0 = sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43;
+        float geometric_anti_product_g0 = this.e1234 * this.e1234 + sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e4 * this.e4;
         return MultiVector(
             /* scalar, e1234 */
             float2(geometric_anti_product_g0) * this.group0.xy, 

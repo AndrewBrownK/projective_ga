@@ -11,7 +11,7 @@ public extension AntiScalar {
     public AntiScalar anti_reject_via_horizon_from(DualNum other) {
         return AntiScalar(
             /* e1234 */
-            this.e1234 * other.scalar * other.scalar
+            other.scalar * other.scalar * this.e1234
         );
     }
 }
@@ -23,7 +23,7 @@ public extension AntiScalar {
     public Motor anti_reject_via_horizon_from(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(this.e1234 * other.scalar) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
+            float4(other.scalar * this.e1234) * other.group1 * float4(-1.0, -1.0, -1.0, 1.0), 
             /* e23, e31, e12, scalar */
             float4(0.0)
         );
@@ -35,7 +35,7 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<AntiScalar> l
 }
 public extension AntiScalar {
     public MultiVector anti_reject_via_horizon_from(MultiVector other) {
-        float wedge_g0 = this.e1234 * other.scalar;
+        float wedge_g0 = other.scalar * this.e1234;
         return MultiVector(
             /* scalar, e1234 */
             float2(0.0, wedge_g0 * other.scalar), 
@@ -152,7 +152,7 @@ public extension DualNum {
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2((right_dual_g4[0] * wedge_g1[0]) + (right_dual_g4[1] * wedge_g1[1]) + (right_dual_g4[2] * wedge_g1[2]) + (right_dual_g4[3] * wedge_g1[3]) + (this.scalar * other.scalar * other.scalar) - (right_dual_g2[0] * wedge_g3[0]) - (right_dual_g2[1] * wedge_g3[1]) - (right_dual_g2[2] * wedge_g3[2]) - (right_dual_g1[0] * wedge_g4[0]) - (right_dual_g1[1] * wedge_g4[1]) - (right_dual_g1[2] * wedge_g4[2]) - (right_dual_g1[3] * wedge_g4[3]), wedge_g0_y * other.scalar), 
+            float2((this.scalar * other.scalar * other.scalar) + (right_dual_g4[0] * wedge_g1[0]) + (right_dual_g4[1] * wedge_g1[1]) + (right_dual_g4[2] * wedge_g1[2]) + (right_dual_g4[3] * wedge_g1[3]) - (right_dual_g2[0] * wedge_g3[0]) - (right_dual_g2[1] * wedge_g3[1]) - (right_dual_g2[2] * wedge_g3[2]) - (right_dual_g1[0] * wedge_g4[0]) - (right_dual_g1[1] * wedge_g4[1]) - (right_dual_g1[2] * wedge_g4[2]) - (right_dual_g1[3] * wedge_g4[3]), wedge_g0_y * other.scalar), 
             /* e1, e2, e3, e4 */
             (right_dual_g1 * float4(wedge_g0_y)) + (wedge_g1 * float4(other.scalar)) + float4(float3(0.0), -(right_dual_g2[0] * wedge_g4[0]) - (right_dual_g2[1] * wedge_g4[1]) - (right_dual_g2[2] * wedge_g4[2]) - (wedge_g2[1] * right_dual_g4[1]) - (wedge_g2[2] * right_dual_g4[2])) + float4((right_dual_g2 * float3(wedge_g4[3])), 0.0) + float4((wedge_g2 * float3(right_dual_g4[3])), 0.0) + float4((wedge_g3.yzx * right_dual_g4.zxy), 0.0) - (right_dual_g4.yzxx * float4(wedge_g3.zxy, wedge_g2[0])), 
             /* e41, e42, e43 */
@@ -227,11 +227,11 @@ public Flector operator /(AntiRejectViaHorizonFromInfixPartial<Flector> lhs, Fle
 public extension Flector {
     public Flector anti_reject_via_horizon_from(Flector other) {
         float4 wedge_g0 = (float4(this.e4) * float4(other.group0.xyz, other.e321)) + float4(float3(0.0), (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412)) - (float4(other.e4) * float4(this.group0.xyz, this.e321));
-        float3 wedge_g1_xyz = (other.group0.zxy * this.group0.yzx) + float3(float2(0.0), (other.e1 * this.e2) * -1.0) - float3((other.group0.yz * this.group0.zx), 0.0);
+        float4 wedge_g1 = float4(((other.group0.zxy * this.group0.yzx) - (other.group0.yzx * this.group0.zxy)), 0.0);
         float3 right_dual_g1_xyz = other.group0.xyz;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(right_dual_g1_xyz[1] * wedge_g0[1]) - (right_dual_g1_xyz[2] * wedge_g0[2]) - (wedge_g0[3] * other.e321)) + float4((right_dual_g1_xyz.zxy * wedge_g1_xyz.yzx), 0.0) - float4((right_dual_g1_xyz.yzx * wedge_g1_xyz.zxy), right_dual_g1_xyz[0] * wedge_g0[0]), 
+            float4(float3(0.0), -(right_dual_g1_xyz[1] * wedge_g0[1]) - (right_dual_g1_xyz[2] * wedge_g0[2]) - (wedge_g0[3] * other.e321)) + float4((right_dual_g1_xyz.zxy * wedge_g1.yzx), 0.0) - float4((right_dual_g1_xyz.yzx * wedge_g1.zxy), right_dual_g1_xyz[0] * wedge_g0[0]), 
             /* e423, e431, e412, e321 */
             float4((right_dual_g1_xyz * float3(wedge_g0[3])), 0.0)
         );
@@ -255,7 +255,7 @@ public Point operator /(AntiRejectViaHorizonFromInfixPartial<Flector> lhs, Line 
 }
 public extension Flector {
     public Point anti_reject_via_horizon_from(Line other) {
-        float4 wedge_g0 = float4(float3(0.0), -(this.e2 * other.e31) - (this.e3 * other.e12)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group0.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group0.yzxx);
+        float4 wedge_g0 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group0.zxy, other.e23));
         float3 right_dual_g0 = other.group1.xyz * float3(-1.0);
         return Point(
             /* e1, e2, e3, e4 */
@@ -290,7 +290,7 @@ public extension Flector {
         float4 wedge_g1 = float4(other.scalar) * this.group0;
         float3 wedge_g2 = (float3(this.e4) * other.group1.xyz) - (float3(other.e4) * this.group0.xyz);
         float3 wedge_g3 = (this.group0.yzx * other.group1.zxy) + float3(float2(0.0), (this.e2 * other.e1) * -1.0) - float3((this.group0.zx * other.group1.yz), 0.0);
-        float4 wedge_g4 = (float4(other.scalar) * this.group1) + float4(float3(0.0), -(this.e2 * other.e31) - (this.e3 * other.e12)) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group0.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group0.yzxx);
+        float4 wedge_g4 = (float4(other.scalar) * this.group1) + float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group2.zxy, other.e23));
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
@@ -327,11 +327,11 @@ public Flector operator /(AntiRejectViaHorizonFromInfixPartial<Flector> lhs, Poi
 public extension Flector {
     public Flector anti_reject_via_horizon_from(Point other) {
         float4 wedge_g0 = float4(float3(0.0), -(this.e423 * other.e1) - (this.e431 * other.e2) - (this.e412 * other.e3)) + float4((float3(this.e4) * other.group0.xyz), 0.0) - (float4(other.e4) * float4(this.group0.xyz, this.e321));
-        float3 wedge_g1_xyz = (this.group0.yzx * other.group0.zxy) + float3(float2(0.0), (this.e2 * other.e1) * -1.0) - float3((this.group0.zx * other.group0.yz), 0.0);
+        float4 wedge_g1 = float4(((this.group0.yzx * other.group0.zxy) - (this.group0.zxy * other.group0.yzx)), 0.0);
         float3 right_dual_g0_xyz = other.group0.xyz;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(right_dual_g0_xyz[1] * wedge_g0[1]) - (right_dual_g0_xyz[2] * wedge_g0[2])) + float4((right_dual_g0_xyz.zxy * wedge_g1_xyz.yzx), 0.0) - float4((right_dual_g0_xyz.yzx * wedge_g1_xyz.zxy), right_dual_g0_xyz[0] * wedge_g0[0]), 
+            float4(float3(0.0), -(right_dual_g0_xyz[1] * wedge_g0[1]) - (right_dual_g0_xyz[2] * wedge_g0[2])) + float4((right_dual_g0_xyz.zxy * wedge_g1.yzx), 0.0) - float4((right_dual_g0_xyz.yzx * wedge_g1.zxy), right_dual_g0_xyz[0] * wedge_g0[0]), 
             /* e423, e431, e412, e321 */
             float4((right_dual_g0_xyz * float3(wedge_g0[3])), 0.0)
         );
@@ -388,7 +388,7 @@ public Flector operator /(AntiRejectViaHorizonFromInfixPartial<Horizon> lhs, Mot
 }
 public extension Horizon {
     public Flector anti_reject_via_horizon_from(Motor other) {
-        float wedge_g0 = this.e321 * other.scalar;
+        float wedge_g0 = other.scalar * this.e321;
         return Flector(
             /* e1, e2, e3, e4 */
             float4((float3(wedge_g0 * -1.0) * other.group1.xyz), 0.0), 
@@ -403,8 +403,8 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<Horizon> lhs,
 }
 public extension Horizon {
     public MultiVector anti_reject_via_horizon_from(MultiVector other) {
-        float wedge_g0_y = this.e321 * other.e4 * -1.0;
-        float4 wedge_g4 = float4(float3(0.0), this.e321 * other.scalar);
+        float wedge_g0_y = other.e4 * this.e321 * -1.0;
+        float4 wedge_g4 = float4(float3(0.0), other.scalar * this.e321);
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
@@ -430,7 +430,7 @@ public extension Horizon {
     public Plane anti_reject_via_horizon_from(Point other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4((float3(this.e321 * other.e4 * -1.0) * other.group0.xyz), 0.0)
+            float4((float3(other.e4 * this.e321 * -1.0) * other.group0.xyz), 0.0)
         );
     }
 }
@@ -470,7 +470,7 @@ public Motor operator /(AntiRejectViaHorizonFromInfixPartial<Line> lhs, Flector 
 }
 public extension Line {
     public Motor anti_reject_via_horizon_from(Flector other) {
-        float4 wedge_g0 = float4(float3(0.0), -(other.e2 * this.e31) - (other.e3 * this.e12)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group0.zxy), 0.0) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group0.yzxx);
+        float4 wedge_g0 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group0.zxy, this.e23));
         float3 right_dual_g1_xyz = other.group0.xyz;
         return Motor(
             /* e41, e42, e43, e1234 */
@@ -519,7 +519,7 @@ public extension Line {
         float wedge_g0_y = -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43);
         float3 wedge_g2 = float3(other.scalar) * this.group0.xyz;
         float3 wedge_g3 = float3(other.scalar) * this.group1.xyz;
-        float4 wedge_g4 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group1.zxy), 0.0) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group1.yzxx);
+        float4 wedge_g4 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group1.zxy), 0.0) - (other.group1.yzxx * float4(this.group0.zxy, this.e23));
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
@@ -543,7 +543,7 @@ public Line operator /(AntiRejectViaHorizonFromInfixPartial<Line> lhs, Point rhs
 }
 public extension Line {
     public Line anti_reject_via_horizon_from(Point other) {
-        float4 wedge_g0 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group0.zxy), 0.0) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group0.yzxx);
+        float4 wedge_g0 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group1.xyz), 0.0) + float4((this.group0.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group0.zxy, this.e23));
         float3 right_dual_g0_xyz = other.group0.xyz;
         return Line(
             /* e41, e42, e43 */
@@ -610,7 +610,7 @@ public extension Motor {
     public Scalar anti_reject_via_horizon_from(Horizon other) {
         return Scalar(
             /* scalar */
-            other.e321 * other.e321 * this.scalar
+            this.scalar * other.e321 * other.e321
         );
     }
 }
@@ -652,17 +652,17 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<Motor> lhs, M
 }
 public extension Motor {
     public MultiVector anti_reject_via_horizon_from(MultiVector other) {
-        float wedge_g0_y = (this.e1234 * other.scalar) + (this.scalar * other.e1234) - (this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43);
+        float wedge_g0_y = (other.scalar * this.e1234) + (other.e1234 * this.scalar) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43);
         float4 wedge_g1 = float4(this.scalar) * other.group1;
-        float3 wedge_g2 = (float3(this.scalar) * other.group2.xyz) + (float3(other.scalar) * this.group0.xyz);
-        float3 wedge_g3 = (float3(this.scalar) * other.group3.xyz) + (float3(other.scalar) * this.group1.xyz);
+        float3 wedge_g2 = (float3(other.scalar) * this.group0.xyz) + (float3(this.scalar) * other.group2.xyz);
+        float3 wedge_g3 = (float3(other.scalar) * this.group1.xyz) + (float3(this.scalar) * other.group3.xyz);
         float4 wedge_g4 = (this.group1 * float4(float3(other.e4), other.e321)) + float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(this.scalar) * other.group4.xyz), 0.0) + float4((this.group0.yzx * other.group1.zxy), 0.0) - (other.group1.yzxx * float4(this.group0.zxy, this.e23));
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2((right_dual_g4[0] * wedge_g1[0]) + (right_dual_g4[1] * wedge_g1[1]) + (right_dual_g4[2] * wedge_g1[2]) + (right_dual_g4[3] * wedge_g1[3]) + (this.scalar * other.scalar * other.scalar) - (right_dual_g2[0] * wedge_g3[0]) - (right_dual_g2[1] * wedge_g3[1]) - (right_dual_g2[2] * wedge_g3[2]) - (right_dual_g1[0] * wedge_g4[0]) - (right_dual_g1[1] * wedge_g4[1]) - (right_dual_g1[2] * wedge_g4[2]) - (right_dual_g1[3] * wedge_g4[3]), wedge_g0_y * other.scalar), 
+            float2((right_dual_g4[0] * wedge_g1[0]) + (right_dual_g4[1] * wedge_g1[1]) + (right_dual_g4[2] * wedge_g1[2]) + (right_dual_g4[3] * wedge_g1[3]) + (other.scalar * other.scalar * this.scalar) - (right_dual_g2[0] * wedge_g3[0]) - (right_dual_g2[1] * wedge_g3[1]) - (right_dual_g2[2] * wedge_g3[2]) - (right_dual_g1[0] * wedge_g4[0]) - (right_dual_g1[1] * wedge_g4[1]) - (right_dual_g1[2] * wedge_g4[2]) - (right_dual_g1[3] * wedge_g4[3]), wedge_g0_y * other.scalar), 
             /* e1, e2, e3, e4 */
             (right_dual_g1 * float4(wedge_g0_y)) + (wedge_g1 * float4(other.scalar)) + float4(float3(0.0), -(right_dual_g2[0] * wedge_g4[0]) - (right_dual_g2[1] * wedge_g4[1]) - (right_dual_g2[2] * wedge_g4[2]) - (wedge_g2[1] * right_dual_g4[1]) - (wedge_g2[2] * right_dual_g4[2])) + float4((right_dual_g2 * float3(wedge_g4[3])), 0.0) + float4((wedge_g2 * float3(right_dual_g4[3])), 0.0) + float4((wedge_g3.yzx * right_dual_g4.zxy), 0.0) - (right_dual_g4.yzxx * float4(wedge_g3.zxy, wedge_g2[0])), 
             /* e41, e42, e43 */
@@ -751,7 +751,7 @@ public extension MultiVector {
         float4 wedge_g1 = float4(this.scalar) * other.group0;
         float3 wedge_g2 = (float3(this.e4) * other.group0.xyz) - (float3(other.e4) * this.group1.xyz);
         float3 wedge_g3 = (other.group0.zxy * this.group1.yzx) + float3(float2(0.0), (other.e1 * this.e2) * -1.0) - float3((other.group0.yz * this.group1.zx), 0.0);
-        float4 wedge_g4 = (float4(this.scalar) * other.group1) + float4(float3(0.0), -(other.e2 * this.e31) - (other.e3 * this.e12)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((this.group2.yzx * other.group0.zxy), 0.0) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group0.yzxx);
+        float4 wedge_g4 = (float4(this.scalar) * other.group1) + float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((this.group2.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group2.zxy, this.e23));
         float4 right_dual_g0 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g1_xyz = other.group0.xyz;
         return MultiVector(
@@ -777,9 +777,9 @@ public extension MultiVector {
         float right_dual_g0 = other.e321 * -1.0;
         return MultiVector(
             /* scalar, e1234 */
-            float2(right_dual_g0 * other.e321 * this.scalar * -1.0, 0.0), 
+            float2(right_dual_g0 * this.scalar * other.e321 * -1.0, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), right_dual_g0 * other.e321 * this.e4), 
+            float4(float3(0.0), right_dual_g0 * this.e4 * other.e321), 
             /* e41, e42, e43 */
             float3(0.0), 
             /* e23, e31, e12 */
@@ -796,7 +796,7 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<MultiVector> 
 public extension MultiVector {
     public MultiVector anti_reject_via_horizon_from(Line other) {
         float3 wedge_g3 = float3(this.scalar) * other.group1.xyz;
-        float4 wedge_g4 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group1.yzxx);
+        float4 wedge_g4 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group1.zxy), 0.0) - (this.group1.yzxx * float4(other.group0.zxy, other.e23));
         float3 right_dual_g0 = other.group1.xyz * float3(-1.0);
         return MultiVector(
             /* scalar, e1234 */
@@ -818,18 +818,18 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<MultiVector> 
 }
 public extension MultiVector {
     public MultiVector anti_reject_via_horizon_from(Motor other) {
-        float wedge_g0_y = (other.e1234 * this.scalar) + (other.scalar * this.e1234) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43);
+        float wedge_g0_y = (this.scalar * other.e1234) + (this.e1234 * other.scalar) - (this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43);
         float4 wedge_g1 = float4(other.scalar) * this.group1;
-        float3 wedge_g3 = (float3(other.scalar) * this.group3.xyz) + (float3(this.scalar) * other.group1.xyz);
+        float3 wedge_g3 = (float3(this.scalar) * other.group1.xyz) + (float3(other.scalar) * this.group3.xyz);
         float4 wedge_g4 = (other.group1 * float4(float3(this.e4), this.e321)) + float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(other.scalar) * this.group4.xyz), 0.0) + float4((other.group0.yzx * this.group1.zxy), 0.0) - (this.group1.yzxx * float4(other.group0.zxy, other.e23));
         float4 right_dual_g0 = other.group1 * float4(-1.0, -1.0, -1.0, 1.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2((right_dual_g0[3] * other.scalar * this.scalar) - (wedge_g3[0] * right_dual_g0[0]) - (wedge_g3[1] * right_dual_g0[1]) - (wedge_g3[2] * right_dual_g0[2]), wedge_g0_y * right_dual_g0[3]), 
+            float2((this.scalar * right_dual_g0[3] * other.scalar) - (wedge_g3[0] * right_dual_g0[0]) - (wedge_g3[1] * right_dual_g0[1]) - (wedge_g3[2] * right_dual_g0[2]), wedge_g0_y * right_dual_g0[3]), 
             /* e1, e2, e3, e4 */
             (right_dual_g0 * float4(float3(wedge_g4[3]), wedge_g1[3])) + float4(float3(0.0), -(right_dual_g0[0] * wedge_g4[0]) - (right_dual_g0[1] * wedge_g4[1]) - (right_dual_g0[2] * wedge_g4[2])) + float4((float3(right_dual_g0[3]) * wedge_g1.xyz), 0.0), 
             /* e41, e42, e43 */
-            (float3(wedge_g0_y) * right_dual_g0.xyz) + (float3(right_dual_g0[3] * other.scalar) * this.group2.xyz) + (float3(right_dual_g0[3] * this.scalar) * other.group0.xyz), 
+            (float3(wedge_g0_y) * right_dual_g0.xyz) + (float3(this.scalar * right_dual_g0[3]) * other.group0.xyz) + (float3(right_dual_g0[3] * other.scalar) * this.group2.xyz), 
             /* e23, e31, e12 */
             wedge_g3 * float3(right_dual_g0[3]), 
             /* e423, e431, e412, e321 */
@@ -843,11 +843,11 @@ public MultiVector operator /(AntiRejectViaHorizonFromInfixPartial<MultiVector> 
 }
 public extension MultiVector {
     public MultiVector anti_reject_via_horizon_from(MultiVector other) {
-        float wedge_g0_y = (other.scalar * this.e1234) + (other.e1234 * this.scalar) + (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43);
+        float wedge_g0_y = (other.scalar * this.e1234) + (other.e1234 * this.scalar) + (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321);
         float4 wedge_g1 = (float4(other.scalar) * this.group1) + (float4(this.scalar) * other.group1);
         float3 wedge_g2 = (float3(other.scalar) * this.group2.xyz) + (float3(this.scalar) * other.group2.xyz) + (float3(this.e4) * other.group1.xyz) - (float3(other.e4) * this.group1.xyz);
         float3 wedge_g3 = (float3(other.scalar) * this.group3.xyz) + (float3(this.scalar) * other.group3.xyz) + float3(float2(0.0), (other.e2 * this.e1) - (other.e1 * this.e2)) + float3((other.group1.zx * this.group1.yz), 0.0) - float3((other.group1.yz * this.group1.zx), 0.0);
-        float4 wedge_g4 = (float4(other.scalar) * this.group4) + (float4(this.scalar) * other.group4) + float4(float3(0.0), -(other.e2 * this.e31) - (other.e3 * this.e12) - (other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group1.zxy), 0.0) + float4((this.group2.yzx * other.group1.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group1.yzxx) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group1.yzxx);
+        float4 wedge_g4 = (float4(other.scalar) * this.group4) + (float4(this.scalar) * other.group4) + float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3) - (this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group1.zxy), 0.0) + float4((this.group2.yzx * other.group1.zxy), 0.0) - (other.group1.yzxx * float4(this.group2.zxy, this.e23)) - (this.group1.yzxx * float4(other.group2.zxy, other.e23));
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);
@@ -895,7 +895,7 @@ public extension MultiVector {
         float4 wedge_g1 = float4(this.scalar) * other.group0;
         float3 wedge_g2 = (float3(this.e4) * other.group0.xyz) - (float3(other.e4) * this.group1.xyz);
         float3 wedge_g3 = (this.group1.yzx * other.group0.zxy) + float3(float2(0.0), (this.e2 * other.e1) * -1.0) - float3((this.group1.zx * other.group0.yz), 0.0);
-        float4 wedge_g4 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((this.group2.yzx * other.group0.zxy), 0.0) - (float4(this.e43, this.e41, this.e42, this.e23) * other.group0.yzxx);
+        float4 wedge_g4 = float4(float3(0.0), -(this.e31 * other.e2) - (this.e12 * other.e3)) + float4((float3(other.e4) * this.group3.xyz), 0.0) + float4((this.group2.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group2.zxy, this.e23));
         float3 right_dual_g0_xyz = other.group0.xyz;
         return MultiVector(
             /* scalar, e1234 */
@@ -1036,7 +1036,7 @@ public extension Origin {
     public Origin anti_reject_via_horizon_from(Plane other) {
         return Origin(
             /* e4 */
-            this.e4 * other.e321 * other.e321 * -1.0
+            other.e321 * other.e321 * this.e4 * -1.0
         );
     }
 }
@@ -1184,11 +1184,11 @@ public Flector operator /(AntiRejectViaHorizonFromInfixPartial<Point> lhs, Flect
 public extension Point {
     public Flector anti_reject_via_horizon_from(Flector other) {
         float4 wedge_g0 = (float4(this.e4) * float4(other.group0.xyz, other.e321)) + float4(float3(0.0), (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3)) - float4((float3(other.e4) * this.group0.xyz), 0.0);
-        float3 wedge_g1_xyz = (other.group0.zxy * this.group0.yzx) + float3(float2(0.0), (other.e1 * this.e2) * -1.0) - float3((other.group0.yz * this.group0.zx), 0.0);
+        float4 wedge_g1 = float4(((other.group0.zxy * this.group0.yzx) - (other.group0.yzx * this.group0.zxy)), 0.0);
         float3 right_dual_g1_xyz = other.group0.xyz;
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(right_dual_g1_xyz[1] * wedge_g0[1]) - (right_dual_g1_xyz[2] * wedge_g0[2]) - (wedge_g0[3] * other.e321)) + float4((right_dual_g1_xyz.zxy * wedge_g1_xyz.yzx), 0.0) - float4((right_dual_g1_xyz.yzx * wedge_g1_xyz.zxy), right_dual_g1_xyz[0] * wedge_g0[0]), 
+            float4(float3(0.0), -(right_dual_g1_xyz[1] * wedge_g0[1]) - (right_dual_g1_xyz[2] * wedge_g0[2]) - (wedge_g0[3] * other.e321)) + float4((right_dual_g1_xyz.zxy * wedge_g1.yzx), 0.0) - float4((right_dual_g1_xyz.yzx * wedge_g1.zxy), right_dual_g1_xyz[0] * wedge_g0[0]), 
             /* e423, e431, e412, e321 */
             float4((right_dual_g1_xyz * float3(wedge_g0[3])), 0.0)
         );
@@ -1202,7 +1202,7 @@ public extension Point {
     public Origin anti_reject_via_horizon_from(Horizon other) {
         return Origin(
             /* e4 */
-            other.e321 * other.e321 * this.e4 * -1.0
+            this.e4 * other.e321 * other.e321 * -1.0
         );
     }
 }
@@ -1212,7 +1212,7 @@ public Point operator /(AntiRejectViaHorizonFromInfixPartial<Point> lhs, Line rh
 }
 public extension Point {
     public Point anti_reject_via_horizon_from(Line other) {
-        float4 wedge_g0 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group0.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group0.yzxx);
+        float4 wedge_g0 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group1.xyz), 0.0) + float4((other.group0.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group0.zxy, other.e23));
         float3 right_dual_g0 = other.group1.xyz * float3(-1.0);
         return Point(
             /* e1, e2, e3, e4 */
@@ -1247,7 +1247,7 @@ public extension Point {
         float4 wedge_g1 = float4(other.scalar) * this.group0;
         float3 wedge_g2 = (float3(this.e4) * other.group1.xyz) - (float3(other.e4) * this.group0.xyz);
         float3 wedge_g3 = (other.group1.zxy * this.group0.yzx) + float3(float2(0.0), (other.e1 * this.e2) * -1.0) - float3((other.group1.yz * this.group0.zx), 0.0);
-        float4 wedge_g4 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group0.zxy), 0.0) - (float4(other.e43, other.e41, other.e42, other.e23) * this.group0.yzxx);
+        float4 wedge_g4 = float4(float3(0.0), -(other.e31 * this.e2) - (other.e12 * this.e3)) + float4((float3(this.e4) * other.group3.xyz), 0.0) + float4((other.group2.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group2.zxy, other.e23));
         float4 right_dual_g1 = float4(float3(0.0), other.e321 * -1.0);
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float4 right_dual_g4 = float4(other.group1.xyz, 0.0);

@@ -82,14 +82,14 @@ impl Norm for MultiVector {
         let sub_type_g4_xyz = self.group4().xyz();
         AntiScalar::from_groups(
             // e1234
-            sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
+            self[e1234] * self[e1234]
+                + sub_type_g4_xyz[0] * sub_type_g4_xyz[0]
                 + sub_type_g4_xyz[1] * sub_type_g4_xyz[1]
                 + sub_type_g4_xyz[2] * sub_type_g4_xyz[2]
-                + self[e1234] * self[e1234]
-                + self[e4] * self[e4]
                 + self[e41] * self[e41]
                 + self[e42] * self[e42]
-                + self[e43] * self[e43],
+                + self[e43] * self[e43]
+                + self[e4] * self[e4],
         )
     }
 }

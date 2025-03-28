@@ -136,13 +136,13 @@ impl std::ops::Add<Origin> for Point {
     // f32        1        0        0        0
     fn add(self, other: Origin) -> Self::Output {
         use crate::elements::*;
-        Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(other[e4] + self[e4]))
+        Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(self[e4] + other[e4]))
     }
 }
 impl std::ops::AddAssign<Origin> for Point {
     fn add_assign(&mut self, other: Origin) {
         use crate::elements::*;
-        *self = Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(other[e4] + self[e4]));
+        *self = Point::from_groups(/* e1, e2, e3, e4 */ self.group0().xyz().with_w(self[e4] + other[e4]));
     }
 }
 impl std::ops::Add<Plane> for Point {

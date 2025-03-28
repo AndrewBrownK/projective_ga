@@ -170,7 +170,7 @@ impl std::ops::Add<Point> for Origin {
     // f32        1        0        0        0
     fn add(self, other: Point) -> Self::Output {
         use crate::elements::*;
-        Point::from_groups(/* e1, e2, e3, e4 */ other.group0().xyz().with_w(self[e4] + other[e4]))
+        Point::from_groups(/* e1, e2, e3, e4 */ other.group0().xyz().with_w(other[e4] + self[e4]))
     }
 }
 impl std::ops::Add<Scalar> for Origin {

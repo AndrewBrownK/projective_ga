@@ -39,7 +39,7 @@ impl AntiDotProduct<DualNum> for AntiScalar {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: DualNum) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
+        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
     }
 }
 impl AntiDotProduct<Motor> for AntiScalar {
@@ -48,7 +48,7 @@ impl AntiDotProduct<Motor> for AntiScalar {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: Motor) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
+        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
     }
 }
 impl AntiDotProduct<MultiVector> for AntiScalar {
@@ -57,7 +57,7 @@ impl AntiDotProduct<MultiVector> for AntiScalar {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: MultiVector) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
+        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
     }
 }
 impl std::ops::Div<AntiDotProductInfix> for DualNum {
@@ -72,7 +72,7 @@ impl AntiDotProduct<AntiScalar> for DualNum {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: AntiScalar) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
     }
 }
 impl AntiDotProduct<DualNum> for DualNum {
@@ -204,7 +204,7 @@ impl AntiDotProduct<AntiScalar> for Motor {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: AntiScalar) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
     }
 }
 impl AntiDotProduct<DualNum> for Motor {
@@ -245,7 +245,7 @@ impl AntiDotProduct<MultiVector> for Motor {
         use crate::elements::*;
         AntiScalar::from_groups(
             // e1234
-            (self[e41] * other[e41]) + (self[e42] * other[e42]) + (self[e43] * other[e43]) + (self[e1234] * other[e1234]),
+            (other[e1234] * self[e1234]) + (other[e41] * self[e41]) + (other[e42] * self[e42]) + (other[e43] * self[e43]),
         )
     }
 }
@@ -261,7 +261,7 @@ impl AntiDotProduct<AntiScalar> for MultiVector {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: AntiScalar) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[e1234] * self[e1234])
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e1234])
     }
 }
 impl AntiDotProduct<DualNum> for MultiVector {
@@ -302,7 +302,7 @@ impl AntiDotProduct<Motor> for MultiVector {
         use crate::elements::*;
         AntiScalar::from_groups(
             // e1234
-            (other[e41] * self[e41]) + (other[e42] * self[e42]) + (other[e43] * self[e43]) + (other[e1234] * self[e1234]),
+            (self[e1234] * other[e1234]) + (self[e41] * other[e41]) + (self[e42] * other[e42]) + (self[e43] * other[e43]),
         )
     }
 }
@@ -315,10 +315,10 @@ impl AntiDotProduct<MultiVector> for MultiVector {
         AntiScalar::from_groups(
             // e1234
             (other[e1234] * self[e1234])
-                + (other[e4] * self[e4])
                 + (other[e41] * self[e41])
                 + (other[e42] * self[e42])
                 + (other[e43] * self[e43])
+                + (other[e4] * self[e4])
                 + (other[e423] * self[e423])
                 + (other[e431] * self[e431])
                 + (other[e412] * self[e412]),
@@ -391,7 +391,7 @@ impl AntiDotProduct<Point> for Origin {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: Point) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e4] * other[e4])
+        AntiScalar::from_groups(/* e1234 */ other[e4] * self[e4])
     }
 }
 impl std::ops::Div<AntiDotProductInfix> for Plane {
@@ -457,7 +457,7 @@ impl AntiDotProduct<Origin> for Point {
     // f32        0        1        0        0
     fn anti_dot_product(self, other: Origin) -> AntiScalar {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[e4] * self[e4])
+        AntiScalar::from_groups(/* e1234 */ self[e4] * other[e4])
     }
 }
 impl AntiDotProduct<Point> for Point {

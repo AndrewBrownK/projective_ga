@@ -151,7 +151,7 @@ impl std::ops::Add<Horizon> for MultiVector {
             // e23, e31, e12
             self.group3(),
             // e423, e431, e412, e321
-            self.group4().xyz().with_w(other[e321] + self[e321]),
+            self.group4().xyz().with_w(self[e321] + other[e321]),
         )
     }
 }
@@ -168,7 +168,7 @@ impl std::ops::AddAssign<Horizon> for MultiVector {
             // e23, e31, e12
             self.group3(),
             // e423, e431, e412, e321
-            self.group4().xyz().with_w(other[e321] + self[e321]),
+            self.group4().xyz().with_w(self[e321] + other[e321]),
         );
     }
 }

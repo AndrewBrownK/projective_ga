@@ -30,7 +30,7 @@ impl std::ops::Add<AntiScalar> for Motor {
         use crate::elements::*;
         Motor::from_groups(
             // e41, e42, e43, e1234
-            self.group0().xyz().with_w(other[e1234] + self[e1234]),
+            self.group0().xyz().with_w(self[e1234] + other[e1234]),
             // e23, e31, e12, scalar
             self.group1(),
         )
@@ -41,7 +41,7 @@ impl std::ops::AddAssign<AntiScalar> for Motor {
         use crate::elements::*;
         *self = Motor::from_groups(
             // e41, e42, e43, e1234
-            self.group0().xyz().with_w(other[e1234] + self[e1234]),
+            self.group0().xyz().with_w(self[e1234] + other[e1234]),
             // e23, e31, e12, scalar
             self.group1(),
         );

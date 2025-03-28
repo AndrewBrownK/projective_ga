@@ -11,7 +11,7 @@ public extension DualNum {
     public Scalar anti_constraint_violation() {
         return Scalar(
             /* scalar */
-            this.e1234 * this.scalar * 2.0
+            this.scalar * this.e1234 * 2.0
         );
     }
 }
@@ -83,7 +83,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             float3(0.0), 
             /* e423, e431, e412, e321 */
-            float4(2.0)*(float4(this.e1234) * this.group4) + float4(2.0)*float4((this.group2.yzx * this.group4.zxy), this.e1 * this.e41) + float4(float3(0.0), 2.0*(this.e2 * this.e42) + 2.0 * (this.e3 * this.e43) - 2.0 * (this.e12 * this.e412)) - (float4(this.e4) * float4(this.group2.xyz, this.scalar)) - float4(float3(0.0), this.e23 * this.e423) - float4(2.0)*(this.group4.yzxy * float4(this.group2.zxy, this.e31))
+            float4(2.0)*(float4(this.e1234) * this.group4) + float4(2.0)*float4((this.group2.yzx * this.group4.zxy), this.e41 * this.e1) + float4(float3(0.0), 2.0*(this.e42 * this.e2) + 2.0 * (this.e43 * this.e3) - 2.0 * (this.e12 * this.e412)) - (float4(this.e4) * float4(this.group2.xyz, this.scalar)) - float4(float3(0.0), this.e23 * this.e423) - float4(2.0)*(this.group4.yzxy * float4(this.group2.zxy, this.e31))
         );
     }
 }

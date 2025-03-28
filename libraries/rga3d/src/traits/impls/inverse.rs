@@ -176,12 +176,12 @@ impl Inverse for MultiVector {
     fn inverse(self) -> Self {
         use crate::elements::*;
         let other_g0 = self[scalar] * self[scalar]
-            + self[e1] * self[e1]
-            + self[e2] * self[e2]
-            + self[e3] * self[e3]
             + self[e23] * self[e23]
             + self[e31] * self[e31]
             + self[e12] * self[e12]
+            + self[e1] * self[e1]
+            + self[e2] * self[e2]
+            + self[e3] * self[e3]
             + self[e321] * self[e321];
         MultiVector::from_groups(
             // scalar, e1234

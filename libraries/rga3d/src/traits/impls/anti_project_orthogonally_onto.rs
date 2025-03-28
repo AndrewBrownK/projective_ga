@@ -9,7 +9,7 @@
 //
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       2       0     N/A
-//   Median:         2       7       0     N/A
+//   Median:         2       6       0     N/A
 //  Average:         6      12       0     N/A
 //  Maximum:        64      78       0     N/A
 //
@@ -31,7 +31,7 @@ impl AntiProjectOrthogonallyOnto<DualNum> for AntiScalar {
     // f32        0        2        0        0
     fn anti_project_orthogonally_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[scalar] * other[scalar])
+        AntiScalar::from_groups(/* e1234 */ other[scalar] * other[scalar] * self[e1234])
     }
 }
 impl AntiProjectOrthogonallyOnto<Flector> for AntiScalar {
@@ -45,7 +45,7 @@ impl AntiProjectOrthogonallyOnto<Flector> for AntiScalar {
     //  no simd        3       15        0        0
     fn anti_project_orthogonally_onto(self, other: Flector) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g0_w = self[e1234] * other[e321] * -1.0;
+        let anti_wedge_g0_w = other[e321] * self[e1234] * -1.0;
         let anti_wedge_g1_xyz = Simd32x3::from(self[e1234]) * other.group0().xyz();
         Motor::from_groups(
             // e41, e42, e43, e1234
@@ -119,14 +119,14 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for AntiScalar {
     //  no simd       22       37        0        0
     fn anti_project_orthogonally_onto(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g1_w = self[e1234] * other[e321] * -1.0;
+        let anti_wedge_g1_w = other[e321] * self[e1234] * -1.0;
         let anti_wedge_g2 = Simd32x3::from(self[e1234] * -1.0) * other.group3();
         let anti_wedge_g4_xyz = Simd32x3::from(self[e1234]) * other.group1().xyz();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (anti_wedge_g4_xyz[0] * other[e1]) + (anti_wedge_g4_xyz[1] * other[e2]) + (anti_wedge_g4_xyz[2] * other[e3]) + (self[e1234] * other[scalar] * other[scalar])
+                (anti_wedge_g4_xyz[0] * other[e1]) + (anti_wedge_g4_xyz[1] * other[e2]) + (anti_wedge_g4_xyz[2] * other[e3]) + (other[scalar] * other[scalar] * self[e1234])
                     - (anti_wedge_g1_w * other[e321])
                     - (anti_wedge_g2[0] * other[e23])
                     - (anti_wedge_g2[1] * other[e31])
@@ -153,7 +153,7 @@ impl AntiProjectOrthogonallyOnto<Plane> for AntiScalar {
     // f32        0        2        0        0
     fn anti_project_orthogonally_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e321] * other[e321])
+        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
     }
 }
 impl AntiProjectOrthogonallyOnto<Point> for AntiScalar {
@@ -272,7 +272,7 @@ impl AntiProjectOrthogonallyOnto<Motor> for DualNum {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_wedge_g0 = right_anti_dual_g0 * Simd32x4::from(self[e1234]);
-        let anti_wedge_g1_w = right_anti_dual_g0[3] * self[scalar];
+        let anti_wedge_g1_w = self[scalar] * right_anti_dual_g0[3];
         Motor::from_groups(
             // e41, e42, e43, e1234
             (anti_wedge_g0 * Simd32x4::from(other[scalar]))
@@ -331,12 +331,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for DualNum {
             // e423, e431, e412, e321
             (anti_wedge_g4 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g0[0]) * other.group4())
-                + Simd32x3::from(0.0).with_w((anti_wedge_g1[2] * other[e12]) * -1.0)
+                + Simd32x3::from(0.0).with_w((other[e12] * anti_wedge_g1[2]) * -1.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
-                - (anti_wedge_g2.zxy() * other.group1().yzx()).with_w(anti_wedge_g1[1] * other[e31]),
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
+                - (anti_wedge_g2.zxy() * other.group1().yzx()).with_w(other[e31] * anti_wedge_g1[1]),
         )
     }
 }
@@ -420,7 +420,7 @@ impl AntiProjectOrthogonallyOnto<Flector> for Flector {
     fn anti_project_orthogonally_onto(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1_xyz = other.group0().xyz();
-        let anti_wedge_g0_xyz = (right_anti_dual_g1_xyz.yzx() * self.group1().zxy()) - (right_anti_dual_g1_xyz.zxy() * self.group1().yzx());
+        let anti_wedge_g0 = ((right_anti_dual_g1_xyz.yzx() * self.group1().zxy()) - (right_anti_dual_g1_xyz.zxy() * self.group1().yzx())).with_w(0.0);
         let anti_wedge_g1 = Simd32x4::from([
             right_anti_dual_g1_xyz[0] * self[e321] * -1.0,
             right_anti_dual_g1_xyz[1] * self[e321] * -1.0,
@@ -434,8 +434,8 @@ impl AntiProjectOrthogonallyOnto<Flector> for Flector {
             (anti_wedge_g1 * Simd32x3::from(other[e4]).with_w(other[e321]))
                 + Simd32x3::from(0.0).with_w(-(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]))
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group1().xyz()).with_w(0.0)
-                + (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(0.0)
-                - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1[0])),
+                + (anti_wedge_g0.yzx() * other.group0().zxy()).with_w(0.0)
+                - (other.group0().yzxx() * anti_wedge_g0.zxy().with_w(anti_wedge_g1[0])),
         )
     }
 }
@@ -562,12 +562,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Flector {
             // e423, e431, e412, e321
             (anti_wedge_g4 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
         )
     }
@@ -599,7 +599,7 @@ impl AntiProjectOrthogonallyOnto<Point> for Flector {
     fn anti_project_orthogonally_onto(self, other: Point) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g0_xyz = other.group0().xyz();
-        let anti_wedge_g0_xyz = (right_anti_dual_g0_xyz.yzx() * self.group1().zxy()) - (right_anti_dual_g0_xyz.zxy() * self.group1().yzx());
+        let anti_wedge_g0 = ((right_anti_dual_g0_xyz.yzx() * self.group1().zxy()) - (right_anti_dual_g0_xyz.zxy() * self.group1().yzx())).with_w(0.0);
         let anti_wedge_g1_x = right_anti_dual_g0_xyz[0] * self[e321] * -1.0;
         let anti_wedge_g1_y = right_anti_dual_g0_xyz[1] * self[e321] * -1.0;
         let anti_wedge_g1_z = right_anti_dual_g0_xyz[2] * self[e321] * -1.0;
@@ -611,8 +611,8 @@ impl AntiProjectOrthogonallyOnto<Point> for Flector {
             // e423, e431, e412, e321
             Simd32x3::from(0.0).with_w(-(anti_wedge_g1_y * other[e2]) - (anti_wedge_g1_z * other[e3]))
                 + (Simd32x3::from(other[e4]) * Simd32x3::from([anti_wedge_g1_x, anti_wedge_g1_y, anti_wedge_g1_z])).with_w(0.0)
-                + (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(0.0)
-                - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1_x)),
+                + (anti_wedge_g0.yzx() * other.group0().zxy()).with_w(0.0)
+                - (other.group0().yzxx() * anti_wedge_g0.zxy().with_w(anti_wedge_g1_x)),
         )
     }
 }
@@ -740,10 +740,10 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Horizon {
     //  no simd       62       78        0        0
     fn anti_project_orthogonally_onto(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
-        let anti_wedge_g0_x = self[e321] * other[e321];
+        let anti_wedge_g0_x = other[e321] * self[e321];
         let anti_wedge_g1 = (Simd32x3::from(self[e321] * -1.0) * other.group3()).with_w(0.0);
         let anti_wedge_g3 = Simd32x3::from(self[e321] * -1.0) * other.group1().xyz();
-        let anti_wedge_g4 = Simd32x3::from(0.0).with_w(self[e321] * other[scalar]);
+        let anti_wedge_g4 = Simd32x3::from(0.0).with_w(other[scalar] * self[e321]);
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
@@ -778,13 +778,13 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Horizon {
                     -(anti_wedge_g3[0] * other[e1])
                         - (anti_wedge_g3[1] * other[e2])
                         - (anti_wedge_g3[2] * other[e3])
-                        - (anti_wedge_g1[1] * other[e31])
-                        - (anti_wedge_g1[2] * other[e12]),
+                        - (other[e31] * anti_wedge_g1[1])
+                        - (other[e12] * anti_wedge_g1[2]),
                 )
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx()),
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23])),
         )
     }
 }
@@ -799,7 +799,7 @@ impl AntiProjectOrthogonallyOnto<Plane> for Horizon {
     //  no simd        0        5        0        0
     fn anti_project_orthogonally_onto(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(self[e321] * other[e321]) * other.group0())
+        Plane::from_groups(/* e423, e431, e412, e321 */ Simd32x4::from(other[e321] * self[e321]) * other.group0())
     }
 }
 impl AntiProjectOrthogonallyOnto<Point> for Horizon {
@@ -982,12 +982,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Line {
                 - (anti_wedge_g1.yz() * other.group1().zx()).with_z(0.0),
             // e423, e431, e412, e321
             (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
         )
     }
@@ -1047,11 +1047,11 @@ impl AntiProjectOrthogonallyOnto<DualNum> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        3        0        0
-    //    simd2        0        1        0      N/A
+    //      f32        1        2        0        0
+    //    simd3        0        1        0      N/A
     //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        1        7        0      N/A
+    // yes simd        1        6        0      N/A
     //  no simd        1       17        0        0
     fn anti_project_orthogonally_onto(self, other: DualNum) -> Self::Output {
         use crate::elements::*;
@@ -1059,7 +1059,7 @@ impl AntiProjectOrthogonallyOnto<DualNum> for Motor {
         let anti_wedge_g1 = Simd32x4::from(other[scalar]) * self.group1();
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (Simd32x2::from(other[scalar]) * anti_wedge_g0.xy()).with_zw(anti_wedge_g0[2] * other[scalar], (anti_wedge_g0[3] * other[scalar]) + (anti_wedge_g1[3] * other[e1234])),
+            (Simd32x3::from(other[scalar]) * anti_wedge_g0.xyz()).with_w((other[scalar] * anti_wedge_g0[3]) + (other[e1234] * anti_wedge_g1[3])),
             // e23, e31, e12, scalar
             anti_wedge_g1 * Simd32x4::from(other[scalar]),
         )
@@ -1084,7 +1084,7 @@ impl AntiProjectOrthogonallyOnto<Flector> for Motor {
         let anti_wedge_g1_xyz = right_anti_dual_g1_xyz * Simd32x3::from(self[e1234]);
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (Simd32x4::from([anti_wedge_g0[0], anti_wedge_g0[1], anti_wedge_g0[2], anti_wedge_g1_xyz[0]]) * other.group0().wwwx())
+            (other.group0().wwwx() * anti_wedge_g0.xyz().with_w(anti_wedge_g1_xyz[0]))
                 + Simd32x3::from(0.0).with_w(
                     (anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3])
                         - (anti_wedge_g0[0] * other[e423])
@@ -1104,7 +1104,7 @@ impl AntiProjectOrthogonallyOnto<Horizon> for Motor {
     // f32        0        2        0        0
     fn anti_project_orthogonally_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        AntiScalar::from_groups(/* e1234 */ other[e321] * other[e321] * self[e1234])
+        AntiScalar::from_groups(/* e1234 */ self[e1234] * other[e321] * other[e321])
     }
 }
 impl AntiProjectOrthogonallyOnto<Line> for Motor {
@@ -1177,7 +1177,7 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Motor {
         use crate::elements::*;
         let right_anti_dual_g2 = other.group3() * Simd32x3::from(-1.0);
         let right_anti_dual_g4_xyz = other.group1().xyz();
-        let anti_wedge_g0_x = (self[scalar] * other[scalar]) - (right_anti_dual_g2[0] * self[e23]) - (right_anti_dual_g2[1] * self[e31]) - (right_anti_dual_g2[2] * self[e12]);
+        let anti_wedge_g0_x = (other[scalar] * self[scalar]) - (right_anti_dual_g2[0] * self[e23]) - (right_anti_dual_g2[1] * self[e31]) - (right_anti_dual_g2[2] * self[e12]);
         let anti_wedge_g1 = Simd32x3::from(0.0).with_w(-(right_anti_dual_g4_xyz[1] * self[e42]) - (right_anti_dual_g4_xyz[2] * self[e43]) - (self[e1234] * other[e321]))
             + (right_anti_dual_g4_xyz.zxy() * self.group1().yzx()).with_w(0.0)
             - (right_anti_dual_g4_xyz.yzx() * self.group1().zxy()).with_w(right_anti_dual_g4_xyz[0] * self[e41]);
@@ -1193,7 +1193,7 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Motor {
                     + (anti_wedge_g4[1] * other[e2])
                     + (anti_wedge_g4[2] * other[e3])
                     + (anti_wedge_g4[3] * other[e4])
-                    + (self[e1234] * other[scalar] * other[scalar])
+                    + (other[scalar] * other[scalar] * self[e1234])
                     - (anti_wedge_g2[0] * other[e23])
                     - (anti_wedge_g2[1] * other[e31])
                     - (anti_wedge_g2[2] * other[e12])
@@ -1219,12 +1219,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Motor {
             // e423, e431, e412, e321
             (anti_wedge_g4 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
         )
     }
@@ -1258,7 +1258,7 @@ impl AntiProjectOrthogonallyOnto<Point> for Motor {
         let anti_wedge_g1_xyz = right_anti_dual_g0_xyz * Simd32x3::from(self[e1234]);
         Motor::from_groups(
             // e41, e42, e43, e1234
-            (Simd32x4::from([anti_wedge_g0[0], anti_wedge_g0[1], anti_wedge_g0[2], anti_wedge_g1_xyz[0]]) * other.group0().wwwx())
+            (other.group0().wwwx() * anti_wedge_g0.xyz().with_w(anti_wedge_g1_xyz[0]))
                 + Simd32x3::from(0.0).with_w((anti_wedge_g1_xyz[1] * other[e2]) + (anti_wedge_g1_xyz[2] * other[e3]))
                 - (Simd32x3::from(anti_wedge_g0[3]) * other.group0().xyz()).with_w(0.0),
             // e23, e31, e12, scalar
@@ -1386,7 +1386,7 @@ impl AntiProjectOrthogonallyOnto<Horizon> for MultiVector {
         let right_anti_dual_g0 = other[e321] * -1.0;
         MultiVector::from_groups(
             // scalar, e1234
-            Simd32x2::from([0.0, right_anti_dual_g0 * other[e321] * self[e1234] * -1.0]),
+            Simd32x2::from([0.0, right_anti_dual_g0 * self[e1234] * other[e321] * -1.0]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e41, e42, e43
@@ -1394,7 +1394,7 @@ impl AntiProjectOrthogonallyOnto<Horizon> for MultiVector {
             // e23, e31, e12
             Simd32x3::from(0.0),
             // e423, e431, e412, e321
-            Simd32x3::from(0.0).with_w(right_anti_dual_g0 * other[e321] * self[e321] * -1.0),
+            Simd32x3::from(0.0).with_w(right_anti_dual_g0 * self[e321] * other[e321] * -1.0),
         )
     }
 }
@@ -1446,18 +1446,18 @@ impl AntiProjectOrthogonallyOnto<Motor> for MultiVector {
         use crate::elements::*;
         let right_anti_dual_g0 = other.group1() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]);
         let anti_wedge_g0_x =
-            (right_anti_dual_g0[3] * self[scalar]) - (right_anti_dual_g0[0] * self[e23]) - (right_anti_dual_g0[1] * self[e31]) - (right_anti_dual_g0[2] * self[e12]);
+            (self[scalar] * right_anti_dual_g0[3]) - (self[e23] * right_anti_dual_g0[0]) - (self[e31] * right_anti_dual_g0[1]) - (self[e12] * right_anti_dual_g0[2]);
         let anti_wedge_g1 = (right_anti_dual_g0 * Simd32x3::from(self[e321]).with_w(self[e4]))
             + Simd32x3::from(0.0).with_w(-(right_anti_dual_g0[0] * self[e423]) - (right_anti_dual_g0[1] * self[e431]) - (right_anti_dual_g0[2] * self[e412]))
             + (Simd32x3::from(right_anti_dual_g0[3]) * self.group1().xyz()).with_w(0.0);
-        let anti_wedge_g2 = (Simd32x3::from(right_anti_dual_g0[3]) * self.group2()) + (Simd32x3::from(self[e1234]) * right_anti_dual_g0.xyz());
+        let anti_wedge_g2 = (Simd32x3::from(self[e1234]) * right_anti_dual_g0.xyz()) + (Simd32x3::from(right_anti_dual_g0[3]) * self.group2());
         let anti_wedge_g3 = Simd32x3::from(right_anti_dual_g0[3]) * self.group3();
         let anti_wedge_g4 = Simd32x4::from(right_anti_dual_g0[3]) * self.group4();
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 anti_wedge_g0_x * other[scalar],
-                (anti_wedge_g0_x * other[e1234]) + (right_anti_dual_g0[3] * other[scalar] * self[e1234])
+                (anti_wedge_g0_x * other[e1234]) + (self[e1234] * right_anti_dual_g0[3] * other[scalar])
                     - (anti_wedge_g2[0] * other[e23])
                     - (anti_wedge_g2[1] * other[e31])
                     - (anti_wedge_g2[2] * other[e12])
@@ -1496,11 +1496,11 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for MultiVector {
         let right_anti_dual_g1 = Simd32x3::from(0.0).with_w(other[e321] * -1.0);
         let right_anti_dual_g2 = other.group3() * Simd32x3::from(-1.0);
         let right_anti_dual_g4 = other.group1().xyz().with_w(0.0);
-        let anti_wedge_g0_x = (right_anti_dual_g4[0] * self[e1])
+        let anti_wedge_g0_x = (other[scalar] * self[scalar])
+            + (right_anti_dual_g4[0] * self[e1])
             + (right_anti_dual_g4[1] * self[e2])
             + (right_anti_dual_g4[2] * self[e3])
             + (right_anti_dual_g4[3] * self[e4])
-            + (other[scalar] * self[scalar])
             - (right_anti_dual_g2[0] * self[e23])
             - (right_anti_dual_g2[1] * self[e31])
             - (right_anti_dual_g2[2] * self[e12])
@@ -1514,8 +1514,8 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for MultiVector {
                 -(right_anti_dual_g2[0] * self[e423])
                     - (right_anti_dual_g2[1] * self[e431])
                     - (right_anti_dual_g2[2] * self[e412])
-                    - (right_anti_dual_g4[1] * self[e42])
-                    - (right_anti_dual_g4[2] * self[e43]),
+                    - (self[e42] * right_anti_dual_g4[1])
+                    - (self[e43] * right_anti_dual_g4[2]),
             )
             + (right_anti_dual_g2 * Simd32x3::from(self[e321])).with_w(0.0)
             + (Simd32x3::from(right_anti_dual_g4[3]) * self.group2()).with_w(0.0)
@@ -1526,7 +1526,7 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for MultiVector {
             + Simd32x2::from(0.0).with_z((right_anti_dual_g4[0] * self[e431]) - (right_anti_dual_g4[1] * self[e423]))
             + (right_anti_dual_g4.yz() * self.group4().zx()).with_z(0.0)
             - (right_anti_dual_g4.zx() * self.group4().yz()).with_z(0.0);
-        let anti_wedge_g3 = (Simd32x3::from(right_anti_dual_g4[3]) * self.group4().xyz()) + (Simd32x3::from(other[scalar]) * self.group3())
+        let anti_wedge_g3 = (Simd32x3::from(other[scalar]) * self.group3()) + (Simd32x3::from(right_anti_dual_g4[3]) * self.group4().xyz())
             - (Simd32x3::from(self[e321]) * right_anti_dual_g4.xyz());
         let anti_wedge_g4 = (right_anti_dual_g4 * Simd32x4::from(self[e1234])) + (Simd32x4::from(other[scalar]) * self.group4());
         MultiVector::from_groups(
@@ -1564,12 +1564,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for MultiVector {
             // e423, e431, e412, e321
             (anti_wedge_g4 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
         )
     }
@@ -1776,7 +1776,7 @@ impl AntiProjectOrthogonallyOnto<Flector> for Plane {
     fn anti_project_orthogonally_onto(self, other: Flector) -> Self::Output {
         use crate::elements::*;
         let right_anti_dual_g1_xyz = other.group0().xyz();
-        let anti_wedge_g0_xyz = (right_anti_dual_g1_xyz.yzx() * self.group0().zxy()) - (right_anti_dual_g1_xyz.zxy() * self.group0().yzx());
+        let anti_wedge_g0 = ((right_anti_dual_g1_xyz.yzx() * self.group0().zxy()) - (right_anti_dual_g1_xyz.zxy() * self.group0().yzx())).with_w(0.0);
         let anti_wedge_g1 = Simd32x4::from([
             right_anti_dual_g1_xyz[0] * self[e321] * -1.0,
             right_anti_dual_g1_xyz[1] * self[e321] * -1.0,
@@ -1790,8 +1790,8 @@ impl AntiProjectOrthogonallyOnto<Flector> for Plane {
             (anti_wedge_g1 * Simd32x3::from(other[e4]).with_w(other[e321]))
                 + Simd32x3::from(0.0).with_w(-(anti_wedge_g1[1] * other[e2]) - (anti_wedge_g1[2] * other[e3]))
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group1().xyz()).with_w(0.0)
-                + (anti_wedge_g0_xyz.yzx() * other.group0().zxy()).with_w(0.0)
-                - (other.group0().yzxx() * anti_wedge_g0_xyz.zxy().with_w(anti_wedge_g1[0])),
+                + (anti_wedge_g0.yzx() * other.group0().zxy()).with_w(0.0)
+                - (other.group0().yzxx() * anti_wedge_g0.zxy().with_w(anti_wedge_g1[0])),
         )
     }
 }
@@ -1802,7 +1802,7 @@ impl AntiProjectOrthogonallyOnto<Horizon> for Plane {
     // f32        0        2        0        0
     fn anti_project_orthogonally_onto(self, other: Horizon) -> Self::Output {
         use crate::elements::*;
-        Horizon::from_groups(/* e321 */ other[e321] * other[e321] * self[e321])
+        Horizon::from_groups(/* e321 */ self[e321] * other[e321] * other[e321])
     }
 }
 impl AntiProjectOrthogonallyOnto<Line> for Plane {
@@ -1914,12 +1914,12 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Plane {
             // e423, e431, e412, e321
             (anti_wedge_g4 * Simd32x4::from(other[scalar]))
                 + (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(anti_wedge_g3[1] * other[e2]) - (anti_wedge_g3[2] * other[e3]) - (other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (anti_wedge_g3 * Simd32x3::from(other[e4])).with_w(0.0)
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (anti_wedge_g2.yzx() * other.group1().zxy()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx())
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23]))
                 - (other.group1().yzxx() * anti_wedge_g2.zxy().with_w(anti_wedge_g3[0])),
         )
     }
@@ -2082,10 +2082,10 @@ impl AntiProjectOrthogonallyOnto<MultiVector> for Point {
                 - (anti_wedge_g1.yz() * other.group1().zx()).with_z(0.0),
             // e423, e431, e412, e321
             (Simd32x4::from(anti_wedge_g0_x) * other.group4())
-                + Simd32x3::from(0.0).with_w(-(anti_wedge_g1[1] * other[e31]) - (anti_wedge_g1[2] * other[e12]))
+                + Simd32x3::from(0.0).with_w(-(other[e31] * anti_wedge_g1[1]) - (other[e12] * anti_wedge_g1[2]))
                 + (Simd32x3::from(anti_wedge_g1[3]) * other.group3()).with_w(0.0)
                 + (other.group2().yzx() * anti_wedge_g1.zxy()).with_w(0.0)
-                - (Simd32x4::from([other[e43], other[e41], other[e42], other[e23]]) * anti_wedge_g1.yzxx()),
+                - (anti_wedge_g1.yzxx() * other.group2().zxy().with_w(other[e23])),
         )
     }
 }

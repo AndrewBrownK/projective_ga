@@ -61,7 +61,7 @@ public extension AntiScalar {
     public Motor operator +(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(other.group0.xyz, this.e1234 + other.e1234), 
+            float4(other.group0.xyz, other.e1234 + this.e1234), 
             /* e23, e31, e12, scalar */
             other.group1
         );

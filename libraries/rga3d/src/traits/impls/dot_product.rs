@@ -141,7 +141,7 @@ impl DotProduct<MultiVector> for Horizon {
     // f32        0        1        0        0
     fn dot_product(self, other: MultiVector) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl DotProduct<Plane> for Horizon {
@@ -150,7 +150,7 @@ impl DotProduct<Plane> for Horizon {
     // f32        0        1        0        0
     fn dot_product(self, other: Plane) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
+        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
     }
 }
 impl std::ops::Div<DotProductInfix> for Line {
@@ -230,7 +230,7 @@ impl DotProduct<MultiVector> for Motor {
         use crate::elements::*;
         Scalar::from_groups(
             // scalar
-            (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]) + (self[scalar] * other[scalar]),
+            (other[scalar] * self[scalar]) + (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]),
         )
     }
 }
@@ -273,7 +273,7 @@ impl DotProduct<Horizon> for MultiVector {
     // f32        0        1        0        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<Line> for MultiVector {
@@ -293,7 +293,7 @@ impl DotProduct<Motor> for MultiVector {
         use crate::elements::*;
         Scalar::from_groups(
             // scalar
-            (other[e23] * self[e23]) + (other[e31] * self[e31]) + (other[e12] * self[e12]) + (other[scalar] * self[scalar]),
+            (self[scalar] * other[scalar]) + (self[e23] * other[e23]) + (self[e31] * other[e31]) + (self[e12] * other[e12]),
         )
     }
 }
@@ -306,12 +306,12 @@ impl DotProduct<MultiVector> for MultiVector {
         Scalar::from_groups(
             // scalar
             (other[scalar] * self[scalar])
-                + (other[e1] * self[e1])
-                + (other[e2] * self[e2])
-                + (other[e3] * self[e3])
                 + (other[e23] * self[e23])
                 + (other[e31] * self[e31])
                 + (other[e12] * self[e12])
+                + (other[e1] * self[e1])
+                + (other[e2] * self[e2])
+                + (other[e3] * self[e3])
                 + (other[e321] * self[e321]),
         )
     }
@@ -364,7 +364,7 @@ impl DotProduct<Horizon> for Plane {
     // f32        0        1        0        0
     fn dot_product(self, other: Horizon) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ other[e321] * self[e321])
+        Scalar::from_groups(/* scalar */ self[e321] * other[e321])
     }
 }
 impl DotProduct<MultiVector> for Plane {

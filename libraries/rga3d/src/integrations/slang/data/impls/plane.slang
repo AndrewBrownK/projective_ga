@@ -45,7 +45,7 @@ public extension Plane {
     public Plane operator +(Horizon other) {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(this.group0.xyz, other.e321 + this.e321)
+            float4(this.group0.xyz, this.e321 + other.e321)
         );
     }
 }

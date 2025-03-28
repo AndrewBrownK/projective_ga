@@ -141,7 +141,7 @@ impl std::ops::Add<MultiVector> for Horizon {
             // e23, e31, e12
             other.group3(),
             // e423, e431, e412, e321
-            other.group4().xyz().with_w(self[e321] + other[e321]),
+            other.group4().xyz().with_w(other[e321] + self[e321]),
         )
     }
 }
@@ -164,7 +164,7 @@ impl std::ops::Add<Plane> for Horizon {
     // f32        1        0        0        0
     fn add(self, other: Plane) -> Self::Output {
         use crate::elements::*;
-        Plane::from_groups(/* e423, e431, e412, e321 */ other.group0().xyz().with_w(self[e321] + other[e321]))
+        Plane::from_groups(/* e423, e431, e412, e321 */ other.group0().xyz().with_w(other[e321] + self[e321]))
     }
 }
 impl std::ops::Add<Point> for Horizon {

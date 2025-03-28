@@ -121,7 +121,7 @@ public extension Origin {
     public Point operator +(Point other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(other.group0.xyz, this.e4 + other.e4)
+            float4(other.group0.xyz, other.e4 + this.e4)
         );
     }
 }

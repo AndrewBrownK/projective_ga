@@ -90,7 +90,7 @@ public extension MultiVector {
         float3 sub_type_g4_xyz = this.group4.xyz;
         return AntiScalar(
             /* e1234 */
-            sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e1234 * this.e1234 + this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43
+            this.e1234 * this.e1234 + sub_type_g4_xyz[0] * sub_type_g4_xyz[0] + sub_type_g4_xyz[1] * sub_type_g4_xyz[1] + sub_type_g4_xyz[2] * sub_type_g4_xyz[2] + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e4 * this.e4
         );
     }
 }
