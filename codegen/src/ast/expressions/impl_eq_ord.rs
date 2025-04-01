@@ -788,3 +788,37 @@ impl Ord for Vec4Expr {
         }
     }
 }
+
+
+trait ShallowEq {
+    fn shallow_eq(&self, other: &Self) -> bool;
+}
+impl ShallowEq for i32 {
+    // the i32 impl is for tests
+    fn shallow_eq(&self, other: &Self) -> bool { self == other }
+}
+impl<T> ShallowEq for &T where T: ShallowEq {
+    fn shallow_eq(&self, other: &Self) -> bool { <T as ShallowEq>::shallow_eq(*self, *other) }
+}
+impl<T> ShallowEq for &mut T where T: ShallowEq {
+    fn shallow_eq(&self, other: &Self) -> bool { <T as ShallowEq>::shallow_eq(*self, *other) }
+}
+impl ShallowEq for FloatExpr {
+    fn shallow_eq(&self, other: &Self) -> bool {
+        use FloatExpr::*;
+        match (self, other) {
+            (Variable(a), Variable(b)) => true,
+            (Literal(a), Literal(b)) => true,
+            (FromInt(a), FromInt(b)) => true,
+            (AccessVec2(a, ai), AccessVec2(b, bi)) => true,
+            (AccessVec3(a, ai), AccessVec3(b, bi)) => true,
+            (AccessVec4(a, ai), AccessVec4(b, bi)) => true,
+            (AccessMultiVecGroup(a, ai), AccessMultiVecGroup(b, bi)) => true,
+            (TraitInvoke11ToFloat(ak, a), TraitInvoke11ToFloat(bk, b)) => true,
+            (Product(a, al), Product(b, bl)) => true,
+            (Sum(a, al), Sum(b, bl)) => true,
+            (Exp(a, ae, al), Exp(b, be, bl)) => true,
+            _ => false,
+        }
+    }
+}

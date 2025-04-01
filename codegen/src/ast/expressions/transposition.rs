@@ -5,11 +5,14 @@
 //  Current generation:
 //  let anti_wedge_g1_xyz = Simd32x3::from([self[e1234], self[e1234], other[e3]]) * other.group0().xy().with_z(self[e1234]);
 
-use ExtractionStrength::WholeGroups;
+use encase::private::RuntimeSizedArray;
+use std::cell::RefCell;
+use std::ops::IndexMut;
 use ExtractionStrength::Gather1;
+use ExtractionStrength::NaturalExtend;
 use ExtractionStrength::Swizzle;
 use ExtractionStrength::TruncateAndExtend;
-use ExtractionStrength::NaturalExtend;
+use ExtractionStrength::WholeGroups;
 
 pub trait NotInsaneSignum {
     fn ni_signum(&self) -> i32;
@@ -41,6 +44,109 @@ impl ExtractionStrength {
         TruncateAndExtend,
     ];
 }
+fn array_is_shallow_eq<T: ShallowEq>(slice: &[T]) -> bool {
+    if slice.len() < 2 { panic!("use array at least size 2 in array_is_shallow_eq"); }
+    for i in 1..slice.len() {
+        if !slice[0].shallow_eq(&slice[i]) {
+            return false;
+        }
+    }
+    true
+}
+
+fn indexes_of_sorted_elements<T: Ord, const N: usize>(array: &[T; N]) -> [usize; N] {
+    if N < 2 { panic!("use array at least size 2 in array_least_idx"); }
+    let mut idxs: [usize; N] = [0; N];
+    for i in 0..N {
+        idxs[i] = i;
+    }
+    idxs.sort_by_key(|it| &array[*it]);
+    idxs
+}
+
+struct CRTracker<'a, T> {
+    vec: &'a mut Vec<T>,
+    scan_index: usize,
+    kept_length: usize,
+}
+struct ConcurrentRetainer<'a, T, const N: usize>([CRTracker<'a, T>; N]);
+
+
+
+trait GetStuff<T, const N: usize> {
+    fn get_stuff(&mut self) -> [&mut T; N];
+}
+impl<'a, T> GetStuff<T, 2> for ConcurrentRetainer<'a, T, 2> {
+    fn get_stuff(&mut self) -> [&mut T; 2] {
+        let [crt0, crt1] = &mut self.0;
+        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index]]
+    }
+}
+impl<'a, T> GetStuff<T, 3> for ConcurrentRetainer<'a, T, 3> {
+    fn get_stuff(&mut self) -> [&mut T; 3] {
+        let [crt0, crt1, crt2] = &mut self.0;
+        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index]]
+    }
+}
+impl<'a, T> GetStuff<T, 4> for ConcurrentRetainer<'a, T, 4> {
+    fn get_stuff(&mut self) -> [&mut T; 4] {
+        let [crt0, crt1, crt2, crt3] = &mut self.0;
+        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index], &mut crt3.vec[crt3.scan_index]]
+    }
+}
+
+impl<'a, T, const N: usize> ConcurrentRetainer<'a, T, N> where T: Ord + ShallowEq, Self: GetStuff<T, N> {
+    fn new(vecs: [&'a mut Vec<T>; N]) -> Self {
+        Self(vecs.map(|vec| CRTracker { vec, scan_index: 0, kept_length: 0 }))
+    }
+
+    fn find_next_shallow_eq(&mut self) -> Option<[&mut T; N]> {
+        'outer: loop {
+            // This invocation of get_stuff will have a more local lifetime
+            // that lets us loop without conflicting mutable access
+            let stuff: [&mut T; N] = self.get_stuff();
+            if array_is_shallow_eq(stuff.as_slice()) {
+                // This invocation of get_stuff will have a more external lifetime
+                // associated with the call of the function and &mut self.
+                // We can't simply return Some(stuff) or the borrow checker will complain.
+                return Some(self.get_stuff());
+            }
+            let the_indexes: [usize; N] = indexes_of_sorted_elements(&stuff);
+            drop(stuff);
+            'inner: for index_of_least in the_indexes {
+                let CRTracker { vec, scan_index, kept_length } =  &mut self.0[index_of_least];
+                if *scan_index >= vec.len() - 1 { continue 'inner; }
+                scan_index.add_assign(1);
+                kept_length.add_assign(1);
+                continue 'outer;
+            }
+            return None;
+        }
+    }
+
+    fn retain_mut<F>(mut self, mut f: F) where F: FnMut([&mut T; N]) -> bool {
+        while let Some(it) =  self.find_next_shallow_eq() {
+            if f(it) {
+                for CRTracker { vec, scan_index, kept_length } in self.0.iter_mut() {
+                    vec.swap(*scan_index, *kept_length);
+                    scan_index.add_assign(1);
+                    kept_length.add_assign(1);
+                }
+            } else {
+                for CRTracker { scan_index, .. } in self.0.iter_mut() {
+                    scan_index.add_assign(1);
+                }
+            }
+        }
+        for CRTracker { vec, kept_length, .. } in self.0.iter_mut() {
+            vec.truncate(*kept_length);
+        }
+    }
+}
+
+
+
+
 
 fn closest_to_zero(arr: &[f32]) -> f32 {
     arr.iter().copied().fold(arr[0], |acc, x| {

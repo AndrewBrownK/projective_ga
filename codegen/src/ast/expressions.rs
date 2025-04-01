@@ -1,6 +1,9 @@
 // TODO clean up imports manually. The built in detection doesn't work well across include!()s
 #![allow(unused_imports)]
 
+#[cfg(test)]
+mod tests;
+
 use std::cmp::Ordering;
 use std::fmt::{Debug, Display, Formatter};
 use std::mem;
