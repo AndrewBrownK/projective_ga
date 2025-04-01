@@ -64,38 +64,47 @@ fn indexes_of_sorted_elements<T: Ord, const N: usize>(array: &[T; N]) -> [usize;
     idxs
 }
 
+#[derive(Debug)]
 struct CRTracker<'a, T> {
     vec: &'a mut Vec<T>,
     scan_index: usize,
     kept_length: usize,
 }
-struct ConcurrentRetainer<'a, T, const N: usize>([CRTracker<'a, T>; N]);
-
-
+#[derive(Debug)]
+struct OrderedConcurrentScan<'a, T, const N: usize>([CRTracker<'a, T>; N]);
 
 trait GetStuff<T, const N: usize> {
-    fn get_stuff(&mut self) -> [&mut T; N];
+    fn get_stuff(&mut self) -> Option<[&mut T; N]>;
 }
-impl<'a, T> GetStuff<T, 2> for ConcurrentRetainer<'a, T, 2> {
-    fn get_stuff(&mut self) -> [&mut T; 2] {
+impl<'a, T> GetStuff<T, 2> for OrderedConcurrentScan<'a, T, 2> {
+    fn get_stuff(&mut self) -> Option<[&mut T; 2]> {
         let [crt0, crt1] = &mut self.0;
-        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index]]
+        if crt0.scan_index >= crt0.vec.len() { return None; }
+        if crt1.scan_index >= crt1.vec.len() { return None; }
+        Some([&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index]])
     }
 }
-impl<'a, T> GetStuff<T, 3> for ConcurrentRetainer<'a, T, 3> {
-    fn get_stuff(&mut self) -> [&mut T; 3] {
+impl<'a, T> GetStuff<T, 3> for OrderedConcurrentScan<'a, T, 3> {
+    fn get_stuff(&mut self) -> Option<[&mut T; 3]> {
         let [crt0, crt1, crt2] = &mut self.0;
-        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index]]
+        if crt0.scan_index >= crt0.vec.len() { return None; }
+        if crt1.scan_index >= crt1.vec.len() { return None; }
+        if crt2.scan_index >= crt2.vec.len() { return None; }
+        Some([&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index]])
     }
 }
-impl<'a, T> GetStuff<T, 4> for ConcurrentRetainer<'a, T, 4> {
-    fn get_stuff(&mut self) -> [&mut T; 4] {
+impl<'a, T> GetStuff<T, 4> for OrderedConcurrentScan<'a, T, 4> {
+    fn get_stuff(&mut self) -> Option<[&mut T; 4]> {
         let [crt0, crt1, crt2, crt3] = &mut self.0;
-        [&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index], &mut crt3.vec[crt3.scan_index]]
+        if crt0.scan_index >= crt0.vec.len() { return None; }
+        if crt1.scan_index >= crt1.vec.len() { return None; }
+        if crt2.scan_index >= crt2.vec.len() { return None; }
+        if crt3.scan_index >= crt3.vec.len() { return None; }
+        Some([&mut crt0.vec[crt0.scan_index], &mut crt1.vec[crt1.scan_index], &mut crt2.vec[crt2.scan_index], &mut crt3.vec[crt3.scan_index]])
     }
 }
 
-impl<'a, T, const N: usize> ConcurrentRetainer<'a, T, N> where T: Ord + ShallowEq, Self: GetStuff<T, N> {
+impl<'a, T, const N: usize> OrderedConcurrentScan<'a, T, N> where T: Ord + ShallowEq + Debug, Self: GetStuff<T, N> {
     fn new(vecs: [&'a mut Vec<T>; N]) -> Self {
         Self(vecs.map(|vec| CRTracker { vec, scan_index: 0, kept_length: 0 }))
     }
@@ -104,18 +113,19 @@ impl<'a, T, const N: usize> ConcurrentRetainer<'a, T, N> where T: Ord + ShallowE
         'outer: loop {
             // This invocation of get_stuff will have a more local lifetime
             // that lets us loop without conflicting mutable access
-            let stuff: [&mut T; N] = self.get_stuff();
+            let stuff: [&mut T; N] = self.get_stuff()?;
             if array_is_shallow_eq(stuff.as_slice()) {
                 // This invocation of get_stuff will have a more external lifetime
                 // associated with the call of the function and &mut self.
                 // We can't simply return Some(stuff) or the borrow checker will complain.
-                return Some(self.get_stuff());
+                return self.get_stuff();
             }
             let the_indexes: [usize; N] = indexes_of_sorted_elements(&stuff);
             drop(stuff);
             'inner: for index_of_least in the_indexes {
                 let CRTracker { vec, scan_index, kept_length } =  &mut self.0[index_of_least];
                 if *scan_index >= vec.len() - 1 { continue 'inner; }
+                vec.swap(*scan_index, *kept_length);
                 scan_index.add_assign(1);
                 kept_length.add_assign(1);
                 continue 'outer;
@@ -125,6 +135,9 @@ impl<'a, T, const N: usize> ConcurrentRetainer<'a, T, N> where T: Ord + ShallowE
     }
 
     fn retain_mut<F>(mut self, mut f: F) where F: FnMut([&mut T; N]) -> bool {
+        for it in self.0.iter_mut() {
+            it.vec.sort();
+        }
         while let Some(it) =  self.find_next_shallow_eq() {
             if f(it) {
                 for CRTracker { vec, scan_index, kept_length } in self.0.iter_mut() {
@@ -136,6 +149,15 @@ impl<'a, T, const N: usize> ConcurrentRetainer<'a, T, N> where T: Ord + ShallowE
                 for CRTracker { scan_index, .. } in self.0.iter_mut() {
                     scan_index.add_assign(1);
                 }
+            }
+        }
+        for i in 0..N {
+            let CRTracker { vec, scan_index, kept_length } = &mut self.0[i];
+            let mut j = *scan_index;
+            while j < vec.len() {
+                vec.swap(j, *kept_length);
+                kept_length.add_assign(1);
+                j += 1;
             }
         }
         for CRTracker { vec, kept_length, .. } in self.0.iter_mut() {
