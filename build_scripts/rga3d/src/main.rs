@@ -32,6 +32,7 @@ fn main() {
         0 => e4
     };
     let repo = base_documentation(register_multi_vecs(rga3d)).finished();
+    // TODO https://rigidgeometricalgebra.org/wiki/index.php?title=Transwedge_products
     let traits = codegen::register_all! { e1234 repo;
         Zero One AntiOne Unit
         Into TryInto

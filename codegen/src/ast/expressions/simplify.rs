@@ -630,11 +630,14 @@ impl FloatExpr {
                 sum.retain(|(_, f)| *f != 0.0);
 
                 if sum.len() == 1 && *last_addend == 0.0 {
-                    let (addend, factor) = sum.remove(0);
-                    return if factor == 1.0 {
-                        *self = addend;
-                    } else {
-                        *self = FloatExpr::product(vec![(addend, 1.0)], factor);
+                    let (mut addend, factor) = sum.remove(0);
+                    return *self = match (&mut addend, factor) {
+                        (_, 1.0) => addend,
+                        (FloatExpr::Product(_, last_factor), factor) => {
+                            *last_factor *= factor;
+                            addend
+                        }
+                        _ => FloatExpr::product(vec![(addend, 1.0)], factor)
                     };
                 }
                 if sum.is_empty() {
@@ -1332,7 +1335,7 @@ impl Vec3Expr {
         self.vec3_simplify(false, false, true);
     }
     #[tracing::instrument(level = "debug", skip_all, fields(iad = insides_already_done, ts = transpose_simd, fiav = force_inline_all_variables))]
-    fn vec3_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
+    pub(crate) fn vec3_simplify(&mut self, insides_already_done: bool, transpose_simd: bool, force_inline_all_variables: bool) {
         match self {
             Vec3Expr::Variable(v) => {
                 let span = tracing::trace_span!("match_Variable");
@@ -2248,6 +2251,7 @@ impl Vec4Expr {
                     // 4/4
                     (AccessVec4(box v4_a, x), AccessVec4(box v4_b, y), AccessVec4(box v4_c, z), AccessVec4(box v4_d, w)) if eqs!(v4_a, v4_b, v4_c, v4_d) => {
                         *self = Vec4Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y, *z, *w);
+                        // TODO do we need extra simplify here?
                         return;
                     }
                     (AccessVec3(box v3_a, x), AccessVec3(box v3_b, y), AccessVec3(box v3_c, z), AccessVec3(box v3_d, w)) if eqs!(v3_a, v3_b, v3_c, v3_d) => {
@@ -2307,13 +2311,13 @@ impl Vec4Expr {
                     }
                     (
                         x,
-                        Product(ref mut x_product, y_lit),
-                        Product(ref mut y_product, z_lit),
+                        Product(ref mut y_product, y_lit),
+                        Product(ref mut z_product, z_lit),
                         Product(ref mut w_product, w_lit),
                     ) if transpose_simd => {
                         let lits = [1.0, *y_lit, *z_lit, *w_lit];
                         let mut x = vec![(x.clone(), 1.0)];
-                        if let Some(transposed) = vec4_product_transpose(None, &mut x, x_product, y_product, w_product, lits) {
+                        if let Some(transposed) = vec4_product_transpose(None, &mut x, y_product, z_product, w_product, lits) {
                             *self = transposed;
                         }
                     }

@@ -4,6 +4,8 @@ use std::collections::{BTreeSet, HashMap};
 use std::ops::{Add, AddAssign, Mul, MulAssign};
 use std::sync::Arc;
 
+// TODO AntiInverse for DualNum says 2 mul and 2 div, but I think it might be 1 mul and 2 div
+
 #[derive(Clone, Copy)]
 pub struct OperationsTracker {
     pub add_sub: usize,

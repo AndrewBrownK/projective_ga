@@ -87,8 +87,10 @@ impl Ord for FloatExpr {
     fn cmp(&self, other: &Self) -> Ordering {
         use FloatExpr::*;
         match (self, other) {
-            (Variable(a), Variable(b)) => a.cmp(b),
+            // Literal must come first for transposition logic
             (Literal(a), Literal(b)) => FloatOrd(*a).cmp(&FloatOrd(*b)),
+
+            (Variable(a), Variable(b)) => a.cmp(b),
             (FromInt(a), FromInt(b)) => a.cmp(&b),
             (AccessVec2(a, ai), AccessVec2(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
             (AccessVec3(a, ai), AccessVec3(b, bi)) => a.cmp(b).then_with(|| ai.cmp(bi)),
@@ -128,10 +130,13 @@ impl Ord for FloatExpr {
                 if c != Ordering::Equal { return c }
                 FloatOrd(*a_lexp).cmp(&FloatOrd(*b_lexp))
             }
-            (Variable(_), _) => Ordering::Less,
-            (_, Variable(_)) => Ordering::Greater,
+
+            // Literal must come first for transposition logic
             (Literal(_), _) => Ordering::Less,
             (_, Literal(_)) => Ordering::Greater,
+
+            (Variable(_), _) => Ordering::Less,
+            (_, Variable(_)) => Ordering::Greater,
             (FromInt(_), _) => Ordering::Less,
             (_, FromInt(_)) => Ordering::Greater,
             (AccessVec2(_, _), _) => Ordering::Less,
@@ -790,7 +795,7 @@ impl Ord for Vec4Expr {
 }
 
 
-trait ShallowEq {
+pub(crate) trait ShallowEq {
     fn shallow_eq(&self, other: &Self) -> bool;
 }
 impl ShallowEq for i32 {
@@ -807,18 +812,23 @@ impl ShallowEq for FloatExpr {
     fn shallow_eq(&self, other: &Self) -> bool {
         use FloatExpr::*;
         match (self, other) {
-            (Variable(a), Variable(b)) => true,
-            (Literal(a), Literal(b)) => true,
-            (FromInt(a), FromInt(b)) => true,
-            (AccessVec2(a, ai), AccessVec2(b, bi)) => true,
-            (AccessVec3(a, ai), AccessVec3(b, bi)) => true,
-            (AccessVec4(a, ai), AccessVec4(b, bi)) => true,
-            (AccessMultiVecGroup(a, ai), AccessMultiVecGroup(b, bi)) => true,
-            (TraitInvoke11ToFloat(ak, a), TraitInvoke11ToFloat(bk, b)) => true,
-            (Product(a, al), Product(b, bl)) => true,
-            (Sum(a, al), Sum(b, bl)) => true,
-            (Exp(a, ae, al), Exp(b, be, bl)) => true,
-            _ => false,
+            (Variable(_), Variable(_)) => true,
+            (Literal(_), Literal(_)) => true,
+            (FromInt(_), FromInt(_)) => true,
+            (AccessVec2(_, _), AccessVec2(_, _)) => true,
+            (AccessVec3(_, _), AccessVec3(_, _)) => true,
+            (AccessVec4(_, _), AccessVec4(_, _)) => true,
+            (AccessMultiVecGroup(_, _), AccessMultiVecGroup(_, _)) => true,
+            (TraitInvoke11ToFloat(_, _), TraitInvoke11ToFloat(_, _)) => true,
+            (Product(_, _), Product(_, _)) => true,
+            (Sum(_, _), Sum(_, _)) => true,
+            (Exp(_, _, _), Exp(_, _, _)) => true,
+             _ => false,
         }
+    }
+}
+impl ShallowEq for (FloatExpr, f32) {
+    fn shallow_eq(&self, other: &Self) -> bool {
+        self.0.shallow_eq(&other.0)
     }
 }
