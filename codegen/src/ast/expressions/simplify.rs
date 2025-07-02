@@ -765,6 +765,10 @@ impl Vec2Expr {
                     *self = Vec2Expr::Gather1(f0.take_as_owned());
                     return;
                 }
+                {
+                    let stuff: (&FloatExpr, &FloatExpr) = (&*f0, &*f1);
+                    tracing::trace!("attempting match on \n{:?}", DebugExpression::new_multiline(2, &stuff));
+                }
                 match (f0, f1) {
                     (AccessVec4(box ref mut v4_a, x), AccessVec4(box ref mut v4_b, y)) if eqs!(v4_a, v4_b) => {
                         *self = Vec2Expr::swizzle_vec_4(v4_a.take_as_owned(), *x, *y);
@@ -996,8 +1000,8 @@ impl Vec2Expr {
                     product.push((Vec2Expr::Gather1(f), 1.0));
                 }
                 if is_any_gather2 {
-                    let mut x = if gather2_x.is_empty() { default_coefficient!(0) } else { FloatExpr::Product(gather2_x, 1.0) };
-                    let mut y = if gather2_y.is_empty() { default_coefficient!(1) } else { FloatExpr::Product(gather2_y, 1.0) };
+                    let mut x = if gather2_x.is_empty() { default_coefficient!(0) } else { FloatExpr::product(gather2_x, 1.0) };
+                    let mut y = if gather2_y.is_empty() { default_coefficient!(1) } else { FloatExpr::product(gather2_y, 1.0) };
                     x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
                     if let FloatExpr::Literal(0.0) = &x {
@@ -1080,62 +1084,112 @@ impl Vec2Expr {
                         *self = new_self;
                     };
                 }
-                let mut flatten = vec![];
-                sum.retain_mut(|(addend, factor)| match addend {
-                    Vec2Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        false
-                    }
-                    Vec2Expr::Gather2(FloatExpr::Literal(f0), FloatExpr::Literal(f1)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        false
-                    }
-                    Vec2Expr::Sum(s, another_addend) => {
-                        for (_, f) in s.iter_mut() {
-                            *f = *f * *factor;
+
+                let mut gather1 = vec![];
+                let mut gather2_x = vec![];
+                let mut gather2_y = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < sum.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    sum.retain_mut(|(addend, coefficient)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(s);
-                        last_addend[0] += another_addend[0];
-                        last_addend[1] += another_addend[1];
-                        false
-                    }
-                    Vec2Expr::Product(p, last_factor) => {
-                        if last_factor[0] == last_factor[1] {
-                            *factor *= last_factor[0];
-                            *last_factor = [1.0; 2];
+                        match addend {
+                            Vec2Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let m = *f * *coefficient;
+                                        last_addend[0] += m;
+                                        last_addend[1] += m;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec2Expr::Gather2(x, y) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_addend[0] += *x * *coefficient,
+                                    _ => gather2_x.push((x.take_as_owned(), *coefficient)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_addend[1] += *y * *coefficient,
+                                    _ => gather2_y.push((y.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec2Expr::Sum(ref mut p, another_addend) => {
+                                for (_, c) in p.iter_mut() {
+                                    *c = *c * *coefficient;
+                                }
+                                flatten.append(p);
+                                last_addend[0] += another_addend[0];
+                                last_addend[1] += another_addend[1];
+                                false
+                            }
+                            _ => true,
                         }
-                        if p.len() == 1 && p[0].1 == 1.0 && *last_factor == [1.0; 2] {
-                            *addend = p.remove(0).0;
+                    });
+                    start_idx = sum.len();
+                    sum.append(&mut flatten);
+                }
+
+                let x = last_addend[0];
+                let y = last_addend[1];
+
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
                         }
-                        true
+                    };
+                }
+
+                if eqs!(x, y) && !gather1.is_empty() {
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::sum(gather1, x);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec2Expr::Gather1(f), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                }
+
+                let is_any_gather2 = !gather2_x.is_empty() || !gather2_y.is_empty();
+                let is_only_gather2 = is_any_gather2 && sum.is_empty() && gather1.is_empty();
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::sum(gather1, 0.0);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec2Expr::Gather1(f), 1.0));
+                }
+                if is_any_gather2 {
+                    let mut x = if gather2_x.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather2_x, 0.0) };
+                    let mut y = if gather2_y.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather2_y, 0.0) };
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    if is_only_gather2 {
+                        sum.push((Vec2Expr::Gather2(x + last_addend[0], y + last_addend[1]), 1.0));
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                    } else {
+                        sum.push((Vec2Expr::Gather2(x, y), 1.0));
                     }
-                    _ => true,
-                });
-                flatten.retain(|(addend, factor)| match addend {
-                    Vec2Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        false
-                    }
-                    Vec2Expr::Gather2(FloatExpr::Literal(f0), FloatExpr::Literal(f1)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        false
-                    }
-                    _ => true,
-                });
-                sum.append(&mut flatten);
+                }
+
                 sum.sort_with_f32();
 
                 let mut partition = 1;
                 while partition <= sum.len() {
                     let (front, back) = sum.split_at_mut(partition);
-                    let (front_expr, front_factor) = &mut front[partition - 1];
-                    let kept_length = slice_retain_mut(back, |(back_expr, back_factor)| {
+                    let (front_expr, front_coefficient) = &mut front[partition - 1];
+                    let kept_length = slice_retain_mut(back, |(back_expr, back_coefficient)| {
                         if front_expr == back_expr {
-                            *front_factor += *back_factor;
+                            *front_coefficient += *back_coefficient;
                             false
                         } else {
                             true
@@ -1144,21 +1198,24 @@ impl Vec2Expr {
                     sum.truncate(partition + kept_length);
                     partition += 1;
                 }
-                sum.retain(|(_, f)| *f != 0.0);
+                sum.retain(|(_, e)| *e != 0.0);
 
                 if sum.len() == 1 && *last_addend == [0.0; 2] {
-                    let (addend, factor) = sum.remove(0);
-                    return if factor == 1.0 {
+                    if sum[0].1 == 1.0 {
+                        let (addend, _coefficient) = sum.remove(0);
                         *self = addend;
-                    } else {
-                        let gather = [factor, factor];
-                        *self = Vec2Expr::product(vec![(addend, 1.0)], gather);
-                    };
+                        return;
+                    }
                 }
+
                 if sum.is_empty() {
                     let f0 = FloatExpr::Literal(last_addend[0]);
                     let f1 = FloatExpr::Literal(last_addend[1]);
-                    *self = if f0 == f1 { Vec2Expr::Gather1(f0) } else { Vec2Expr::Gather2(f0, f1) };
+                    *self = if eqs!(f0, f1) {
+                        Vec2Expr::Gather1(f0)
+                    } else {
+                        Vec2Expr::Gather2(f0, f1)
+                    };
                 }
             }
             Vec2Expr::SwizzleVec2(box v2, i0, i1) => {
@@ -1374,6 +1431,10 @@ impl Vec3Expr {
                 if f0 == f1 && f0 == f2 {
                     *self = Vec3Expr::Gather1(f0.take_as_owned());
                     return;
+                }
+                {
+                    let stuff = (&*f0, &*f1, &*f2);
+                    tracing::trace!("attempting match on \n{:?}", DebugExpression::new_multiline(2, &stuff));
                 }
                 match (f0, f1, f2) {
 
@@ -1925,67 +1986,189 @@ impl Vec3Expr {
                         *self = new_self;
                     };
                 }
-                let mut flatten = vec![];
-                sum.retain_mut(|(addend, factor)| match addend {
-                    Vec3Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        last_addend[2] += *f * *factor;
-                        false
-                    }
-                    Vec3Expr::Gather3(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        last_addend[2] += *f2 * *factor;
-                        false
-                    }
-                    Vec3Expr::Sum(s, another_addend) => {
-                        for (_, f) in s.iter_mut() {
-                            *f = *f * *factor;
+
+                let mut gather1 = vec![];
+                let mut extend2to3_xy = vec![];
+                let mut gather3_x = vec![];
+                let mut gather3_y = vec![];
+                let mut gather3_z = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < sum.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    sum.retain_mut(|(addend, coefficient)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(s);
-                        last_addend[0] += another_addend[0];
-                        last_addend[1] += another_addend[1];
-                        last_addend[2] += another_addend[2];
-                        false
-                    }
-                    Vec3Expr::Product(p, last_factor) => {
-                        if last_factor[0] == last_factor[1] && last_factor[1] == last_factor[2] {
-                            *factor *= last_factor[0];
-                            *last_factor = [1.0; 3];
+                        match addend {
+                            Vec3Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let m = *f * *coefficient;
+                                        last_addend[0] += m;
+                                        last_addend[1] += m;
+                                        last_addend[2] += m;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Gather3(x, y, z) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_addend[0] += *x * *coefficient,
+                                    _ => gather3_x.push((x.take_as_owned(), *coefficient)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_addend[1] += *y * *coefficient,
+                                    _ => gather3_y.push((y.take_as_owned(), *coefficient)),
+                                }
+                                match z {
+                                    FloatExpr::Literal(z) => last_addend[2] += *z * *coefficient,
+                                    _ => gather3_z.push((z.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Extend2to3(xy, z) => {
+                                // Do not need to further match on xy because
+                                // xy + z would simplify to Gather3 when we care about it.
+                                extend2to3_xy.push((xy.take_as_owned(), *coefficient));
+                                match z {
+                                    FloatExpr::Literal(z) => last_addend[2] += *z * *coefficient,
+                                    _ => gather3_z.push((z.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec3Expr::Sum(ref mut p, another_addend) => {
+                                for (_, c) in p.iter_mut() {
+                                    *c = *c * *coefficient;
+                                }
+                                flatten.append(p);
+                                last_addend[0] += another_addend[0];
+                                last_addend[1] += another_addend[1];
+                                last_addend[2] += another_addend[2];
+                                false
+                            }
+                            _ => true,
                         }
-                        if p.len() == 1 && p[0].1 == 1.0 && *last_factor == [1.0; 3] {
-                            *addend = p.remove(0).0;
+                    });
+                    start_idx = sum.len();
+                    sum.append(&mut flatten);
+                }
+
+                let x = last_addend[0];
+                let y = last_addend[1];
+                let z = last_addend[2];
+
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
                         }
-                        true
+                    };
+                }
+                macro_rules! add_addend {
+                    ($float_expr:expr, $k:expr) => {
+                        if $k != 0.0 {
+                            match &mut $float_expr {
+                                FloatExpr::Sum(_, c) => {
+                                    c.add_assign($k);
+                                }
+                                _ => {
+                                    let f = $float_expr.take_as_owned();
+                                    $float_expr = FloatExpr::Sum(vec![(f, 1.0)], $k);
+                                    $float_expr.float_simplify(true, transpose_simd, force_inline_all_variables);
+                                }
+                            }
+                        }
                     }
-                    _ => true,
-                });
-                flatten.retain(|(addend, factor)| match addend {
-                    Vec3Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        last_addend[2] += *f * *factor;
-                        false
+                }
+                if eqs!(x, y, z) && !gather1.is_empty() {
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::sum(gather1, x);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec3Expr::Gather1(f), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                    last_addend[2] = 0.0;
+                } else if eqs!(x, y) && !extend2to3_xy.is_empty() {
+                    extend2to3_xy.push((Vec2Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                }
+
+                let mut leftover_z = FloatExpr::Literal(0.0);
+
+                match (gather3_x.is_empty(), gather3_y.is_empty(), gather3_z.is_empty()) {
+                    (false, false, true) => {
+                        let x = swap_take!(gather3_x, vec![]);
+                        let y = swap_take!(gather3_y, vec![]);
+                        let gather2 = Vec2Expr::Gather2(FloatExpr::sum(x, 0.0), FloatExpr::sum(y, 0.0));
+                        extend2to3_xy.push((gather2, 1.0));
                     }
-                    Vec3Expr::Gather3(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        last_addend[2] += *f2 * *factor;
-                        false
+                    (true, true, false) if !extend2to3_xy.is_empty() => {
+                        let z = swap_take!(gather3_z, vec![]);
+                        leftover_z = FloatExpr::sum(z, 0.0);
+                        leftover_z.float_simplify(true, transpose_simd, force_inline_all_variables);
                     }
-                    _ => true,
-                });
-                sum.append(&mut flatten);
+                    _ => {}
+                }
+
+                let is_any_gather3 = !gather3_x.is_empty() || !gather3_y.is_empty() || !gather3_z.is_empty();
+                let mut is_only_2to3 = !extend2to3_xy.is_empty() && sum.is_empty() && gather1.is_empty() && gather3_x.is_empty() && gather3_y.is_empty();
+                let mut is_only_gather3 = is_any_gather3 && sum.is_empty() && gather1.is_empty() && extend2to3_xy.is_empty();
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::sum(gather1, 0.0);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec3Expr::Gather1(f), 1.0));
+                }
+                if !extend2to3_xy.is_empty() {
+                    let mut xy_addend = [0.0; 2];
+                    if is_only_2to3 {
+                        xy_addend = [last_addend[0], last_addend[1]];
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                        add_addend!(leftover_z, last_addend[2]);
+                        last_addend[2] = 0.0;
+                    }
+                    let mut vec2_sums = Vec2Expr::sum(extend2to3_xy, xy_addend);
+                    vec2_sums.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec3Expr::Extend2to3(vec2_sums, leftover_z), 1.0));
+                }
+                if is_any_gather3 {
+                    let mut x = if gather3_x.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather3_x, 0.0) };
+                    let mut y = if gather3_y.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather3_y, 0.0) };
+                    let mut z = if gather3_z.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather3_z, 0.0) };
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    z.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    if is_only_gather3 {
+                        sum.push((Vec3Expr::Gather3(
+                            x + last_addend[0],
+                            y + last_addend[1],
+                            z + last_addend[2],
+                        ), 1.0));
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                        last_addend[2] = 0.0;
+                    } else {
+                        sum.push((Vec3Expr::Gather3(x, y, z), 1.0));
+                    }
+                }
+
                 sum.sort_with_f32();
 
                 let mut partition = 1;
                 while partition <= sum.len() {
                     let (front, back) = sum.split_at_mut(partition);
-                    let (front_expr, front_factor) = &mut front[partition - 1];
-                    let kept_length = slice_retain_mut(back, |(back_expr, back_factor)| {
+                    let (front_expr, front_coefficient) = &mut front[partition - 1];
+                    let kept_length = slice_retain_mut(back, |(back_expr, back_coefficient)| {
                         if front_expr == back_expr {
-                            *front_factor += *back_factor;
+                            *front_coefficient += *back_coefficient;
                             false
                         } else {
                             true
@@ -1994,39 +2177,25 @@ impl Vec3Expr {
                     sum.truncate(partition + kept_length);
                     partition += 1;
                 }
-                sum.retain(|(_, f)| *f != 0.0);
+                sum.retain(|(_, c)| *c != 0.0);
 
                 if sum.len() == 1 && *last_addend == [0.0; 3] {
-                    let (addend, factor) = sum.remove(0);
-                    return if factor == 1.0 {
+                    if sum[0].1 == 1.0 {
+                        let (addend, _coefficient) = sum.remove(0);
                         *self = addend;
-                    } else {
-                        let gather = [factor, factor, factor];
-                        *self = Vec3Expr::product(vec![(addend, 1.0)], gather);
-                    };
-                }
-
-                // Vec extensions get pulled to the outside of arithmetic
-                if sum.len() == 2 {
-                    let (a, b) = sum.split_at_mut(1);
-                    match (&mut a[0], &mut b[0]) {
-                        ((Vec3Expr::Extend2to3(va, za), a), (Vec3Expr::Extend2to3(vb, zb), b)) => {
-                            *self = Vec3Expr::Extend2to3(
-                                Vec2Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
-                                FloatExpr::sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
-                            );
-                            // Significant restructure, so re-simplify
-                            self.vec3_simplify(false, transpose_simd, force_inline_all_variables);
-                            return
-                        }
-                        _ => {}
+                        return;
                     }
                 }
+
                 if sum.is_empty() {
                     let f0 = FloatExpr::Literal(last_addend[0]);
                     let f1 = FloatExpr::Literal(last_addend[1]);
                     let f2 = FloatExpr::Literal(last_addend[2]);
-                    *self = if f0 == f1 && f1 == f2 { Vec3Expr::Gather1(f0) } else { Vec3Expr::Gather3(f0, f1, f2) };
+                    *self = if eqs!(f0, f1, f2) {
+                        Vec3Expr::Gather1(f0)
+                    } else {
+                        Vec3Expr::Gather3(f0, f1, f2)
+                    };
                 }
             }
             Vec3Expr::SwizzleVec2(v2, i0, i1, i2) => {
@@ -2245,7 +2414,10 @@ impl Vec4Expr {
                     *self = Vec4Expr::Gather1(f0.take_as_owned());
                     return;
                 }
-                tracing::trace!("attempting match on ({f0:?}, {f1:?}, {f2:?}, {f3:?})");
+                {
+                    let stuff = (&*f0, &*f1, &*f2, &*f3);
+                    tracing::trace!("attempting match on \n{:?}", DebugExpression::new_multiline(2, &stuff));
+                }
                 match (f0, f1, f2, f3) {
 
                     // 4/4
@@ -2493,6 +2665,7 @@ impl Vec4Expr {
                         Sum(ref mut z_sum, z_lit),
                         Sum(ref mut w_sum, w_lit)
                     ) if transpose_simd => {
+                        // TODO impl Wedge<Line> for Flector
                         let lits = [*x_lit, *y_lit, *z_lit, *w_lit];
                         if let Some(transposed) = vec4_sum_transpose(None, x_sum, y_sum, z_sum, w_sum, lits) {
                             *self = transposed;
@@ -3191,72 +3364,262 @@ impl Vec4Expr {
                         *self = new_self;
                     };
                 }
-                let mut flatten = vec![];
-                sum.retain_mut(|(addend, factor)| match addend {
-                    Vec4Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        last_addend[2] += *f * *factor;
-                        last_addend[3] += *f * *factor;
-                        false
-                    }
-                    Vec4Expr::Gather4(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2), FloatExpr::Literal(f3)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        last_addend[2] += *f2 * *factor;
-                        last_addend[3] += *f3 * *factor;
-                        false
-                    }
-                    Vec4Expr::Sum(s, another_addend) => {
-                        for (_, f) in s.iter_mut() {
-                            *f = *f * *factor;
+
+                let mut gather1 = vec![];
+                let mut extend3to4_xyz = vec![];
+                let mut extend2to4_xy = vec![];
+                let mut gather4_x = vec![];
+                let mut gather4_y = vec![];
+                let mut gather4_z = vec![];
+                let mut gather4_w = vec![];
+
+                let mut start_idx = 0;
+                while start_idx < sum.len() {
+                    let mut iter_idx = 0;
+                    let mut flatten = vec![];
+                    sum.retain_mut(|(addend, coefficient)| {
+                        if iter_idx < start_idx {
+                            iter_idx += 1;
+                            return true
                         }
-                        flatten.append(s);
-                        last_addend[0] += another_addend[0];
-                        last_addend[1] += another_addend[1];
-                        last_addend[2] += another_addend[2];
-                        last_addend[3] += another_addend[3];
-                        false
-                    }
-                    Vec4Expr::Product(p, last_factor) => {
-                        if last_factor[0] == last_factor[1] && last_factor[1] == last_factor[2] && last_factor[2] == last_factor[3] {
-                            *factor *= last_factor[0];
-                            *last_factor = [1.0; 4];
+                        match addend {
+                            Vec4Expr::Gather1(f) => {
+                                match f {
+                                    FloatExpr::Literal(f) => {
+                                        let m = *f * *coefficient;
+                                        last_addend[0] += m;
+                                        last_addend[1] += m;
+                                        last_addend[2] += m;
+                                        last_addend[3] += m;
+                                    }
+                                    _ => gather1.push((f.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Gather4(x, y, z, w) => {
+                                match x {
+                                    FloatExpr::Literal(x) => last_addend[0] += *x * *coefficient,
+                                    _ => gather4_x.push((x.take_as_owned(), *coefficient)),
+                                }
+                                match y {
+                                    FloatExpr::Literal(y) => last_addend[1] += *y * *coefficient,
+                                    _ => gather4_y.push((y.take_as_owned(), *coefficient)),
+                                }
+                                match z {
+                                    FloatExpr::Literal(z) => last_addend[2] += *z * *coefficient,
+                                    _ => gather4_z.push((z.take_as_owned(), *coefficient)),
+                                }
+                                match w {
+                                    FloatExpr::Literal(w) => last_addend[3] += *w * *coefficient,
+                                    _ => gather4_w.push((w.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Extend3to4(xyz, w) => {
+                                // Do not need to further match on xyz because
+                                // xyz + w would simplify to Gather4 when we care about it.
+                                extend3to4_xyz.push((xyz.take_as_owned(), *coefficient));
+                                match w {
+                                    FloatExpr::Literal(w) => last_addend[3] += *w * *coefficient,
+                                    _ => gather4_w.push((w.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Extend2to4(xy, z, w) => {
+                                // Do not need to further match on xy because
+                                // xy + z + w would simplify to Gather4 when we care about it.
+                                extend2to4_xy.push((xy.take_as_owned(), *coefficient));
+                                match z {
+                                    FloatExpr::Literal(z) => last_addend[2] += *z * *coefficient,
+                                    _ => gather4_z.push((z.take_as_owned(), *coefficient)),
+                                }
+                                match w {
+                                    FloatExpr::Literal(w) => last_addend[3] += *w * *coefficient,
+                                    _ => gather4_w.push((w.take_as_owned(), *coefficient)),
+                                }
+                                false
+                            }
+                            Vec4Expr::Sum(ref mut p, another_factor) => {
+                                for (_, e) in p.iter_mut() {
+                                    *e = *e * *coefficient;
+                                }
+                                flatten.append(p);
+                                last_addend[0] += another_factor[0];
+                                last_addend[1] += another_factor[1];
+                                last_addend[2] += another_factor[2];
+                                last_addend[3] += another_factor[3];
+                                false
+                            }
+                            _ => true,
                         }
-                        if p.len() == 1 && p[0].1 == 1.0 && *last_factor == [1.0; 4] {
-                            *addend = p.remove(0).0;
+                    });
+                    start_idx = sum.len();
+                    sum.append(&mut flatten);
+                }
+
+                let x = last_addend[0];
+                let y = last_addend[1];
+                let z = last_addend[2];
+                let w = last_addend[3];
+
+                macro_rules! swap_take {
+                    ($var:ident, $replacement:expr) => {
+                        {
+                            let mut x = $replacement;
+                            mem::swap(&mut x, &mut $var);
+                            x
                         }
-                        true
+                    };
+                }
+                macro_rules! add_addend {
+                    ($float_expr:expr, $k:expr) => {
+                        if $k != 0.0 {
+                            match &mut $float_expr {
+                                FloatExpr::Sum(_, c) => {
+                                    c.add_assign($k);
+                                }
+                                _ => {
+                                    let f = $float_expr.take_as_owned();
+                                    $float_expr = FloatExpr::Sum(vec![(f, 1.0)], $k);
+                                    $float_expr.float_simplify(true, transpose_simd, force_inline_all_variables);
+                                }
+                            }
+                        }
                     }
-                    _ => true,
-                });
-                flatten.retain(|(addend, factor)| match addend {
-                    Vec4Expr::Gather1(FloatExpr::Literal(f)) => {
-                        last_addend[0] += *f * *factor;
-                        last_addend[1] += *f * *factor;
-                        last_addend[2] += *f * *factor;
-                        last_addend[3] += *f * *factor;
-                        false
+                }
+
+                if eqs!(x, y, z, w) && !gather1.is_empty() {
+                    let gather1 = swap_take!(gather1, vec![]);
+                    let mut f = FloatExpr::sum(gather1, x);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec4Expr::Gather1(f), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                    last_addend[2] = 0.0;
+                    last_addend[3] = 0.0;
+                } else if eqs!(x, y, z) && !extend3to4_xyz.is_empty() {
+                    extend3to4_xyz.push((Vec3Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                    last_addend[2] = 0.0;
+                } else if eqs!(x, y) && !extend2to4_xy.is_empty() {
+                    extend2to4_xy.push((Vec2Expr::Gather1(FloatExpr::Literal(x)), 1.0));
+                    last_addend[0] = 0.0;
+                    last_addend[1] = 0.0;
+                }
+
+                let mut leftover_z = FloatExpr::Literal(0.0);
+                let mut leftover_w = FloatExpr::Literal(0.0);
+
+                match (gather4_x.is_empty(), gather4_y.is_empty(), gather4_z.is_empty(), gather4_w.is_empty()) {
+                    (false, false, true, true) => {
+                        let x = swap_take!(gather4_x, vec![]);
+                        let y = swap_take!(gather4_y, vec![]);
+                        let gather2 = Vec2Expr::Gather2(FloatExpr::sum(x, 0.0), FloatExpr::sum(y, 0.0));
+                        extend2to4_xy.push((gather2, 1.0));
                     }
-                    Vec4Expr::Gather4(FloatExpr::Literal(f0), FloatExpr::Literal(f1), FloatExpr::Literal(f2), FloatExpr::Literal(f3)) => {
-                        last_addend[0] += *f0 * *factor;
-                        last_addend[1] += *f1 * *factor;
-                        last_addend[2] += *f2 * *factor;
-                        last_addend[3] += *f3 * *factor;
-                        false
+                    (false, false, false, true) => {
+                        let x = swap_take!(gather4_x, vec![]);
+                        let y = swap_take!(gather4_y, vec![]);
+                        let z = swap_take!(gather4_z, vec![]);
+                        let gather3 = Vec3Expr::Gather3(FloatExpr::sum(x, 0.0), FloatExpr::sum(y, 0.0), FloatExpr::sum(z, 0.0));
+                        extend3to4_xyz.push((gather3, 1.0));
                     }
-                    _ => true,
-                });
-                sum.append(&mut flatten);
+                    (true, true, false, false) if !extend2to4_xy.is_empty() => {
+                        let z = swap_take!(gather4_z, vec![]);
+                        let w = swap_take!(gather4_w, vec![]);
+                        leftover_z = FloatExpr::sum(z, 0.0);
+                        leftover_w = FloatExpr::sum(w, 0.0);
+                        leftover_z.float_simplify(true, transpose_simd, force_inline_all_variables);
+                        leftover_w.float_simplify(true, transpose_simd, force_inline_all_variables);
+                    }
+                    (true, true, true, false) if !extend3to4_xyz.is_empty() => {
+                        let w = swap_take!(gather4_w, vec![]);
+                        leftover_w = FloatExpr::sum(w, 0.0);
+                        leftover_w.float_simplify(true, transpose_simd, force_inline_all_variables);
+                    }
+                    _ => {}
+                }
+
+                let is_any_gather4 = !gather4_x.is_empty() || !gather4_y.is_empty() || !gather4_z.is_empty() || !gather4_w.is_empty();
+                let mut is_only_2to4 = !extend2to4_xy.is_empty() && sum.is_empty() && gather1.is_empty() && extend3to4_xyz.is_empty() && gather4_x.is_empty() && gather4_y.is_empty();
+                let mut is_only_3to4 = !extend3to4_xyz.is_empty() && sum.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
+                let mut is_only_gather4 = is_any_gather4 && sum.is_empty() && gather1.is_empty() && extend2to4_xy.is_empty() && extend3to4_xyz.is_empty();
+
+                if !gather1.is_empty() {
+                    let mut f = FloatExpr::sum(gather1, 0.0);
+                    f.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec4Expr::Gather1(f), 1.0));
+                }
+                if !extend2to4_xy.is_empty() {
+                    let mut xy_addend = [0.0; 2];
+                    if is_only_2to4 {
+                        xy_addend = [last_addend[0], last_addend[1]];
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                        add_addend!(leftover_z, last_addend[2]);
+                        add_addend!(leftover_w, last_addend[3]);
+                        last_addend[2] = 0.0;
+                        last_addend[3] = 0.0;
+                    }
+                    let mut vec2_sums = Vec2Expr::sum(extend2to4_xy, xy_addend);
+                    vec2_sums.vec2_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    if !extend3to4_xyz.is_empty() {
+                        extend3to4_xyz.push((Vec3Expr::Extend2to3(vec2_sums, leftover_z), 1.0));
+                        is_only_3to4 = sum.is_empty() && gather4_x.is_empty() && gather4_y.is_empty() && gather4_z.is_empty();
+                    } else {
+                        let leftover_w = swap_take!(leftover_w, FloatExpr::Literal(0.0));
+                        sum.push((Vec4Expr::Extend2to4(vec2_sums, leftover_z, leftover_w), 1.0));
+                    }
+                }
+                if !extend3to4_xyz.is_empty() {
+                    let mut xyz_addend = [0.0; 3];
+                    if is_only_3to4 {
+                        xyz_addend = [last_addend[0], last_addend[1], last_addend[2]];
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                        last_addend[2] = 0.0;
+                        add_addend!(leftover_w, last_addend[3]);
+                        last_addend[3] = 0.0;
+                    }
+                    let mut vec3_sums = Vec3Expr::sum(extend3to4_xyz, xyz_addend);
+                    vec3_sums.vec3_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    sum.push((Vec4Expr::Extend3to4(vec3_sums, leftover_w), 1.0));
+                }
+                if is_any_gather4 {
+                    let mut x = if gather4_x.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather4_x, 0.0) };
+                    let mut y = if gather4_y.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather4_y, 0.0) };
+                    let mut z = if gather4_z.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather4_z, 0.0) };
+                    let mut w = if gather4_w.is_empty() { FloatExpr::Literal(0.0) } else { FloatExpr::sum(gather4_w, 0.0) };
+                    x.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    y.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    z.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    w.float_simplify(insides_already_done, transpose_simd, force_inline_all_variables);
+                    if is_only_gather4 {
+                        sum.push((Vec4Expr::Gather4(
+                            x + last_addend[0],
+                            y + last_addend[1],
+                            z + last_addend[2],
+                            w + last_addend[3],
+                        ), 1.0));
+                        last_addend[0] = 0.0;
+                        last_addend[1] = 0.0;
+                        last_addend[2] = 0.0;
+                        last_addend[3] = 0.0;
+                    } else {
+                        sum.push((Vec4Expr::Gather4(x, y, z, w), 1.0));
+                    }
+                }
+
                 sum.sort_with_f32();
 
                 let mut partition = 1;
                 while partition <= sum.len() {
                     let (front, back) = sum.split_at_mut(partition);
-                    let (front_expr, front_factor) = &mut front[partition - 1];
-                    let kept_length = slice_retain_mut(back, |(back_expr, back_factor)| {
+                    let (front_expr, front_coefficient) = &mut front[partition - 1];
+                    let kept_length = slice_retain_mut(back, |(back_expr, back_coefficient)| {
                         if front_expr == back_expr {
-                            *front_factor += *back_factor;
+                            *front_coefficient += *back_coefficient;
                             false
                         } else {
                             true
@@ -3265,50 +3628,22 @@ impl Vec4Expr {
                     sum.truncate(partition + kept_length);
                     partition += 1;
                 }
-                sum.retain(|(_, f)| *f != 0.0);
+                sum.retain(|(_, e)| *e != 0.0);
 
                 if sum.len() == 1 && *last_addend == [0.0; 4] {
-                    let (addend, factor) = sum.remove(0);
-                    return if factor == 1.0 {
+                    if sum[0].1 == 1.0 {
+                        let (addend, _coefficient) = sum.remove(0);
                         *self = addend;
-                    } else {
-                        let gather = [factor, factor, factor, factor];
-                        *self = Vec4Expr::product(vec![(addend, 1.0)], gather);
-                    };
-                }
-
-                // Vec extensions get pulled to the outside of arithmetic
-                if sum.len() == 2 {
-                    let (a, b) = sum.split_at_mut(1);
-                    match (&mut a[0], &mut b[0]) {
-                        ((Vec4Expr::Extend3to4(va, wa), a), (Vec4Expr::Extend3to4(vb, wb), b)) => {
-                            *self = Vec4Expr::Extend3to4(
-                                Vec3Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1], last_addend[2]]),
-                                FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
-                            );
-                            // Significant restructure, so re-simplify
-                            self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
-                            return
-                        }
-                        ((Vec4Expr::Extend2to4(va, za, wa), a), (Vec4Expr::Extend2to4(vb, zb, wb), b)) => {
-                            *self = Vec4Expr::Extend2to4(
-                                Vec2Expr::sum(vec![(va.take_as_owned(), *a), (vb.take_as_owned(), *b)], [last_addend[0], last_addend[1]]),
-                                FloatExpr::sum(vec![(za.take_as_owned(), *a), (zb.take_as_owned(), *b)], last_addend[2]),
-                                FloatExpr::sum(vec![(wa.take_as_owned(), *a), (wb.take_as_owned(), *b)], last_addend[3])
-                            );
-                            // Significant restructure, so re-simplify
-                            self.vec4_simplify(false, transpose_simd, force_inline_all_variables);
-                            return
-                        }
-                        _ => {}
+                        return;
                     }
                 }
+
                 if sum.is_empty() {
                     let f0 = FloatExpr::Literal(last_addend[0]);
                     let f1 = FloatExpr::Literal(last_addend[1]);
                     let f2 = FloatExpr::Literal(last_addend[2]);
                     let f3 = FloatExpr::Literal(last_addend[3]);
-                    *self = if f0 == f1 && f1 == f2 && f2 == f3 {
+                    *self = if eqs!(f0, f1, f2, f3) {
                         Vec4Expr::Gather1(f0)
                     } else {
                         Vec4Expr::Gather4(f0, f1, f2, f3)

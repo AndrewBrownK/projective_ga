@@ -105,14 +105,27 @@ async fn multi_line_simplification_debugger() {
     };
     let repo = register_multi_vecs(rga3d).finished();
 
-    DebugTrait(Wedge).trace_implementation(Level::DEBUG, repo, &Flector, &Line).await;
+    DebugTrait(Wedge).trace_implementation(Level::TRACE, repo, &Flector, &Line).await;
 }
 
 /*
-            Simd32x4::from([
-                (other[e42] * self[e3]) + (other[e23] * self[e4]),
-                (other[e43] * self[e1]) + (other[e31] * self[e4]),
-                (other[e41] * self[e2]) + (other[e12] * self[e4]),
-                -(other[e23] * self[e1]) - (other[e31] * self[e2]),
-            ]) - (self.group0().yzxz() * other.group0().zxy().with_w(other[e12])),
+        Simd32x4::from([
+            (other[e42] * self[e3]) + (other[e23] * self[e4]),
+            (other[e43] * self[e1]) + (other[e31] * self[e4]),
+            (other[e41] * self[e2]) + (other[e12] * self[e4]),
+            -(other[e23] * self[e1]) - (other[e31] * self[e2]),
+        ]) - (self.group0().yzxz() * other.group0().zxy().with_w(other[e12])),
+
+
+        // Should be this instead:
+
+        // e423, e431, e412, e321
+        ( Simd32x3::from(self[e4]) * other.group1()
+        + other.group0().yzx() * self.group0().zxy()
+        - self.group0().yzx() * other.group0().zxy()
+        ).with_w(
+        - (other[e31] * self[e2])
+        - (other[e12] * self[e3])
+        - (other[e23] * self[e1]))
+        )
  */
