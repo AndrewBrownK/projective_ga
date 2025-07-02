@@ -1,14 +1,24 @@
 
 #[derive(Clone, Copy)]
 pub struct DebugExpression<'e, E> {
-    multi_line: bool,
+    // None = no limit
+    // Some(d) = multiline if d > 0, single line when d reduced to 0
+    multi_line_indent_limit: Option<usize>,
     indent_level: usize,
     expr: &'e E,
 }
 impl<'e, E> DebugExpression<'e, E> {
     pub fn new(multi_line: bool, expr: &'e E) -> Self {
         DebugExpression {
-            multi_line,
+            multi_line_indent_limit: if multi_line { None } else { Some(0) },
+            indent_level: 0,
+            expr,
+        }
+    }
+
+    pub fn new_multiline(indention_limit: usize, expr: &'e E) -> Self {
+        DebugExpression {
+            multi_line_indent_limit: Some(indention_limit),
             indent_level: 0,
             expr,
         }
@@ -16,33 +26,39 @@ impl<'e, E> DebugExpression<'e, E> {
 
     fn also<'e2, E2>(&self, expr: &'e2 E2) -> DebugExpression<'e2, E2> {
         DebugExpression {
-            multi_line: self.multi_line,
+            multi_line_indent_limit: self.multi_line_indent_limit,
             indent_level: self.indent_level,
             expr,
         }
     }
 
     fn also_deeper<'e2, E2>(&self, expr: &'e2 E2) -> DebugExpression<'e2, E2> {
-        DebugExpression {
-            multi_line: self.multi_line,
-            indent_level: self.indent_level + 1,
-            expr,
+        match &self.multi_line_indent_limit {
+            Some(d) if *d == 0 => DebugExpression {
+                multi_line_indent_limit: self.multi_line_indent_limit,
+                indent_level: self.indent_level,
+                expr,
+            },
+            _ => DebugExpression {
+                multi_line_indent_limit: self.multi_line_indent_limit.map(|depth| depth - 1),
+                indent_level: self.indent_level + 1,
+                expr,
+            },
         }
+
     }
 
     fn this_newline_and_indent(&self) -> String {
-        if self.multi_line {
-            format!("\n{}", "    ".repeat(self.indent_level))
-        } else {
-            " ".to_string()
+        match &self.multi_line_indent_limit {
+            Some(d) if *d == 0 => " ".to_string(),
+            _ => format!("\n{}", "    ".repeat(self.indent_level)),
         }
     }
 
     fn inner_newline_and_indent(&self) -> String {
-        if self.multi_line {
-            format!("\n{}", "    ".repeat(self.indent_level + 1))
-        } else {
-            " ".to_string()
+        match &self.multi_line_indent_limit {
+            Some(d) if *d == 0 => " ".to_string(),
+            _ => format!("\n{}", "    ".repeat(self.indent_level + 1)),
         }
     }
 }
@@ -536,3 +552,126 @@ impl<'e> Debug for DebugExpression<'e, MultiVectorExpr> {
         Ok(())
     }
 }
+
+
+
+impl<'e> Debug for DebugExpression<'e, i32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.expr)
+    }
+}
+impl<'e> Debug for DebugExpression<'e, f32> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.expr)
+    }
+}
+
+
+// The generic implementations are trying to evaluate bottomless recursive implementations
+// that I never even use. It's super annoying. So we have this extra marker trait to help
+// limit the recursion.
+
+trait AllowDebugExpression {}
+impl AllowDebugExpression for i32 {}
+impl<'a> AllowDebugExpression for &'a mut i32 {}
+impl AllowDebugExpression for f32 {}
+impl<'a> AllowDebugExpression for &'a f32 {}
+impl AllowDebugExpression for FloatExpr {}
+impl<'a> AllowDebugExpression for &'a FloatExpr {}
+impl<'a> AllowDebugExpression for &'a mut (FloatExpr, f32) {}
+impl<T> AllowDebugExpression for Vec<T> where T: AllowDebugExpression {}
+impl<'a, T> AllowDebugExpression for &'a mut Vec<T> where T: AllowDebugExpression {}
+impl<A, B> AllowDebugExpression for (A, B) where A: AllowDebugExpression, B: AllowDebugExpression {}
+impl<A, B, C> AllowDebugExpression for (A, B, C) where A: AllowDebugExpression, B: AllowDebugExpression, C: AllowDebugExpression {}
+impl<A, B, C, D> AllowDebugExpression for (A, B, C, D) where A: AllowDebugExpression, B: AllowDebugExpression, C: AllowDebugExpression, D: AllowDebugExpression {}
+
+
+impl<'e, A> Debug for DebugExpression<'e, &'e A> where A: AllowDebugExpression, DebugExpression<'e, A>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let e = self.also(&**self.expr);
+        write!(f, "{e:?}")?;
+        Ok(())
+    }
+}
+impl<'e, A> Debug for DebugExpression<'e, &'e mut A> where A: AllowDebugExpression, DebugExpression<'e, A>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let e = self.also(&**self.expr);
+        write!(f, "{e:?}")?;
+        Ok(())
+    }
+}
+
+impl<'e, A, B> Debug for DebugExpression<'e, (A, B)> where A: AllowDebugExpression, B: AllowDebugExpression, DebugExpression<'e, A>: Debug, DebugExpression<'e, B>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+        write!(f, "(")?;
+        let e = self.also_deeper(&self.expr.0);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.1);
+        write!(f, "{ii}{e:?},")?;
+        write!(f, "{ti})")?;
+        Ok(())
+    }
+}
+impl<'e, A, B, C> Debug for DebugExpression<'e, (A, B, C)> where A: AllowDebugExpression, B: AllowDebugExpression, C: AllowDebugExpression, DebugExpression<'e, A>: Debug, DebugExpression<'e, B>: Debug, DebugExpression<'e, C>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+        write!(f, "(")?;
+        let e = self.also_deeper(&self.expr.0);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.1);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.2);
+        write!(f, "{ii}{e:?},")?;
+        write!(f, "{ti})")?;
+        Ok(())
+    }
+}
+impl<'e, A, B, C, D> Debug for DebugExpression<'e, (A, B, C, D)> where A: AllowDebugExpression, B: AllowDebugExpression, C: AllowDebugExpression, D: AllowDebugExpression, DebugExpression<'e, A>: Debug, DebugExpression<'e, B>: Debug, DebugExpression<'e, C>: Debug, DebugExpression<'e, D>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+        write!(f, "(")?;
+        let e = self.also_deeper(&self.expr.0);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.1);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.2);
+        write!(f, "{ii}{e:?},")?;
+        let e = self.also_deeper(&self.expr.3);
+        write!(f, "{ii}{e:?},")?;
+        write!(f, "{ti})")?;
+        Ok(())
+    }
+}
+
+impl<'e, T> Debug for DebugExpression<'e, Vec<T>> where T: AllowDebugExpression, DebugExpression<'e, T>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+        write!(f, "vec![")?;
+        for e in self.expr.iter() {
+            let e = self.also_deeper(e);
+            write!(f, "{ii}{e:?},")?;
+        }
+        write!(f, "{ti}]")?;
+        Ok(())
+    }
+}
+impl<'e, T, const N: usize> Debug for DebugExpression<'e, [T; N]> where T: AllowDebugExpression, DebugExpression<'e, T>: Debug {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let ti = self.this_newline_and_indent();
+        let ii = self.inner_newline_and_indent();
+        write!(f, "[")?;
+        for e in self.expr.iter() {
+            let e = self.also_deeper(e);
+            write!(f, "{ii}{e:?},")?;
+        }
+        write!(f, "{ti}]")?;
+        Ok(())
+    }
+}
+
+

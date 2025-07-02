@@ -3,8 +3,8 @@
 
 use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
-use crate::ast::traits::{Debug11, DebugTrait};
-use crate::build_scripts::common_traits::{AntiInverse, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, ConstraintViolation, GeometricAntiQuotient, GeometricQuotient, ProjectViaOriginOnto};
+use crate::ast::traits::{Debug22, DebugTrait};
+use crate::build_scripts::common_traits::{AntiInverse, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, ConstraintViolation, GeometricAntiQuotient, GeometricQuotient, ProjectViaOriginOnto, Wedge};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
@@ -40,35 +40,60 @@ async fn single_expression_simplification_debugger() {
         .event_format(DebuggableCopyPasta::new())
         .init();
 
-    // Debuggable Copy-Pasta: impl AntiProjectOrthogonallyOnto<MultiVector> for AntiScalar
-    let slf = multivec_var("self", &AntiScalar, None);
-    let other = multivec_var("other", &MultiVector, None);
-    let anti_wedge_g1_w = float_var("anti_wedge_g1_w", Some(FloatExpr::product(vec![
-        (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 4), 3), 1.0),
-        (FloatExpr::AccessMultiVecGroup(slf.clone().into(), 0), 1.0),
-    ], -1.0)));
+
+    // Debuggable Copy-Pasta: impl Wedge<Line> for Flector
+    let slf = multivec_var("self", &Flector, None);
+    let other = multivec_var("other", &Line, None);
 
 
-
-
-
-
-
-    // TODO this is the problem, this doesn't simplify to a flat product
-    let mut the_return = FloatExpr::sum(vec![
-        (FloatExpr::Literal(0.0), 0.0),
-        (FloatExpr::product(vec![
-            (anti_wedge_g1_w.clone().into(), 1.0),
-            (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(other.clone().into(), 1), 0), 1.0),
-        ], 1.0), -1.0),
-    ], 0.0);
-
+    let mut the_return = Vec4Expr::Gather4(
+        FloatExpr::sum(vec![
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 0), 1), 1.0), // other[e42]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 2), 1.0), // self[e3]
+            ], 1.0), 1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 1), 0), 1.0), // other[e23]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 3), 1.0), // self[e4]
+            ], 1.0), 1.0),
+        ], 0.0),
+        FloatExpr::sum(vec![
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 0), 2), 1.0), // other[e43]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 0), 1.0), // self[e1]
+            ], 1.0), 1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 1), 1), 1.0), // other[e31]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 3), 1.0), // self[e4]
+            ], 1.0), 1.0),
+        ], 0.0),
+        FloatExpr::sum(vec![
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 0), 0), 1.0), // other[e41]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 1), 1.0), // self[e2]
+            ], 1.0), 1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 1), 2), 1.0), // other[e12]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 3), 1.0), // self[e4]
+            ], 1.0), 1.0),
+        ], 0.0),
+        FloatExpr::sum(vec![
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 1), 0), 1.0), // other[e23]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 0), 1.0), // self[e1]
+            ], 1.0), -1.0),
+            (FloatExpr::product(vec![
+                (FloatExpr::access_vec_3(Vec3Expr::AccessMultiVecGroup(other.clone().into(), 1), 1), 1.0), // other[e31]
+                (FloatExpr::access_vec_4(Vec4Expr::AccessMultiVecGroup(slf.clone().into(), 0), 1), 1.0), // self[e2]
+            ], 1.0), -1.0),
+        ], 0.0)
+    );
 
 
     tracing::trace!("{:?}", DebugExpression::new(true, &the_return));
-    // the_return.transposing_simplify();
+    the_return.transposing_simplify();
     // the_return.vec3_simplify(true, false, false);
-    the_return.simplify();
+    // the_return.simplify();
     tracing::trace!("{:?}", DebugExpression::new(true, &the_return));
 }
 
@@ -80,6 +105,14 @@ async fn multi_line_simplification_debugger() {
     };
     let repo = register_multi_vecs(rga3d).finished();
 
-    DebugTrait(AntiInverse).trace_implementation(Level::TRACE, repo, &Point).await;
+    DebugTrait(Wedge).trace_implementation(Level::DEBUG, repo, &Flector, &Line).await;
 }
 
+/*
+            Simd32x4::from([
+                (other[e42] * self[e3]) + (other[e23] * self[e4]),
+                (other[e43] * self[e1]) + (other[e31] * self[e4]),
+                (other[e41] * self[e2]) + (other[e12] * self[e4]),
+                -(other[e23] * self[e1]) - (other[e31] * self[e2]),
+            ]) - (self.group0().yzxz() * other.group0().zxy().with_w(other[e12])),
+ */

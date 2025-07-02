@@ -41,6 +41,8 @@ impl Vec2Expr {
         assert!(y < 2);
         if x == 0 && y == 1 {
             v
+        } else if x == y {
+            Vec2Expr::Gather1(FloatExpr::AccessVec2(Box::new(v), x))
         } else {
             Vec2Expr::SwizzleVec2(Box::new(v), x, y)
         }
@@ -50,6 +52,7 @@ impl Vec2Expr {
         assert!(y < 3);
         match v {
             Vec3Expr::Extend2to3(v2, _) if x == 0 && y == 1 => v2,
+            v if x == y => Vec2Expr::Gather1(FloatExpr::AccessVec3(Box::new(v), x)),
             v => Vec2Expr::SwizzleVec3(Box::new(v), x, y),
         }
     }
@@ -58,6 +61,7 @@ impl Vec2Expr {
         assert!(y < 4);
         match v {
             Vec4Expr::Extend2to4(v2, _, _) if x == 0 && y == 1 => v2,
+            v if x == y => Vec2Expr::Gather1(FloatExpr::AccessVec4(Box::new(v), x)),
             v => Vec2Expr::SwizzleVec4(Box::new(v), x, y),
         }
     }
@@ -78,7 +82,11 @@ impl Vec3Expr {
         assert!(x < 2);
         assert!(y < 2);
         assert!(z < 2);
-        Vec3Expr::SwizzleVec2(v, x, y, z)
+        if x == y && y == z {
+            Vec3Expr::Gather1(FloatExpr::AccessVec2(Box::new(v), x))
+        } else {
+            Vec3Expr::SwizzleVec2(v, x, y, z)
+        }
     }
     pub fn swizzle_vec_3(v: Vec3Expr, x: usize, y: usize, z: usize) -> Self {
         assert!(x < 3);
@@ -86,6 +94,8 @@ impl Vec3Expr {
         assert!(z < 3);
         if x == 0 && y == 1 && z == 2 {
             v
+        } else if x == y && y == z {
+            Vec3Expr::Gather1(FloatExpr::AccessVec3(Box::new(v), x))
         } else {
             Vec3Expr::SwizzleVec3(Box::new(v), x, y, z)
         }
@@ -96,6 +106,7 @@ impl Vec3Expr {
         assert!(z < 4);
         match v {
             Vec4Expr::Extend3to4(v3, _) if x == 0 && y == 1 && z == 2 => v3,
+            v if x == y && y == z => Vec3Expr::Gather1(FloatExpr::AccessVec4(Box::new(v), x)),
             v => Vec3Expr::SwizzleVec4(Box::new(v), x, y, z),
         }
     }
@@ -117,14 +128,22 @@ impl Vec4Expr {
         assert!(y < 2);
         assert!(z < 2);
         assert!(w < 2);
-        Vec4Expr::SwizzleVec2(v, x, y, z, w)
+        if x == y && y == z && z == w {
+            Vec4Expr::Gather1(FloatExpr::AccessVec2(Box::new(v), x))
+        } else {
+            Vec4Expr::SwizzleVec2(v, x, y, z, w)
+        }
     }
     pub fn swizzle_vec_3(v: Vec3Expr, x: usize, y: usize, z: usize, w: usize) -> Self {
         assert!(x < 3);
         assert!(y < 3);
         assert!(z < 3);
         assert!(w < 3);
-        Vec4Expr::SwizzleVec3(v, x, y, z, w)
+        if x == y && y == z && z == w {
+            Vec4Expr::Gather1(FloatExpr::AccessVec3(Box::new(v), x))
+        } else {
+            Vec4Expr::SwizzleVec3(v, x, y, z, w)
+        }
     }
     pub fn swizzle_vec_4(v: Vec4Expr, x: usize, y: usize, z: usize, w: usize) -> Self {
         assert!(x < 4);
@@ -133,6 +152,8 @@ impl Vec4Expr {
         assert!(w < 4);
         if x == 0 && y == 1 && z == 2 && w == 3 {
             v
+        } else if x == y && y == z && z == w {
+            Vec4Expr::Gather1(FloatExpr::AccessVec4(Box::new(v), x))
         } else {
             Vec4Expr::SwizzleVec4(Box::new(v), x, y, z, w)
         }
