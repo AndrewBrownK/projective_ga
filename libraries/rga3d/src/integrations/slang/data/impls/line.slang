@@ -357,9 +357,9 @@ public extension Line {
     public Motor operator -(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((this.group0.xyz - other.group0.xyz), other.e1234 * -1.0), 
+            float4((float3(other.e41 * -1.0, other.e42 * -1.0, other.e43 * -1.0) + this.group0.xyz), other.e1234 * -1.0), 
             /* e23, e31, e12, scalar */
-            float4((this.group1.xyz - other.group1.xyz), other.scalar * -1.0)
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group1.xyz), other.scalar * -1.0)
         );
     }
 }

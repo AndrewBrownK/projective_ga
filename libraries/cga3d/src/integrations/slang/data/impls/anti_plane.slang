@@ -9,7 +9,7 @@ public extension AntiPlane {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -205,7 +205,7 @@ public extension AntiPlane {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -233,7 +233,7 @@ public extension AntiPlane {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -259,7 +259,7 @@ public extension AntiPlane {
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), this.e5 + other.e5), 
+            float4(float3(0.0), other.e5 + this.e5), 
             /* e1, e2, e3, e4 */
             float4(this.group0.xyz, 0.0)
         );
@@ -355,7 +355,7 @@ public extension AntiPlane {
             /* scalar, e12345 */
             other.group0.xy, 
             /* e1, e2, e3, e4 */
-            other.group1 + float4(this.group0.xyz, 0.0), 
+            float4((this.group0.xyz + other.group1.xyz), other.e4), 
             /* e5 */
             this.e5 + other.e5, 
             /* e15, e25, e35, e45 */
@@ -409,7 +409,7 @@ public extension AntiPlane {
     public RoundPoint operator +(RoundPoint other) {
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            other.group0 + float4(this.group0.xyz, 0.0), 
+            float4((this.group0.xyz + other.group0.xyz), other.e4), 
             /* e5 */
             this.e5 + other.e5
         );
@@ -481,7 +481,7 @@ public extension AntiPlane {
             /* e235, e315, e125, e5 */
             float4(other.group2.xyz, this.e5 + other.e5), 
             /* e1, e2, e3, e4 */
-            other.group3 + float4(this.group0.xyz, 0.0)
+            float4((this.group0.xyz + other.group3.xyz), other.e4)
         );
     }
 }
@@ -495,7 +495,7 @@ public extension AntiPlane {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -1227,7 +1227,7 @@ public extension AntiPlane {
             /* scalar, e12345 */
             other.group0.xy * float2(-1.0), 
             /* e1, e2, e3, e4 */
-            float4((this.group0.xyz - other.group1.xyz), other.e4 * -1.0), 
+            float4((this.group0.xy - other.group1.xy), this.e3 - other.e3, other.e4 * -1.0), 
             /* e5 */
             this.e5 - other.e5, 
             /* e15, e25, e35, e45 */
@@ -1281,7 +1281,7 @@ public extension AntiPlane {
     public RoundPoint operator -(RoundPoint other) {
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4((this.group0.xyz - other.group0.xyz), other.e4 * -1.0), 
+            float4((this.group0.xy - other.group0.xy), this.e3 - other.e3, other.e4 * -1.0), 
             /* e5 */
             this.e5 - other.e5
         );
@@ -1353,7 +1353,7 @@ public extension AntiPlane {
             /* e235, e315, e125, e5 */
             float4((other.group2.xyz * float3(-1.0)), this.e5 - other.e5), 
             /* e1, e2, e3, e4 */
-            float4((this.group0.xyz - other.group3.xyz), other.e4 * -1.0)
+            float4((this.group0.xy - other.group3.xy), this.e3 - other.e3, other.e4 * -1.0)
         );
     }
 }

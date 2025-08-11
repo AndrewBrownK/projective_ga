@@ -227,7 +227,7 @@ public extension DualNum {
             /* e41, e42, e43, e1234 */
             float4(this.e1234) * other.group0, 
             /* e23, e31, e12, scalar */
-            float4((float3(this.e1234) * other.group1.xyz), (this.scalar * other.e1234) + (this.e1234 * other.scalar))
+            float4((other.group1.xyz * float3(float2(this.e1234), this.e1234)), (this.scalar * other.e1234) + (this.e1234 * other.scalar))
         );
     }
 }
@@ -339,9 +339,9 @@ public extension Flector {
     public Motor anti_wedge(Flector other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(((other.group1.yzx * this.group1.zxy) - (other.group1.zxy * this.group1.yzx)), 0.0), 
+            float4(0.0, 0.0, (other.e423 * this.e431) - (other.e431 * this.e423), 0.0) + float4(((other.group1.yz * this.group1.zx) - (other.group1.zx * this.group1.yz)), 0.0, 0.0), 
             /* e23, e31, e12, scalar */
-            (float4(other.e321) * float4(this.group1.xyz, this.e4)) + float4(float3(0.0), (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412)) - (float4(this.e321) * float4(other.group1.xyz, other.e4))
+            (other.group1.wwwx * float4(this.group1.xyz, this.e1)) + float4(-(float3(this.e321) * other.group1.xyz), -(other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321))
         );
     }
 }
@@ -367,7 +367,7 @@ public extension Flector {
     public Point anti_wedge(Line other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((other.group1.yzx * this.group1.zxy), 0.0) - (this.group1.yzxx * float4(other.group1.zxy, other.e41))
+            float4(((float3(this.e321) * other.group0.xyz) + (other.group1.yzx * this.group1.zxy) - (other.group1.zxy * this.group1.yzx)), 0.0)
         );
     }
 }
@@ -379,7 +379,7 @@ public extension Flector {
     public Flector anti_wedge(Motor other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            (float4(other.e1234) * this.group0) + float4(float3(0.0), -(this.e431 * other.e42) - (this.e412 * other.e43)) + float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((this.group1.zxy * other.group1.yzx), 0.0) - (this.group1.yzxx * float4(other.group1.zxy, other.e41)), 
+            float4(0.0, 0.0, (this.e431 * other.e23) - (this.e423 * other.e31), 0.0) + (float4(other.e1234) * this.group0) + float4(((float3(this.e321) * other.group0.xyz) + float3(((this.group1.zx * other.group1.yz) - (this.group1.yz * other.group1.zx)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
             float4(other.e1234) * this.group1
         );
@@ -395,9 +395,9 @@ public extension Flector {
             /* scalar, e1234 */
             float2((this.e1 * other.e423) + (this.e2 * other.e431) + (this.e3 * other.e412) + (this.e4 * other.e321) - (this.e423 * other.e1) - (this.e431 * other.e2) - (this.e412 * other.e3) - (this.e321 * other.e4), 0.0), 
             /* e1, e2, e3, e4 */
-            (float4(other.e1234) * this.group0) + float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group2.xyz), 0.0) + float4((other.group3.yzx * this.group1.zxy), 0.0) - (this.group1.yzxx * float4(other.group3.zxy, other.e41)), 
+            (float4(other.e1234) * this.group0) + float4(((float3(this.e321) * other.group2.xyz) + (other.group3.yzx * this.group1.zxy) - (other.group3.zxy * this.group1.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (this.group1.zxy * other.group4.yzx) + float3(float2(0.0), (this.e423 * other.e431) * -1.0) - float3((this.group1.yz * other.group4.zx), 0.0), 
+            float3((this.e412 * other.e431) - (this.e431 * other.e412), (this.e423 * other.e412) - (this.e412 * other.e423), (this.e431 * other.e423) - (this.e423 * other.e431)), 
             /* e23, e31, e12 */
             (float3(other.e321) * this.group1.xyz) - (float3(this.e321) * other.group4.xyz), 
             /* e423, e431, e412, e321 */
@@ -425,9 +425,9 @@ public extension Flector {
     public Motor anti_wedge(Plane other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(((this.group1.zxy * other.group0.yzx) - (this.group1.yzx * other.group0.zxy)), 0.0), 
+            float4(0.0, 0.0, (this.e431 * other.e423) - (this.e423 * other.e431), 0.0) + float4(((this.group1.zx * other.group0.yz) - (this.group1.yz * other.group0.zx)), 0.0, 0.0), 
             /* e23, e31, e12, scalar */
-            (float4(other.e321) * float4(this.group1.xyz, this.e4)) + float4(float3(0.0), (this.e1 * other.e423) + (this.e2 * other.e431) + (this.e3 * other.e412)) - float4((float3(this.e321) * other.group0.xyz), 0.0)
+            (other.group0.wwwx * float4(this.group1.xyz, this.e1)) + float4(-(float3(this.e321) * other.group0.xyz), 0.0)
         );
     }
 }
@@ -609,7 +609,7 @@ public extension Line {
     public Point anti_wedge(Flector other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group0.xyz), 0.0) + float4((this.group1.yzx * other.group1.zxy), 0.0) - (other.group1.yzxx * float4(this.group1.zxy, this.e41))
+            float4(((float3(other.e321) * this.group0.xyz) + (this.group1.yzx * other.group1.zxy) - (this.group1.zxy * other.group1.yzx)), 0.0)
         );
     }
 }
@@ -645,9 +645,9 @@ public extension Line {
     public Motor anti_wedge(Motor other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((float3(other.e1234) * this.group0.xyz), 0.0), 
+            float4((this.group0.xyz * float4(other.e1234).xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4((float3(other.e1234) * this.group1.xyz), -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43))
+            float4((this.group1.xyz * float4(other.e1234).xyz), -(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43))
         );
     }
 }
@@ -661,7 +661,7 @@ public extension Line {
             /* scalar, e1234 */
             float2(-(this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43), 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group0.xyz), 0.0) + float4((this.group1.yzx * other.group4.zxy), 0.0) - (other.group4.yzxx * float4(this.group1.zxy, this.e41)), 
+            float4(((float3(other.e321) * this.group0.xyz) + (this.group1.yzx * other.group4.zxy) - (this.group1.zxy * other.group4.yzx)), 0.0), 
             /* e41, e42, e43 */
             float3(other.e1234) * this.group0.xyz, 
             /* e23, e31, e12 */
@@ -679,7 +679,7 @@ public extension Line {
     public Point anti_wedge(Plane other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group0.xyz), 0.0) + float4((this.group1.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group1.zxy, this.e41))
+            float4(((float3(other.e321) * this.group0.xyz) + (this.group1.yzx * other.group0.zxy) - (this.group1.zxy * other.group0.yzx)), 0.0)
         );
     }
 }
@@ -711,7 +711,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(other.e1234) * this.group0, 
             /* e23, e31, e12, scalar */
-            float4((float3(other.e1234) * this.group1.xyz), (other.scalar * this.e1234) + (other.e1234 * this.scalar))
+            float4((this.group1.xyz * float3(float2(other.e1234), other.e1234)), (other.scalar * this.e1234) + (other.e1234 * this.scalar))
         );
     }
 }
@@ -723,7 +723,7 @@ public extension Motor {
     public Flector anti_wedge(Flector other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            (float4(this.e1234) * other.group0) + float4(float3(0.0), -(other.e431 * this.e42) - (other.e412 * this.e43)) + float4((float3(other.e321) * this.group0.xyz), 0.0) + float4((other.group1.zxy * this.group1.yzx), 0.0) - (other.group1.yzxx * float4(this.group1.zxy, this.e41)), 
+            float4(0.0, 0.0, (other.e431 * this.e23) - (other.e423 * this.e31), 0.0) + (float4(this.e1234) * other.group0) + float4(((float3(other.e321) * this.group0.xyz) + float3(((other.group1.zx * this.group1.yz) - (other.group1.yz * this.group1.zx)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
             float4(this.e1234) * other.group1
         );
@@ -751,9 +751,9 @@ public extension Motor {
     public Motor anti_wedge(Line other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4((float3(this.e1234) * other.group0.xyz), 0.0), 
+            float4((other.group0.xyz * float4(this.e1234).xyz), 0.0), 
             /* e23, e31, e12, scalar */
-            float4((float3(this.e1234) * other.group1.xyz), -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43))
+            float4((other.group1.xyz * float4(this.e1234).xyz), -(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43))
         );
     }
 }
@@ -781,7 +781,7 @@ public extension Motor {
             /* scalar, e1234 */
             float2((other.scalar * this.e1234) + (other.e1234 * this.scalar) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43), other.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
-            (this.group0 * float4(float3(other.e321), other.e4)) + float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(this.e1234) * other.group1.xyz), 0.0) + float4((this.group1.yzx * other.group4.zxy), 0.0) - (other.group4.yzxx * float4(this.group1.zxy, this.e41)), 
+            float4(0.0, 0.0, (this.e23 * other.e431) - (this.e31 * other.e423), 0.0) + (this.group0 * float4(float3(other.e321), other.e4)) + float4(((float3(this.e1234) * other.group1.xyz) + float3(((this.group1.yz * other.group4.zx) - (this.group1.zx * other.group4.yz)), 0.0)), 0.0), 
             /* e41, e42, e43 */
             (float3(other.e1234) * this.group0.xyz) + (float3(this.e1234) * other.group2.xyz), 
             /* e23, e31, e12 */
@@ -811,7 +811,7 @@ public extension Motor {
     public Flector anti_wedge(Plane other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group0.xyz), 0.0) + float4((this.group1.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group1.zxy, this.e41)), 
+            float4(0.0, 0.0, (this.e23 * other.e431) - (this.e31 * other.e423), 0.0) + float4(((float3(other.e321) * this.group0.xyz) + float3(((this.group1.yz * other.group0.zx) - (this.group1.zx * other.group0.yz)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
             float4(this.e1234) * other.group0
         );
@@ -895,9 +895,9 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321), 0.0), 
             /* e1, e2, e3, e4 */
-            (float4(this.e1234) * other.group0) + float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group2.xyz), 0.0) + float4((this.group3.yzx * other.group1.zxy), 0.0) - (other.group1.yzxx * float4(this.group3.zxy, this.e41)), 
+            (float4(this.e1234) * other.group0) + float4(((float3(other.e321) * this.group2.xyz) + (this.group3.yzx * other.group1.zxy) - (this.group3.zxy * other.group1.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (other.group1.yzx * this.group4.zxy) + float3(float2(0.0), (other.e431 * this.e423) * -1.0) - float3((other.group1.zx * this.group4.yz), 0.0), 
+            float3((other.e431 * this.e412) - (other.e412 * this.e431), (other.e412 * this.e423) - (other.e423 * this.e412), (other.e423 * this.e431) - (other.e431 * this.e423)), 
             /* e23, e31, e12 */
             (float3(other.e321) * this.group4.xyz) - (float3(this.e321) * other.group1.xyz), 
             /* e423, e431, e412, e321 */
@@ -935,7 +935,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(-(other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43), 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((other.group1.yzx * this.group4.zxy), 0.0) - (this.group4.yzxx * float4(other.group1.zxy, other.e41)), 
+            float4(((float3(this.e321) * other.group0.xyz) + (other.group1.yzx * this.group4.zxy) - (other.group1.zxy * this.group4.yzx)), 0.0), 
             /* e41, e42, e43 */
             float3(this.e1234) * other.group0.xyz, 
             /* e23, e31, e12 */
@@ -955,7 +955,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((this.scalar * other.e1234) + (this.e1234 * other.scalar) - (this.e41 * other.e23) - (this.e42 * other.e31) - (this.e43 * other.e12) - (this.e23 * other.e41) - (this.e31 * other.e42) - (this.e12 * other.e43), this.e1234 * other.e1234), 
             /* e1, e2, e3, e4 */
-            (other.group0 * float4(float3(this.e321), this.e4)) + float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(other.e1234) * this.group1.xyz), 0.0) + float4((other.group1.yzx * this.group4.zxy), 0.0) - (this.group4.yzxx * float4(other.group1.zxy, other.e41)), 
+            float4(0.0, 0.0, (other.e23 * this.e431) - (other.e31 * this.e423), 0.0) + (other.group0 * float4(float3(this.e321), this.e4)) + float4(((float3(other.e1234) * this.group1.xyz) + float3(((other.group1.yz * this.group4.zx) - (other.group1.zx * this.group4.yz)), 0.0)), 0.0), 
             /* e41, e42, e43 */
             (float3(this.e1234) * other.group0.xyz) + (float3(other.e1234) * this.group2.xyz), 
             /* e23, e31, e12 */
@@ -975,9 +975,9 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((other.scalar * this.e1234) + (other.e1234 * this.scalar) + (other.e423 * this.e1) + (other.e431 * this.e2) + (other.e412 * this.e3) + (other.e321 * this.e4) - (other.e41 * this.e23) - (other.e42 * this.e31) - (other.e43 * this.e12) - (other.e23 * this.e41) - (other.e31 * this.e42) - (other.e12 * this.e43) - (other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321), other.e1234 * this.e1234), 
             /* e1, e2, e3, e4 */
-            (float4(other.e1234) * this.group1) + (float4(this.e1234) * other.group1) + float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412) - (this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group2.xyz), 0.0) + float4((float3(this.e321) * other.group2.xyz), 0.0) + float4((other.group3.yzx * this.group4.zxy), 0.0) + float4((this.group3.yzx * other.group4.zxy), 0.0) - (other.group4.yzxx * float4(this.group3.zxy, this.e41)) - (this.group4.yzxx * float4(other.group3.zxy, other.e41)), 
+            (float4(other.e1234) * this.group1) + (float4(this.e1234) * other.group1) + float4(((float3(other.e321) * this.group2.xyz) + (float3(this.e321) * other.group2.xyz) + (other.group3.yzx * this.group4.zxy) + (this.group3.yzx * other.group4.zxy) - (other.group3.zxy * this.group4.yzx) - (this.group3.zxy * other.group4.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (float3(other.e1234) * this.group2.xyz) + (float3(this.e1234) * other.group2.xyz) + float3(float2(0.0), (other.e423 * this.e431) - (other.e431 * this.e423)) + float3((other.group4.yz * this.group4.zx), 0.0) - float3((other.group4.zx * this.group4.yz), 0.0), 
+            float3((other.e431 * this.e412) - (other.e412 * this.e431), (other.e412 * this.e423) - (other.e423 * this.e412), (other.e423 * this.e431) - (other.e431 * this.e423)) + (float3(other.e1234) * this.group2.xyz) + (float3(this.e1234) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(other.e1234) * this.group3.xyz) + (float3(this.e1234) * other.group3.xyz) + (float3(other.e321) * this.group4.xyz) - (float3(this.e321) * other.group4.xyz), 
             /* e423, e431, e412, e321 */
@@ -1015,9 +1015,9 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2((this.e1 * other.e423) + (this.e2 * other.e431) + (this.e3 * other.e412) + (this.e4 * other.e321), 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(this.e42 * other.e431) - (this.e43 * other.e412)) + float4((float3(other.e321) * this.group2.xyz), 0.0) + float4((this.group3.yzx * other.group0.zxy), 0.0) - (other.group0.yzxx * float4(this.group3.zxy, this.e41)), 
+            float4(((float3(other.e321) * this.group2.xyz) + (this.group3.yzx * other.group0.zxy) - (this.group3.zxy * other.group0.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (this.group4.zxy * other.group0.yzx) + float3(float2(0.0), (this.e423 * other.e431) * -1.0) - float3((this.group4.yz * other.group0.zx), 0.0), 
+            float3((this.e412 * other.e431) - (this.e431 * other.e412), (this.e423 * other.e412) - (this.e412 * other.e423), (this.e431 * other.e423) - (this.e423 * other.e431)), 
             /* e23, e31, e12 */
             (float3(other.e321) * this.group4.xyz) - (float3(this.e321) * other.group0.xyz), 
             /* e423, e431, e412, e321 */
@@ -1189,9 +1189,9 @@ public extension Plane {
     public Motor anti_wedge(Flector other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(((other.group1.yzx * this.group0.zxy) - (other.group1.zxy * this.group0.yzx)), 0.0), 
+            float4(0.0, 0.0, (other.e423 * this.e431) - (other.e431 * this.e423), 0.0) + float4(((other.group1.yz * this.group0.zx) - (other.group1.zx * this.group0.yz)), 0.0, 0.0), 
             /* e23, e31, e12, scalar */
-            float4(float3(0.0), -(other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412)) + float4((float3(other.e321) * this.group0.xyz), 0.0) - (float4(this.e321) * float4(other.group1.xyz, other.e4))
+            float4((float3(other.e321) * this.group0.xyz), 0.0) - (float4(this.e321) * float4(other.group1.xyz, other.e4))
         );
     }
 }
@@ -1217,7 +1217,7 @@ public extension Plane {
     public Point anti_wedge(Line other) {
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((other.group1.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group1.zxy, other.e41))
+            float4(((float3(this.e321) * other.group0.xyz) + (other.group1.yzx * this.group0.zxy) - (other.group1.zxy * this.group0.yzx)), 0.0)
         );
     }
 }
@@ -1229,7 +1229,7 @@ public extension Plane {
     public Flector anti_wedge(Motor other) {
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group0.xyz), 0.0) + float4((other.group1.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group1.zxy, other.e41)), 
+            float4(0.0, 0.0, (other.e23 * this.e431) - (other.e31 * this.e423), 0.0) + float4(((float3(this.e321) * other.group0.xyz) + float3(((other.group1.yz * this.group0.zx) - (other.group1.zx * this.group0.yz)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
             float4(other.e1234) * this.group0
         );
@@ -1245,9 +1245,9 @@ public extension Plane {
             /* scalar, e1234 */
             float2(-(other.e1 * this.e423) - (other.e2 * this.e431) - (other.e3 * this.e412) - (other.e4 * this.e321), 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(other.e42 * this.e431) - (other.e43 * this.e412)) + float4((float3(this.e321) * other.group2.xyz), 0.0) + float4((other.group3.yzx * this.group0.zxy), 0.0) - (this.group0.yzxx * float4(other.group3.zxy, other.e41)), 
+            float4(((float3(this.e321) * other.group2.xyz) + (other.group3.yzx * this.group0.zxy) - (other.group3.zxy * this.group0.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (other.group4.yzx * this.group0.zxy) + float3(float2(0.0), (other.e431 * this.e423) * -1.0) - float3((other.group4.zx * this.group0.yz), 0.0), 
+            float3((other.e431 * this.e412) - (other.e412 * this.e431), (other.e412 * this.e423) - (other.e423 * this.e412), (other.e423 * this.e431) - (other.e431 * this.e423)), 
             /* e23, e31, e12 */
             (float3(other.e321) * this.group0.xyz) - (float3(this.e321) * other.group4.xyz), 
             /* e423, e431, e412, e321 */
@@ -1275,7 +1275,7 @@ public extension Plane {
     public Line anti_wedge(Plane other) {
         return Line(
             /* e41, e42, e43 */
-            (other.group0.yzx * this.group0.zxy) + float3(float2(0.0), (other.e431 * this.e423) * -1.0) - float3((other.group0.zx * this.group0.yz), 0.0), 
+            float3((other.e431 * this.e412) - (other.e412 * this.e431), (other.e412 * this.e423) - (other.e423 * this.e412), (other.e423 * this.e431) - (other.e431 * this.e423)), 
             /* e23, e31, e12 */
             (float3(other.e321) * this.group0.xyz) - (float3(this.e321) * other.group0.xyz)
         );

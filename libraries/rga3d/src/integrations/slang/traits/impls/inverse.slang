@@ -11,7 +11,7 @@ public extension DualNum {
     public DualNum inverse() {
         return DualNum(
             /* scalar, e1234 */
-            float2(1.0 / this.scalar) * float2(1.0, this.e1234 / this.scalar)
+            float2(1.0 / this.scalar, this.e1234 /  (this.scalar * this.scalar))
         );
     }
 }
@@ -125,7 +125,7 @@ public extension Plane {
     public Plane inverse() {
         return Plane(
             /* e423, e431, e412, e321 */
-            float4(-1.0 / this.e321) * float4((float3(1.0 / this.e321) * this.group0.xyz), 1.0)
+            float4((this.group0.xyz * float3(-1.0) /  (float4(this.e321).xyz * float4(this.e321).xyz)), -1.0 / this.e321)
         );
     }
 }
@@ -141,7 +141,7 @@ public extension Point {
     public Point inverse() {
         return Point(
             /* e1, e2, e3, e4 */
-            (float4(this.e1 * this.e1, this.e2 * this.e2, this.e3 * this.e3, this.e1 * this.e1) * this.group0) + (float4(this.e2 * this.e2, this.e1 * this.e1, this.e1 * this.e1, this.e2 * this.e2) * this.group0) + (this.group0 * float4(float2(this.e3 * this.e3), this.e2 * this.e2, this.e3 * this.e3))
+            (float4(this.e2 * this.e2, this.e1 * this.e1, this.e1 * this.e1, this.e2 * this.e2) * this.group0) + (this.group0 * float4(float2(this.e3 * this.e3), this.e2 * this.e2, this.e3 * this.e3)) + (float4_pow(this.group0.xyzx, 2) * this.group0)
         );
     }
 }

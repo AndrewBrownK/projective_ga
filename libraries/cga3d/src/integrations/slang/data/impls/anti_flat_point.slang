@@ -9,7 +9,7 @@ public extension AntiFlatPoint {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -185,7 +185,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4(other.group1.xyz, this.e321 + other.e321), 
             /* e235, e315, e125, e12345 */
-            other.group2 + float4(this.group0.xyz, 0.0)
+            float4((this.group0.xyz + other.group2.xyz), other.e12345)
         );
     }
 }
@@ -199,7 +199,7 @@ public extension AntiFlatPoint {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -227,7 +227,7 @@ public extension AntiFlatPoint {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -335,7 +335,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4(other.group0.xyz, this.e321), 
             /* e235, e315, e125, e5 */
-            other.group1 + float4(this.group0.xyz, 0.0), 
+            float4((this.group0.xyz + other.group1.xyz), other.e5), 
             /* e1, e2, e3, e4 */
             float4(0.0)
         );
@@ -475,7 +475,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4(other.group1.xyz, this.e321 + other.e321), 
             /* e235, e315, e125, e5 */
-            other.group2 + float4(this.group0.xyz, 0.0), 
+            float4((this.group0.xyz + other.group2.xyz), other.e5), 
             /* e1, e2, e3, e4 */
             other.group3
         );
@@ -491,7 +491,7 @@ public extension AntiFlatPoint {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -840,7 +840,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4((other.group1.xyz * float3(-1.0)), this.e321 - other.e321), 
             /* e235, e315, e125, e4 */
-            float4((this.group0.xyz - other.group2.xyz), other.e4 * -1.0), 
+            float4((this.group0.xy - other.group2.xy), this.e125 - other.e125, other.e4 * -1.0), 
             /* e1, e2, e3, e5 */
             other.group3 * float4(-1.0)
         );
@@ -990,7 +990,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4((other.group1.xyz * float3(-1.0)), this.e321 - other.e321), 
             /* e235, e315, e125, e12345 */
-            float4((this.group0.xyz - other.group2.xyz), other.e12345 * -1.0)
+            float4((this.group0.xy - other.group2.xy), this.e125 - other.e125, other.e12345 * -1.0)
         );
     }
 }
@@ -1140,7 +1140,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4((other.group0.xyz * float3(-1.0)), this.e321), 
             /* e235, e315, e125, e5 */
-            float4((this.group0.xyz - other.group1.xyz), other.e5 * -1.0), 
+            float4((this.group0.xy - other.group1.xy), this.e125 - other.e125, other.e5 * -1.0), 
             /* e1, e2, e3, e4 */
             float4(0.0)
         );
@@ -1280,7 +1280,7 @@ public extension AntiFlatPoint {
             /* e415, e425, e435, e321 */
             float4((other.group1.xyz * float3(-1.0)), this.e321 - other.e321), 
             /* e235, e315, e125, e5 */
-            float4((this.group0.xyz - other.group2.xyz), other.e5 * -1.0), 
+            float4((this.group0.xy - other.group2.xy), this.e125 - other.e125, other.e5 * -1.0), 
             /* e1, e2, e3, e4 */
             other.group3 * float4(-1.0)
         );

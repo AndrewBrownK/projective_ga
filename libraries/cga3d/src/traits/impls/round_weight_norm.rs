@@ -122,13 +122,13 @@ impl RoundWeightNorm for MultiVector {
         use crate::elements::*;
         AntiScalar::from_groups(
             // e12345
-            self[e4] * self[e4]
-                + self[e41] * self[e41]
+            self[e41] * self[e41]
                 + self[e42] * self[e42]
                 + self[e43] * self[e43]
                 + self[e423] * self[e423]
                 + self[e431] * self[e431]
                 + self[e412] * self[e412]
+                + self[e4] * self[e4]
                 + self[e1234] * self[e1234],
         )
     }
@@ -169,9 +169,10 @@ impl RoundWeightNorm for VersorEven {
     // f32        3        4        0        0
     fn round_weight_norm(self) -> AntiScalar {
         use crate::elements::*;
+        let wedge_g1_xyz = self.group0().xyz();
         AntiScalar::from_groups(
             // e12345
-            self.group0()[0] * self.group0()[0] + self.group0()[1] * self.group0()[1] + self.group0()[2] * self.group0()[2] + self[e4] * self[e4],
+            wedge_g1_xyz[0] * wedge_g1_xyz[0] + wedge_g1_xyz[1] * wedge_g1_xyz[1] + wedge_g1_xyz[2] * wedge_g1_xyz[2] + self[e4] * self[e4],
         )
     }
 }

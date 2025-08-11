@@ -163,21 +163,21 @@ impl CenterNormSquared for MultiVector {
         let sub_type_g9_xyz = self.group9().xyz();
         Scalar::from_groups(
             // scalar
-            sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
+            self[scalar] * self[scalar]
+                + sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
                 + sub_type_g1_xyz[1] * sub_type_g1_xyz[1]
                 + sub_type_g1_xyz[2] * sub_type_g1_xyz[2]
-                + self[scalar] * self[scalar]
                 + self[e23] * self[e23]
                 + self[e31] * self[e31]
                 + self[e12] * self[e12]
                 + self[e321] * self[e321]
+                - self[e12345] * self[e12345]
                 - sub_type_g6_xyz[0] * sub_type_g6_xyz[0]
                 - sub_type_g6_xyz[1] * sub_type_g6_xyz[1]
                 - sub_type_g6_xyz[2] * sub_type_g6_xyz[2]
                 - sub_type_g9_xyz[0] * sub_type_g9_xyz[0]
                 - sub_type_g9_xyz[1] * sub_type_g9_xyz[1]
                 - sub_type_g9_xyz[2] * sub_type_g9_xyz[2]
-                - self[e12345] * self[e12345]
                 - self[e45] * self[e45],
         )
     }
@@ -195,13 +195,14 @@ impl CenterNormSquared for VersorEven {
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
         let sub_type_g1_xyz = self.group3().xyz();
+        let sub_type_g0_xyz = self.group1().xyz();
         Scalar::from_groups(
             // scalar
             sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e321] * self[e321]
-                - self[e12345] * self[e12345]
-                - self[e415] * self[e415]
-                - self[e425] * self[e425]
-                - self[e435] * self[e435],
+                - sub_type_g0_xyz[0] * sub_type_g0_xyz[0]
+                - sub_type_g0_xyz[1] * sub_type_g0_xyz[1]
+                - sub_type_g0_xyz[2] * sub_type_g0_xyz[2]
+                - self[e12345] * self[e12345],
         )
     }
 }
@@ -217,10 +218,11 @@ impl CenterNormSquared for VersorOdd {
     // f32        7        8        0        0
     fn center_norm_squared(self) -> Scalar {
         use crate::elements::*;
+        let sub_type_g0_xyz = self.group1().xyz();
         let sub_type_g1_xyz = self.group3().xyz();
         Scalar::from_groups(
             // scalar
-            self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12]
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[scalar] * self[scalar]
                 - sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
                 - sub_type_g1_xyz[1] * sub_type_g1_xyz[1]
                 - sub_type_g1_xyz[2] * sub_type_g1_xyz[2]

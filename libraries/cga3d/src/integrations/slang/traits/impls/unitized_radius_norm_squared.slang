@@ -93,8 +93,8 @@ public float operator /(UnitizedRadiusNormSquaredPrefixOrPostfix lhs, MultiVecto
 }
 public extension MultiVector {
     public float unitized_radius_norm_squared() {
-        float anti_dot_product_g0 = 2.0*(this.e4 * this.e5) + 2.0 * (this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e321 * this.e321 - 2.0 * (this.e15 * this.e41) - 2.0 * (this.e25 * this.e42) - 2.0 * (this.e35 * this.e43) - 2.0 * (this.e3215 * this.e1234);
-        return -(this.e4 * this.e4 * anti_dot_product_g0) - (this.e41 * this.e41 * anti_dot_product_g0) - (this.e42 * this.e42 * anti_dot_product_g0) - (this.e43 * this.e43 * anti_dot_product_g0) - (this.e423 * this.e423 * anti_dot_product_g0) - (this.e431 * this.e431 * anti_dot_product_g0) - (this.e412 * this.e412 * anti_dot_product_g0) - (this.e1234 * this.e1234 * anti_dot_product_g0);
+        float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e4 * this.e5) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e321 * this.e321 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e3215 * this.e1234);
+        return -(this.e41 * this.e41 * anti_dot_product_g0) - (this.e42 * this.e42 * anti_dot_product_g0) - (this.e43 * this.e43 * anti_dot_product_g0) - (this.e423 * this.e423 * anti_dot_product_g0) - (this.e431 * this.e431 * anti_dot_product_g0) - (this.e412 * this.e412 * anti_dot_product_g0) - (this.e4 * this.e4 * anti_dot_product_g0) - (this.e1234 * this.e1234 * anti_dot_product_g0);
     }
 }
 // Fancy postfix trick
@@ -134,7 +134,8 @@ public float operator /(UnitizedRadiusNormSquaredPrefixOrPostfix lhs, VersorEven
 public extension VersorEven {
     public float unitized_radius_norm_squared() {
         float anti_dot_product_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e5 * this.e4) + this.e12345 * this.e12345 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 - this.e321 * this.e321 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3;
-        return -(this.group0[0] * this.group0[0] * anti_dot_product_g0) - (this.group0[1] * this.group0[1] * anti_dot_product_g0) - (this.group0[2] * this.group0[2] * anti_dot_product_g0) - (this.e4 * this.e4 * anti_dot_product_g0);
+        float3 wedge_g1_xyz = this.group0.xyz;
+        return -(wedge_g1_xyz[0] * wedge_g1_xyz[0] * anti_dot_product_g0) - (wedge_g1_xyz[1] * wedge_g1_xyz[1] * anti_dot_product_g0) - (wedge_g1_xyz[2] * wedge_g1_xyz[2] * anti_dot_product_g0) - (this.e4 * this.e4 * anti_dot_product_g0);
     }
 }
 // Fancy postfix trick

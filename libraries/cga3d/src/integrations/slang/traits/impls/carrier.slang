@@ -29,7 +29,7 @@ public extension AntiDipoleInversion {
     public Flector carrier() {
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(this.e1, this.e2, this.e3, this.e4), 
+            float4(this.group3.xyz, this.e4), 
             /* e4235, e4315, e4125, e3215 */
             float4(this.group0.xyz, this.e321)
         );
@@ -233,7 +233,7 @@ public extension MultiVector {
             /* e235, e315, e125 */
             this.group5.xyz, 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e423, this.e431, this.e412, this.e321), 
+            float4(this.group7.xyz, this.e321), 
             /* e1234 */
             0.0
         );
@@ -319,7 +319,7 @@ public extension VersorOdd {
             /* e415, e425, e435, e12345 */
             float4(this.group0.xyz, this.e1234), 
             /* e235, e315, e125, e5 */
-            float4(this.e23, this.e31, this.e12, this.scalar)
+            float4(this.group1.xyz, this.scalar)
         );
     }
 }

@@ -306,11 +306,10 @@ impl AntiSupport for RoundPoint {
     type Output = AntiFlatPoint;
     // Operative Statistics for this implementation:
     //          add/sub      mul      div      pow
-    //   simd3        0        1        0      N/A
-    // no simd        0        3        0        0
+    //   simd4        0        1        0      N/A
+    // no simd        0        4        0        0
     fn anti_support(self) -> Self::Output {
-        use crate::elements::*;
-        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0().xyz() * Simd32x3::from(-1.0)).with_w(self[e4]))
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ self.group0() * Simd32x4::from([-1.0, -1.0, -1.0, 1.0]))
     }
 }
 impl std::ops::Div<AntiSupportPrefixOrPostfix> for Scalar {

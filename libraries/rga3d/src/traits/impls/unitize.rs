@@ -17,7 +17,7 @@
 //  Minimum:         0       0       0       0
 //   Median:         2       9       0       0
 //  Average:         2       8       0       0
-//  Maximum:         8      24       1       0
+//  Maximum:         8      24       3       0
 impl std::ops::Div<UnitizePrefixOrPostfix> for AntiScalar {
     type Output = AntiScalar;
     fn div(self, _rhs: UnitizePrefixOrPostfix) -> Self::Output {
@@ -250,14 +250,11 @@ impl std::ops::DivAssign<UnitizePrefixOrPostfix> for Point {
 }
 impl Unitize for Point {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        0        1        0
-    //    simd3        0        1        0      N/A
-    // Totals...
-    // yes simd        0        1        1      N/A
-    //  no simd        0        3        1        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        1      N/A
+    // no simd        0        3        3        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        Point::from_groups(/* e1, e2, e3, e4 */ (Simd32x3::from(1.0 / self[e4]) * self.group0().xyz()).with_w(1.0))
+        Point::from_groups(/* e1, e2, e3, e4 */ (self.group0().xyz() / Simd32x4::from(self[e4]).xyz()).with_w(1.0))
     }
 }

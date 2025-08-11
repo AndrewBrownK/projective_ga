@@ -9,7 +9,7 @@ public extension VersorEven {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -77,7 +77,7 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             float4(this.group1.xyz, other.e321 + this.e321), 
             /* e235, e315, e125, e5 */
-            this.group2 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group2.xyz), this.e5), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -93,7 +93,7 @@ public extension VersorEven {
             /* e235, e315, e125, e5 */
             this.group2 + float4(other.group0.xyz, other.e5), 
             /* e1, e2, e3, e4 */
-            this.group3 + float4(other.group1.xyz, 0.0)
+            float4((other.group1.xyz + this.group3.xyz), this.e4)
         );
     }
 }
@@ -163,7 +163,7 @@ public extension VersorEven {
             /* e235, e315, e125, e5 */
             float4(this.group2.xyz, other.e5 + this.e5), 
             /* e1, e2, e3, e4 */
-            this.group3 + float4(other.group0.xyz, 0.0)
+            float4((other.group0.xyz + this.group3.xyz), this.e4)
         );
     }
 }
@@ -171,7 +171,7 @@ public extension VersorEven {
     public VersorEven operator +(AntiScalar other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(this.group0.xyz, other.e12345 + this.e12345), 
+            float4(this.group0.xyz, this.e12345 + other.e12345), 
             /* e415, e425, e435, e321 */
             this.group1, 
             /* e235, e315, e125, e5 */
@@ -199,11 +199,11 @@ public extension VersorEven {
     public VersorEven operator +(CircleRotor other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 + float4(other.group0.xyz, other.e12345), 
+            float4((other.group0.xyz + this.group0.xyz), other.e12345 + this.e12345), 
             /* e415, e425, e435, e321 */
             other.group1 + this.group1, 
             /* e235, e315, e125, e5 */
-            this.group2 + float4(other.group2.xyz, 0.0), 
+            float4((other.group2.xyz + this.group2.xyz), this.e5), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -219,7 +219,7 @@ public extension VersorEven {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -247,7 +247,7 @@ public extension VersorEven {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -355,7 +355,7 @@ public extension VersorEven {
             /* e423, e431, e412, e12345 */
             float4(this.group0.xyz, other.e12345 + this.e12345), 
             /* e415, e425, e435, e321 */
-            this.group1 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group1.xyz), this.e321), 
             /* e235, e315, e125, e5 */
             other.group1 + this.group2, 
             /* e1, e2, e3, e4 */
@@ -371,7 +371,7 @@ public extension VersorEven {
             /* e1, e2, e3, e4 */
             other.group1 + this.group3, 
             /* e5 */
-            other.e5 + this.e5, 
+            this.e5 + other.e5, 
             /* e15, e25, e35, e45 */
             other.group3, 
             /* e41, e42, e43 */
@@ -427,7 +427,7 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             this.group1, 
             /* e235, e315, e125, e5 */
-            float4(this.group2.xyz, other.e5 + this.e5), 
+            float4(this.group2.xyz, this.e5 + other.e5), 
             /* e1, e2, e3, e4 */
             other.group0 + this.group3
         );
@@ -513,7 +513,7 @@ public extension VersorEven {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -927,13 +927,13 @@ public extension VersorEven {
     public VersorEven operator -(AntiDipoleInversion other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, 0.0), 
             /* e415, e425, e435, e321 */
             this.group1 - other.group1, 
             /* e235, e315, e125, e5 */
-            this.group2 + float4(float3(0.0), other.e5 * -1.0) - float4(other.group2.xyz, 0.0), 
+            this.group2 + float4(-other.group2.xyz, other.e5 * -1.0), 
             /* e1, e2, e3, e4 */
-            this.group3 + float4(float3(0.0), other.e4 * -1.0) - float4(other.group3.xyz, 0.0)
+            this.group3 + float4(-other.group3.xyz, other.e4 * -1.0)
         );
     }
 }
@@ -973,7 +973,7 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             float4(this.group1.xyz, this.e321 - other.e321), 
             /* e235, e315, e125, e5 */
-            this.group2 - float4(other.group0.xyz, 0.0), 
+            this.group2 + float4(-other.group0.xyz, 0.0), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -987,9 +987,9 @@ public extension VersorEven {
             /* e415, e425, e435, e321 */
             float4(this.group1.xyz, this.e321 - other.e321), 
             /* e235, e315, e125, e5 */
-            this.group2 + float4(float3(0.0), other.e5 * -1.0) - float4(other.group0.xyz, 0.0), 
+            this.group2 + float4(-other.group0.xyz, other.e5 * -1.0), 
             /* e1, e2, e3, e4 */
-            this.group3 - float4(other.group1.xyz, 0.0)
+            this.group3 + float4(-other.group1.xyz, 0.0)
         );
     }
 }
@@ -1059,7 +1059,7 @@ public extension VersorEven {
             /* e235, e315, e125, e5 */
             float4(this.group2.xyz, this.e5 - other.e5), 
             /* e1, e2, e3, e4 */
-            this.group3 - float4(other.group0.xyz, 0.0)
+            this.group3 + float4(-other.group0.xyz, 0.0)
         );
     }
 }
@@ -1081,11 +1081,11 @@ public extension VersorEven {
     public VersorEven operator -(Circle other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, 0.0), 
             /* e415, e425, e435, e321 */
             this.group1 - other.group1, 
             /* e235, e315, e125, e5 */
-            this.group2 - float4(other.group2.xyz, 0.0), 
+            this.group2 + float4(-other.group2.xyz, 0.0), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -1095,11 +1095,11 @@ public extension VersorEven {
     public VersorEven operator -(CircleRotor other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            this.group0 + float4(float3(0.0), other.e12345 * -1.0) - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, other.e12345 * -1.0), 
             /* e415, e425, e435, e321 */
             this.group1 - other.group1, 
             /* e235, e315, e125, e5 */
-            this.group2 - float4(other.group2.xyz, 0.0), 
+            this.group2 + float4(-other.group2.xyz, 0.0), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -1237,9 +1237,9 @@ public extension VersorEven {
             /* e423, e431, e412, e12345 */
             this.group0, 
             /* e415, e425, e435, e321 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e235, e315, e125, e5 */
-            this.group2 - float4(other.group1.xyz, 0.0), 
+            this.group2 + float4(-other.group1.xyz, 0.0), 
             /* e1, e2, e3, e4 */
             this.group3
         );
@@ -1251,7 +1251,7 @@ public extension VersorEven {
             /* e423, e431, e412, e12345 */
             float4(this.group0.xyz, this.e12345 - other.e12345), 
             /* e415, e425, e435, e321 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e235, e315, e125, e5 */
             this.group2 - other.group1, 
             /* e1, e2, e3, e4 */

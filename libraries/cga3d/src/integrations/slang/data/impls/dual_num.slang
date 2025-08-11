@@ -9,7 +9,7 @@ public extension DualNum {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -35,9 +35,9 @@ public extension DualNum {
             /* e415, e425, e435, e321 */
             other.group1, 
             /* e235, e315, e125, e5 */
-            float4(other.group2.xyz, other.e5 + this.e5), 
+            float4(other.group2.xyz, this.e5 + other.e5), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4)
+            float4(other.group3.xyz, other.e4)
         );
     }
 }
@@ -91,7 +91,7 @@ public extension DualNum {
             /* e415, e425, e435, e321 */
             float4(float3(0.0), other.e321), 
             /* e235, e315, e125, e5 */
-            float4(other.group0.xyz, other.e5 + this.e5), 
+            float4(other.group0.xyz, this.e5 + other.e5), 
             /* e1, e2, e3, e4 */
             float4(other.group1.xyz, 0.0)
         );
@@ -161,7 +161,7 @@ public extension DualNum {
             /* e415, e425, e435, e321 */
             float4(0.0), 
             /* e235, e315, e125, e5 */
-            float4(float3(0.0), other.e5 + this.e5), 
+            float4(float3(0.0), this.e5 + other.e5), 
             /* e1, e2, e3, e4 */
             float4(other.group0.xyz, 0.0)
         );
@@ -193,7 +193,7 @@ public extension DualNum {
     public VersorEven operator +(CircleRotor other) {
         return VersorEven(
             /* e423, e431, e412, e12345 */
-            float4(other.group0.xyz, other.e12345 + this.e12345), 
+            float4(other.group0.xyz, this.e12345 + other.e12345), 
             /* e415, e425, e435, e321 */
             other.group1, 
             /* e235, e315, e125, e5 */
@@ -213,7 +213,7 @@ public extension DualNum {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -241,7 +241,7 @@ public extension DualNum {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */
@@ -347,7 +347,7 @@ public extension DualNum {
     public MultiVector operator +(MultiVector other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, this.e12345) + other.group0.xy, 
+            float2(other.scalar, this.e12345 + other.e12345), 
             /* e1, e2, e3, e4 */
             other.group1, 
             /* e5 */
@@ -493,7 +493,7 @@ public extension DualNum {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            float4(other.e15, other.e25, other.e35, other.e45), 
+            float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             other.group0.xyz, 
             /* e23, e31, e12 */

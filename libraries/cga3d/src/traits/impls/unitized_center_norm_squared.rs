@@ -164,10 +164,11 @@ impl UnitizedCenterNormSquared for VersorOdd {
     // f32        3       12        0        0
     fn unitized_center_norm_squared(self) -> f32 {
         use crate::elements::*;
+        let sub_type_g0_xyz = self.group1().xyz();
         let sub_type_g0 = self.group0().xyz();
-        (sub_type_g0[0] * sub_type_g0[0] * self[scalar] * self[scalar])
-            + (sub_type_g0[0] * sub_type_g0[0] * self[e23] * self[e23])
-            + (sub_type_g0[0] * sub_type_g0[0] * self[e31] * self[e31])
-            + (sub_type_g0[0] * sub_type_g0[0] * self[e12] * self[e12])
+        (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[0] * sub_type_g0_xyz[0])
+            + (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[1] * sub_type_g0_xyz[1])
+            + (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[2] * sub_type_g0_xyz[2])
+            + (sub_type_g0[0] * sub_type_g0[0] * self[scalar] * self[scalar])
     }
 }

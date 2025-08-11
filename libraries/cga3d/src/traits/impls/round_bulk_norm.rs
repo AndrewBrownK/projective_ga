@@ -216,10 +216,10 @@ impl RoundBulkNorm for MultiVector {
         let sub_type_g1_xyz = self.group1().xyz();
         Scalar::from_groups(
             // scalar
-            sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
+            self[scalar] * self[scalar]
+                + sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
                 + sub_type_g1_xyz[1] * sub_type_g1_xyz[1]
                 + sub_type_g1_xyz[2] * sub_type_g1_xyz[2]
-                + self[scalar] * self[scalar]
                 + self[e23] * self[e23]
                 + self[e31] * self[e31]
                 + self[e12] * self[e12]
@@ -292,6 +292,10 @@ impl RoundBulkNorm for VersorOdd {
     // f32        3        4        0        0
     fn round_bulk_norm(self) -> Scalar {
         use crate::elements::*;
-        Scalar::from_groups(/* scalar */ self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12])
+        let sub_type_g0_xyz = self.group1().xyz();
+        Scalar::from_groups(
+            // scalar
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[scalar] * self[scalar],
+        )
     }
 }

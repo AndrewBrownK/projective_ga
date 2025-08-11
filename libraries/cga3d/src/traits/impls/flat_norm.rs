@@ -9,13 +9,13 @@
 //
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
-//   Median:         5       8       0     N/A
+//   Median:         5       7       0     N/A
 //  Average:         4       6       0     N/A
 //  Maximum:        14      16       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
-//   Median:         5       8       0       0
+//   Median:         5       7       0       0
 //  Average:         4       6       0       0
 //  Maximum:        14      16       0       0
 impl std::ops::Div<FlatNormPrefixOrPostfix> for AntiCircleRotor {
@@ -240,15 +240,15 @@ impl std::ops::Div<FlatNormPrefixOrPostfix> for DipoleInversion {
 impl FlatNorm for DipoleInversion {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        6        8        0        0
+    // f32        5        7        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        let sub_type_g0_xyz = self.group2().xyz();
+        let wedge_g0_xyz = self.group2().xyz();
         let sub_type_g1_xyz = self.group3().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
+                -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2],
                 sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e45] * self[e45],
             ]),
             // e1, e2, e3, e4
@@ -356,15 +356,15 @@ impl std::ops::Div<FlatNormPrefixOrPostfix> for Flector {
 impl FlatNorm for Flector {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        6        8        0        0
+    // f32        5        7        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        let sub_type_g0_xyz = self.group0().xyz();
+        let wedge_g0_xyz = self.group0().xyz();
         let sub_type_g1_xyz = self.group1().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
+                -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2],
                 sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e45] * self[e45],
             ]),
             // e1, e2, e3, e4
@@ -494,24 +494,24 @@ impl FlatNorm for MultiVector {
     // f32       14       16        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        let sub_type_g3_xyz = self.group3().xyz();
+        let wedge_g6_xyz = self.group3().xyz();
         let sub_type_g6_xyz = self.group6().xyz();
         let sub_type_g9_xyz = self.group9().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[e5] * self[e5] + self[e235] * self[e235] + self[e315] * self[e315] + self[e125] * self[e125]
-                    - sub_type_g3_xyz[0] * sub_type_g3_xyz[0]
-                    - sub_type_g3_xyz[1] * sub_type_g3_xyz[1]
-                    - sub_type_g3_xyz[2] * sub_type_g3_xyz[2]
+                self[e235] * self[e235] + self[e315] * self[e315] + self[e125] * self[e125] + self[e5] * self[e5]
+                    - wedge_g6_xyz[0] * wedge_g6_xyz[0]
+                    - wedge_g6_xyz[1] * wedge_g6_xyz[1]
+                    - wedge_g6_xyz[2] * wedge_g6_xyz[2]
                     - self[e3215] * self[e3215],
-                sub_type_g6_xyz[0] * sub_type_g6_xyz[0]
+                self[e12345] * self[e12345]
+                    + sub_type_g6_xyz[0] * sub_type_g6_xyz[0]
                     + sub_type_g6_xyz[1] * sub_type_g6_xyz[1]
                     + sub_type_g6_xyz[2] * sub_type_g6_xyz[2]
                     + sub_type_g9_xyz[0] * sub_type_g9_xyz[0]
                     + sub_type_g9_xyz[1] * sub_type_g9_xyz[1]
                     + sub_type_g9_xyz[2] * sub_type_g9_xyz[2]
-                    + self[e12345] * self[e12345]
                     + self[e45] * self[e45],
             ]),
             // e1, e2, e3, e4
@@ -638,11 +638,12 @@ impl FlatNorm for VersorEven {
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
         let wedge_g1_xyz = self.group2().xyz() * Simd32x3::from(-1.0);
+        let sub_type_g0_xyz = self.group1().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 self[e5] * self[e5] - wedge_g1_xyz[0] * wedge_g1_xyz[0] - wedge_g1_xyz[1] * wedge_g1_xyz[1] - wedge_g1_xyz[2] * wedge_g1_xyz[2],
-                self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
+                sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[e12345] * self[e12345],
             ]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
@@ -676,15 +677,15 @@ impl std::ops::Div<FlatNormPrefixOrPostfix> for VersorOdd {
 impl FlatNorm for VersorOdd {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        6        8        0        0
+    // f32        5        7        0        0
     fn flat_norm(self) -> MultiVector {
         use crate::elements::*;
-        let sub_type_g0_xyz = self.group2().xyz();
+        let wedge_g0_xyz = self.group2().xyz();
         let sub_type_g1_xyz = self.group3().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - self[e3215] * self[e3215],
+                -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2],
                 sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e45] * self[e45],
             ]),
             // e1, e2, e3, e4

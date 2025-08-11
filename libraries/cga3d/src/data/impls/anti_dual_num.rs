@@ -14,13 +14,13 @@ use crate::traits::Wedge;
 //  Minimum:         0       0       0     N/A
 //   Median:         0       2       0     N/A
 //  Average:         0       2       0     N/A
-//  Maximum:        13      27       0     N/A
+//  Maximum:        12      26       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         0       4       0       0
 //  Average:         1       7       0       0
-//  Maximum:        40      66       0       0
+//  Maximum:        35      64       0       0
 impl std::ops::Add<AntiCircleRotor> for AntiDualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
@@ -30,7 +30,7 @@ impl std::ops::Add<AntiCircleRotor> for AntiDualNum {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            other.group0().with_w(other[scalar] + self[scalar]),
+            other.group0().with_w(self[scalar] + other[scalar]),
             // e23, e31, e12, e45
             other.group1(),
             // e15, e25, e35, e1234
@@ -48,7 +48,7 @@ impl std::ops::Add<AntiDipoleInversion> for AntiDualNum {
             // scalar, e12345
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
-            Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
+            other.group3().xyz().with_w(other[e4]),
             // e5
             other[e5],
             // e15, e25, e35, e45
@@ -455,17 +455,13 @@ impl std::ops::Add<Motor> for AntiDualNum {
 impl std::ops::Add<MultiVector> for AntiDualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        1        0        0        0
-    //    simd2        1        0        0      N/A
-    // Totals...
-    // yes simd        2        0        0      N/A
-    //  no simd        3        0        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([self[scalar], 0.0]) + other.group0(),
+            Simd32x2::from([self[scalar] + other[scalar], other[e12345]]),
             // e1, e2, e3, e4
             other.group1(),
             // e5
@@ -629,10 +625,10 @@ impl std::ops::BitXor<AntiCircleRotor> for AntiDualNum {
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
     //    simd3        0        1        0      N/A
-    //    simd4        0        2        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0      N/A
-    //  no simd        0       12        0        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       16        0        0
     fn bitxor(self, other: AntiCircleRotor) -> Self::Output {
         self.wedge(other)
     }
@@ -948,12 +944,12 @@ impl std::ops::Mul<AntiDipoleInversion> for AntiDualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        4        0        0
-    //    simd3        1        5        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        0        3        0        0
+    //    simd3        2        6        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd        5       12        0      N/A
-    //  no simd       19       31        0        0
+    // yes simd        4       11        0      N/A
+    //  no simd       14       29        0        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1023,10 +1019,10 @@ impl std::ops::Mul<AntiPlane> for AntiDualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        2        0      N/A
-    //  no simd        0        7        0        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn mul(self, other: AntiPlane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1060,11 +1056,11 @@ impl std::ops::Mul<CircleRotor> for AntiDualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        2        0        0
-    //    simd3        1        3        0      N/A
-    //    simd4        1        3        0      N/A
+    //    simd3        1        4        0      N/A
+    //    simd4        1        4        0      N/A
     // Totals...
-    // yes simd        2        8        0      N/A
-    //  no simd        7       23        0        0
+    // yes simd        2       10        0      N/A
+    //  no simd        7       30        0        0
     fn mul(self, other: CircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1088,11 +1084,11 @@ impl std::ops::Mul<DipoleInversion> for AntiDualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        3        0        0
-    //    simd3        2        4        0      N/A
-    //    simd4        3        4        0      N/A
+    //    simd3        3        6        0      N/A
+    //    simd4        1        2        0      N/A
     // Totals...
-    // yes simd        5       11        0      N/A
-    //  no simd       18       31        0        0
+    // yes simd        4       11        0      N/A
+    //  no simd       13       29        0        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1156,13 +1152,13 @@ impl std::ops::Mul<MultiVector> for AntiDualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        9        0        0
+    //      f32        2        8        0        0
     //    simd2        1        2        0      N/A
-    //    simd3        4       11        0      N/A
-    //    simd4        6        5        0      N/A
+    //    simd3        5       12        0      N/A
+    //    simd4        4        4        0      N/A
     // Totals...
-    // yes simd       13       27        0      N/A
-    //  no simd       40       66        0        0
+    // yes simd       12       26        0      N/A
+    //  no simd       35       64        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1172,11 +1168,11 @@ impl std::ops::Mul<Plane> for AntiDualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0      N/A
-    //  no simd        0        8        0        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       15        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1185,10 +1181,11 @@ impl std::ops::Mul<RoundPoint> for AntiDualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        3        0        0
-    //    simd4        0        2        0      N/A
+    //      f32        0        4        0        0
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        5        0      N/A
+    // yes simd        0        6        0      N/A
     //  no simd        0       11        0        0
     fn mul(self, other: RoundPoint) -> Self::Output {
         self.geometric_product(other)
@@ -1213,12 +1210,12 @@ impl std::ops::Mul<Sphere> for AntiDualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        2        0        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        2        0      N/A
+    //      f32        0        4        0        0
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        5        0      N/A
-    //  no simd        0       13        0        0
+    // yes simd        0        7        0      N/A
+    //  no simd        0       14        0        0
     fn mul(self, other: Sphere) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1227,12 +1224,12 @@ impl std::ops::Mul<VersorEven> for AntiDualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        5        0        0
-    //    simd3        1        4        0      N/A
-    //    simd4        4        4        0      N/A
+    //      f32        1        4        0        0
+    //    simd3        2        5        0      N/A
+    //    simd4        2        3        0      N/A
     // Totals...
-    // yes simd        6       13        0      N/A
-    //  no simd       20       33        0        0
+    // yes simd        5       12        0      N/A
+    //  no simd       15       31        0        0
     fn mul(self, other: VersorEven) -> Self::Output {
         self.geometric_product(other)
     }

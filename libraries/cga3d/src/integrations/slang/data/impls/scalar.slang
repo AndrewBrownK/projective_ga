@@ -17,7 +17,7 @@ public extension Scalar {
             /* scalar, e12345 */
             float2(this.scalar, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
@@ -495,7 +495,7 @@ public extension Scalar {
     public VersorOdd operator +(VersorOdd other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(other.group0.xyz, this.scalar + other.scalar), 
+            float4(other.group0.xyz, other.scalar + this.scalar), 
             /* e23, e31, e12, e45 */
             other.group1, 
             /* e15, e25, e35, e1234 */

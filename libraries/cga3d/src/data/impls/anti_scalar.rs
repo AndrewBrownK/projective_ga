@@ -33,7 +33,7 @@ impl std::ops::Add<AntiCircleRotor> for AntiScalar {
             // e5
             0.0,
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -63,7 +63,7 @@ impl std::ops::Add<AntiDipoleInversion> for AntiScalar {
             // e235, e315, e125, e5
             other.group2().xyz().with_w(other[e5]),
             // e1, e2, e3, e4
-            Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
+            other.group3().xyz().with_w(other[e4]),
         )
     }
 }
@@ -246,7 +246,7 @@ impl std::ops::Add<CircleRotor> for AntiScalar {
             // e415, e425, e435, e321
             other.group1(),
             // e235, e315, e125, e12345
-            other.group2().xyz().with_w(self[e12345] + other[e12345]),
+            other.group2().xyz().with_w(other[e12345] + self[e12345]),
         )
     }
 }
@@ -262,7 +262,7 @@ impl std::ops::Add<Dipole> for AntiScalar {
             // e5
             0.0,
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -292,7 +292,7 @@ impl std::ops::Add<DipoleInversion> for AntiScalar {
             // e5
             0.0,
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -402,7 +402,7 @@ impl std::ops::Add<Motor> for AntiScalar {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            other.group0().xyz().with_w(self[e12345] + other[e12345]),
+            other.group0().xyz().with_w(other[e12345] + self[e12345]),
             // e235, e315, e125, e5
             other.group1(),
         )
@@ -557,7 +557,7 @@ impl std::ops::Add<VersorEven> for AntiScalar {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            other.group0().xyz().with_w(self[e12345] + other[e12345]),
+            other.group0().xyz().with_w(other[e12345] + self[e12345]),
             // e415, e425, e435, e321
             other.group1(),
             // e235, e315, e125, e5
@@ -579,7 +579,7 @@ impl std::ops::Add<VersorOdd> for AntiScalar {
             // e5
             0.0,
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0().xyz(),
             // e23, e31, e12

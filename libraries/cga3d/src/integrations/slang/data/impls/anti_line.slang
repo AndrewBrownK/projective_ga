@@ -17,7 +17,7 @@ public extension AntiLine {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
@@ -848,9 +848,9 @@ public extension AntiLine {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4((this.group0.xyz - other.group1.xyz), other.e45 * -1.0), 
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group0.xyz), other.e45 * -1.0), 
             /* e15, e25, e35, scalar */
-            float4((this.group1.xyz - other.group2.xyz), other.scalar * -1.0)
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz), other.scalar * -1.0)
         );
     }
 }
@@ -962,9 +962,9 @@ public extension AntiLine {
     public AntiMotor operator -(AntiMotor other) {
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4((this.group0.xyz - other.group0.xyz), other.scalar * -1.0), 
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group0.xyz), other.scalar * -1.0), 
             /* e15, e25, e35, e3215 */
-            float4((this.group1.xyz - other.group1.xyz), other.e3215 * -1.0)
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz), other.e3215 * -1.0)
         );
     }
 }
@@ -1086,7 +1086,7 @@ public extension AntiLine {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4((this.group0.xyz - other.group1.xyz), other.e45 * -1.0), 
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group0.xyz), other.e45 * -1.0), 
             /* e15, e25, e35 */
             this.group1.xyz - other.group2.xyz
         );
@@ -1098,9 +1098,9 @@ public extension AntiLine {
             /* e41, e42, e43 */
             other.group0.xyz * float3(-1.0), 
             /* e23, e31, e12, e45 */
-            float4((this.group0.xyz - other.group1.xyz), other.e45 * -1.0), 
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group0.xyz), other.e45 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4((this.group1.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );
@@ -1142,7 +1142,7 @@ public extension AntiLine {
             /* e23, e31, e12, e45 */
             float4(this.group0.xyz, other.e45 * -1.0), 
             /* e15, e25, e35 */
-            this.group1.xyz - other.group0.xyz
+            float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz
         );
     }
 }
@@ -1226,7 +1226,7 @@ public extension AntiLine {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4((this.group1.xyz - other.group3.xyz), other.e45 * -1.0), 
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz), other.e45 * -1.0), 
             /* e41, e42, e43 */
             other.group4.xyz * float3(-1.0), 
             /* e23, e31, e12 */
@@ -1344,9 +1344,9 @@ public extension AntiLine {
             /* e41, e42, e43, scalar */
             other.group0 * float4(-1.0), 
             /* e23, e31, e12, e45 */
-            float4((this.group0.xyz - other.group1.xyz), other.e45 * -1.0), 
+            float4((float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group0.xyz), other.e45 * -1.0), 
             /* e15, e25, e35, e1234 */
-            float4((this.group1.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group1.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );

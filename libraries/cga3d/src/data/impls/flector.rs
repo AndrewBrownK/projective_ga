@@ -13,14 +13,14 @@ use crate::traits::Wedge;
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
 //   Median:         1       2       0     N/A
-//  Average:         6       7       0     N/A
-//  Maximum:        94     109       0     N/A
+//  Average:         6       8       0     N/A
+//  Maximum:       106     130       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         4       6       0       0
-//  Average:        17      19       0       0
-//  Maximum:       258     257       0       0
+//  Average:        13      17       0       0
+//  Maximum:       214     245       0       0
 impl std::ops::Add<AntiCircleRotor> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
@@ -52,7 +52,7 @@ impl std::ops::Add<AntiDipoleInversion> for Flector {
             // scalar, e12345
             Simd32x2::from(0.0),
             // e1, e2, e3, e4
-            Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
+            other.group3().xyz().with_w(other[e4]),
             // e5
             other[e5],
             // e15, e25, e35, e45
@@ -640,10 +640,11 @@ impl std::ops::Add<VersorOdd> for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        0        0        0
-    //    simd4        2        0        0      N/A
+    //    simd3        1        0        0      N/A
+    //    simd4        1        0        0      N/A
     // Totals...
     // yes simd        3        0        0      N/A
-    //  no simd        9        0        0        0
+    //  no simd        8        0        0        0
     fn add(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
         VersorOdd::from_groups(
@@ -652,7 +653,7 @@ impl std::ops::Add<VersorOdd> for Flector {
             // e23, e31, e12, e45
             other.group1().xyz().with_w(self[e45] + other[e45]),
             // e15, e25, e35, e1234
-            other.group2() + self.group0().xyz().with_w(0.0),
+            (self.group0().xyz() + other.group2().xyz()).with_w(other[e1234]),
             // e4235, e4315, e4125, e3215
             self.group1() + other.group3(),
         )
@@ -662,12 +663,12 @@ impl std::ops::BitXor<AntiCircleRotor> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        0        1        0        0
+    //    simd3        3        4        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        5        7        0      N/A
-    //  no simd       17       20        0        0
+    // yes simd        3        6        0      N/A
+    //  no simd        9       17        0        0
     fn bitxor(self, other: AntiCircleRotor) -> Self::Output {
         self.wedge(other)
     }
@@ -681,12 +682,13 @@ impl std::ops::BitXor<AntiDipoleInversion> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        5        6        0        0
-    //    simd3        1        2        0      N/A
-    //    simd4        2        2        0      N/A
+    //      f32        4        6        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        0        1        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        8       10        0      N/A
-    //  no simd       16       20        0        0
+    // yes simd        7       10        0      N/A
+    //  no simd       14       17        0        0
     fn bitxor(self, other: AntiDipoleInversion) -> Self::Output {
         self.wedge(other)
     }
@@ -719,11 +721,13 @@ impl std::ops::BitXor<AntiFlector> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        3        5        0        0
-    //    simd3        1        3        0      N/A
+    //      f32        4        6        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        4        8        0      N/A
-    //  no simd        6       14        0        0
+    // yes simd        6       10        0      N/A
+    //  no simd       10       16        0        0
     fn bitxor(self, other: AntiFlector) -> Self::Output {
         self.wedge(other)
     }
@@ -745,12 +749,11 @@ impl std::ops::BitXor<AntiMotor> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        3        0        0
     //    simd3        0        1        0      N/A
-    //    simd4        2        2        0      N/A
+    //    simd4        1        2        0      N/A
     // Totals...
-    // yes simd        4        6        0      N/A
-    //  no simd       10       14        0        0
+    // yes simd        1        3        0      N/A
+    //  no simd        4       11        0        0
     fn bitxor(self, other: AntiMotor) -> Self::Output {
         self.wedge(other)
     }
@@ -764,11 +767,13 @@ impl std::ops::BitXor<AntiPlane> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        4        0        0
-    //    simd3        1        3        0      N/A
+    //      f32        3        5        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        3        7        0      N/A
-    //  no simd        5       13        0        0
+    // yes simd        5        9        0      N/A
+    //  no simd        9       15        0        0
     fn bitxor(self, other: AntiPlane) -> Self::Output {
         self.wedge(other)
     }
@@ -794,13 +799,9 @@ impl std::ops::BitXor<CircleRotor> for Flector {
 impl std::ops::BitXor<Dipole> for Flector {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        3        1        0      N/A
-    // Totals...
-    // yes simd        4        5        0      N/A
-    //  no simd       13       12        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        2        3        0      N/A
+    // no simd        6        9        0        0
     fn bitxor(self, other: Dipole) -> Self::Output {
         self.wedge(other)
     }
@@ -808,13 +809,9 @@ impl std::ops::BitXor<Dipole> for Flector {
 impl std::ops::BitXor<DipoleInversion> for Flector {
     type Output = Plane;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        3        1        0      N/A
-    // Totals...
-    // yes simd        4        5        0      N/A
-    //  no simd       13       12        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        2        3        0      N/A
+    // no simd        6        9        0        0
     fn bitxor(self, other: DipoleInversion) -> Self::Output {
         self.wedge(other)
     }
@@ -823,13 +820,12 @@ impl std::ops::BitXor<MultiVector> for Flector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        8       12        0        0
-    //    simd2        0        1        0      N/A
+    //      f32       10       14        0        0
     //    simd3        3        5        0      N/A
-    //    simd4        4        3        0      N/A
+    //    simd4        1        2        0      N/A
     // Totals...
-    // yes simd       15       21        0      N/A
-    //  no simd       33       41        0        0
+    // yes simd       14       21        0      N/A
+    //  no simd       23       37        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -838,12 +834,13 @@ impl std::ops::BitXor<RoundPoint> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        3        0        0
-    //    simd3        1        3        0      N/A
+    //      f32        1        2        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        0        1        0      N/A
     //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        5        7        0      N/A
-    //  no simd       13       16        0        0
+    // yes simd        4        6        0      N/A
+    //  no simd       11       13        0        0
     fn bitxor(self, other: RoundPoint) -> Self::Output {
         self.wedge(other)
     }
@@ -867,12 +864,13 @@ impl std::ops::BitXor<VersorEven> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        5        6        0        0
-    //    simd3        1        2        0      N/A
-    //    simd4        2        2        0      N/A
+    //      f32        4        6        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        0        1        0      N/A
+    //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        8       10        0      N/A
-    //  no simd       16       20        0        0
+    // yes simd        7       10        0      N/A
+    //  no simd       14       17        0        0
     fn bitxor(self, other: VersorEven) -> Self::Output {
         self.wedge(other)
     }
@@ -881,12 +879,13 @@ impl std::ops::BitXor<VersorOdd> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        0        2        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd        5        7        0      N/A
-    //  no simd       17       20        0        0
+    // yes simd        4        7        0      N/A
+    //  no simd       14       18        0        0
     fn bitxor(self, other: VersorOdd) -> Self::Output {
         self.wedge(other)
     }
@@ -912,12 +911,12 @@ impl std::ops::Mul<AntiCircleRotor> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        8       15        0        0
-    //    simd3        0       14        0      N/A
-    //    simd4       22        8        0      N/A
+    //      f32       12       18        0        0
+    //    simd2        7        9        0      N/A
+    //    simd3       11       13        0      N/A
     // Totals...
-    // yes simd       30       37        0      N/A
-    //  no simd       96       89        0        0
+    // yes simd       30       40        0      N/A
+    //  no simd       59       75        0        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -926,12 +925,13 @@ impl std::ops::Mul<AntiDipoleInversion> for Flector {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       10       16        0        0
-    //    simd3        0       16        0      N/A
-    //    simd4       30       14        0      N/A
+    //      f32       19       26        0        0
+    //    simd2       10       13        0      N/A
+    //    simd3       14       15        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd       40       46        0      N/A
-    //  no simd      130      120        0        0
+    // yes simd       45       56        0      N/A
+    //  no simd       89      105        0        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -959,11 +959,12 @@ impl std::ops::Mul<AntiFlatPoint> for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        3        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //    simd2        1        2        0      N/A
+    //    simd3        1        1        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
     // yes simd        5        8        0      N/A
-    //  no simd       17       21        0        0
+    //  no simd       14       18        0        0
     fn mul(self, other: AntiFlatPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -972,12 +973,13 @@ impl std::ops::Mul<AntiFlector> for Flector {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        4        6        0        0
-    //    simd3        0        6        0      N/A
-    //    simd4       12        6        0      N/A
+    //      f32        5        8        0        0
+    //    simd2        5        7        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd       16       18        0      N/A
-    //  no simd       52       48        0        0
+    // yes simd       16       20        0      N/A
+    //  no simd       37       40        0        0
     fn mul(self, other: AntiFlector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -985,13 +987,9 @@ impl std::ops::Mul<AntiFlector> for Flector {
 impl std::ops::Mul<AntiLine> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        4        8        0        0
-    //    simd3        0        7        0      N/A
-    //    simd4        9        2        0      N/A
-    // Totals...
-    // yes simd       13       17        0      N/A
-    //  no simd       40       37        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        7        9        0      N/A
+    // no simd       21       27        0        0
     fn mul(self, other: AntiLine) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1005,12 +1003,13 @@ impl std::ops::Mul<AntiMotor> for Flector {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        5        8        0        0
-    //    simd3        0        7        0      N/A
-    //    simd4       12        5        0      N/A
+    //      f32        6        9        0        0
+    //    simd2        4        6        0      N/A
+    //    simd3        3        3        0      N/A
+    //    simd4        4        3        0      N/A
     // Totals...
-    // yes simd       17       20        0      N/A
-    //  no simd       53       49        0        0
+    // yes simd       17       21        0      N/A
+    //  no simd       39       42        0        0
     fn mul(self, other: AntiMotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1025,11 +1024,12 @@ impl std::ops::Mul<AntiPlane> for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        2        4        0        0
-    //    simd3        0        4        0      N/A
-    //    simd4        7        3        0      N/A
+    //    simd2        2        4        0      N/A
+    //    simd3        1        1        0      N/A
+    //    simd4        4        2        0      N/A
     // Totals...
     // yes simd        9       11        0      N/A
-    //  no simd       30       28        0        0
+    //  no simd       25       23        0        0
     fn mul(self, other: AntiPlane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1048,12 +1048,12 @@ impl std::ops::Mul<Circle> for Flector {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        7       13        0        0
-    //    simd3        0       13        0      N/A
-    //    simd4       20        7        0      N/A
+    //      f32        6       13        0        0
+    //    simd2        4        6        0      N/A
+    //    simd3       12       14        0      N/A
     // Totals...
-    // yes simd       27       33        0      N/A
-    //  no simd       87       80        0        0
+    // yes simd       22       33        0      N/A
+    //  no simd       50       67        0        0
     fn mul(self, other: Circle) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1062,12 +1062,13 @@ impl std::ops::Mul<CircleRotor> for Flector {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        7       13        0        0
-    //    simd3        0       13        0      N/A
-    //    simd4       22        9        0      N/A
+    //      f32        9       16        0        0
+    //    simd2        6        8        0      N/A
+    //    simd3       11       13        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd       29       35        0      N/A
-    //  no simd       95       88        0        0
+    // yes simd       27       38        0      N/A
+    //  no simd       58       75        0        0
     fn mul(self, other: CircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1076,12 +1077,13 @@ impl std::ops::Mul<Dipole> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        8       15        0        0
-    //    simd3        0       14        0      N/A
-    //    simd4       19        6        0      N/A
+    //      f32        9       13        0        0
+    //    simd2        4        6        0      N/A
+    //    simd3       12       14        0      N/A
+    //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd       27       35        0      N/A
-    //  no simd       84       81        0        0
+    // yes simd       26       33        0      N/A
+    //  no simd       57       67        0        0
     fn mul(self, other: Dipole) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1090,12 +1092,13 @@ impl std::ops::Mul<DipoleInversion> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       10       14        0        0
-    //    simd3        0       14        0      N/A
-    //    simd4       29       16        0      N/A
+    //      f32       25       32        0        0
+    //    simd2       11       14        0      N/A
+    //    simd3       14       15        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd       39       44        0      N/A
-    //  no simd      126      120        0        0
+    // yes simd       51       62        0      N/A
+    //  no simd       93      109        0        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1105,10 +1108,10 @@ impl std::ops::Mul<DualNum> for Flector {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        5        0        0
-    //    simd3        1        3        0      N/A
+    //    simd3        1        4        0      N/A
     // Totals...
-    // yes simd        2        8        0      N/A
-    //  no simd        4       14        0        0
+    // yes simd        2        9        0      N/A
+    //  no simd        4       17        0        0
     fn mul(self, other: DualNum) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1117,12 +1120,13 @@ impl std::ops::Mul<FlatPoint> for Flector {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        2        3        0        0
+    //    simd2        2        3        0      N/A
+    //    simd3        1        1        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd        5        7        0      N/A
-    //  no simd       17       20        0        0
+    // yes simd        6        8        0      N/A
+    //  no simd       13       16        0        0
     fn mul(self, other: FlatPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1131,12 +1135,12 @@ impl std::ops::Mul<Flector> for Flector {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        4        0        0
-    //    simd3        0        4        0      N/A
-    //    simd4       12        8        0      N/A
+    //      f32        8       11        0        0
+    //    simd2        5        7        0      N/A
+    //    simd4        6        5        0      N/A
     // Totals...
-    // yes simd       14       16        0      N/A
-    //  no simd       50       48        0        0
+    // yes simd       19       23        0      N/A
+    //  no simd       42       45        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1145,12 +1149,11 @@ impl std::ops::Mul<Line> for Flector {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        3        5        0        0
-    //    simd3        0        5        0      N/A
-    //    simd4        8        4        0      N/A
+    //      f32        4        6        0        0
+    //    simd3        7        9        0      N/A
     // Totals...
-    // yes simd       11       14        0      N/A
-    //  no simd       35       36        0        0
+    // yes simd       11       15        0      N/A
+    //  no simd       25       33        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1159,12 +1162,13 @@ impl std::ops::Mul<Motor> for Flector {
     type Output = AntiFlector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        3        4        0        0
-    //    simd3        0        4        0      N/A
-    //    simd4       11        8        0      N/A
+    //      f32        6       10        0        0
+    //    simd2        3        5        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        5        5        0      N/A
     // Totals...
-    // yes simd       14       16        0      N/A
-    //  no simd       47       48        0        0
+    // yes simd       16       22        0      N/A
+    //  no simd       38       46        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1173,13 +1177,13 @@ impl std::ops::Mul<MultiVector> for Flector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       28       41        0        0
-    //    simd2        4        9        0      N/A
-    //    simd3       26       38        0      N/A
-    //    simd4       36       21        0      N/A
+    //      f32       52       70        0        0
+    //    simd2        8       13        0      N/A
+    //    simd3       38       39        0      N/A
+    //    simd4        8        8        0      N/A
     // Totals...
-    // yes simd       94      109        0      N/A
-    //  no simd      258      257        0        0
+    // yes simd      106      130        0      N/A
+    //  no simd      214      245        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1188,12 +1192,13 @@ impl std::ops::Mul<Plane> for Flector {
     type Output = AntiMotor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        4        0        0
-    //    simd3        0        4        0      N/A
-    //    simd4        7        3        0      N/A
+    //      f32        1        4        0        0
+    //    simd2        1        3        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        4        2        0      N/A
     // Totals...
-    // yes simd        9       11        0      N/A
-    //  no simd       30       28        0        0
+    // yes simd        8       11        0      N/A
+    //  no simd       25       24        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1202,13 +1207,13 @@ impl std::ops::Mul<RoundPoint> for Flector {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        5       12        0        0
-    //    simd2        0        2        0      N/A
-    //    simd3        4        5        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        6       15        0        0
+    //    simd2        0        1        0      N/A
+    //    simd3        4        6        0      N/A
+    //    simd4        2        2        0      N/A
     // Totals...
-    // yes simd       13       22        0      N/A
-    //  no simd       33       43        0        0
+    // yes simd       12       24        0      N/A
+    //  no simd       26       43        0        0
     fn mul(self, other: RoundPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1232,13 +1237,11 @@ impl std::ops::Mul<Sphere> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        7       15        0        0
-    //    simd2        0        3        0      N/A
-    //    simd3        8        6        0      N/A
-    //    simd4        0        2        0      N/A
+    //      f32       12       24        0        0
+    //    simd3        4        6        0      N/A
     // Totals...
-    // yes simd       15       26        0      N/A
-    //  no simd       31       47        0        0
+    // yes simd       16       30        0      N/A
+    //  no simd       24       42        0        0
     fn mul(self, other: Sphere) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1247,12 +1250,13 @@ impl std::ops::Mul<VersorEven> for Flector {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       10       14        0        0
-    //    simd3        0       14        0      N/A
-    //    simd4       32       18        0      N/A
+    //      f32       15       22        0        0
+    //    simd2       12       16        0      N/A
+    //    simd3        5        5        0      N/A
+    //    simd4       12       11        0      N/A
     // Totals...
-    // yes simd       42       46        0      N/A
-    //  no simd      138      128        0        0
+    // yes simd       44       54        0      N/A
+    //  no simd      102      113        0        0
     fn mul(self, other: VersorEven) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1261,12 +1265,13 @@ impl std::ops::Mul<VersorOdd> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       11       14        0        0
-    //    simd3        0       14        0      N/A
-    //    simd4       31       18        0      N/A
+    //      f32       19       27        0        0
+    //    simd2        9       13        0      N/A
+    //    simd3       12       12        0      N/A
+    //    simd4        7        7        0      N/A
     // Totals...
-    // yes simd       42       46        0      N/A
-    //  no simd      135      128        0        0
+    // yes simd       47       59        0      N/A
+    //  no simd      101      117        0        0
     fn mul(self, other: VersorOdd) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1664,11 +1669,12 @@ impl std::ops::Sub<DipoleInversion> for Flector {
     type Output = DipoleInversion;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        1        0        0
-    //    simd3        1        2        0      N/A
+    //      f32        2        1        0        0
+    //    simd2        1        0        0      N/A
+    //    simd3        0        2        0      N/A
     //    simd4        1        0        0      N/A
     // Totals...
-    // yes simd        3        3        0      N/A
+    // yes simd        4        3        0      N/A
     //  no simd        8        7        0        0
     fn sub(self, other: DipoleInversion) -> Self::Output {
         use crate::elements::*;
@@ -1678,7 +1684,7 @@ impl std::ops::Sub<DipoleInversion> for Flector {
             // e23, e31, e12, e45
             (other.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e45] - other[e45]),
             // e15, e25, e35, e1234
-            (self.group0().xyz() - other.group2().xyz()).with_w(other[e1234] * -1.0),
+            (self.group0().xy() - other.group2().xy()).with_zw(self[e35] - other[e35], other[e1234] * -1.0),
             // e4235, e4315, e4125, e3215
             self.group1() - other.group3(),
         )
@@ -2002,11 +2008,12 @@ impl std::ops::Sub<VersorOdd> for Flector {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        1        0        0
-    //    simd3        1        1        0      N/A
+    //      f32        2        1        0        0
+    //    simd2        1        0        0      N/A
+    //    simd3        0        1        0      N/A
     //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd        3        3        0      N/A
+    // yes simd        4        3        0      N/A
     //  no simd        8        8        0        0
     fn sub(self, other: VersorOdd) -> Self::Output {
         use crate::elements::*;
@@ -2016,7 +2023,7 @@ impl std::ops::Sub<VersorOdd> for Flector {
             // e23, e31, e12, e45
             (other.group1().xyz() * Simd32x3::from(-1.0)).with_w(self[e45] - other[e45]),
             // e15, e25, e35, e1234
-            (self.group0().xyz() - other.group2().xyz()).with_w(other[e1234] * -1.0),
+            (self.group0().xy() - other.group2().xy()).with_zw(self[e35] - other[e35], other[e1234] * -1.0),
             // e4235, e4315, e4125, e3215
             self.group1() - other.group3(),
         )
@@ -2086,7 +2093,7 @@ impl TryFrom<AntiCircleRotor> for Flector {
         }
         Ok(Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from([anti_circle_rotor[e15], anti_circle_rotor[e25], anti_circle_rotor[e35], anti_circle_rotor[e45]]),
+            anti_circle_rotor.group2().xyz().with_w(anti_circle_rotor[e45]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
         ))
@@ -2267,7 +2274,7 @@ impl TryFrom<Dipole> for Flector {
         }
         Ok(Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from([dipole[e15], dipole[e25], dipole[e35], dipole[e45]]),
+            dipole.group2().with_w(dipole[e45]),
             // e4235, e4315, e4125, e3215
             Simd32x4::from(0.0),
         ))
@@ -2337,7 +2344,7 @@ impl TryFrom<DipoleInversion> for Flector {
         }
         Ok(Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from([dipole_inversion[e15], dipole_inversion[e25], dipole_inversion[e35], dipole_inversion[e45]]),
+            dipole_inversion.group2().xyz().with_w(dipole_inversion[e45]),
             // e4235, e4315, e4125, e3215
             dipole_inversion.group3(),
         ))
@@ -2629,7 +2636,7 @@ impl TryFrom<VersorOdd> for Flector {
         }
         Ok(Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from([versor_odd[e15], versor_odd[e25], versor_odd[e35], versor_odd[e45]]),
+            versor_odd.group2().xyz().with_w(versor_odd[e45]),
             // e4235, e4315, e4125, e3215
             versor_odd.group3(),
         ))

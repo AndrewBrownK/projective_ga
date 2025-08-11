@@ -291,7 +291,7 @@ impl FlatWeight for VersorEven {
         use crate::elements::*;
         Motor::from_groups(
             // e415, e425, e435, e12345
-            Simd32x4::from([self[e415], self[e425], self[e435], self[e12345]]),
+            self.group1().xyz().with_w(self[e12345]),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
         )

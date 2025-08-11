@@ -109,10 +109,10 @@ public Scalar operator /(FlatBulkNormSquaredPrefixOrPostfix lhs, AntiMotor rhs) 
 }
 public extension AntiMotor {
     public Scalar flat_bulk_norm_squared() {
-        float3 sub_type_g0_xyz = this.group1.xyz;
+        float3 wedge_g0_xyz = this.group1.xyz;
         return Scalar(
             /* scalar */
-            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215
+            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2]
         );
     }
 }
@@ -191,10 +191,10 @@ public Scalar operator /(FlatBulkNormSquaredPrefixOrPostfix lhs, DipoleInversion
 }
 public extension DipoleInversion {
     public Scalar flat_bulk_norm_squared() {
-        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 wedge_g0_xyz = this.group2.xyz;
         return Scalar(
             /* scalar */
-            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215
+            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2]
         );
     }
 }
@@ -241,10 +241,10 @@ public Scalar operator /(FlatBulkNormSquaredPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public Scalar flat_bulk_norm_squared() {
-        float3 sub_type_g0_xyz = this.group0.xyz;
+        float3 wedge_g0_xyz = this.group0.xyz;
         return Scalar(
             /* scalar */
-            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215
+            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2]
         );
     }
 }
@@ -291,10 +291,10 @@ public Scalar operator /(FlatBulkNormSquaredPrefixOrPostfix lhs, MultiVector rhs
 }
 public extension MultiVector {
     public Scalar flat_bulk_norm_squared() {
-        float3 sub_type_g3_xyz = this.group3.xyz;
+        float3 wedge_g6_xyz = this.group3.xyz;
         return Scalar(
             /* scalar */
-            this.e5 * this.e5 + this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125 - sub_type_g3_xyz[0] * sub_type_g3_xyz[0] - sub_type_g3_xyz[1] * sub_type_g3_xyz[1] - sub_type_g3_xyz[2] * sub_type_g3_xyz[2] - this.e3215 * this.e3215
+            this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125 + this.e5 * this.e5 - wedge_g6_xyz[0] * wedge_g6_xyz[0] - wedge_g6_xyz[1] * wedge_g6_xyz[1] - wedge_g6_xyz[2] * wedge_g6_xyz[2] - this.e3215 * this.e3215
         );
     }
 }
@@ -373,10 +373,10 @@ public Scalar operator /(FlatBulkNormSquaredPrefixOrPostfix lhs, VersorOdd rhs) 
 }
 public extension VersorOdd {
     public Scalar flat_bulk_norm_squared() {
-        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 wedge_g0_xyz = this.group2.xyz;
         return Scalar(
             /* scalar */
-            -sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215
+            -wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2]
         );
     }
 }

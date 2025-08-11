@@ -19,7 +19,7 @@ public extension Plane {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */

@@ -11,7 +11,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.scalar * this.scalar)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.scalar * this.scalar)
         );
     }
 }
@@ -23,7 +23,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(AntiDualNum other) {
         return AntiScalar(
             /* e12345 */
-            this.scalar * other.scalar * -1.0
+            other.scalar * this.scalar * -1.0
         );
     }
 }
@@ -35,7 +35,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(AntiLine other) {
         return AntiScalar(
             /* e12345 */
-            -(this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
+            -(this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -59,7 +59,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -71,7 +71,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(DipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -107,7 +107,7 @@ public extension AntiCircleRotor {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.scalar * other.scalar)
+            (this.e45 * other.e45) - (other.scalar * this.scalar) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -147,7 +147,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -195,7 +195,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -207,7 +207,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -219,7 +219,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(DualNum other) {
         return AntiScalar(
             /* e12345 */
-            this.e4 * other.e5
+            other.e5 * this.e4
         );
     }
 }
@@ -231,7 +231,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(Line other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
         );
     }
 }
@@ -255,7 +255,7 @@ public extension AntiDipoleInversion {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e4 * other.e5) + (this.e5 * other.e4) - (this.e321 * other.e321) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e4 * other.e5) + (this.e5 * other.e4) - (this.e321 * other.e321) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
         );
     }
 }
@@ -295,7 +295,7 @@ public extension AntiDualNum {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            other.scalar * this.scalar * -1.0
+            this.scalar * other.scalar * -1.0
         );
     }
 }
@@ -431,7 +431,7 @@ public extension AntiFlatPoint {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) - (this.e321 * other.e321)
         );
     }
 }
@@ -443,7 +443,7 @@ public extension AntiFlatPoint {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) - (this.e321 * other.e321)
         );
     }
 }
@@ -455,7 +455,7 @@ public extension AntiFlatPoint {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) - (this.e321 * other.e321)
         );
     }
 }
@@ -531,7 +531,7 @@ public extension AntiFlector {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) - (this.e321 * other.e321)
         );
     }
 }
@@ -543,7 +543,7 @@ public extension AntiFlector {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) - (this.e321 * other.e321)
         );
     }
 }
@@ -555,7 +555,7 @@ public extension AntiFlector {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e5 * other.e4) - (this.e321 * other.e321) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e5 * other.e4) - (this.e321 * other.e321) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
         );
     }
 }
@@ -595,7 +595,7 @@ public extension AntiLine {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            -(other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
+            -(other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -731,7 +731,7 @@ public extension AntiMotor {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            -(other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -743,7 +743,7 @@ public extension AntiMotor {
     public AntiScalar anti_dot_product(DipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e3215 * other.e1234)
+            -(other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -755,7 +755,7 @@ public extension AntiMotor {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            -(this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.scalar * other.scalar) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e3215 * other.e1234)
+            -(other.scalar * this.scalar) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -895,7 +895,7 @@ public extension AntiScalar {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -907,7 +907,7 @@ public extension AntiScalar {
     public AntiScalar anti_dot_product(DualNum other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -919,7 +919,7 @@ public extension AntiScalar {
     public AntiScalar anti_dot_product(Motor other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -931,7 +931,7 @@ public extension AntiScalar {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -943,7 +943,7 @@ public extension AntiScalar {
     public AntiScalar anti_dot_product(VersorEven other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -959,7 +959,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -971,7 +971,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(AntiFlatPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) - (other.e321 * this.e321)
         );
     }
 }
@@ -983,7 +983,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(AntiFlector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) - (other.e321 * this.e321)
         );
     }
 }
@@ -995,7 +995,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -1007,7 +1007,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -1019,7 +1019,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(Line other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
         );
     }
 }
@@ -1043,7 +1043,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -1055,7 +1055,7 @@ public extension Circle {
     public AntiScalar anti_dot_product(VersorEven other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e321 * other.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -1071,7 +1071,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -1083,7 +1083,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(AntiFlatPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) - (other.e321 * this.e321)
         );
     }
 }
@@ -1095,7 +1095,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(AntiFlector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) - (other.e321 * this.e321)
         );
     }
 }
@@ -1107,7 +1107,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(AntiScalar other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -1119,7 +1119,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -1131,7 +1131,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e12345 * this.e12345) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e12345 * this.e12345) - (other.e321 * this.e321)
         );
     }
 }
@@ -1143,7 +1143,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(DualNum other) {
         return AntiScalar(
             /* e12345 */
-            this.e12345 * other.e12345
+            other.e12345 * this.e12345
         );
     }
 }
@@ -1155,7 +1155,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(Line other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
         );
     }
 }
@@ -1179,7 +1179,7 @@ public extension CircleRotor {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e12345 * other.e12345) - (this.e321 * other.e321)
+            (other.e12345 * this.e12345) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) - (this.e321 * other.e321)
         );
     }
 }
@@ -1207,7 +1207,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1231,7 +1231,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(AntiMotor other) {
         return AntiScalar(
             /* e12345 */
-            -(other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            -(this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1243,7 +1243,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1255,7 +1255,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(DipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -1291,7 +1291,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1303,7 +1303,7 @@ public extension Dipole {
     public AntiScalar anti_dot_product(VersorOdd other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -1319,7 +1319,7 @@ public extension DipoleInversion {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1355,7 +1355,7 @@ public extension DipoleInversion {
     public AntiScalar anti_dot_product(AntiMotor other) {
         return AntiScalar(
             /* e12345 */
-            -(other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e3215 * this.e1234)
+            -(this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -1367,7 +1367,7 @@ public extension DipoleInversion {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -1379,7 +1379,7 @@ public extension DipoleInversion {
     public AntiScalar anti_dot_product(DipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e1234 * this.e3215) - (other.e3215 * this.e1234)
+            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e1234 * this.e3215) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -1415,7 +1415,7 @@ public extension DipoleInversion {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e1234 * other.e3215) - (this.e3215 * other.e1234)
+            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (this.e1234 * other.e3215) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -1467,7 +1467,7 @@ public extension DualNum {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            other.e4 * this.e5
+            this.e5 * other.e4
         );
     }
 }
@@ -1479,7 +1479,7 @@ public extension DualNum {
     public AntiScalar anti_dot_product(AntiScalar other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -1491,7 +1491,7 @@ public extension DualNum {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -1627,7 +1627,7 @@ public extension FlatPoint {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43)
+            (this.e45 * other.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35)
         );
     }
 }
@@ -1715,7 +1715,7 @@ public extension Flector {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e3215 * other.e1234)
+            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -1767,7 +1767,7 @@ public extension Line {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
         );
     }
 }
@@ -1779,7 +1779,7 @@ public extension Line {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
         );
     }
 }
@@ -1791,7 +1791,7 @@ public extension Line {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435)
         );
     }
 }
@@ -1867,7 +1867,7 @@ public extension Motor {
     public AntiScalar anti_dot_product(AntiScalar other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -1939,7 +1939,7 @@ public extension Motor {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e12345 * other.e12345) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e5 * other.e4)
+            (other.e12345 * this.e12345) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e5 * other.e4)
         );
     }
 }
@@ -1979,7 +1979,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiCircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.scalar * this.scalar)
+            (other.e45 * this.e45) - (this.scalar * other.scalar) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -1991,7 +1991,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiDipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -2015,7 +2015,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiFlatPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) - (other.e321 * this.e321)
         );
     }
 }
@@ -2027,7 +2027,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiFlector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e5 * this.e4) - (other.e321 * this.e321) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -2051,7 +2051,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiMotor other) {
         return AntiScalar(
             /* e12345 */
-            -(other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.scalar * this.scalar) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e3215 * this.e1234)
+            -(this.scalar * other.scalar) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2075,7 +2075,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(AntiScalar other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -2087,7 +2087,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -2099,7 +2099,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(CircleRotor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e12345 * this.e12345) - (other.e321 * this.e321)
+            (this.e12345 * other.e12345) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -2111,7 +2111,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12)
         );
     }
 }
@@ -2123,7 +2123,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(DipoleInversion other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e1234 * this.e3215) - (other.e3215 * this.e1234)
+            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (other.e1234 * this.e3215) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2147,7 +2147,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(FlatPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35)
         );
     }
 }
@@ -2159,7 +2159,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Flector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e3215 * this.e1234)
+            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2183,7 +2183,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Motor other) {
         return AntiScalar(
             /* e12345 */
-            (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e12345 * this.e12345) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e5 * this.e4)
+            (this.e12345 * other.e12345) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e5 * this.e4)
         );
     }
 }
@@ -2195,7 +2195,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e12345 * this.e12345) + (other.e4 * this.e5) + (other.e5 * this.e4) + (other.e45 * this.e45) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.scalar * this.scalar) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e321 * this.e321) - (other.e3215 * this.e1234) - (other.e1234 * this.e3215)
+            (other.e12345 * this.e12345) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e4 * this.e5) + (other.e45 * this.e45) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) + (this.e4 * other.e5) - (other.scalar * this.scalar) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3) - (other.e321 * this.e321) - (other.e3215 * this.e1234) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -2207,7 +2207,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Plane other) {
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e1234 * other.e3215)
+            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2219,7 +2219,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(RoundPoint other) {
         return AntiScalar(
             /* e12345 */
-            (this.e4 * other.e5) + (this.e5 * other.e4) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
+            (this.e4 * other.e5) + (other.e4 * this.e5) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
         );
     }
 }
@@ -2243,7 +2243,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(Sphere other) {
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e3215 * other.e1234) - (this.e1234 * other.e3215)
+            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e3215 * other.e1234) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2255,7 +2255,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(VersorEven other) {
         return AntiScalar(
             /* e12345 */
-            (this.e12345 * other.e12345) + (this.e4 * other.e5) + (this.e5 * other.e4) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3) - (this.e321 * other.e321)
+            (this.e12345 * other.e12345) + (this.e423 * other.e235) + (this.e431 * other.e315) + (this.e412 * other.e125) + (this.e235 * other.e423) + (this.e315 * other.e431) + (this.e125 * other.e412) + (this.e4 * other.e5) + (this.e415 * other.e415) + (this.e425 * other.e425) + (this.e435 * other.e435) + (other.e4 * this.e5) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3) - (this.e321 * other.e321)
         );
     }
 }
@@ -2267,7 +2267,7 @@ public extension MultiVector {
     public AntiScalar anti_dot_product(VersorOdd other) {
         return AntiScalar(
             /* e12345 */
-            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.scalar * other.scalar) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e3215 * other.e1234) - (this.e1234 * other.e3215)
+            (this.e45 * other.e45) + (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.scalar * other.scalar) - (this.e41 * other.e15) - (this.e42 * other.e25) - (this.e43 * other.e35) - (this.e23 * other.e23) - (this.e31 * other.e31) - (this.e12 * other.e12) - (this.e15 * other.e41) - (this.e25 * other.e42) - (this.e35 * other.e43) - (this.e3215 * other.e1234) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2307,7 +2307,7 @@ public extension Plane {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e1234 * this.e3215)
+            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -2419,7 +2419,7 @@ public extension RoundPoint {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (other.e4 * this.e5) + (this.e4 * other.e5) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -2431,7 +2431,7 @@ public extension RoundPoint {
     public AntiScalar anti_dot_product(RoundPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (other.e4 * this.e5) + (this.e4 * other.e5) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -2443,7 +2443,7 @@ public extension RoundPoint {
     public AntiScalar anti_dot_product(VersorEven other) {
         return AntiScalar(
             /* e12345 */
-            (this.e4 * other.e5) + (this.e5 * other.e4) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
+            (this.e4 * other.e5) + (other.e4 * this.e5) - (this.e1 * other.e1) - (this.e2 * other.e2) - (this.e3 * other.e3)
         );
     }
 }
@@ -2519,7 +2519,7 @@ public extension Scalar {
     public AntiScalar anti_dot_product(VersorOdd other) {
         return AntiScalar(
             /* e12345 */
-            this.scalar * other.scalar * -1.0
+            other.scalar * this.scalar * -1.0
         );
     }
 }
@@ -2583,7 +2583,7 @@ public extension Sphere {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (other.e1234 * this.e3215)
+            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -2607,7 +2607,7 @@ public extension Sphere {
     public AntiScalar anti_dot_product(Sphere other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (other.e1234 * this.e3215)
+            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -2619,7 +2619,7 @@ public extension Sphere {
     public AntiScalar anti_dot_product(VersorOdd other) {
         return AntiScalar(
             /* e12345 */
-            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e3215 * other.e1234) - (this.e1234 * other.e3215)
+            (this.e4235 * other.e4235) + (this.e4315 * other.e4315) + (this.e4125 * other.e4125) - (this.e3215 * other.e1234) - (other.e3215 * this.e1234)
         );
     }
 }
@@ -2683,7 +2683,7 @@ public extension VersorEven {
     public AntiScalar anti_dot_product(AntiScalar other) {
         return AntiScalar(
             /* e12345 */
-            other.e12345 * this.e12345
+            this.e12345 * other.e12345
         );
     }
 }
@@ -2695,7 +2695,7 @@ public extension VersorEven {
     public AntiScalar anti_dot_product(Circle other) {
         return AntiScalar(
             /* e12345 */
-            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e321 * this.e321)
+            (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) - (other.e321 * this.e321)
         );
     }
 }
@@ -2755,7 +2755,7 @@ public extension VersorEven {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e12345 * this.e12345) + (other.e4 * this.e5) + (other.e5 * this.e4) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3) - (other.e321 * this.e321)
+            (other.e12345 * this.e12345) + (other.e423 * this.e235) + (other.e431 * this.e315) + (other.e412 * this.e125) + (other.e235 * this.e423) + (other.e315 * this.e431) + (other.e125 * this.e412) + (other.e4 * this.e5) + (other.e415 * this.e415) + (other.e425 * this.e425) + (other.e435 * this.e435) + (this.e4 * other.e5) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3) - (other.e321 * this.e321)
         );
     }
 }
@@ -2767,7 +2767,7 @@ public extension VersorEven {
     public AntiScalar anti_dot_product(RoundPoint other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4 * this.e5) + (other.e5 * this.e4) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
+            (other.e4 * this.e5) + (this.e4 * other.e5) - (other.e1 * this.e1) - (other.e2 * this.e2) - (other.e3 * this.e3)
         );
     }
 }
@@ -2843,7 +2843,7 @@ public extension VersorOdd {
     public AntiScalar anti_dot_product(Dipole other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43)
+            (other.e45 * this.e45) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12)
         );
     }
 }
@@ -2891,7 +2891,7 @@ public extension VersorOdd {
     public AntiScalar anti_dot_product(MultiVector other) {
         return AntiScalar(
             /* e12345 */
-            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.scalar * this.scalar) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e3215 * this.e1234) - (other.e1234 * this.e3215)
+            (other.e45 * this.e45) + (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.scalar * this.scalar) - (other.e41 * this.e15) - (other.e42 * this.e25) - (other.e43 * this.e35) - (other.e23 * this.e23) - (other.e31 * this.e31) - (other.e12 * this.e12) - (other.e15 * this.e41) - (other.e25 * this.e42) - (other.e35 * this.e43) - (other.e3215 * this.e1234) - (this.e3215 * other.e1234)
         );
     }
 }
@@ -2915,7 +2915,7 @@ public extension VersorOdd {
     public AntiScalar anti_dot_product(Scalar other) {
         return AntiScalar(
             /* e12345 */
-            other.scalar * this.scalar * -1.0
+            this.scalar * other.scalar * -1.0
         );
     }
 }
@@ -2927,7 +2927,7 @@ public extension VersorOdd {
     public AntiScalar anti_dot_product(Sphere other) {
         return AntiScalar(
             /* e12345 */
-            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (other.e1234 * this.e3215)
+            (other.e4235 * this.e4235) + (other.e4315 * this.e4315) + (other.e4125 * this.e4125) - (other.e3215 * this.e1234) - (this.e3215 * other.e1234)
         );
     }
 }

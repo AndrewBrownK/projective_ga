@@ -3,7 +3,7 @@ public extension AntiDualNum {
     public VersorOdd operator +(AntiCircleRotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(other.group0.xyz, other.scalar + this.scalar), 
+            float4(other.group0.xyz, this.scalar + other.scalar), 
             /* e23, e31, e12, e45 */
             other.group1, 
             /* e15, e25, e35, e1234 */
@@ -19,7 +19,7 @@ public extension AntiDualNum {
             /* scalar, e12345 */
             float2(this.scalar, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
@@ -381,7 +381,7 @@ public extension AntiDualNum {
     public MultiVector operator +(MultiVector other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.scalar, 0.0) + other.group0.xy, 
+            float2(this.scalar + other.scalar, other.e12345), 
             /* e1, e2, e3, e4 */
             other.group1, 
             /* e5 */

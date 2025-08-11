@@ -61,7 +61,7 @@ impl UnitizedFlatNorm for Circle {
     // f32        0        3        0        0
     fn unitized_flat_norm(self) -> f32 {
         use crate::elements::*;
-        self[e415] * self[e415] * self[e235] * self[e235]
+        self[e235] * self[e235] * self[e415] * self[e415]
     }
 }
 impl std::ops::Div<UnitizedFlatNormPrefixOrPostfix> for CircleRotor {
@@ -106,7 +106,7 @@ impl UnitizedFlatNorm for DipoleInversion {
     // f32        0        3        0        0
     fn unitized_flat_norm(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group2()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormPrefixOrPostfix> for DualNum {
@@ -152,7 +152,7 @@ impl UnitizedFlatNorm for Flector {
     // f32        0        3        0        0
     fn unitized_flat_norm(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group0()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormPrefixOrPostfix> for Line {
@@ -255,6 +255,6 @@ impl UnitizedFlatNorm for VersorOdd {
     // f32        0        3        0        0
     fn unitized_flat_norm(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group2()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }

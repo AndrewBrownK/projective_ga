@@ -207,7 +207,7 @@ public extension MultiVector {
         float3 sub_type_g9_xyz = this.group9.xyz;
         return AntiScalar(
             /* e12345 */
-            sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e12345 * this.e12345 + this.e45 * this.e45
+            this.e12345 * this.e12345 + sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e45 * this.e45
         );
     }
 }
@@ -255,9 +255,10 @@ public AntiScalar operator /(FlatWeightNormPrefixOrPostfix lhs, VersorEven rhs) 
 }
 public extension VersorEven {
     public AntiScalar flat_weight_norm() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return AntiScalar(
             /* e12345 */
-            this.e12345 * this.e12345 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.e12345 * this.e12345
         );
     }
 }

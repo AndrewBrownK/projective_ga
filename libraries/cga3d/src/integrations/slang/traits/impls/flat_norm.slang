@@ -195,11 +195,11 @@ public MultiVector operator /(FlatNormPrefixOrPostfix lhs, DipoleInversion rhs) 
 }
 public extension DipoleInversion {
     public MultiVector flat_norm() {
-        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 wedge_g0_xyz = this.group2.xyz;
         float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
+            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -306,11 +306,11 @@ public MultiVector operator /(FlatNormPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public MultiVector flat_norm() {
-        float3 sub_type_g0_xyz = this.group0.xyz;
+        float3 wedge_g0_xyz = this.group0.xyz;
         float3 sub_type_g1_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
+            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -417,12 +417,12 @@ public MultiVector operator /(FlatNormPrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector flat_norm() {
-        float3 sub_type_g3_xyz = this.group3.xyz;
+        float3 wedge_g6_xyz = this.group3.xyz;
         float3 sub_type_g6_xyz = this.group6.xyz;
         float3 sub_type_g9_xyz = this.group9.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e5 * this.e5 + this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125 - sub_type_g3_xyz[0] * sub_type_g3_xyz[0] - sub_type_g3_xyz[1] * sub_type_g3_xyz[1] - sub_type_g3_xyz[2] * sub_type_g3_xyz[2] - this.e3215 * this.e3215, sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e12345 * this.e12345 + this.e45 * this.e45), 
+            float2(this.e235 * this.e235 + this.e315 * this.e315 + this.e125 * this.e125 + this.e5 * this.e5 - wedge_g6_xyz[0] * wedge_g6_xyz[0] - wedge_g6_xyz[1] * wedge_g6_xyz[1] - wedge_g6_xyz[2] * wedge_g6_xyz[2] - this.e3215 * this.e3215, this.e12345 * this.e12345 + sub_type_g6_xyz[0] * sub_type_g6_xyz[0] + sub_type_g6_xyz[1] * sub_type_g6_xyz[1] + sub_type_g6_xyz[2] * sub_type_g6_xyz[2] + sub_type_g9_xyz[0] * sub_type_g9_xyz[0] + sub_type_g9_xyz[1] * sub_type_g9_xyz[1] + sub_type_g9_xyz[2] * sub_type_g9_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -531,9 +531,10 @@ public MultiVector operator /(FlatNormPrefixOrPostfix lhs, VersorEven rhs) {
 public extension VersorEven {
     public MultiVector flat_norm() {
         float3 wedge_g1_xyz = this.group2.xyz * float3(-1.0);
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(this.e5 * this.e5 - wedge_g1_xyz[0] * wedge_g1_xyz[0] - wedge_g1_xyz[1] * wedge_g1_xyz[1] - wedge_g1_xyz[2] * wedge_g1_xyz[2], this.e12345 * this.e12345 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435), 
+            float2(this.e5 * this.e5 - wedge_g1_xyz[0] * wedge_g1_xyz[0] - wedge_g1_xyz[1] * wedge_g1_xyz[1] - wedge_g1_xyz[2] * wedge_g1_xyz[2], sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.e12345 * this.e12345), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
@@ -567,11 +568,11 @@ public MultiVector operator /(FlatNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public MultiVector flat_norm() {
-        float3 sub_type_g0_xyz = this.group2.xyz;
+        float3 wedge_g0_xyz = this.group2.xyz;
         float3 sub_type_g1_xyz = this.group3.xyz;
         return MultiVector(
             /* scalar, e12345 */
-            float2(-sub_type_g0_xyz[0] * sub_type_g0_xyz[0] - sub_type_g0_xyz[1] * sub_type_g0_xyz[1] - sub_type_g0_xyz[2] * sub_type_g0_xyz[2] - this.e3215 * this.e3215, sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
+            float2(-wedge_g0_xyz[0] * wedge_g0_xyz[0] - wedge_g0_xyz[1] * wedge_g0_xyz[1] - wedge_g0_xyz[2] * wedge_g0_xyz[2], sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e45 * this.e45), 
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */

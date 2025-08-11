@@ -9,7 +9,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_anti_circle_rotor.e15, from_anti_circle_rotor.e25, from_anti_circle_rotor.e35, from_anti_circle_rotor.e45), 
+            float4(from_anti_circle_rotor.group2.xyz, from_anti_circle_rotor.e45), 
             /* e41, e42, e43 */
             from_anti_circle_rotor.group0.xyz, 
             /* e23, e31, e12 */
@@ -57,7 +57,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(from_anti_dipole_inversion.e1, from_anti_dipole_inversion.e2, from_anti_dipole_inversion.e3, from_anti_dipole_inversion.e4), 
+            float4(from_anti_dipole_inversion.group3.xyz, from_anti_dipole_inversion.e4), 
             /* e5 */
             from_anti_dipole_inversion.e5, 
             /* e15, e25, e35, e45 */
@@ -94,7 +94,7 @@ public extension VersorEven {
             /* e235, e315, e125, e5 */
             float4(from_anti_dipole_inversion.group2.xyz, from_anti_dipole_inversion.e5), 
             /* e1, e2, e3, e4 */
-            float4(from_anti_dipole_inversion.e1, from_anti_dipole_inversion.e2, from_anti_dipole_inversion.e3, from_anti_dipole_inversion.e4)
+            float4(from_anti_dipole_inversion.group3.xyz, from_anti_dipole_inversion.e4)
         );
     }
 }
@@ -917,7 +917,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_dipole.e15, from_dipole.e25, from_dipole.e35, from_dipole.e45), 
+            float4(from_dipole.group2.xyz, from_dipole.e45), 
             /* e41, e42, e43 */
             from_dipole.group0.xyz, 
             /* e23, e31, e12 */
@@ -969,7 +969,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_dipole_inversion.e15, from_dipole_inversion.e25, from_dipole_inversion.e35, from_dipole_inversion.e45), 
+            float4(from_dipole_inversion.group2.xyz, from_dipole_inversion.e45), 
             /* e41, e42, e43 */
             from_dipole_inversion.group0.xyz, 
             /* e23, e31, e12 */
@@ -1824,7 +1824,7 @@ public extension MultiVector {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(from_versor_odd.e15, from_versor_odd.e25, from_versor_odd.e35, from_versor_odd.e45), 
+            float4(from_versor_odd.group2.xyz, from_versor_odd.e45), 
             /* e41, e42, e43 */
             from_versor_odd.group0.xyz, 
             /* e23, e31, e12 */

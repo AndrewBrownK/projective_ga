@@ -234,13 +234,13 @@ impl FlatWeightNormSquared for MultiVector {
         let sub_type_g9_xyz = self.group9().xyz();
         AntiScalar::from_groups(
             // e12345
-            sub_type_g6_xyz[0] * sub_type_g6_xyz[0]
+            self[e12345] * self[e12345]
+                + sub_type_g6_xyz[0] * sub_type_g6_xyz[0]
                 + sub_type_g6_xyz[1] * sub_type_g6_xyz[1]
                 + sub_type_g6_xyz[2] * sub_type_g6_xyz[2]
                 + sub_type_g9_xyz[0] * sub_type_g9_xyz[0]
                 + sub_type_g9_xyz[1] * sub_type_g9_xyz[1]
                 + sub_type_g9_xyz[2] * sub_type_g9_xyz[2]
-                + self[e12345] * self[e12345]
                 + self[e45] * self[e45],
         )
     }
@@ -293,9 +293,10 @@ impl FlatWeightNormSquared for VersorEven {
     // f32        3        4        0        0
     fn flat_weight_norm_squared(self) -> AntiScalar {
         use crate::elements::*;
+        let sub_type_g0_xyz = self.group1().xyz();
         AntiScalar::from_groups(
             // e12345
-            self[e12345] * self[e12345] + self[e415] * self[e415] + self[e425] * self[e425] + self[e435] * self[e435],
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[e12345] * self[e12345],
         )
     }
 }

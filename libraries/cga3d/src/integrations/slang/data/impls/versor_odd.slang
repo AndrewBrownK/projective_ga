@@ -3,11 +3,11 @@ public extension VersorOdd {
     public VersorOdd operator +(AntiCircleRotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            this.group0 + float4(other.group0.xyz, other.scalar), 
+            float4((other.group0.xyz + this.group0.xyz), other.scalar + this.scalar), 
             /* e23, e31, e12, e45 */
             other.group1 + this.group1, 
             /* e15, e25, e35, e1234 */
-            this.group2 + float4(other.group2.xyz, 0.0), 
+            float4((other.group2.xyz + this.group2.xyz), this.e1234), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -19,11 +19,11 @@ public extension VersorOdd {
             /* scalar, e12345 */
             float2(this.scalar, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -65,7 +65,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -93,7 +93,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -131,9 +131,9 @@ public extension VersorOdd {
             /* e41, e42, e43, scalar */
             float4(this.group0.xyz, other.scalar + this.scalar), 
             /* e23, e31, e12, e45 */
-            this.group1 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group1.xyz), this.e45), 
             /* e15, e25, e35, e1234 */
-            this.group2 + float4(other.group1.xyz, 0.0), 
+            float4((other.group1.xyz + this.group2.xyz), this.e1234), 
             /* e4235, e4315, e4125, e3215 */
             float4(this.group3.xyz, other.e3215 + this.e3215)
         );
@@ -149,7 +149,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -177,7 +177,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -205,7 +205,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -233,7 +233,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -289,7 +289,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -315,7 +315,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, other.e45 + this.e45), 
             /* e15, e25, e35, e1234 */
-            this.group2 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group2.xyz), this.e1234), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -329,7 +329,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, other.e45 + this.e45), 
             /* e15, e25, e35, e1234 */
-            this.group2 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group2.xyz), this.e1234), 
             /* e4235, e4315, e4125, e3215 */
             other.group1 + this.group3
         );
@@ -345,7 +345,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -373,7 +373,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -401,7 +401,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            other.group3 + float4(float3(0.0), this.e45) + float4(this.group2.xyz, 0.0), 
+            other.group3 + float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             other.group4.xyz + this.group0.xyz, 
             /* e23, e31, e12 */
@@ -415,7 +415,7 @@ public extension VersorOdd {
             /* e4235, e4315, e4125, e3215 */
             other.group9 + this.group3, 
             /* e1234 */
-            other.e1234 + this.e1234
+            this.e1234 + other.e1234
         );
     }
 }
@@ -443,7 +443,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -465,7 +465,7 @@ public extension VersorOdd {
     public VersorOdd operator +(Scalar other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.group0.xyz, other.scalar + this.scalar), 
+            float4(this.group0.xyz, this.scalar + other.scalar), 
             /* e23, e31, e12, e45 */
             this.group1, 
             /* e15, e25, e35, e1234 */
@@ -483,7 +483,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             this.group1, 
             /* e15, e25, e35, e1234 */
-            float4(this.group2.xyz, other.e1234 + this.e1234), 
+            float4(this.group2.xyz, this.e1234 + other.e1234), 
             /* e4235, e4315, e4125, e3215 */
             other.group0 + this.group3
         );
@@ -499,7 +499,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -908,11 +908,11 @@ public extension VersorOdd {
     public VersorOdd operator -(AntiCircleRotor other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            this.group0 + float4(float3(0.0), other.scalar * -1.0) - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, other.scalar * -1.0), 
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group2.xyz, 0.0), 
+            this.group2 + float4(-other.group2.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -928,7 +928,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -970,7 +970,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -998,7 +998,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1022,9 +1022,9 @@ public extension VersorOdd {
             /* e41, e42, e43, scalar */
             this.group0, 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group1.xyz, 0.0), 
+            this.group2 + float4(-other.group1.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -1036,9 +1036,9 @@ public extension VersorOdd {
             /* e41, e42, e43, scalar */
             float4(this.group0.xyz, this.scalar - other.scalar), 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group1.xyz, 0.0), 
+            this.group2 + float4(-other.group1.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             float4(this.group3.xyz, this.e3215 - other.e3215)
         );
@@ -1054,7 +1054,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1082,7 +1082,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1110,7 +1110,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1138,7 +1138,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1160,11 +1160,11 @@ public extension VersorOdd {
     public VersorOdd operator -(Dipole other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            this.group0 - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, 0.0), 
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group2.xyz, 0.0), 
+            this.group2 + float4(-other.group2.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -1174,7 +1174,7 @@ public extension VersorOdd {
     public VersorOdd operator -(DipoleInversion other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            this.group0 - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, 0.0), 
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
@@ -1194,7 +1194,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1220,7 +1220,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group0.xyz, 0.0), 
+            this.group2 + float4(-other.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             this.group3
         );
@@ -1234,7 +1234,7 @@ public extension VersorOdd {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            this.group2 - float4(other.group0.xyz, 0.0), 
+            this.group2 + float4(-other.group0.xyz, 0.0), 
             /* e4235, e4315, e4125, e3215 */
             this.group3 - other.group1
         );
@@ -1250,7 +1250,7 @@ public extension VersorOdd {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1278,7 +1278,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1348,7 +1348,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1404,7 +1404,7 @@ public extension VersorOdd {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */

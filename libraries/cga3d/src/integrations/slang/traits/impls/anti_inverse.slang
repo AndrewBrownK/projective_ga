@@ -55,7 +55,7 @@ public extension AntiDualNum {
     public AntiDualNum anti_inverse() {
         return AntiDualNum(
             /* e3215, scalar */
-            float2(-1.0 / this.scalar) * float2(this.e3215 / this.scalar, 1.0)
+            float2(this.e3215 * -1.0 /  (this.scalar * this.scalar), -1.0 / this.scalar)
         );
     }
 }
@@ -71,7 +71,7 @@ public extension AntiFlatPoint {
     public AntiFlatPoint anti_inverse() {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(1.0 / this.e321) * float4((float3(1.0 / this.e321) * this.group0.xyz), 1.0)
+            float4((this.group0.xyz /  (float4(this.e321).xyz * float4(this.e321).xyz)), 1.0 / this.e321)
         );
     }
 }
@@ -144,7 +144,7 @@ public extension AntiPlane {
     public AntiPlane anti_inverse() {
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            -(float4(this.e1 * this.e1, this.e2 * this.e2, this.e3 * this.e3, this.e1 * this.e1) * this.group0) - (float4(this.e2 * this.e2, this.e1 * this.e1, this.e1 * this.e1, this.e2 * this.e2) * this.group0) - (this.group0 * float4(float2(this.e3 * this.e3), this.e2 * this.e2, this.e3 * this.e3))
+            -(float4(this.e2 * this.e2, this.e1 * this.e1, this.e1 * this.e1, this.e2 * this.e2) * this.group0) - (this.group0 * float4(float2(this.e3 * this.e3), this.e2 * this.e2, this.e3 * this.e3)) - (float4_pow(this.group0.xyzx, 2) * this.group0)
         );
     }
 }
@@ -262,7 +262,7 @@ public extension DualNum {
     public DualNum anti_inverse() {
         return DualNum(
             /* e5, e12345 */
-            float2(1.0 / this.e12345) * float2(this.e5 / this.e12345, 1.0)
+            float2(this.e5 /  (this.e12345 * this.e12345), 1.0 / this.e12345)
         );
     }
 }
@@ -278,7 +278,7 @@ public extension FlatPoint {
     public FlatPoint anti_inverse() {
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(-1.0 / this.e45) * float4((float3(1.0 / this.e45) * this.group0.xyz), 1.0)
+            float4((this.group0.xyz * float3(-1.0) /  (float4(this.e45).xyz * float4(this.e45).xyz)), -1.0 / this.e45)
         );
     }
 }
@@ -349,7 +349,7 @@ public MultiVector operator /(AntiInversePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector anti_inverse() {
-        float other_g0 = 2.0*(this.e4 * this.e5) + 2.0 * (this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e321 * this.e321 - 2.0 * (this.e15 * this.e41) - 2.0 * (this.e25 * this.e42) - 2.0 * (this.e35 * this.e43) - 2.0 * (this.e3215 * this.e1234);
+        float other_g0 = 2.0*(this.e423 * this.e235) + 2.0 * (this.e431 * this.e315) + 2.0 * (this.e412 * this.e125) + 2.0 * (this.e4 * this.e5) + this.e12345 * this.e12345 + this.e45 * this.e45 + this.e415 * this.e415 + this.e425 * this.e425 + this.e435 * this.e435 + this.e4235 * this.e4235 + this.e4315 * this.e4315 + this.e4125 * this.e4125 - this.scalar * this.scalar - this.e23 * this.e23 - this.e31 * this.e31 - this.e12 * this.e12 - this.e1 * this.e1 - this.e2 * this.e2 - this.e3 * this.e3 - this.e321 * this.e321 - 2.0 * (this.e41 * this.e15) - 2.0 * (this.e42 * this.e25) - 2.0 * (this.e43 * this.e35) - 2.0 * (this.e3215 * this.e1234);
         return MultiVector(
             /* scalar, e12345 */
             float2(other_g0) * this.group0.xy, 
@@ -388,7 +388,7 @@ public extension Plane {
     public Plane anti_inverse() {
         return Plane(
             /* e4235, e4315, e4125, e3215 */
-            (float4(this.e4235 * this.e4235, this.e4315 * this.e4315, this.e4125 * this.e4125, this.e4235 * this.e4235) * this.group0) + (float4(this.e4315 * this.e4315, this.e4235 * this.e4235, this.e4235 * this.e4235, this.e4315 * this.e4315) * this.group0) + (this.group0 * float4(float2(this.e4125 * this.e4125), this.e4315 * this.e4315, this.e4125 * this.e4125))
+            (float4(this.e4315 * this.e4315, this.e4235 * this.e4235, this.e4235 * this.e4235, this.e4315 * this.e4315) * this.group0) + (this.group0 * float4(float2(this.e4125 * this.e4125), this.e4315 * this.e4315, this.e4125 * this.e4125)) + (float4_pow(this.group0.xyzx, 2) * this.group0)
         );
     }
 }

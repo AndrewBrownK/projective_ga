@@ -59,7 +59,7 @@ public extension MultiVector {
     public MultiVector operator +(AntiDualNum other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(other.scalar, 0.0) + this.group0.xy, 
+            float2(other.scalar + this.scalar, this.e12345), 
             /* e1, e2, e3, e4 */
             this.group1, 
             /* e5 */
@@ -117,7 +117,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 + float4(other.group1.xyz, 0.0), 
+            float4((other.group1.xyz + this.group1.xyz), this.e4), 
             /* e5 */
             other.e5 + this.e5, 
             /* e15, e25, e35, e45 */
@@ -177,7 +177,7 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(other.group1.xyz, 0.0), 
+            float4((other.group1.xyz + this.group3.xyz), this.e45), 
             /* e41, e42, e43 */
             this.group4.xyz, 
             /* e23, e31, e12 */
@@ -201,7 +201,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group1.xyz), this.e4), 
             /* e5 */
             other.e5 + this.e5, 
             /* e15, e25, e35, e45 */
@@ -317,7 +317,7 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(other.group2.xyz, other.e45), 
+            float4((other.group2.xyz + this.group3.xyz), other.e45 + this.e45), 
             /* e41, e42, e43 */
             other.group0.xyz + this.group4.xyz, 
             /* e23, e31, e12 */
@@ -367,7 +367,7 @@ public extension MultiVector {
     public MultiVector operator +(DualNum other) {
         return MultiVector(
             /* scalar, e12345 */
-            float2(0.0, other.e12345) + this.group0.xy, 
+            float2(this.scalar, other.e12345 + this.e12345), 
             /* e1, e2, e3, e4 */
             this.group1, 
             /* e5 */
@@ -491,7 +491,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            this.group6 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group6.xyz), this.e321), 
             /* e423, e431, e412 */
             this.group7.xyz, 
             /* e235, e315, e125 */
@@ -651,7 +651,7 @@ public extension MultiVector {
             /* e1, e2, e3, e4 */
             this.group1 + other.group3, 
             /* e5 */
-            this.e5 + other.e5, 
+            other.e5 + this.e5, 
             /* e15, e25, e35, e45 */
             this.group3, 
             /* e41, e42, e43 */
@@ -681,7 +681,7 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(float3(0.0), other.e45) + float4(other.group2.xyz, 0.0), 
+            this.group3 + float4(other.group2.xyz, other.e45), 
             /* e41, e42, e43 */
             this.group4.xyz + other.group0.xyz, 
             /* e23, e31, e12 */
@@ -695,7 +695,7 @@ public extension MultiVector {
             /* e4235, e4315, e4125, e3215 */
             this.group9 + other.group3, 
             /* e1234 */
-            this.e1234 + other.e1234
+            other.e1234 + this.e1234
         );
     }
 }
@@ -1096,11 +1096,11 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(float3(0.0), other.e45 * -1.0) - float4(other.group2.xyz, 0.0), 
+            this.group3 + float4(-other.group2.xyz, other.e45 * -1.0), 
             /* e41, e42, e43 */
             this.group4.xyz - other.group0.xyz, 
             /* e23, e31, e12 */
-            this.group5.xyz - other.group1.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group5.xyz, 
             /* e415, e425, e435, e321 */
             this.group6, 
             /* e423, e431, e412 */
@@ -1120,7 +1120,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 + float4(float3(0.0), other.e4 * -1.0) - float4(other.group3.xyz, 0.0), 
+            this.group1 + float4(-other.group3.xyz, other.e4 * -1.0), 
             /* e5 */
             this.e5 - other.e5, 
             /* e15, e25, e35, e45 */
@@ -1134,7 +1134,7 @@ public extension MultiVector {
             /* e423, e431, e412 */
             this.group7.xyz - other.group0.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group2.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1190,7 +1190,7 @@ public extension MultiVector {
             /* e423, e431, e412 */
             this.group7.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group0.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1204,7 +1204,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 - float4(other.group1.xyz, 0.0), 
+            this.group1 + float4(-other.group1.xyz, 0.0), 
             /* e5 */
             this.e5 - other.e5, 
             /* e15, e25, e35, e45 */
@@ -1218,7 +1218,7 @@ public extension MultiVector {
             /* e423, e431, e412 */
             this.group7.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group0.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1236,7 +1236,7 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 - float4(other.group1.xyz, 0.0), 
+            this.group3 + float4(-other.group1.xyz, 0.0), 
             /* e41, e42, e43 */
             this.group4.xyz, 
             /* e23, e31, e12 */
@@ -1264,11 +1264,11 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 - float4(other.group1.xyz, 0.0), 
+            this.group3 + float4(-other.group1.xyz, 0.0), 
             /* e41, e42, e43 */
             this.group4.xyz, 
             /* e23, e31, e12 */
-            this.group5.xyz - other.group0.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group5.xyz, 
             /* e415, e425, e435, e321 */
             this.group6, 
             /* e423, e431, e412 */
@@ -1288,7 +1288,7 @@ public extension MultiVector {
             /* scalar, e12345 */
             this.group0.xy, 
             /* e1, e2, e3, e4 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e5 */
             this.e5 - other.e5, 
             /* e15, e25, e35, e45 */
@@ -1386,7 +1386,7 @@ public extension MultiVector {
             /* e423, e431, e412 */
             this.group7.xyz - other.group0.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group2.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1404,11 +1404,11 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(float3(0.0), other.e45 * -1.0) - float4(other.group2.xyz, 0.0), 
+            this.group3 + float4(-other.group2.xyz, other.e45 * -1.0), 
             /* e41, e42, e43 */
             this.group4.xyz - other.group0.xyz, 
             /* e23, e31, e12 */
-            this.group5.xyz - other.group1.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group5.xyz, 
             /* e415, e425, e435, e321 */
             this.group6, 
             /* e423, e431, e412 */
@@ -1432,11 +1432,11 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(float3(0.0), other.e45 * -1.0) - float4(other.group2.xyz, 0.0), 
+            this.group3 + float4(-other.group2.xyz, other.e45 * -1.0), 
             /* e41, e42, e43 */
             this.group4.xyz - other.group0.xyz, 
             /* e23, e31, e12 */
-            this.group5.xyz - other.group1.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group5.xyz, 
             /* e415, e425, e435, e321 */
             this.group6, 
             /* e423, e431, e412 */
@@ -1550,7 +1550,7 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            this.group6 - float4(other.group0.xyz, 0.0), 
+            this.group6 + float4(-other.group0.xyz, 0.0), 
             /* e423, e431, e412 */
             this.group7.xyz, 
             /* e235, e315, e125 */
@@ -1578,11 +1578,11 @@ public extension MultiVector {
             /* e23, e31, e12 */
             this.group5.xyz, 
             /* e415, e425, e435, e321 */
-            this.group6 - float4(other.group0.xyz, 0.0), 
+            this.group6 + float4(-other.group0.xyz, 0.0), 
             /* e423, e431, e412 */
             this.group7.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group1.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1748,9 +1748,9 @@ public extension MultiVector {
             /* e415, e425, e435, e321 */
             this.group6 - other.group1, 
             /* e423, e431, e412 */
-            this.group7.xyz - other.group0.xyz, 
+            float3(other.e423 * -1.0, other.e431 * -1.0, other.e412 * -1.0) + this.group7.xyz, 
             /* e235, e315, e125 */
-            this.group8.xyz - other.group2.xyz, 
+            float3(other.e235 * -1.0, other.e315 * -1.0, other.e125 * -1.0) + this.group8.xyz, 
             /* e4235, e4315, e4125, e3215 */
             this.group9, 
             /* e1234 */
@@ -1768,11 +1768,11 @@ public extension MultiVector {
             /* e5 */
             this.e5, 
             /* e15, e25, e35, e45 */
-            this.group3 + float4(float3(0.0), other.e45 * -1.0) - float4(other.group2.xyz, 0.0), 
+            this.group3 + float4(-other.group2.xyz, other.e45 * -1.0), 
             /* e41, e42, e43 */
-            this.group4.xyz - other.group0.xyz, 
+            float3(other.e41 * -1.0, other.e42 * -1.0, other.e43 * -1.0) + this.group4.xyz, 
             /* e23, e31, e12 */
-            this.group5.xyz - other.group1.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group5.xyz, 
             /* e415, e425, e435, e321 */
             this.group6, 
             /* e423, e431, e412 */

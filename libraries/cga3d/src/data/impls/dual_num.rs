@@ -14,13 +14,13 @@ use crate::traits::Wedge;
 //  Minimum:         0       0       0     N/A
 //   Median:         0       2       0     N/A
 //  Average:         0       3       0     N/A
-//  Maximum:        18      36       0     N/A
+//  Maximum:        12      27       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         0       4       0       0
 //  Average:         1       7       0       0
-//  Maximum:        41      66       0       0
+//  Maximum:        29      60       0       0
 impl std::ops::Add<AntiCircleRotor> for DualNum {
     type Output = MultiVector;
     fn add(self, other: AntiCircleRotor) -> Self::Output {
@@ -33,7 +33,7 @@ impl std::ops::Add<AntiCircleRotor> for DualNum {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -64,9 +64,9 @@ impl std::ops::Add<AntiDipoleInversion> for DualNum {
             // e415, e425, e435, e321
             other.group1(),
             // e235, e315, e125, e5
-            other.group2().xyz().with_w(other[e5] + self[e5]),
+            other.group2().xyz().with_w(self[e5] + other[e5]),
             // e1, e2, e3, e4
-            Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
+            other.group3().xyz().with_w(other[e4]),
         )
     }
 }
@@ -129,7 +129,7 @@ impl std::ops::Add<AntiFlector> for DualNum {
             // e415, e425, e435, e321
             Simd32x3::from(0.0).with_w(other[e321]),
             // e235, e315, e125, e5
-            other.group0().xyz().with_w(other[e5] + self[e5]),
+            other.group0().xyz().with_w(self[e5] + other[e5]),
             // e1, e2, e3, e4
             other.group1().xyz().with_w(0.0),
         )
@@ -208,7 +208,7 @@ impl std::ops::Add<AntiPlane> for DualNum {
             // e415, e425, e435, e321
             Simd32x4::from(0.0),
             // e235, e315, e125, e5
-            Simd32x3::from(0.0).with_w(other[e5] + self[e5]),
+            Simd32x3::from(0.0).with_w(self[e5] + other[e5]),
             // e1, e2, e3, e4
             other.group0().xyz().with_w(0.0),
         )
@@ -256,7 +256,7 @@ impl std::ops::Add<CircleRotor> for DualNum {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            other.group0().with_w(other[e12345] + self[e12345]),
+            other.group0().with_w(self[e12345] + other[e12345]),
             // e415, e425, e435, e321
             other.group1(),
             // e235, e315, e125, e5
@@ -278,7 +278,7 @@ impl std::ops::Add<Dipole> for DualNum {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -308,7 +308,7 @@ impl std::ops::Add<DipoleInversion> for DualNum {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0(),
             // e23, e31, e12
@@ -431,17 +431,13 @@ impl std::ops::Add<Motor> for DualNum {
 impl std::ops::Add<MultiVector> for DualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        1        0        0        0
-    //    simd2        1        0        0      N/A
-    // Totals...
-    // yes simd        2        0        0      N/A
-    //  no simd        3        0        0        0
+    //      add/sub      mul      div      pow
+    // f32        2        0        0        0
     fn add(self, other: MultiVector) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e12345
-            Simd32x2::from([0.0, self[e12345]]) + other.group0(),
+            Simd32x2::from([other[scalar], self[e12345] + other[e12345]]),
             // e1, e2, e3, e4
             other.group1(),
             // e5
@@ -605,7 +601,7 @@ impl std::ops::Add<VersorOdd> for DualNum {
             // e5
             self[e5],
             // e15, e25, e35, e45
-            Simd32x4::from([other[e15], other[e25], other[e35], other[e45]]),
+            other.group2().xyz().with_w(other[e45]),
             // e41, e42, e43
             other.group0().xyz(),
             // e23, e31, e12
@@ -679,10 +675,11 @@ impl std::ops::BitXor<AntiFlector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        3        0        0
-    //    simd3        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        4        0      N/A
-    //  no simd        0        6        0        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       13        0        0
     fn bitxor(self, other: AntiFlector) -> Self::Output {
         self.wedge(other)
     }
@@ -690,9 +687,12 @@ impl std::ops::BitXor<AntiFlector> for DualNum {
 impl std::ops::BitXor<AntiLine> for DualNum {
     type Output = AntiFlatPoint;
     // Operative Statistics for this implementation:
-    //          add/sub      mul      div      pow
-    //   simd3        0        1        0      N/A
-    // no simd        0        3        0        0
+    //           add/sub      mul      div      pow
+    //    simd3        0        1        0      N/A
+    //    simd4        0        1        0      N/A
+    // Totals...
+    // yes simd        0        2        0      N/A
+    //  no simd        0        7        0        0
     fn bitxor(self, other: AntiLine) -> Self::Output {
         self.wedge(other)
     }
@@ -715,10 +715,11 @@ impl std::ops::BitXor<AntiPlane> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
-    //    simd3        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        0        2        0      N/A
-    //  no simd        0        4        0        0
+    // yes simd        0        4        0      N/A
+    //  no simd        0       11        0        0
     fn bitxor(self, other: AntiPlane) -> Self::Output {
         self.wedge(other)
     }
@@ -764,10 +765,10 @@ impl std::ops::BitXor<DipoleInversion> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        2        0      N/A
-    //  no simd        0        7        0        0
+    // yes simd        0        3        0      N/A
+    //  no simd        0       11        0        0
     fn bitxor(self, other: DipoleInversion) -> Self::Output {
         self.wedge(other)
     }
@@ -778,10 +779,10 @@ impl std::ops::BitXor<MultiVector> for DualNum {
     //           add/sub      mul      div      pow
     //      f32        1        5        0        0
     //    simd3        0        2        0      N/A
-    //    simd4        0        2        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        1        9        0      N/A
-    //  no simd        1       19        0        0
+    // yes simd        1       10        0      N/A
+    //  no simd        1       23        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -861,12 +862,12 @@ impl std::ops::Mul<AntiCircleRotor> for DualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        5        0        0
-    //    simd3        1        4        0      N/A
-    //    simd4        2        2        0      N/A
+    //      f32        0        3        0        0
+    //    simd3        1        5        0      N/A
+    //    simd4        1        3        0      N/A
     // Totals...
-    // yes simd        3       11        0      N/A
-    //  no simd       11       25        0        0
+    // yes simd        2       11        0      N/A
+    //  no simd        7       30        0        0
     fn mul(self, other: AntiCircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -875,12 +876,12 @@ impl std::ops::Mul<AntiDipoleInversion> for DualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        8        0        0
-    //    simd3        2        6        0      N/A
-    //    simd4        4        2        0      N/A
+    //      f32        0        5        0        0
+    //    simd3        3        8        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd        6       16        0      N/A
-    //  no simd       22       34        0        0
+    // yes simd        4       14        0      N/A
+    //  no simd       13       33        0        0
     fn mul(self, other: AntiDipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -916,11 +917,10 @@ impl std::ops::Mul<AntiFlector> for DualNum {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        4        0        0
-    //    simd2        0        1        0      N/A
-    //    simd3        1        2        0      N/A
+    //      f32        1        3        0        0
+    //    simd3        1        3        0      N/A
     // Totals...
-    // yes simd        2        7        0      N/A
+    // yes simd        2        6        0      N/A
     //  no simd        4       12        0        0
     fn mul(self, other: AntiFlector) -> Self::Output {
         self.geometric_product(other)
@@ -951,11 +951,11 @@ impl std::ops::Mul<AntiPlane> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        2        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0      N/A
-    //  no simd        0       12        0        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       19        0        0
     fn mul(self, other: AntiPlane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -992,11 +992,11 @@ impl std::ops::Mul<CircleRotor> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        5        0        0
-    //    simd3        2        5        0      N/A
+    //    simd3        2        6        0      N/A
     //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        3       11        0      N/A
-    //  no simd        7       24        0        0
+    // yes simd        3       12        0      N/A
+    //  no simd        7       27        0        0
     fn mul(self, other: CircleRotor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1019,12 +1019,11 @@ impl std::ops::Mul<DipoleInversion> for DualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        4       10        0        0
-    //    simd3        1        4        0      N/A
-    //    simd4        2        2        0      N/A
+    //      f32        0        3        0        0
+    //    simd3        4        8        0      N/A
     // Totals...
-    // yes simd        7       16        0      N/A
-    //  no simd       15       30        0        0
+    // yes simd        4       11        0      N/A
+    //  no simd       12       27        0        0
     fn mul(self, other: DipoleInversion) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1056,10 +1055,10 @@ impl std::ops::Mul<Flector> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        5        0        0
-    //    simd3        1        3        0      N/A
+    //    simd3        1        4        0      N/A
     // Totals...
-    // yes simd        2        8        0      N/A
-    //  no simd        4       14        0        0
+    // yes simd        2        9        0      N/A
+    //  no simd        4       17        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1094,12 +1093,12 @@ impl std::ops::Mul<MultiVector> for DualNum {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        9       22        0        0
-    //    simd3        4       12        0      N/A
-    //    simd4        5        2        0      N/A
+    //      f32        4       11        0        0
+    //    simd3        7       15        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd       18       36        0      N/A
-    //  no simd       41       66        0        0
+    // yes simd       12       27        0      N/A
+    //  no simd       29       60        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1109,11 +1108,11 @@ impl std::ops::Mul<Plane> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        2        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        4        0      N/A
-    //  no simd        0       12        0        0
+    // yes simd        0        6        0      N/A
+    //  no simd        0       19        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1122,11 +1121,11 @@ impl std::ops::Mul<RoundPoint> for DualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        4        0        0
+    //      f32        0        5        0        0
     //    simd4        0        4        0      N/A
     // Totals...
-    // yes simd        0        8        0      N/A
-    //  no simd        0       20        0        0
+    // yes simd        0        9        0      N/A
+    //  no simd        0       21        0        0
     fn mul(self, other: RoundPoint) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1150,12 +1149,12 @@ impl std::ops::Mul<Sphere> for DualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        3        0        0
+    //      f32        0        4        0        0
     //    simd3        0        1        0      N/A
     //    simd4        0        3        0      N/A
     // Totals...
-    // yes simd        0        7        0      N/A
-    //  no simd        0       18        0        0
+    // yes simd        0        8        0      N/A
+    //  no simd        0       19        0        0
     fn mul(self, other: Sphere) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1164,12 +1163,12 @@ impl std::ops::Mul<VersorEven> for DualNum {
     type Output = VersorOdd;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        8        0        0
-    //    simd3        2        6        0      N/A
-    //    simd4        4        2        0      N/A
+    //      f32        1        5        0        0
+    //    simd3        3        8        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd        8       16        0      N/A
-    //  no simd       24       34        0        0
+    // yes simd        5       14        0      N/A
+    //  no simd       14       33        0        0
     fn mul(self, other: VersorEven) -> Self::Output {
         self.geometric_product(other)
     }
@@ -1178,12 +1177,12 @@ impl std::ops::Mul<VersorOdd> for DualNum {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        5       11        0        0
-    //    simd3        1        3        0      N/A
+    //      f32        1        3        0        0
+    //    simd3        2        5        0      N/A
     //    simd4        2        3        0      N/A
     // Totals...
-    // yes simd        8       17        0      N/A
-    //  no simd       16       32        0        0
+    // yes simd        5       11        0      N/A
+    //  no simd       15       30        0        0
     fn mul(self, other: VersorOdd) -> Self::Output {
         self.geometric_product(other)
     }

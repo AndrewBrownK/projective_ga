@@ -29,7 +29,7 @@ public extension AntiDipoleInversion {
             /* e415, e425, e435, e12345 */
             float4(this.group0.xyz, this.e4 * -1.0), 
             /* e235, e315, e125, e5 */
-            float4(this.group1[0], this.group1[1], this.group1[2], 0.0)
+            float4(this.group1.xyz, 0.0)
         );
     }
 }
@@ -197,7 +197,7 @@ public extension Motor {
     public AntiFlector co_carrier() {
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(this.group0[0], this.group0[1], this.group0[2], 0.0), 
+            float4(this.group0.xyz, 0.0), 
             /* e1, e2, e3, e5 */
             float4(float3(0.0), this.e12345 * -1.0)
         );
@@ -219,7 +219,7 @@ public extension MultiVector {
             /* e1, e2, e3, e4 */
             float4(0.0), 
             /* e5 */
-            this.group0.xy[1] * -1.0, 
+            this.e12345 * -1.0, 
             /* e15, e25, e35, e45 */
             float4((this.group9.xyz * float3(-1.0)), this.e1234), 
             /* e41, e42, e43 */

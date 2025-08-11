@@ -9,7 +9,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, AntiCircleRotor r
 }
 public extension AntiCircleRotor {
     public float unitized_radius_norm() {
-        return (pow(this.e41, 3) * this.e15) * 2.0;
+        return pow(this.e41, 3) * this.e15 * 2.0;
     }
 }
 // Fancy postfix trick
@@ -61,7 +61,7 @@ public float operator /(UnitizedRadiusNormPrefixOrPostfix lhs, Dipole rhs) {
 }
 public extension Dipole {
     public float unitized_radius_norm() {
-        return (pow(this.e41, 3) * this.e15) * 2.0;
+        return pow(this.e41, 3) * this.e15 * 2.0;
     }
 }
 // Fancy postfix trick

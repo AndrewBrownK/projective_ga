@@ -13,14 +13,14 @@ use crate::traits::Wedge;
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
 //   Median:         0       1       0     N/A
-//  Average:         2       3       0     N/A
-//  Maximum:        31      36       0     N/A
+//  Average:         3       4       0     N/A
+//  Maximum:        39      50       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         0       4       0       0
-//  Average:         8       9       0       0
-//  Maximum:        88      96       0       0
+//  Average:         6       8       0       0
+//  Maximum:        76      93       0       0
 impl std::ops::Add<AntiScalar> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
@@ -296,12 +296,13 @@ impl std::ops::BitXor<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        1        3        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd        5        7        0      N/A
-    //  no simd       17       20        0        0
+    // yes simd        4        8        0      N/A
+    //  no simd        9       17        0        0
     fn bitxor(self, other: Flector) -> Self::Output {
         self.wedge(other)
     }
@@ -356,12 +357,13 @@ impl std::ops::BitXor<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        8       11        0        0
-    //    simd3        2        6        0      N/A
-    //    simd4        4        3        0      N/A
+    //      f32        8       12        0        0
+    //    simd2        1        2        0      N/A
+    //    simd3        4        6        0      N/A
+    //    simd4        0        1        0      N/A
     // Totals...
-    // yes simd       14       20        0      N/A
-    //  no simd       30       41        0        0
+    // yes simd       13       21        0      N/A
+    //  no simd       22       38        0        0
     fn bitxor(self, other: MultiVector) -> Self::Output {
         self.wedge(other)
     }
@@ -394,11 +396,12 @@ impl std::ops::BitXor<Point> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        2        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        3        2        0      N/A
+    //    simd2        1        2        0      N/A
+    //    simd3        1        1        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
     // yes simd        4        6        0      N/A
-    //  no simd       13       16        0        0
+    //  no simd       10       13        0        0
     fn bitxor(self, other: Point) -> Self::Output {
         self.wedge(other)
     }
@@ -499,12 +502,13 @@ impl std::ops::Mul<Flector> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        4        5        0        0
-    //    simd3        0        5        0      N/A
-    //    simd4       11        7        0      N/A
+    //      f32        8       11        0        0
+    //    simd2        5        6        0      N/A
+    //    simd3        2        3        0      N/A
+    //    simd4        3        3        0      N/A
     // Totals...
-    // yes simd       15       17        0      N/A
-    //  no simd       48       48        0        0
+    // yes simd       18       23        0      N/A
+    //  no simd       36       44        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -525,13 +529,9 @@ impl std::ops::Mul<Horizon> for Motor {
 impl std::ops::Mul<Line> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        4        6        0        0
-    //    simd3        0        6        0      N/A
-    //    simd4        9        3        0      N/A
-    // Totals...
-    // yes simd       13       15        0      N/A
-    //  no simd       40       36        0        0
+    //          add/sub      mul      div      pow
+    //   simd3        7        9        0      N/A
+    // no simd       21       27        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -545,12 +545,13 @@ impl std::ops::Mul<Motor> for Motor {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        4        6        0        0
-    //    simd3        0        6        0      N/A
-    //    simd4       12        6        0      N/A
+    //      f32        5        8        0        0
+    //    simd2        5        7        0      N/A
+    //    simd3        3        3        0      N/A
+    //    simd4        3        2        0      N/A
     // Totals...
-    // yes simd       16       18        0      N/A
-    //  no simd       52       48        0        0
+    // yes simd       16       20        0      N/A
+    //  no simd       36       39        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -564,13 +565,13 @@ impl std::ops::Mul<MultiVector> for Motor {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        6        8        0        0
-    //    simd2        4        4        0      N/A
-    //    simd3       10       16        0      N/A
-    //    simd4       11        8        0      N/A
+    //      f32       16       23        0        0
+    //    simd2       10       12        0      N/A
+    //    simd3       12       14        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
-    // yes simd       31       36        0      N/A
-    //  no simd       88       96        0        0
+    // yes simd       39       50        0      N/A
+    //  no simd       76       93        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -592,12 +593,11 @@ impl std::ops::Mul<Plane> for Motor {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        3        7        0        0
-    //    simd2        0        1        0      N/A
-    //    simd3        4        4        0      N/A
+    //      f32        6       11        0        0
+    //    simd3        2        3        0      N/A
     // Totals...
-    // yes simd        7       12        0      N/A
-    //  no simd       15       21        0        0
+    // yes simd        8       14        0      N/A
+    //  no simd       12       20        0        0
     fn mul(self, other: Plane) -> Self::Output {
         self.geometric_product(other)
     }
@@ -607,11 +607,12 @@ impl std::ops::Mul<Point> for Motor {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        4        0        0
-    //    simd3        0        3        0      N/A
-    //    simd4        7        4        0      N/A
+    //    simd2        1        3        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        4        2        0      N/A
     // Totals...
     // yes simd        8       11        0      N/A
-    //  no simd       29       29        0        0
+    //  no simd       25       24        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }
@@ -760,9 +761,9 @@ impl std::ops::Sub<Line> for Motor {
     fn sub(self, other: Line) -> Self::Output {
         Motor::from_groups(
             // e41, e42, e43, e1234
-            self.group0() - other.group0().with_w(0.0),
+            self.group0() + -other.group0().with_w(0.0),
             // e23, e31, e12, scalar
-            self.group1() - other.group1().with_w(0.0),
+            self.group1() + -other.group1().with_w(0.0),
         )
     }
 }
@@ -770,9 +771,9 @@ impl std::ops::SubAssign<Line> for Motor {
     fn sub_assign(&mut self, other: Line) {
         *self = Motor::from_groups(
             // e41, e42, e43, e1234
-            self.group0() - other.group0().with_w(0.0),
+            self.group0() + -other.group0().with_w(0.0),
             // e23, e31, e12, scalar
-            self.group1() - other.group1().with_w(0.0),
+            self.group1() + -other.group1().with_w(0.0),
         );
     }
 }

@@ -17,7 +17,7 @@ public extension FlatPoint {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
@@ -503,7 +503,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4(other.group1.xyz, this.e45 + other.e45), 
             /* e15, e25, e35, e1234 */
-            other.group2 + float4(this.group0.xyz, 0.0), 
+            float4((this.group0.xyz + other.group2.xyz), other.e1234), 
             /* e4235, e4315, e4125, e3215 */
             other.group3
         );
@@ -812,7 +812,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, scalar */
-            float4((this.group0.xyz - other.group2.xyz), other.scalar * -1.0)
+            float4((this.group0.xy - other.group2.xy), this.e35 - other.e35, other.scalar * -1.0)
         );
     }
 }
@@ -1072,7 +1072,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((this.group0.xy - other.group2.xy), this.e35 - other.e35, other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );
@@ -1308,7 +1308,7 @@ public extension FlatPoint {
             /* e23, e31, e12, e45 */
             float4((other.group1.xyz * float3(-1.0)), this.e45 - other.e45), 
             /* e15, e25, e35, e1234 */
-            float4((this.group0.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((this.group0.xy - other.group2.xy), this.e35 - other.e35, other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );

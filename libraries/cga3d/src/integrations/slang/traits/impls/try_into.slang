@@ -200,7 +200,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(anti_circle_rotor.e15, anti_circle_rotor.e25, anti_circle_rotor.e35, anti_circle_rotor.e45)
+            float4(anti_circle_rotor.group2.xyz, anti_circle_rotor.e45)
         );
     }
 }
@@ -242,7 +242,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(anti_circle_rotor.e15, anti_circle_rotor.e25, anti_circle_rotor.e35, anti_circle_rotor.e45), 
+            float4(anti_circle_rotor.group2.xyz, anti_circle_rotor.e45), 
             /* e4235, e4315, e4125, e3215 */
             float4(0.0)
         );
@@ -356,7 +356,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(anti_dipole_inversion.e235, anti_dipole_inversion.e315, anti_dipole_inversion.e125, anti_dipole_inversion.e321)
+            float4(anti_dipole_inversion.group2.xyz, anti_dipole_inversion.e321)
         );
     }
 }
@@ -398,7 +398,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(anti_dipole_inversion.e235, anti_dipole_inversion.e315, anti_dipole_inversion.e125, anti_dipole_inversion.e321), 
+            float4(anti_dipole_inversion.group2.xyz, anti_dipole_inversion.e321), 
             /* e1, e2, e3, e5 */
             anti_dipole_inversion.group3
         );
@@ -758,7 +758,7 @@ public extension RoundPoint {
         }
         return RoundPoint(
             /* e1, e2, e3, e4 */
-            float4(anti_dipole_inversion.e1, anti_dipole_inversion.e2, anti_dipole_inversion.e3, anti_dipole_inversion.e4), 
+            float4(anti_dipole_inversion.group3.xyz, anti_dipole_inversion.e4), 
             /* e5 */
             anti_dipole_inversion.e5
         );
@@ -1268,7 +1268,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             float4(anti_motor.group0.xyz, 0.0), 
             /* e15, e25, e35, scalar */
-            float4(anti_motor.e15, anti_motor.e25, anti_motor.e35, anti_motor.scalar)
+            float4(anti_motor.group1.xyz, anti_motor.scalar)
         );
     }
 }
@@ -1666,7 +1666,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(circle.e235, circle.e315, circle.e125, circle.e321)
+            float4(circle.group2.xyz, circle.e321)
         );
     }
 }
@@ -1704,7 +1704,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(circle.e235, circle.e315, circle.e125, circle.e321), 
+            float4(circle.group2.xyz, circle.e321), 
             /* e1, e2, e3, e5 */
             float4(0.0)
         );
@@ -1836,7 +1836,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(circle_rotor.e235, circle_rotor.e315, circle_rotor.e125, circle_rotor.e321)
+            float4(circle_rotor.group2.xyz, circle_rotor.e321)
         );
     }
 }
@@ -1878,7 +1878,7 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(circle_rotor.e235, circle_rotor.e315, circle_rotor.e125, circle_rotor.e321), 
+            float4(circle_rotor.group2.xyz, circle_rotor.e321), 
             /* e1, e2, e3, e5 */
             float4(0.0)
         );
@@ -2180,7 +2180,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45)
+            float4(dipole.group2.xyz, dipole.e45)
         );
     }
 }
@@ -2218,7 +2218,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(dipole.e15, dipole.e25, dipole.e35, dipole.e45), 
+            float4(dipole.group2.xyz, dipole.e45), 
             /* e4235, e4315, e4125, e3215 */
             float4(0.0)
         );
@@ -2524,7 +2524,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(dipole_inversion.e15, dipole_inversion.e25, dipole_inversion.e35, dipole_inversion.e45)
+            float4(dipole_inversion.group2.xyz, dipole_inversion.e45)
         );
     }
 }
@@ -2566,7 +2566,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(dipole_inversion.e15, dipole_inversion.e25, dipole_inversion.e35, dipole_inversion.e45), 
+            float4(dipole_inversion.group2.xyz, dipole_inversion.e45), 
             /* e4235, e4315, e4125, e3215 */
             dipole_inversion.group3
         );
@@ -3390,7 +3390,7 @@ public extension CircleRotor {
             /* e415, e425, e435, e321 */
             float4(motor.group0.xyz, 0.0), 
             /* e235, e315, e125, e12345 */
-            float4(motor.e235, motor.e315, motor.e125, motor.e12345)
+            float4(motor.group1.xyz, motor.e12345)
         );
     }
 }
@@ -6518,7 +6518,7 @@ public extension AntiDipoleInversion {
             /* e235, e315, e125, e4 */
             float4(versor_even.group2.xyz, versor_even.e4), 
             /* e1, e2, e3, e5 */
-            float4(versor_even.e1, versor_even.e2, versor_even.e3, versor_even.e5)
+            float4(versor_even.group3.xyz, versor_even.e5)
         );
     }
 }
@@ -6580,7 +6580,7 @@ public extension AntiFlatPoint {
         }
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4(versor_even.e235, versor_even.e315, versor_even.e125, versor_even.e321)
+            float4(versor_even.group2.xyz, versor_even.e321)
         );
     }
 }
@@ -6626,9 +6626,9 @@ public extension AntiFlector {
         }
         return AntiFlector(
             /* e235, e315, e125, e321 */
-            float4(versor_even.e235, versor_even.e315, versor_even.e125, versor_even.e321), 
+            float4(versor_even.group2.xyz, versor_even.e321), 
             /* e1, e2, e3, e5 */
-            float4(versor_even.e1, versor_even.e2, versor_even.e3, versor_even.e5)
+            float4(versor_even.group3.xyz, versor_even.e5)
         );
     }
 }
@@ -6690,7 +6690,7 @@ public extension AntiPlane {
         }
         return AntiPlane(
             /* e1, e2, e3, e5 */
-            float4(versor_even.e1, versor_even.e2, versor_even.e3, versor_even.e5)
+            float4(versor_even.group3.xyz, versor_even.e5)
         );
     }
 }
@@ -7016,7 +7016,7 @@ public extension Motor {
         }
         return Motor(
             /* e415, e425, e435, e12345 */
-            float4(versor_even.e415, versor_even.e425, versor_even.e435, versor_even.e12345), 
+            float4(versor_even.group1.xyz, versor_even.e12345), 
             /* e235, e315, e125, e5 */
             versor_even.group2
         );
@@ -7288,7 +7288,7 @@ public extension AntiMotor {
         }
         return AntiMotor(
             /* e23, e31, e12, scalar */
-            float4(versor_odd.e23, versor_odd.e31, versor_odd.e12, versor_odd.scalar), 
+            float4(versor_odd.group1.xyz, versor_odd.scalar), 
             /* e15, e25, e35, e3215 */
             float4(versor_odd.group2.xyz, versor_odd.e3215)
         );
@@ -7418,7 +7418,7 @@ public extension FlatPoint {
         }
         return FlatPoint(
             /* e15, e25, e35, e45 */
-            float4(versor_odd.e15, versor_odd.e25, versor_odd.e35, versor_odd.e45)
+            float4(versor_odd.group2.xyz, versor_odd.e45)
         );
     }
 }
@@ -7464,7 +7464,7 @@ public extension Flector {
         }
         return Flector(
             /* e15, e25, e35, e45 */
-            float4(versor_odd.e15, versor_odd.e25, versor_odd.e35, versor_odd.e45), 
+            float4(versor_odd.group2.xyz, versor_odd.e45), 
             /* e4235, e4315, e4125, e3215 */
             versor_odd.group3
         );

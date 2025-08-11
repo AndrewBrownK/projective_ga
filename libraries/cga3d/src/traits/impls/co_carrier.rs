@@ -52,7 +52,7 @@ impl CoCarrier for AntiDipoleInversion {
             // e415, e425, e435, e12345
             self.group0().with_w(self[e4] * -1.0),
             // e235, e315, e125, e5
-            Simd32x4::from([self.group1()[0], self.group1()[1], self.group1()[2], 0.0]),
+            self.group1().xyz().with_w(0.0),
         )
     }
 }
@@ -232,7 +232,7 @@ impl CoCarrier for Motor {
         use crate::elements::*;
         AntiFlector::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from([self.group0()[0], self.group0()[1], self.group0()[2], 0.0]),
+            self.group0().xyz().with_w(0.0),
             // e1, e2, e3, e5
             Simd32x3::from(0.0).with_w(self[e12345] * -1.0),
         )
@@ -266,7 +266,7 @@ impl CoCarrier for MultiVector {
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
             // e5
-            self.group0()[1] * -1.0,
+            self[e12345] * -1.0,
             // e15, e25, e35, e45
             (self.group9().xyz() * Simd32x3::from(-1.0)).with_w(self[e1234]),
             // e41, e42, e43

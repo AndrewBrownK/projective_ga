@@ -14,13 +14,13 @@ use crate::traits::Wedge;
 //  Minimum:         0       0       0     N/A
 //   Median:         0       1       0     N/A
 //  Average:         1       2       0     N/A
-//  Maximum:        13      24       0     N/A
+//  Maximum:        14      26       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         0       2       0       0
 //  Average:         2       4       0       0
-//  Maximum:        27      43       0       0
+//  Maximum:        24      42       0       0
 impl std::ops::Add<AntiScalar> for Plane {
     type Output = MultiVector;
     fn add(self, other: AntiScalar) -> Self::Output {
@@ -303,11 +303,12 @@ impl std::ops::Mul<Flector> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        1        3        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        3        0      N/A
+    //    simd2        1        2        0      N/A
+    //    simd3        2        2        0      N/A
+    //    simd4        1        1        0      N/A
     // Totals...
     // yes simd        5        8        0      N/A
-    //  no simd       17       21        0        0
+    //  no simd       13       17        0        0
     fn mul(self, other: Flector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -330,11 +331,10 @@ impl std::ops::Mul<Line> for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        2        3        0        0
-    //    simd3        0        4        0      N/A
-    //    simd4        2        0        0      N/A
+    //    simd3        2        4        0      N/A
     // Totals...
     // yes simd        4        7        0      N/A
-    //  no simd       10       15        0        0
+    //  no simd        8       15        0        0
     fn mul(self, other: Line) -> Self::Output {
         self.geometric_product(other)
     }
@@ -343,12 +343,11 @@ impl std::ops::Mul<Motor> for Plane {
     type Output = Flector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        4        7        0        0
-    //    simd2        0        2        0      N/A
-    //    simd3        4        3        0      N/A
+    //      f32        6       11        0        0
+    //    simd3        2        3        0      N/A
     // Totals...
-    // yes simd        8       12        0      N/A
-    //  no simd       16       20        0        0
+    // yes simd        8       14        0      N/A
+    //  no simd       12       20        0        0
     fn mul(self, other: Motor) -> Self::Output {
         self.geometric_product(other)
     }
@@ -357,12 +356,11 @@ impl std::ops::Mul<MultiVector> for Plane {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        6       14        0        0
-    //    simd2        0        1        0      N/A
-    //    simd3        7        9        0      N/A
+    //      f32        9       18        0        0
+    //    simd3        5        8        0      N/A
     // Totals...
-    // yes simd       13       24        0      N/A
-    //  no simd       27       43        0        0
+    // yes simd       14       26        0      N/A
+    //  no simd       24       42        0        0
     fn mul(self, other: MultiVector) -> Self::Output {
         self.geometric_product(other)
     }
@@ -393,12 +391,13 @@ impl std::ops::Mul<Point> for Plane {
     type Output = Motor;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        2        4        0        0
+    //      f32        0        1        0        0
+    //    simd2        0        1        0      N/A
     //    simd3        0        2        0      N/A
     //    simd4        2        1        0      N/A
     // Totals...
-    // yes simd        4        7        0      N/A
-    //  no simd       10       14        0        0
+    // yes simd        2        5        0      N/A
+    //  no simd        8       13        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }

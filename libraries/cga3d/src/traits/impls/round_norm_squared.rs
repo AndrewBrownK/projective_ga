@@ -283,21 +283,21 @@ impl RoundNormSquared for MultiVector {
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
+                self[scalar] * self[scalar]
+                    + sub_type_g1_xyz[0] * sub_type_g1_xyz[0]
                     + sub_type_g1_xyz[1] * sub_type_g1_xyz[1]
                     + sub_type_g1_xyz[2] * sub_type_g1_xyz[2]
-                    + self[scalar] * self[scalar]
                     + self[e23] * self[e23]
                     + self[e31] * self[e31]
                     + self[e12] * self[e12]
                     + self[e321] * self[e321],
-                self[e4] * self[e4]
-                    + self[e41] * self[e41]
+                self[e41] * self[e41]
                     + self[e42] * self[e42]
                     + self[e43] * self[e43]
                     + self[e423] * self[e423]
                     + self[e431] * self[e431]
                     + self[e412] * self[e412]
+                    + self[e4] * self[e4]
                     + self[e1234] * self[e1234],
             ]),
             // e1, e2, e3, e4
@@ -378,11 +378,12 @@ impl RoundNormSquared for VersorEven {
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
         let sub_type_g1_xyz = self.group3().xyz();
+        let wedge_g1_xyz = self.group0().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
                 sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + self[e321] * self[e321],
-                self[e423] * self[e423] + self[e431] * self[e431] + self[e412] * self[e412] + self[e4] * self[e4],
+                wedge_g1_xyz[0] * wedge_g1_xyz[0] + wedge_g1_xyz[1] * wedge_g1_xyz[1] + wedge_g1_xyz[2] * wedge_g1_xyz[2] + self[e4] * self[e4],
             ]),
             // e1, e2, e3, e4
             Simd32x4::from(0.0),
@@ -419,11 +420,12 @@ impl RoundNormSquared for VersorOdd {
     // f32        6        8        0        0
     fn round_norm_squared(self) -> MultiVector {
         use crate::elements::*;
+        let sub_type_g0_xyz = self.group1().xyz();
         let sub_type_g0 = self.group0().xyz();
         MultiVector::from_groups(
             // scalar, e12345
             Simd32x2::from([
-                self[scalar] * self[scalar] + self[e23] * self[e23] + self[e31] * self[e31] + self[e12] * self[e12],
+                sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + self[scalar] * self[scalar],
                 sub_type_g0[0] * sub_type_g0[0] + sub_type_g0[1] * sub_type_g0[1] + sub_type_g0[2] * sub_type_g0[2] + self[e1234] * self[e1234],
             ]),
             // e1, e2, e3, e4

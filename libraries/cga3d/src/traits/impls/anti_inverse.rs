@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
 //   Median:         3       8       0     N/A
-//  Average:         4      12       0     N/A
+//  Average:         4      11       0     N/A
 //  Maximum:        23      49       2     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         3      20       0       0
 //  Average:         5      20       0       0
-//  Maximum:        23      70       2       0
+//  Maximum:        23      70       4       0
 impl std::ops::Div<AntiInversePrefixOrPostfix> for AntiCircleRotor {
     type Output = AntiCircleRotor;
     fn div(self, _rhs: AntiInversePrefixOrPostfix) -> Self::Output {
@@ -116,15 +116,11 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for AntiDualNum {
 }
 impl AntiInverse for AntiDualNum {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        2        2        0
-    //    simd2        0        1        0      N/A
-    // Totals...
-    // yes simd        0        3        2      N/A
-    //  no simd        0        4        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        4        2        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
-        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from(-1.0 / self[scalar]) * Simd32x2::from([self[e3215] / self[scalar], 1.0]))
+        AntiDualNum::from_groups(/* e3215, scalar */ Simd32x2::from([self[e3215] * -1.0 / (self[scalar] * self[scalar]), -1.0 / self[scalar]]))
     }
 }
 impl std::ops::Div<AntiInversePrefixOrPostfix> for AntiFlatPoint {
@@ -141,17 +137,16 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for AntiFlatPoint {
 impl AntiInverse for AntiFlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        0        2        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //      f32        0        0        1        0
+    //    simd3        0        2        1      N/A
     // Totals...
     // yes simd        0        2        2      N/A
-    //  no simd        0        7        2        0
+    //  no simd        0        6        4        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         AntiFlatPoint::from_groups(
             // e235, e315, e125, e321
-            Simd32x4::from(1.0 / self[e321]) * (Simd32x3::from(1.0 / self[e321]) * self.group0().xyz()).with_w(1.0),
+            (self.group0().xyz() / (Simd32x4::from(self[e321]).xyz() * Simd32x4::from(self[e321]).xyz())).with_w(1.0 / self[e321]),
         )
     }
 }
@@ -259,18 +254,18 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for AntiPlane {
 impl AntiInverse for AntiPlane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0       11        0        0
-    //    simd4        2        3        0      N/A
+    //      f32        0        7        0        0
+    //    simd4        2        4        0      N/A
     // Totals...
-    // yes simd        2       14        0      N/A
+    // yes simd        2       11        0      N/A
     //  no simd        8       23        0        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            -(Simd32x4::from([self[e1] * self[e1], self[e2] * self[e2], self[e3] * self[e3], self[e1] * self[e1]]) * self.group0())
-                - (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
-                - (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3])),
+            -(Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
+                - (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3]))
+                - (Simd32x4::powi(self.group0().xyzx(), 2) * self.group0()),
         )
     }
 }
@@ -467,15 +462,11 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for DualNum {
 }
 impl AntiInverse for DualNum {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        1        2        0
-    //    simd2        0        1        0      N/A
-    // Totals...
-    // yes simd        0        2        2      N/A
-    //  no simd        0        3        2        0
+    //      add/sub      mul      div      pow
+    // f32        0        2        2        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
-        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from(1.0 / self[e12345]) * Simd32x2::from([self[e5] / self[e12345], 1.0]))
+        DualNum::from_groups(/* e5, e12345 */ Simd32x2::from([self[e5] / (self[e12345] * self[e12345]), 1.0 / self[e12345]]))
     }
 }
 impl std::ops::Div<AntiInversePrefixOrPostfix> for FlatPoint {
@@ -492,17 +483,16 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for FlatPoint {
 impl AntiInverse for FlatPoint {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0        1        2        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //      f32        0        1        1        0
+    //    simd3        0        3        1      N/A
     // Totals...
-    // yes simd        0        3        2      N/A
-    //  no simd        0        8        2        0
+    // yes simd        0        4        2      N/A
+    //  no simd        0       10        4        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         FlatPoint::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from(-1.0 / self[e45]) * (Simd32x3::from(1.0 / self[e45]) * self.group0().xyz()).with_w(1.0),
+            (self.group0().xyz() * Simd32x3::from(-1.0) / (Simd32x4::from(self[e45]).xyz() * Simd32x4::from(self[e45]).xyz())).with_w(-1.0 / self[e45]),
         )
     }
 }
@@ -619,10 +609,10 @@ impl AntiInverse for MultiVector {
     //  no simd       23       70        0        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
-        let other_g0 = 2.0 * (self[e4] * self[e5])
-            + 2.0 * (self[e423] * self[e235])
+        let other_g0 = 2.0 * (self[e423] * self[e235])
             + 2.0 * (self[e431] * self[e315])
             + 2.0 * (self[e412] * self[e125])
+            + 2.0 * (self[e4] * self[e5])
             + self[e12345] * self[e12345]
             + self[e45] * self[e45]
             + self[e415] * self[e415]
@@ -632,16 +622,16 @@ impl AntiInverse for MultiVector {
             + self[e4315] * self[e4315]
             + self[e4125] * self[e4125]
             - self[scalar] * self[scalar]
-            - self[e1] * self[e1]
-            - self[e2] * self[e2]
-            - self[e3] * self[e3]
             - self[e23] * self[e23]
             - self[e31] * self[e31]
             - self[e12] * self[e12]
+            - self[e1] * self[e1]
+            - self[e2] * self[e2]
+            - self[e3] * self[e3]
             - self[e321] * self[e321]
-            - 2.0 * (self[e15] * self[e41])
-            - 2.0 * (self[e25] * self[e42])
-            - 2.0 * (self[e35] * self[e43])
+            - 2.0 * (self[e41] * self[e15])
+            - 2.0 * (self[e42] * self[e25])
+            - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e3215] * self[e1234]);
         MultiVector::from_groups(
             // scalar, e12345
@@ -683,18 +673,18 @@ impl std::ops::DivAssign<AntiInversePrefixOrPostfix> for Plane {
 impl AntiInverse for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0       11        0        0
-    //    simd4        2        3        0      N/A
+    //      f32        0        7        0        0
+    //    simd4        2        4        0      N/A
     // Totals...
-    // yes simd        2       14        0      N/A
+    // yes simd        2       11        0      N/A
     //  no simd        8       23        0        0
     fn anti_inverse(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
             // e4235, e4315, e4125, e3215
-            (Simd32x4::from([self[e4235] * self[e4235], self[e4315] * self[e4315], self[e4125] * self[e4125], self[e4235] * self[e4235]]) * self.group0())
-                + (Simd32x4::from([self[e4315] * self[e4315], self[e4235] * self[e4235], self[e4235] * self[e4235], self[e4315] * self[e4315]]) * self.group0())
-                + (self.group0() * Simd32x2::from(self[e4125] * self[e4125]).with_zw(self[e4315] * self[e4315], self[e4125] * self[e4125])),
+            (Simd32x4::from([self[e4315] * self[e4315], self[e4235] * self[e4235], self[e4235] * self[e4235], self[e4315] * self[e4315]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e4125] * self[e4125]).with_zw(self[e4315] * self[e4315], self[e4125] * self[e4125]))
+                + (Simd32x4::powi(self.group0().xyzx(), 2) * self.group0()),
         )
     }
 }

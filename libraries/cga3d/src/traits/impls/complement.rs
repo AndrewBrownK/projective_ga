@@ -70,7 +70,7 @@ impl Complement for AntiDipoleInversion {
             // e15, e25, e35, e1234
             (self.group0() * Simd32x3::from(-1.0)).with_w(self[e5]),
             // e4235, e4315, e4125, e3215
-            Simd32x4::from([self[e1], self[e2], self[e3], self[e4]]),
+            self.group3().xyz().with_w(self[e4]),
         )
     }
 }
@@ -331,7 +331,7 @@ impl Complement for DipoleInversion {
             // e235, e315, e125, e4
             (self.group0() * Simd32x3::from(-1.0)).with_w(self[e3215]),
             // e1, e2, e3, e5
-            Simd32x4::from([self[e4235], self[e4315], self[e4125], self[e1234]]),
+            self.group3().xyz().with_w(self[e1234]),
         )
     }
 }

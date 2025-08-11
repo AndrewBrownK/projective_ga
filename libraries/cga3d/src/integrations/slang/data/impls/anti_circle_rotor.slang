@@ -17,11 +17,11 @@ public extension AntiCircleRotor {
             /* scalar, e12345 */
             float2(this.scalar, 0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -43,7 +43,7 @@ public extension AntiCircleRotor {
     public VersorOdd operator +(AntiDualNum other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.group0.xyz, this.scalar + other.scalar), 
+            float4(this.group0.xyz, other.scalar + this.scalar), 
             /* e23, e31, e12, e45 */
             this.group1, 
             /* e15, e25, e35, e1234 */
@@ -63,7 +63,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -91,7 +91,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -145,7 +145,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -173,7 +173,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -201,7 +201,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -229,7 +229,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -267,7 +267,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             this.group1 + other.group1, 
             /* e15, e25, e35, e1234 */
-            other.group2 + float4(this.group2.xyz, 0.0), 
+            float4((this.group2.xyz + other.group2.xyz), other.e1234), 
             /* e4235, e4315, e4125, e3215 */
             other.group3
         );
@@ -283,7 +283,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -337,7 +337,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -365,7 +365,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -435,7 +435,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -489,7 +489,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -511,11 +511,11 @@ public extension AntiCircleRotor {
     public VersorOdd operator +(VersorOdd other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            other.group0 + float4(this.group0.xyz, this.scalar), 
+            float4((this.group0.xyz + other.group0.xyz), this.scalar + other.scalar), 
             /* e23, e31, e12, e45 */
             this.group1 + other.group1, 
             /* e15, e25, e35, e1234 */
-            other.group2 + float4(this.group2.xyz, 0.0), 
+            float4((this.group2.xyz + other.group2.xyz), other.e1234), 
             /* e4235, e4315, e4125, e3215 */
             other.group3
         );
@@ -914,7 +914,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -956,7 +956,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -984,7 +984,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1008,9 +1008,9 @@ public extension AntiCircleRotor {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35, scalar */
-            this.group2 - float4(other.group1.xyz, 0.0)
+            this.group2 + float4(-other.group1.xyz, 0.0)
         );
     }
 }
@@ -1020,7 +1020,7 @@ public extension AntiCircleRotor {
             /* e41, e42, e43, scalar */
             float4(this.group0.xyz, this.scalar - other.scalar), 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35, e1234 */
             float4((this.group2.xyz - other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -1038,7 +1038,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1066,7 +1066,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1094,7 +1094,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1122,7 +1122,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1148,7 +1148,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, scalar */
-            this.group2 - float4(other.group2.xyz, 0.0)
+            this.group2 + float4(-other.group2.xyz, 0.0)
         );
     }
 }
@@ -1160,7 +1160,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            float4((this.group2.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((this.group2.xy - other.group2.xy), this.e35 - other.e35, other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );
@@ -1176,7 +1176,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1202,7 +1202,7 @@ public extension AntiCircleRotor {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, this.e45 - other.e45), 
             /* e15, e25, e35, scalar */
-            this.group2 - float4(other.group0.xyz, 0.0)
+            this.group2 + float4(-other.group0.xyz, 0.0)
         );
     }
 }
@@ -1230,7 +1230,7 @@ public extension AntiCircleRotor {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1258,7 +1258,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1328,7 +1328,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1382,7 +1382,7 @@ public extension AntiCircleRotor {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1404,11 +1404,11 @@ public extension AntiCircleRotor {
     public VersorOdd operator -(VersorOdd other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4(this.group0.xyz, this.scalar) - other.group0, 
+            float4(this.group0.xyz, 0.0) - other.group0, 
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            float4((this.group2.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((this.group2.xy - other.group2.xy), this.e35 - other.e35, other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );

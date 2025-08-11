@@ -57,7 +57,7 @@ impl Support for AntiDipoleInversion {
             // e423, e431, e412
             self.group1().xyz(),
             // e415, e425, e435, e321
-            Simd32x4::from([self.group2()[0], self.group2()[1], self.group2()[2], 0.0]),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e12345
             Simd32x3::from(0.0).with_w(self[e5] * -1.0),
         )
@@ -96,17 +96,8 @@ impl std::ops::Div<SupportPrefixOrPostfix> for AntiFlector {
 }
 impl Support for AntiFlector {
     type Output = Motor;
-    // Operative Statistics for this implementation:
-    //      add/sub      mul      div      pow
-    // f32        0        1        0        0
     fn support(self) -> Self::Output {
-        use crate::elements::*;
-        Motor::from_groups(
-            // e415, e425, e435, e12345
-            self.group0().xyz().with_w(self[e5] * -1.0),
-            // e235, e315, e125, e5
-            Simd32x4::from(0.0),
-        )
+        Motor::from_groups(/* e415, e425, e435, e12345 */ self.group0().xyz().with_w(0.0), /* e235, e315, e125, e5 */ Simd32x4::from(0.0))
     }
 }
 impl std::ops::Div<SupportPrefixOrPostfix> for AntiLine {
@@ -220,7 +211,7 @@ impl Support for CircleRotor {
             // e423, e431, e412
             self.group1().xyz(),
             // e415, e425, e435, e321
-            Simd32x4::from([self.group2()[0], self.group2()[1], self.group2()[2], 0.0]),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e4
             Simd32x3::from(0.0).with_w(self[e12345] * -1.0),
             // e1, e2, e3, e5
@@ -385,7 +376,7 @@ impl Support for Motor {
             // e423, e431, e412, e12345
             self.group0().xyz().with_w(self[e5] * -1.0),
             // e415, e425, e435, e321
-            Simd32x4::from([self.group1()[0], self.group1()[1], self.group1()[2], 0.0]),
+            self.group1().xyz().with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
             // e1, e2, e3, e4
@@ -520,14 +511,14 @@ impl Support for VersorEven {
     type Output = VersorEven;
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        0        2        0        0
+    // f32        0        1        0        0
     fn support(self) -> Self::Output {
         use crate::elements::*;
         VersorEven::from_groups(
             // e423, e431, e412, e12345
-            self.group1().xyz().with_w(self[e5] * -1.0),
+            self.group1().xyz().with_w(0.0),
             // e415, e425, e435, e321
-            Simd32x4::from([self.group2()[0], self.group2()[1], self.group2()[2], 0.0]),
+            self.group2().xyz().with_w(0.0),
             // e235, e315, e125, e5
             Simd32x4::from(0.0),
             // e1, e2, e3, e4

@@ -210,7 +210,7 @@ public extension MultiVector {
         float3 sub_type_g1_xyz = this.group1.xyz;
         return Scalar(
             /* scalar */
-            sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321
+            this.scalar * this.scalar + sub_type_g1_xyz[0] * sub_type_g1_xyz[0] + sub_type_g1_xyz[1] * sub_type_g1_xyz[1] + sub_type_g1_xyz[2] * sub_type_g1_xyz[2] + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12 + this.e321 * this.e321
         );
     }
 }
@@ -274,9 +274,10 @@ public Scalar operator /(RoundBulkNormSquaredPrefixOrPostfix lhs, VersorOdd rhs)
 }
 public extension VersorOdd {
     public Scalar round_bulk_norm_squared() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         return Scalar(
             /* scalar */
-            this.scalar * this.scalar + this.e23 * this.e23 + this.e31 * this.e31 + this.e12 * this.e12
+            sub_type_g0_xyz[0] * sub_type_g0_xyz[0] + sub_type_g0_xyz[1] * sub_type_g0_xyz[1] + sub_type_g0_xyz[2] * sub_type_g0_xyz[2] + this.scalar * this.scalar
         );
     }
 }

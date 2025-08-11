@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       2       0     N/A
 //   Median:         3       8       0     N/A
-//  Average:         4      11       0     N/A
-//  Maximum:        16      35       0     N/A
+//  Average:         3       9       0     N/A
+//  Maximum:        10      25       0     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       2       0       0
 //   Median:         3       8       0       0
-//  Average:         7      16       0       0
-//  Maximum:        28      57       0       0
+//  Average:         5      13       0       0
+//  Maximum:        17      43       0       0
 impl std::ops::Div<ConstraintViolationPrefixOrPostfix> for DualNum {
     type Output = AntiScalar;
     fn div(self, _rhs: ConstraintViolationPrefixOrPostfix) -> Self::Output {
@@ -103,19 +103,19 @@ impl ConstraintViolation for MultiVector {
     type Output = MultiVector;
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32       12       27        0        0
-    //    simd3        0        2        0      N/A
-    //    simd4        4        6        0      N/A
+    //      f32        7       17        0        0
+    //    simd3        2        6        0      N/A
+    //    simd4        1        2        0      N/A
     // Totals...
-    // yes simd       16       35        0      N/A
-    //  no simd       28       57        0        0
+    // yes simd       10       25        0      N/A
+    //  no simd       17       43        0        0
     fn constraint_violation(self) -> Self::Output {
         use crate::elements::*;
         MultiVector::from_groups(
             // scalar, e1234
             Simd32x2::from([
                 0.0,
-                (self[scalar] * self[e1234]) + 2.0 * (self[e41] * self[e23]) + 2.0 * (self[e42] * self[e31]) + 2.0 * (self[e43] * self[e12])
+                2.0 * (self[e41] * self[e23]) + 2.0 * (self[e42] * self[e31]) + 2.0 * (self[e43] * self[e12]) + (self[scalar] * self[e1234])
                     - 2.0 * (self[e1] * self[e423])
                     - 2.0 * (self[e2] * self[e431])
                     - 2.0 * (self[e3] * self[e412])
@@ -123,17 +123,10 @@ impl ConstraintViolation for MultiVector {
             ]),
             // e1, e2, e3, e4
             Simd32x4::from(2.0) * (Simd32x4::from(self[scalar]) * self.group1())
-                + Simd32x4::from(2.0) * (self.group1().yzxx() * self.group3().zxy().with_w(self[e41]))
-                + Simd32x3::from(0.0).with_w(
-                    2.0 * (self[e1234] * self[e321])
-                        + 2.0 * (self[e42] * self[e2])
-                        + 2.0 * (self[e43] * self[e3])
-                        + 2.0 * (self[e23] * self[e423])
-                        + 2.0 * (self[e31] * self[e431])
-                        + 2.0 * (self[e12] * self[e412]),
-                )
-                - Simd32x4::from(2.0) * (self.group3().xyx() * Simd32x2::from(self[e321]).with_z(self[e2])).with_w(0.0)
-                - Simd32x4::from(2.0) * (self.group3().yzz() * self.group1().zx().with_z(self[e321])).with_w(0.0),
+                + (Simd32x3::from(2.0) * (self.group3().zxy() * self.group1().yzx())
+                    - Simd32x3::from(2.0) * (self.group3().xyx() * Simd32x2::from(self[e321]).with_z(self[e2]))
+                    - Simd32x3::from(2.0) * (self.group3().yzz() * self.group1().zx().with_z(self[e321])))
+                .with_w(self[e1234] * self[e321] * 2.0),
             // e41, e42, e43
             Simd32x3::from(0.0),
             // e23, e31, e12

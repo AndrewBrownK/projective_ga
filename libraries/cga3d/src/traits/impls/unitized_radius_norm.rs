@@ -30,7 +30,7 @@ impl UnitizedRadiusNorm for AntiCircleRotor {
     // f32        0        2        0        1
     fn unitized_radius_norm(self) -> f32 {
         use crate::elements::*;
-        (f32::powi(self[e41], 3) * self[e15]) * 2.0
+        f32::powi(self[e41], 3) * self[e15] * 2.0
     }
 }
 impl std::ops::Div<UnitizedRadiusNormPrefixOrPostfix> for AntiDipoleInversion {
@@ -90,7 +90,7 @@ impl UnitizedRadiusNorm for Dipole {
     // f32        0        2        0        1
     fn unitized_radius_norm(self) -> f32 {
         use crate::elements::*;
-        (f32::powi(self[e41], 3) * self[e15]) * 2.0
+        f32::powi(self[e41], 3) * self[e15] * 2.0
     }
 }
 impl std::ops::Div<UnitizedRadiusNormPrefixOrPostfix> for DipoleInversion {

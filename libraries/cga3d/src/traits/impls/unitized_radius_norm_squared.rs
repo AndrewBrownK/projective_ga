@@ -175,10 +175,10 @@ impl UnitizedRadiusNormSquared for MultiVector {
     // f32       30       48        0        0
     fn unitized_radius_norm_squared(self) -> f32 {
         use crate::elements::*;
-        let anti_dot_product_g0 = 2.0 * (self[e4] * self[e5])
-            + 2.0 * (self[e423] * self[e235])
+        let anti_dot_product_g0 = 2.0 * (self[e423] * self[e235])
             + 2.0 * (self[e431] * self[e315])
             + 2.0 * (self[e412] * self[e125])
+            + 2.0 * (self[e4] * self[e5])
             + self[e12345] * self[e12345]
             + self[e45] * self[e45]
             + self[e415] * self[e415]
@@ -188,24 +188,24 @@ impl UnitizedRadiusNormSquared for MultiVector {
             + self[e4315] * self[e4315]
             + self[e4125] * self[e4125]
             - self[scalar] * self[scalar]
-            - self[e1] * self[e1]
-            - self[e2] * self[e2]
-            - self[e3] * self[e3]
             - self[e23] * self[e23]
             - self[e31] * self[e31]
             - self[e12] * self[e12]
+            - self[e1] * self[e1]
+            - self[e2] * self[e2]
+            - self[e3] * self[e3]
             - self[e321] * self[e321]
-            - 2.0 * (self[e15] * self[e41])
-            - 2.0 * (self[e25] * self[e42])
-            - 2.0 * (self[e35] * self[e43])
+            - 2.0 * (self[e41] * self[e15])
+            - 2.0 * (self[e42] * self[e25])
+            - 2.0 * (self[e43] * self[e35])
             - 2.0 * (self[e3215] * self[e1234]);
-        -(self[e4] * self[e4] * anti_dot_product_g0)
-            - (self[e41] * self[e41] * anti_dot_product_g0)
+        -(self[e41] * self[e41] * anti_dot_product_g0)
             - (self[e42] * self[e42] * anti_dot_product_g0)
             - (self[e43] * self[e43] * anti_dot_product_g0)
             - (self[e423] * self[e423] * anti_dot_product_g0)
             - (self[e431] * self[e431] * anti_dot_product_g0)
             - (self[e412] * self[e412] * anti_dot_product_g0)
+            - (self[e4] * self[e4] * anti_dot_product_g0)
             - (self[e1234] * self[e1234] * anti_dot_product_g0)
     }
 }
@@ -266,9 +266,10 @@ impl UnitizedRadiusNormSquared for VersorEven {
             - self[e1] * self[e1]
             - self[e2] * self[e2]
             - self[e3] * self[e3];
-        -(self.group0()[0] * self.group0()[0] * anti_dot_product_g0)
-            - (self.group0()[1] * self.group0()[1] * anti_dot_product_g0)
-            - (self.group0()[2] * self.group0()[2] * anti_dot_product_g0)
+        let wedge_g1_xyz = self.group0().xyz();
+        -(wedge_g1_xyz[0] * wedge_g1_xyz[0] * anti_dot_product_g0)
+            - (wedge_g1_xyz[1] * wedge_g1_xyz[1] * anti_dot_product_g0)
+            - (wedge_g1_xyz[2] * wedge_g1_xyz[2] * anti_dot_product_g0)
             - (self[e4] * self[e4] * anti_dot_product_g0)
     }
 }

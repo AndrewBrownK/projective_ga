@@ -118,7 +118,8 @@ public float operator /(UnitizedCenterNormSquaredPrefixOrPostfix lhs, VersorOdd 
 }
 public extension VersorOdd {
     public float unitized_center_norm_squared() {
+        float3 sub_type_g0_xyz = this.group1.xyz;
         float3 sub_type_g0 = this.group0.xyz;
-        return (sub_type_g0[0] * sub_type_g0[0] * this.scalar * this.scalar) + (sub_type_g0[0] * sub_type_g0[0] * this.e23 * this.e23) + (sub_type_g0[0] * sub_type_g0[0] * this.e31 * this.e31) + (sub_type_g0[0] * sub_type_g0[0] * this.e12 * this.e12);
+        return (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[0] * sub_type_g0_xyz[0]) + (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[1] * sub_type_g0_xyz[1]) + (sub_type_g0[0] * sub_type_g0[0] * sub_type_g0_xyz[2] * sub_type_g0_xyz[2]) + (sub_type_g0[0] * sub_type_g0[0] * this.scalar * this.scalar);
     }
 }

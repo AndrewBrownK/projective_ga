@@ -309,7 +309,7 @@ impl RoundBulk for VersorOdd {
         use crate::elements::*;
         AntiMotor::from_groups(
             // e23, e31, e12, scalar
-            Simd32x4::from([self[e23], self[e31], self[e12], self[scalar]]),
+            self.group1().xyz().with_w(self[scalar]),
             // e15, e25, e35, e3215
             Simd32x4::from(0.0),
         )

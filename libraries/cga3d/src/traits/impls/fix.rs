@@ -10,14 +10,14 @@
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
 //   Median:         2       7       0     N/A
-//  Average:         1       5       0     N/A
-//  Maximum:         3      14       1     N/A
+//  Average:         1       4       0     N/A
+//  Maximum:         3      11       1     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         3      10       0       0
 //  Average:         2       9       0       0
-//  Maximum:         8      23       1       0
+//  Maximum:         8      23       3       0
 impl std::ops::Div<FixPrefixOrPostfix> for AntiFlatPoint {
     type Output = AntiFlatPoint;
     fn div(self, _rhs: FixPrefixOrPostfix) -> Self::Output {
@@ -31,15 +31,12 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for AntiFlatPoint {
 }
 impl Fix for AntiFlatPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        0        1        0
-    //    simd3        0        1        0      N/A
-    // Totals...
-    // yes simd        0        1        1      N/A
-    //  no simd        0        3        1        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        1      N/A
+    // no simd        0        3        3        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (Simd32x3::from(1.0 / self[e321]) * self.group0().xyz()).with_w(1.0))
+        AntiFlatPoint::from_groups(/* e235, e315, e125, e321 */ (self.group0().xyz() / Simd32x4::from(self[e321]).xyz()).with_w(1.0))
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for AntiPlane {
@@ -56,18 +53,18 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for AntiPlane {
 impl Fix for AntiPlane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0       11        0        0
-    //    simd4        2        3        0      N/A
+    //      f32        0        7        0        0
+    //    simd4        2        4        0      N/A
     // Totals...
-    // yes simd        2       14        0      N/A
+    // yes simd        2       11        0      N/A
     //  no simd        8       23        0        0
     fn fix(self) -> Self {
         use crate::elements::*;
         AntiPlane::from_groups(
             // e1, e2, e3, e5
-            (Simd32x4::from([self[e1] * self[e1], self[e2] * self[e2], self[e3] * self[e3], self[e1] * self[e1]]) * self.group0())
-                + (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
-                + (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3])),
+            (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3]))
+                + (Simd32x4::powi(self.group0().xyzx(), 2) * self.group0()),
         )
     }
 }
@@ -100,15 +97,15 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for FlatPoint {
 }
 impl Fix for FlatPoint {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        1        1        0
-    //    simd3        0        1        0      N/A
-    // Totals...
-    // yes simd        0        2        1      N/A
-    //  no simd        0        4        1        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        2        1      N/A
+    // no simd        0        6        3        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        FlatPoint::from_groups(/* e15, e25, e35, e45 */ (Simd32x3::from(-1.0 / self[e45]) * self.group0().xyz()).with_w(-1.0))
+        FlatPoint::from_groups(
+            // e15, e25, e35, e45
+            (self.group0().xyz() * Simd32x3::from(-1.0) / Simd32x4::from(self[e45]).xyz()).with_w(-1.0),
+        )
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Plane {
@@ -125,18 +122,18 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Plane {
 impl Fix for Plane {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0       11        0        0
-    //    simd4        2        3        0      N/A
+    //      f32        0        7        0        0
+    //    simd4        2        4        0      N/A
     // Totals...
-    // yes simd        2       14        0      N/A
+    // yes simd        2       11        0      N/A
     //  no simd        8       23        0        0
     fn fix(self) -> Self {
         use crate::elements::*;
         Plane::from_groups(
             // e4235, e4315, e4125, e3215
-            -(Simd32x4::from([self[e4235] * self[e4235], self[e4315] * self[e4315], self[e4125] * self[e4125], self[e4235] * self[e4235]]) * self.group0())
-                - (Simd32x4::from([self[e4315] * self[e4315], self[e4235] * self[e4235], self[e4235] * self[e4235], self[e4315] * self[e4315]]) * self.group0())
-                - (self.group0() * Simd32x2::from(self[e4125] * self[e4125]).with_zw(self[e4315] * self[e4315], self[e4125] * self[e4125])),
+            -(Simd32x4::from([self[e4315] * self[e4315], self[e4235] * self[e4235], self[e4235] * self[e4235], self[e4315] * self[e4315]]) * self.group0())
+                - (self.group0() * Simd32x2::from(self[e4125] * self[e4125]).with_zw(self[e4315] * self[e4315], self[e4125] * self[e4125]))
+                - (Simd32x4::powi(self.group0().xyzx(), 2) * self.group0()),
         )
     }
 }

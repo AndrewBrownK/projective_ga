@@ -107,7 +107,7 @@ public extension MultiVector {
     public AntiScalar round_weight_norm() {
         return AntiScalar(
             /* e12345 */
-            this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234
+            this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4 + this.e1234 * this.e1234
         );
     }
 }
@@ -153,9 +153,10 @@ public AntiScalar operator /(RoundWeightNormPrefixOrPostfix lhs, VersorEven rhs)
 }
 public extension VersorEven {
     public AntiScalar round_weight_norm() {
+        float3 wedge_g1_xyz = this.group0.xyz;
         return AntiScalar(
             /* e12345 */
-            this.group0[0] * this.group0[0] + this.group0[1] * this.group0[1] + this.group0[2] * this.group0[2] + this.e4 * this.e4
+            wedge_g1_xyz[0] * wedge_g1_xyz[0] + wedge_g1_xyz[1] * wedge_g1_xyz[1] + wedge_g1_xyz[2] * wedge_g1_xyz[2] + this.e4 * this.e4
         );
     }
 }

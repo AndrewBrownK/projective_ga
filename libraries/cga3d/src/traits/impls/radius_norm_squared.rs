@@ -364,17 +364,17 @@ impl RadiusNormSquared for MultiVector {
         use crate::elements::*;
         Scalar::from_groups(
             // scalar
-            2.0 * (self[e15] * self[e41])
-                + 2.0 * (self[e25] * self[e42])
-                + 2.0 * (self[e35] * self[e43])
+            2.0 * (self[e41] * self[e15])
+                + 2.0 * (self[e42] * self[e25])
+                + 2.0 * (self[e43] * self[e35])
                 + 2.0 * (self[e3215] * self[e1234])
                 + self[scalar] * self[scalar]
-                + self[e1] * self[e1]
-                + self[e2] * self[e2]
-                + self[e3] * self[e3]
                 + self[e23] * self[e23]
                 + self[e31] * self[e31]
                 + self[e12] * self[e12]
+                + self[e1] * self[e1]
+                + self[e2] * self[e2]
+                + self[e3] * self[e3]
                 + self[e321] * self[e321]
                 - self[e12345] * self[e12345]
                 - self[e45] * self[e45]
@@ -384,10 +384,10 @@ impl RadiusNormSquared for MultiVector {
                 - self[e4235] * self[e4235]
                 - self[e4315] * self[e4315]
                 - self[e4125] * self[e4125]
-                - 2.0 * (self[e4] * self[e5])
                 - 2.0 * (self[e423] * self[e235])
                 - 2.0 * (self[e431] * self[e315])
-                - 2.0 * (self[e412] * self[e125]),
+                - 2.0 * (self[e412] * self[e125])
+                - 2.0 * (self[e4] * self[e5]),
         )
     }
 }

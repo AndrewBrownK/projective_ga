@@ -21,12 +21,12 @@ public Motor operator /(ProjectViaOriginOntoInfixPartial<DualNum> lhs, Flector r
 }
 public extension DualNum {
     public Motor project_via_origin_onto(Flector other) {
-        float3 wedge_g1_xyz = float3(this.scalar) * other.group0.xyz;
+        float4 wedge_g1 = float4(1.0, 1.0, this.scalar, 0.0) * float4((other.group0.xyz * float3(float2(this.scalar), 1.0)), 0.0);
         return Motor(
             /* e41, e42, e43, e1234 */
-            float4(((wedge_g1_xyz.yzx * other.group1.zxy) - (wedge_g1_xyz.zxy * other.group1.yzx)), 0.0), 
+            float4(0.0, 0.0, (wedge_g1[0] * other.e431) - (wedge_g1[1] * other.e423), 0.0) + float4(((wedge_g1.yz * other.group1.zx) - (wedge_g1.zx * other.group1.yz)), 0.0, 0.0), 
             /* e23, e31, e12, scalar */
-            float4(wedge_g1_xyz[0] * other.e321 * -1.0, wedge_g1_xyz[1] * other.e321 * -1.0, wedge_g1_xyz[2] * other.e321 * -1.0, (wedge_g1_xyz[0] * other.e1) + (wedge_g1_xyz[1] * other.e2) + (wedge_g1_xyz[2] * other.e3) + (other.e321 * other.e321 * this.scalar))
+            (wedge_g1.wwwx * float4(other.group1.xyz, other.e1)) + float4(-(float3(other.e321) * wedge_g1.xyz), this.scalar * other.e321 * other.e321)
         );
     }
 }
@@ -66,7 +66,7 @@ public extension DualNum {
             /* e41, e42, e43, e1234 */
             float4(((float3(wedge_g0[3]) * other.group0.xyz) + (float3(other.e1234) * wedge_g0.xyz)), wedge_g0[3] * other.e1234), 
             /* e23, e31, e12, scalar */
-            float4((float3(wedge_g0[3]) * other.group1.xyz), (wedge_g0[3] * other.scalar) - (wedge_g0[0] * other.e23) - (wedge_g0[1] * other.e31) - (wedge_g0[2] * other.e12))
+            float4((float4(wedge_g0[3]).xyz * other.group1.xyz), (wedge_g0[3] * other.scalar) - (wedge_g0[0] * other.e23) - (wedge_g0[1] * other.e31) - (wedge_g0[2] * other.e12))
         );
     }
 }
@@ -79,14 +79,14 @@ public extension DualNum {
         float wedge_g0_y = this.scalar * other.scalar;
         float4 wedge_g1 = float4(float3(0.0), this.scalar * other.e321 * -1.0);
         float3 wedge_g2 = float3(this.scalar * -1.0) * other.group3.xyz;
-        float4 wedge_g4 = float4((float3(this.scalar) * other.group1.xyz), 0.0);
+        float4 wedge_g4 = float4(1.0, 1.0, this.scalar, 0.0) * float4((other.group1.xyz * float3(float2(this.scalar), 1.0)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12) - (wedge_g1[0] * other.e423) - (wedge_g1[1] * other.e431) - (wedge_g1[2] * other.e412) - (wedge_g1[3] * other.e321), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -112,10 +112,10 @@ public Scalar operator /(ProjectViaOriginOntoInfixPartial<DualNum> lhs, Point rh
 }
 public extension DualNum {
     public Scalar project_via_origin_onto(Point other) {
-        float3 wedge_g0_xyz = float3(this.scalar) * other.group0.xyz;
+        float4 wedge_g0 = float4(1.0, 1.0, this.scalar, 0.0) * float4((other.group0.xyz * float3(float2(this.scalar), 1.0)), 0.0);
         return Scalar(
             /* scalar */
-            (wedge_g0_xyz[0] * other.e1) + (wedge_g0_xyz[1] * other.e2) + (wedge_g0_xyz[2] * other.e3)
+            (wedge_g0[0] * other.e1) + (wedge_g0[1] * other.e2) + (wedge_g0[2] * other.e3) + (wedge_g0[3] * other.e4)
         );
     }
 }
@@ -142,13 +142,12 @@ public Flector operator /(ProjectViaOriginOntoInfixPartial<Flector> lhs, Flector
 public extension Flector {
     public Flector project_via_origin_onto(Flector other) {
         float right_dual_g0_w = other.e321 * -1.0;
-        float3 right_dual_g1_xyz = other.group0.xyz;
-        float4 wedge_g0 = float4(right_dual_g0_w * this.e1 * -1.0, right_dual_g0_w * this.e2 * -1.0, right_dual_g0_w * this.e3 * -1.0, (right_dual_g1_xyz[0] * this.e1) + (right_dual_g1_xyz[1] * this.e2) + (right_dual_g1_xyz[2] * this.e3) - (right_dual_g0_w * this.e321));
+        float wedge_g0_w = (other.e1 * this.e1) - (right_dual_g0_w * this.e321);
         return Flector(
             /* e1, e2, e3, e4 */
-            (wedge_g0 * float4(float3(other.e321), other.e4)) + float4(float3(0.0), -(wedge_g0[0] * other.e423) - (wedge_g0[1] * other.e431) - (wedge_g0[2] * other.e412)) + float4((float3(wedge_g0[3]) * other.group0.xyz), 0.0), 
+            float4(((float3(wedge_g0_w) * other.group0.xyz) - (float3(right_dual_g0_w * other.e321) * this.group0.xyz)), wedge_g0_w * other.e4), 
             /* e423, e431, e412, e321 */
-            float4(wedge_g0[3]) * other.group1
+            float4(wedge_g0_w) * other.group1
         );
     }
 }
@@ -177,7 +176,7 @@ public extension Flector {
         float3 wedge_g0_xyz = (right_dual_g0.yzx * this.group0.zxy) - (right_dual_g0.zxy * this.group0.yzx);
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g0_xyz[1] * other.e42) - (wedge_g0_xyz[2] * other.e43)) + float4((wedge_g0_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g0_xyz.yzx * other.group1.zxy), wedge_g0_xyz[0] * other.e41)
+            float4(((wedge_g0_xyz.zxy * other.group1.yzx) - (wedge_g0_xyz.yzx * other.group1.zxy)), 0.0)
         );
     }
 }
@@ -187,12 +186,12 @@ public Flector operator /(ProjectViaOriginOntoInfixPartial<Flector> lhs, Motor r
 }
 public extension Flector {
     public Flector project_via_origin_onto(Motor other) {
-        float3 wedge_g0_xyz = (this.group0.yzx * other.group1.zxy) + float3(float2(0.0), (this.e2 * other.e23) * -1.0) - float3((this.group0.zx * other.group1.yz), 0.0);
+        float4 wedge_g0 = float4(0.0, 0.0, (this.e1 * other.e31) - (this.e2 * other.e23), 0.0) + float4(((this.group0.yz * other.group1.zx) - (this.group0.zx * other.group1.yz)), 0.0, 0.0);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g0_xyz[1] * other.e42) - (wedge_g0_xyz[2] * other.e43)) + float4((wedge_g0_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g0_xyz.yzx * other.group1.zxy), wedge_g0_xyz[0] * other.e41), 
+            float4(0.0, 0.0, (wedge_g0[1] * other.e23) - (wedge_g0[0] * other.e31), 0.0) + float4(((float3(wedge_g0[3]) * other.group0.xyz) + float3(((wedge_g0.zx * other.group1.yz) - (wedge_g0.yz * other.group1.zx)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
-            float4((wedge_g0_xyz * float3(other.e1234)), 0.0)
+            float4((wedge_g0.xyz * float4(other.e1234).xyz), 0.0)
         );
     }
 }
@@ -206,15 +205,15 @@ public extension Flector {
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float3 right_dual_g4_xyz = other.group1.xyz;
         float wedge_g0_y = (right_dual_g4_xyz[0] * this.e1) + (right_dual_g4_xyz[1] * this.e2) + (right_dual_g4_xyz[2] * this.e3) - (right_dual_g1_w * this.e321);
-        float3 wedge_g2 = float3(right_dual_g1_w * this.e1 * -1.0, right_dual_g1_w * this.e2 * -1.0, right_dual_g1_w * this.e3 * -1.0);
+        float3 wedge_g2 = float3(right_dual_g1_w * -1.0) * this.group0.xyz;
         float4 wedge_g4 = float4(((right_dual_g2.yzx * this.group0.zxy) - (right_dual_g2.zxy * this.group0.yzx)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g0_y) * other.group1.xyz) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), wedge_g0_y * other.e4), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -231,7 +230,7 @@ public extension Flector {
         float4 wedge_g0 = float4(other.e321) * float4(this.group0.xyz, this.e321);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4((float3(other.e321) * wedge_g0.xyz), -(wedge_g0[0] * other.e423) - (wedge_g0[1] * other.e431) - (wedge_g0[2] * other.e412)), 
+            float4((wedge_g0.xyz * float4(other.e321).xyz), 0.0), 
             /* e423, e431, e412, e321 */
             float4(wedge_g0[3]) * other.group0
         );
@@ -329,7 +328,7 @@ public extension Line {
             /* e41, e42, e43, e1234 */
             float4(((wedge_g0_xyz.yzx * other.group1.zxy) - (wedge_g0_xyz.zxy * other.group1.yzx)), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(wedge_g0_xyz[0] * other.e321 * -1.0, wedge_g0_xyz[1] * other.e321 * -1.0, wedge_g0_xyz[2] * other.e321 * -1.0, (wedge_g0_xyz[0] * other.e1) + (wedge_g0_xyz[1] * other.e2) + (wedge_g0_xyz[2] * other.e3))
+            float4((wedge_g0_xyz * float4(other.e321).xyz * float3(-1.0)), wedge_g0_xyz[0] * other.e1)
         );
     }
 }
@@ -384,14 +383,14 @@ public MultiVector operator /(ProjectViaOriginOntoInfixPartial<Line> lhs, MultiV
 public extension Line {
     public MultiVector project_via_origin_onto(MultiVector other) {
         float wedge_g0_y = (this.e23 * other.e23) + (this.e31 * other.e31) + (this.e12 * other.e12);
-        float4 wedge_g4 = float4((float3(other.e321 * -1.0) * this.group1.xyz), 0.0);
+        float4 wedge_g4 = float4((this.group1.xyz * float4(other.e321).xyz * float3(-1.0)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            float4(((float3(wedge_g0_y) * other.group1.xyz) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), wedge_g0_y * other.e4), 
             /* e41, e42, e43 */
-            (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -410,7 +409,7 @@ public extension Line {
             /* e41, e42, e43 */
             (wedge_g0_xyz.yzx * other.group0.zxy) - (wedge_g0_xyz.zxy * other.group0.yzx), 
             /* e23, e31, e12 */
-            float3(wedge_g0_xyz[0] * other.e321 * -1.0, wedge_g0_xyz[1] * other.e321 * -1.0, wedge_g0_xyz[2] * other.e321 * -1.0)
+            wedge_g0_xyz * float3(other.e321 * -1.0)
         );
     }
 }
@@ -442,7 +441,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(((wedge_g1_xyz.yzx * other.group1.zxy) - (wedge_g1_xyz.zxy * other.group1.yzx)), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(wedge_g1_xyz[0] * other.e321 * -1.0, wedge_g1_xyz[1] * other.e321 * -1.0, wedge_g1_xyz[2] * other.e321 * -1.0, (wedge_g1_xyz[0] * other.e1) + (wedge_g1_xyz[1] * other.e2) + (wedge_g1_xyz[2] * other.e3) - (right_dual_g0_w * other.e321 * this.scalar))
+            float4((wedge_g1_xyz * float4(other.e321).xyz * float3(-1.0)), (wedge_g1_xyz[0] * other.e1) - (right_dual_g0_w * other.e321 * this.scalar))
         );
     }
 }
@@ -452,12 +451,11 @@ public Motor operator /(ProjectViaOriginOntoInfixPartial<Motor> lhs, Horizon rhs
 }
 public extension Motor {
     public Motor project_via_origin_onto(Horizon other) {
-        float right_dual_g0 = other.e321 * -1.0;
         return Motor(
             /* e41, e42, e43, e1234 */
             float4(0.0), 
             /* e23, e31, e12, scalar */
-            float4(other.e321 * -1.0) * float4((float3(right_dual_g0) * this.group1.xyz), right_dual_g0 * this.scalar)
+            float4(other.e321 * other.e321) * this.group1
         );
     }
 }
@@ -490,7 +488,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(((wedge_g0_xyz * float3(other.e1234)) + (float3(wedge_g0_w) * other.group0.xyz)), wedge_g0_w * other.e1234), 
             /* e23, e31, e12, scalar */
-            float4((float2(wedge_g0_w) * other.group1.xy), wedge_g0_w * other.e12, (wedge_g0_w * other.scalar) - (wedge_g0_xyz[0] * other.e23) - (wedge_g0_xyz[1] * other.e31) - (wedge_g0_xyz[2] * other.e12))
+            float4((float3(wedge_g0_w) * other.group1.xyz), (wedge_g0_w * other.scalar) - (wedge_g0_xyz[0] * other.e23) - (wedge_g0_xyz[1] * other.e31) - (wedge_g0_xyz[2] * other.e12))
         );
     }
 }
@@ -510,9 +508,9 @@ public extension Motor {
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12) - (wedge_g1[0] * other.e423) - (wedge_g1[1] * other.e431) - (wedge_g1[2] * other.e412) - (wedge_g1[3] * other.e321), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -532,7 +530,7 @@ public extension Motor {
             /* e41, e42, e43, e1234 */
             float4(((wedge_g1_xyz.yzx * other.group0.zxy) - (wedge_g1_xyz.zxy * other.group0.yzx)), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(wedge_g1_xyz[0] * other.e321 * -1.0, wedge_g1_xyz[1] * other.e321 * -1.0, wedge_g1_xyz[2] * other.e321 * -1.0, right_dual_g0 * this.scalar * other.e321 * -1.0)
+            float4((wedge_g1_xyz * float4(other.e321).xyz * float3(-1.0)), right_dual_g0 * this.scalar * other.e321 * -1.0)
         );
     }
 }
@@ -586,17 +584,16 @@ public extension MultiVector {
         float right_dual_g0_w = other.e321 * -1.0;
         float3 right_dual_g1_xyz = other.group0.xyz;
         float wedge_g0_y = (right_dual_g1_xyz[0] * this.e1) + (right_dual_g1_xyz[1] * this.e2) + (right_dual_g1_xyz[2] * this.e3) - (right_dual_g0_w * this.e321);
-        float3 wedge_g2 = float3(right_dual_g0_w * -1.0) * this.group1.xyz;
         float3 wedge_g4_xyz = (right_dual_g1_xyz * float3(this.scalar)) + (float3(right_dual_g0_w) * this.group3.xyz);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g4_xyz[0] * other.e1) + (wedge_g4_xyz[1] * other.e2) + (wedge_g4_xyz[2] * other.e3) - (right_dual_g0_w * this.scalar * other.e321), 0.0), 
             /* e1, e2, e3, e4 */
-            (float4(wedge_g0_y) * other.group0) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412)) + float4((wedge_g2 * float3(other.e321)), 0.0), 
+            float4(((float3(wedge_g0_y) * other.group0.xyz) - (float3(right_dual_g0_w * other.e321) * this.group1.xyz)), wedge_g0_y * other.e4), 
             /* e41, e42, e43 */
             (wedge_g4_xyz.yzx * other.group1.zxy) - (wedge_g4_xyz.zxy * other.group1.yzx), 
             /* e23, e31, e12 */
-            float3(wedge_g4_xyz[0] * other.e321 * -1.0, wedge_g4_xyz[1] * other.e321 * -1.0, wedge_g4_xyz[2] * other.e321 * -1.0), 
+            wedge_g4_xyz * float3(other.e321 * -1.0), 
             /* e423, e431, e412, e321 */
             float4(wedge_g0_y) * other.group1
         );
@@ -637,7 +634,7 @@ public extension MultiVector {
             /* scalar, e1234 */
             float2(-(wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12), 0.0), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g4_xyz[1] * other.e42) - (wedge_g4_xyz[2] * other.e43)) + float4((wedge_g4_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g4_xyz.yzx * other.group1.zxy), wedge_g4_xyz[0] * other.e41), 
+            float4(((wedge_g4_xyz.zxy * other.group1.yzx) - (wedge_g4_xyz.yzx * other.group1.zxy)), 0.0), 
             /* e41, e42, e43 */
             float3(wedge_g0_y) * other.group0.xyz, 
             /* e23, e31, e12 */
@@ -655,18 +652,18 @@ public extension MultiVector {
     public MultiVector project_via_origin_onto(Motor other) {
         float wedge_g0_y = (this.scalar * other.scalar) + (this.e23 * other.e23) + (this.e31 * other.e31) + (this.e12 * other.e12);
         float3 wedge_g2 = float3(this.scalar * -1.0) * other.group1.xyz;
-        float3 wedge_g4_xyz = (other.group1.zxy * this.group1.yzx) + float3(float2(0.0), (other.e23 * this.e2) * -1.0) - float3((other.group1.yz * this.group1.zx), 0.0);
+        float4 wedge_g4 = float4(0.0, 0.0, (other.e31 * this.e1) - (other.e23 * this.e2), 0.0) + float4(((other.group1.zx * this.group1.yz) - (other.group1.yz * this.group1.zx)), 0.0, 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g4_xyz[1] * other.e42) - (wedge_g4_xyz[2] * other.e43)) + float4((wedge_g4_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g4_xyz.yzx * other.group1.zxy), wedge_g4_xyz[0] * other.e41), 
+            float4(0.0, 0.0, (wedge_g4[1] * other.e23) - (wedge_g4[0] * other.e31), 0.0) + float4(((float3(wedge_g4[3]) * other.group0.xyz) + float3(((wedge_g4.zx * other.group1.yz) - (wedge_g4.yz * other.group1.zx)), 0.0)), 0.0), 
             /* e41, e42, e43 */
             (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group0.xyz), 
             /* e23, e31, e12 */
             float3(wedge_g0_y) * other.group1.xyz, 
             /* e423, e431, e412, e321 */
-            float4((wedge_g4_xyz * float3(other.e1234)), 0.0)
+            float4((wedge_g4.xyz * float4(other.e1234).xyz), 0.0)
         );
     }
 }
@@ -682,14 +679,14 @@ public extension MultiVector {
         float wedge_g0_y = (other.scalar * this.scalar) + (right_dual_g4_xyz[0] * this.e1) + (right_dual_g4_xyz[1] * this.e2) + (right_dual_g4_xyz[2] * this.e3) - (right_dual_g1_w * this.e321) - (right_dual_g2[0] * this.e23) - (right_dual_g2[1] * this.e31) - (right_dual_g2[2] * this.e12);
         float4 wedge_g1 = float4(float3(0.0), right_dual_g1_w * this.scalar);
         float3 wedge_g2 = (right_dual_g2 * float3(this.scalar)) - (float3(right_dual_g1_w) * this.group1.xyz);
-        float4 wedge_g4 = float4((right_dual_g4_xyz * float3(this.scalar)), 0.0) + float4((float3(right_dual_g1_w) * this.group3.xyz), 0.0) + float4((right_dual_g2.yzx * this.group1.zxy), 0.0) - float4((right_dual_g2.zxy * this.group1.yzx), 0.0);
+        float4 wedge_g4 = float4(((right_dual_g4_xyz * float3(this.scalar)) + (float3(right_dual_g1_w) * this.group3.xyz) + (right_dual_g2.yzx * this.group1.zxy) - (right_dual_g2.zxy * this.group1.yzx)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12) - (wedge_g1[0] * other.e423) - (wedge_g1[1] * other.e431) - (wedge_g1[2] * other.e412) - (wedge_g1[3] * other.e321), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -704,17 +701,16 @@ public MultiVector operator /(ProjectViaOriginOntoInfixPartial<MultiVector> lhs,
 public extension MultiVector {
     public MultiVector project_via_origin_onto(Plane other) {
         float right_dual_g0 = other.e321 * -1.0;
-        float3 wedge_g2 = float3(right_dual_g0 * -1.0) * this.group1.xyz;
         float3 wedge_g4_xyz = float3(right_dual_g0) * this.group3.xyz;
         return MultiVector(
             /* scalar, e1234 */
             float2(right_dual_g0 * this.scalar * other.e321 * -1.0, 0.0), 
             /* e1, e2, e3, e4 */
-            float4((wedge_g2 * float3(other.e321)), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412)), 
+            float4((float3(right_dual_g0 * -1.0) * float4(other.e321).xyz * this.group1.xyz), 0.0), 
             /* e41, e42, e43 */
             (wedge_g4_xyz.yzx * other.group0.zxy) - (wedge_g4_xyz.zxy * other.group0.yzx), 
             /* e23, e31, e12 */
-            float3(wedge_g4_xyz[0] * other.e321 * -1.0, wedge_g4_xyz[1] * other.e321 * -1.0, wedge_g4_xyz[2] * other.e321 * -1.0), 
+            wedge_g4_xyz * float3(other.e321 * -1.0), 
             /* e423, e431, e412, e321 */
             float4(right_dual_g0 * this.e321 * -1.0) * other.group0
         );
@@ -727,10 +723,10 @@ public MultiVector operator /(ProjectViaOriginOntoInfixPartial<MultiVector> lhs,
 public extension MultiVector {
     public MultiVector project_via_origin_onto(Point other) {
         float3 right_dual_g0_xyz = other.group0.xyz;
-        float3 wedge_g4_xyz = right_dual_g0_xyz * float3(this.scalar);
+        float4 wedge_g4 = float4(1.0, 1.0, this.scalar, 0.0) * float4((right_dual_g0_xyz * float3(float2(this.scalar), 1.0)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
-            float2((wedge_g4_xyz[0] * other.e1) + (wedge_g4_xyz[1] * other.e2) + (wedge_g4_xyz[2] * other.e3), 0.0), 
+            float2((wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4), 0.0), 
             /* e1, e2, e3, e4 */
             (float4(right_dual_g0_xyz[0] * this.e1) * other.group0) + (float4(right_dual_g0_xyz[1] * this.e2) * other.group0) + (float4(right_dual_g0_xyz[2] * this.e3) * other.group0), 
             /* e41, e42, e43 */
@@ -828,14 +824,12 @@ public Flector operator /(ProjectViaOriginOntoInfixPartial<Point> lhs, Flector r
 }
 public extension Point {
     public Flector project_via_origin_onto(Flector other) {
-        float right_dual_g0_w = other.e321 * -1.0;
-        float3 right_dual_g1_xyz = other.group0.xyz;
-        float4 wedge_g0 = float4(right_dual_g0_w * this.e1 * -1.0, right_dual_g0_w * this.e2 * -1.0, right_dual_g0_w * this.e3 * -1.0, (right_dual_g1_xyz[0] * this.e1) + (right_dual_g1_xyz[1] * this.e2) + (right_dual_g1_xyz[2] * this.e3));
+        float wedge_g0_w = other.e1 * this.e1;
         return Flector(
             /* e1, e2, e3, e4 */
-            (wedge_g0 * float4(float3(other.e321), other.e4)) + float4(float3(0.0), -(wedge_g0[0] * other.e423) - (wedge_g0[1] * other.e431) - (wedge_g0[2] * other.e412)) + float4((float3(wedge_g0[3]) * other.group0.xyz), 0.0), 
+            float4(((float3(wedge_g0_w) * other.group0.xyz) + (float3(other.e321 * other.e321) * this.group0.xyz)), wedge_g0_w * other.e4), 
             /* e423, e431, e412, e321 */
-            float4(wedge_g0[3]) * other.group1
+            float4(wedge_g0_w) * other.group1
         );
     }
 }
@@ -861,7 +855,7 @@ public extension Point {
         float3 wedge_g0_xyz = (right_dual_g0.yzx * this.group0.zxy) - (right_dual_g0.zxy * this.group0.yzx);
         return Point(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g0_xyz[1] * other.e42) - (wedge_g0_xyz[2] * other.e43)) + float4((wedge_g0_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g0_xyz.yzx * other.group1.zxy), wedge_g0_xyz[0] * other.e41)
+            float4(((wedge_g0_xyz.zxy * other.group1.yzx) - (wedge_g0_xyz.yzx * other.group1.zxy)), 0.0)
         );
     }
 }
@@ -871,12 +865,12 @@ public Flector operator /(ProjectViaOriginOntoInfixPartial<Point> lhs, Motor rhs
 }
 public extension Point {
     public Flector project_via_origin_onto(Motor other) {
-        float3 wedge_g0_xyz = (other.group1.zxy * this.group0.yzx) + float3(float2(0.0), (other.e23 * this.e2) * -1.0) - float3((other.group1.yz * this.group0.zx), 0.0);
+        float4 wedge_g0 = float4(0.0, 0.0, (other.e31 * this.e1) - (other.e23 * this.e2), 0.0) + float4(((other.group1.zx * this.group0.yz) - (other.group1.yz * this.group0.zx)), 0.0, 0.0);
         return Flector(
             /* e1, e2, e3, e4 */
-            float4(float3(0.0), -(wedge_g0_xyz[1] * other.e42) - (wedge_g0_xyz[2] * other.e43)) + float4((wedge_g0_xyz.zxy * other.group1.yzx), 0.0) - float4((wedge_g0_xyz.yzx * other.group1.zxy), wedge_g0_xyz[0] * other.e41), 
+            float4(0.0, 0.0, (wedge_g0[1] * other.e23) - (wedge_g0[0] * other.e31), 0.0) + float4(((float3(wedge_g0[3]) * other.group0.xyz) + float3(((wedge_g0.zx * other.group1.yz) - (wedge_g0.yz * other.group1.zx)), 0.0)), 0.0), 
             /* e423, e431, e412, e321 */
-            float4((wedge_g0_xyz * float3(other.e1234)), 0.0)
+            float4((wedge_g0.xyz * float4(other.e1234).xyz), 0.0)
         );
     }
 }
@@ -886,19 +880,18 @@ public MultiVector operator /(ProjectViaOriginOntoInfixPartial<Point> lhs, Multi
 }
 public extension Point {
     public MultiVector project_via_origin_onto(MultiVector other) {
-        float right_dual_g1_w = other.e321 * -1.0;
         float3 right_dual_g2 = other.group3.xyz * float3(-1.0);
         float3 right_dual_g4_xyz = other.group1.xyz;
         float wedge_g0_y = (right_dual_g4_xyz[0] * this.e1) + (right_dual_g4_xyz[1] * this.e2) + (right_dual_g4_xyz[2] * this.e3);
-        float3 wedge_g2 = float3(right_dual_g1_w * this.e1 * -1.0, right_dual_g1_w * this.e2 * -1.0, right_dual_g1_w * this.e3 * -1.0);
+        float3 wedge_g2 = float3(other.e321) * this.group0.xyz;
         float4 wedge_g4 = float4(((right_dual_g2.yzx * this.group0.zxy) - (right_dual_g2.zxy * this.group0.yzx)), 0.0);
         return MultiVector(
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g0_y) * other.group1.xyz) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), wedge_g0_y * other.e4), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */
@@ -912,10 +905,9 @@ public Point operator /(ProjectViaOriginOntoInfixPartial<Point> lhs, Plane rhs) 
 }
 public extension Point {
     public Point project_via_origin_onto(Plane other) {
-        float3 wedge_g0 = float3(other.e321) * this.group0.xyz;
         return Point(
             /* e1, e2, e3, e4 */
-            float4((wedge_g0 * float3(other.e321)), -(wedge_g0[0] * other.e423) - (wedge_g0[1] * other.e431) - (wedge_g0[2] * other.e412))
+            float4(1.0, 1.0, other.e321, 0.0) * float4((float4(other.e321).xyz * this.group0.xyz * float3(other.group0.ww, 1.0)), 0.0)
         );
     }
 }
@@ -959,7 +951,7 @@ public extension Scalar {
             /* e41, e42, e43, e1234 */
             float4(((wedge_g1_xyz.yzx * other.group1.zxy) - (wedge_g1_xyz.zxy * other.group1.yzx)), 0.0), 
             /* e23, e31, e12, scalar */
-            float4(wedge_g1_xyz[0] * other.e321 * -1.0, wedge_g1_xyz[1] * other.e321 * -1.0, wedge_g1_xyz[2] * other.e321 * -1.0, (wedge_g1_xyz[0] * other.e1) + (wedge_g1_xyz[1] * other.e2) + (wedge_g1_xyz[2] * other.e3) + (other.e321 * other.e321 * this.scalar))
+            float4((wedge_g1_xyz * float4(other.e321).xyz * float3(-1.0)), (wedge_g1_xyz[0] * other.e1) + (other.e321 * other.e321 * this.scalar))
         );
     }
 }
@@ -999,7 +991,7 @@ public extension Scalar {
             /* e41, e42, e43, e1234 */
             float4(((float3(wedge_g0[3]) * other.group0.xyz) + (float3(other.e1234) * wedge_g0.xyz)), wedge_g0[3] * other.e1234), 
             /* e23, e31, e12, scalar */
-            float4((float3(wedge_g0[3]) * other.group1.xyz), (wedge_g0[3] * other.scalar) - (wedge_g0[0] * other.e23) - (wedge_g0[1] * other.e31) - (wedge_g0[2] * other.e12))
+            float4((float4(wedge_g0[3]).xyz * other.group1.xyz), (wedge_g0[3] * other.scalar) - (wedge_g0[0] * other.e23) - (wedge_g0[1] * other.e31) - (wedge_g0[2] * other.e12))
         );
     }
 }
@@ -1017,9 +1009,9 @@ public extension Scalar {
             /* scalar, e1234 */
             float2((wedge_g0_y * other.scalar) + (wedge_g4[0] * other.e1) + (wedge_g4[1] * other.e2) + (wedge_g4[2] * other.e3) + (wedge_g4[3] * other.e4) - (wedge_g2[0] * other.e23) - (wedge_g2[1] * other.e31) - (wedge_g2[2] * other.e12) - (wedge_g1[0] * other.e423) - (wedge_g1[1] * other.e431) - (wedge_g1[2] * other.e412) - (wedge_g1[3] * other.e321), wedge_g0_y * other.e1234), 
             /* e1, e2, e3, e4 */
-            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(float3(0.0), -(wedge_g2[0] * other.e423) - (wedge_g2[1] * other.e431) - (wedge_g2[2] * other.e412) - (other.e42 * wedge_g4[1]) - (other.e43 * wedge_g4[2])) + float4((wedge_g2 * float3(other.e321)), 0.0) + float4((float3(wedge_g4[3]) * other.group2.xyz), 0.0) + float4((other.group3.yzx * wedge_g4.zxy), 0.0) - (wedge_g4.yzxx * float4(other.group3.zxy, other.e41)), 
+            (wedge_g1 * float4(other.e1234)) + (float4(wedge_g0_y) * other.group1) + float4(((wedge_g2 * float3(other.e321)) + (float3(wedge_g4[3]) * other.group2.xyz) + (other.group3.yzx * wedge_g4.zxy) - (other.group3.zxy * wedge_g4.yzx)), 0.0), 
             /* e41, e42, e43 */
-            (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz) + float3(float2(0.0), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + float3((wedge_g4.yz * other.group4.zx), 0.0) - float3((wedge_g4.zx * other.group4.yz), 0.0), 
+            float3((wedge_g4[1] * other.e412) - (wedge_g4[2] * other.e431), (wedge_g4[2] * other.e423) - (wedge_g4[0] * other.e412), (wedge_g4[0] * other.e431) - (wedge_g4[1] * other.e423)) + (wedge_g2 * float3(other.e1234)) + (float3(wedge_g0_y) * other.group2.xyz), 
             /* e23, e31, e12 */
             (float3(wedge_g0_y) * other.group3.xyz) + (float3(wedge_g4[3]) * other.group4.xyz) - (float3(other.e321) * wedge_g4.xyz), 
             /* e423, e431, e412, e321 */

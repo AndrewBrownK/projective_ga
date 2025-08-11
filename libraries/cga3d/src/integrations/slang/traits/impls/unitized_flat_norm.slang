@@ -36,7 +36,7 @@ public float operator /(UnitizedFlatNormPrefixOrPostfix lhs, Circle rhs) {
 }
 public extension Circle {
     public float unitized_flat_norm() {
-        return this.e415 * this.e415 * this.e235 * this.e235;
+        return this.e235 * this.e235 * this.e415 * this.e415;
     }
 }
 // Fancy postfix trick
@@ -75,7 +75,7 @@ public float operator /(UnitizedFlatNormPrefixOrPostfix lhs, DipoleInversion rhs
 }
 public extension DipoleInversion {
     public float unitized_flat_norm() {
-        return this.e45 * this.e45 * this.group2[0] * -1.0;
+        return this.e45 * this.e45 * this.e15 * -1.0;
     }
 }
 // Fancy postfix trick
@@ -115,7 +115,7 @@ public float operator /(UnitizedFlatNormPrefixOrPostfix lhs, Flector rhs) {
 }
 public extension Flector {
     public float unitized_flat_norm() {
-        return this.e45 * this.e45 * this.group0[0] * -1.0;
+        return this.e45 * this.e45 * this.e15 * -1.0;
     }
 }
 // Fancy postfix trick
@@ -208,6 +208,6 @@ public float operator /(UnitizedFlatNormPrefixOrPostfix lhs, VersorOdd rhs) {
 }
 public extension VersorOdd {
     public float unitized_flat_norm() {
-        return this.e45 * this.e45 * this.group2[0] * -1.0;
+        return this.e45 * this.e45 * this.e15 * -1.0;
     }
 }

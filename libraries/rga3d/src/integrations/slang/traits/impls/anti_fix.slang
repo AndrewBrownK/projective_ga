@@ -43,7 +43,7 @@ public extension Plane {
     public Plane anti_fix() {
         return Plane(
             /* e423, e431, e412, e321 */
-            (float4(this.e423 * this.e423, this.e431 * this.e431, this.e412 * this.e412, this.e423 * this.e423) * this.group0) + (float4(this.e431 * this.e431, this.e423 * this.e423, this.e423 * this.e423, this.e431 * this.e431) * this.group0) + (this.group0 * float4(float2(this.e412 * this.e412), this.e431 * this.e431, this.e412 * this.e412))
+            (float4(this.e431 * this.e431, this.e423 * this.e423, this.e423 * this.e423, this.e431 * this.e431) * this.group0) + (this.group0 * float4(float2(this.e412 * this.e412), this.e431 * this.e431, this.e412 * this.e412)) + (float4_pow(this.group0.xyzx, 2) * this.group0)
         );
     }
 }
@@ -59,7 +59,7 @@ public extension Point {
     public Point anti_fix() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4((float3(1.0 / this.e4) * this.group0.xyz), 1.0)
+            float4((this.group0.xyz / float4(this.e4).xyz), 1.0)
         );
     }
 }

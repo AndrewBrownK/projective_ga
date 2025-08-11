@@ -243,13 +243,13 @@ impl Unitize for MultiVector {
     //  no simd        7       40        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self[e4] * self[e4]
-            + self[e41] * self[e41]
+        let geometric_anti_product_g0 = self[e41] * self[e41]
             + self[e42] * self[e42]
             + self[e43] * self[e43]
             + self[e423] * self[e423]
             + self[e431] * self[e431]
             + self[e412] * self[e412]
+            + self[e4] * self[e4]
             + self[e1234] * self[e1234];
         MultiVector::from_groups(
             // scalar, e12345
@@ -358,7 +358,8 @@ impl Unitize for VersorEven {
     //  no simd        3       20        0        0
     fn unitize(self) -> Self {
         use crate::elements::*;
-        let geometric_anti_product_g0 = self.group0()[0] * self.group0()[0] + self.group0()[1] * self.group0()[1] + self.group0()[2] * self.group0()[2] + self[e4] * self[e4];
+        let wedge_g1_xyz = self.group0().xyz();
+        let geometric_anti_product_g0 = wedge_g1_xyz[0] * wedge_g1_xyz[0] + wedge_g1_xyz[1] * wedge_g1_xyz[1] + wedge_g1_xyz[2] * wedge_g1_xyz[2] + self[e4] * self[e4];
         VersorEven::from_groups(
             // e423, e431, e412, e12345
             Simd32x4::from(geometric_anti_product_g0) * self.group0(),

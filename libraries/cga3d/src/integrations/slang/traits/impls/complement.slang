@@ -37,7 +37,7 @@ public extension AntiDipoleInversion {
             /* e15, e25, e35, e1234 */
             float4((this.group0.xyz * float3(-1.0)), this.e5), 
             /* e4235, e4315, e4125, e3215 */
-            float4(this.e1, this.e2, this.e3, this.e4)
+            float4(this.group3.xyz, this.e4)
         );
     }
 }
@@ -259,7 +259,7 @@ public extension DipoleInversion {
             /* e235, e315, e125, e4 */
             float4((this.group0.xyz * float3(-1.0)), this.e3215), 
             /* e1, e2, e3, e5 */
-            float4(this.e4235, this.e4315, this.e4125, this.e1234)
+            float4(this.group3.xyz, this.e1234)
         );
     }
 }

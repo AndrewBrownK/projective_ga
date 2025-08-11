@@ -11,13 +11,13 @@
 //  Minimum:         0       0       0     N/A
 //   Median:         0       1       0     N/A
 //  Average:         0       3       0     N/A
-//  Maximum:         2      14       1     N/A
+//  Maximum:         2      11       1     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
 //   Median:         0       3       0       0
 //  Average:         2       6       0       0
-//  Maximum:         8      23       1       0
+//  Maximum:         8      23       3       0
 impl std::ops::Div<FixPrefixOrPostfix> for Horizon {
     type Output = Horizon;
     fn div(self, _rhs: FixPrefixOrPostfix) -> Self::Output {
@@ -47,15 +47,12 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Plane {
 }
 impl Fix for Plane {
     // Operative Statistics for this implementation:
-    //           add/sub      mul      div      pow
-    //      f32        0        0        1        0
-    //    simd3        0        1        0      N/A
-    // Totals...
-    // yes simd        0        1        1      N/A
-    //  no simd        0        3        1        0
+    //          add/sub      mul      div      pow
+    //   simd3        0        1        1      N/A
+    // no simd        0        3        3        0
     fn fix(self) -> Self {
         use crate::elements::*;
-        Plane::from_groups(/* e423, e431, e412, e321 */ (Simd32x3::from(1.0 / self[e321]) * self.group0().xyz()).with_w(1.0))
+        Plane::from_groups(/* e423, e431, e412, e321 */ (self.group0().xyz() / Simd32x4::from(self[e321]).xyz()).with_w(1.0))
     }
 }
 impl std::ops::Div<FixPrefixOrPostfix> for Point {
@@ -72,18 +69,18 @@ impl std::ops::DivAssign<FixPrefixOrPostfix> for Point {
 impl Fix for Point {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
-    //      f32        0       11        0        0
-    //    simd4        2        3        0      N/A
+    //      f32        0        7        0        0
+    //    simd4        2        4        0      N/A
     // Totals...
-    // yes simd        2       14        0      N/A
+    // yes simd        2       11        0      N/A
     //  no simd        8       23        0        0
     fn fix(self) -> Self {
         use crate::elements::*;
         Point::from_groups(
             // e1, e2, e3, e4
-            (Simd32x4::from([self[e1] * self[e1], self[e2] * self[e2], self[e3] * self[e3], self[e1] * self[e1]]) * self.group0())
-                + (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
-                + (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3])),
+            (Simd32x4::from([self[e2] * self[e2], self[e1] * self[e1], self[e1] * self[e1], self[e2] * self[e2]]) * self.group0())
+                + (self.group0() * Simd32x2::from(self[e3] * self[e3]).with_zw(self[e2] * self[e2], self[e3] * self[e3]))
+                + (Simd32x4::powi(self.group0().xyzx(), 2) * self.group0()),
         )
     }
 }

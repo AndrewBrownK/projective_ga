@@ -160,7 +160,7 @@ public extension Point {
     public Point unitize() {
         return Point(
             /* e1, e2, e3, e4 */
-            float4((float3(1.0 / this.e4) * this.group0.xyz), 1.0)
+            float4((this.group0.xyz / float4(this.e4).xyz), 1.0)
         );
     }
 }

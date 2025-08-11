@@ -46,7 +46,7 @@ impl std::ops::Add<AntiDipoleInversion> for Scalar {
             // scalar, e12345
             Simd32x2::from([self[scalar], 0.0]),
             // e1, e2, e3, e4
-            Simd32x4::from([other[e1], other[e2], other[e3], other[e4]]),
+            other.group3().xyz().with_w(other[e4]),
             // e5
             other[e5],
             // e15, e25, e35, e45
@@ -587,7 +587,7 @@ impl std::ops::Add<VersorOdd> for Scalar {
         use crate::elements::*;
         VersorOdd::from_groups(
             // e41, e42, e43, scalar
-            other.group0().xyz().with_w(self[scalar] + other[scalar]),
+            other.group0().xyz().with_w(other[scalar] + self[scalar]),
             // e23, e31, e12, e45
             other.group1(),
             // e15, e25, e35, e1234

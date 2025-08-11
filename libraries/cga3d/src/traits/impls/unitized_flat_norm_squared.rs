@@ -9,13 +9,13 @@
 //
 // Yes SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0     N/A
-//   Median:         0       4       0     N/A
+//   Median:         0       3       0     N/A
 //  Average:         0       4       0     N/A
 //  Maximum:         2       9       3     N/A
 //
 //  No SIMD:   add/sub     mul     div     pow
 //  Minimum:         0       0       0       0
-//   Median:         0       4       0       0
+//   Median:         0       3       0       0
 //  Average:         0       4       0       0
 //  Maximum:         2       9       3       0
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for AntiCircleRotor {
@@ -58,10 +58,10 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Circle {
 impl UnitizedFlatNormSquared for Circle {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        0        4        0        0
+    // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e415] * self[e415] * self[e235] * self[e235] * -1.0
+        self[e235] * self[e235] * self[e415] * self[e415]
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for CircleRotor {
@@ -73,10 +73,10 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for CircleRotor {
 impl UnitizedFlatNormSquared for CircleRotor {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        0        4        0        0
+    // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e415] * self[e415] * self[e235] * self[e235] * -1.0
+        self[e415] * self[e415] * self[e235] * self[e235]
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Dipole {
@@ -106,7 +106,7 @@ impl UnitizedFlatNormSquared for DipoleInversion {
     // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group2()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for DualNum {
@@ -152,7 +152,7 @@ impl UnitizedFlatNormSquared for Flector {
     // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group0()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Line {
@@ -164,10 +164,10 @@ impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Line {
 impl UnitizedFlatNormSquared for Line {
     // Operative Statistics for this implementation:
     //      add/sub      mul      div      pow
-    // f32        0        4        0        0
+    // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e415] * self[e415] * self[e235] * self[e235] * -1.0
+        self[e415] * self[e415] * self[e235] * self[e235]
     }
 }
 impl std::ops::Div<UnitizedFlatNormSquaredPrefixOrPostfix> for Motor {
@@ -259,6 +259,6 @@ impl UnitizedFlatNormSquared for VersorOdd {
     // f32        0        3        0        0
     fn unitized_flat_norm_squared(self) -> f32 {
         use crate::elements::*;
-        self[e45] * self[e45] * self.group2()[0] * -1.0
+        self[e45] * self[e45] * self[e15] * -1.0
     }
 }

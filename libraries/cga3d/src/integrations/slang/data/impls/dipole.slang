@@ -17,11 +17,11 @@ public extension Dipole {
             /* scalar, e12345 */
             float2(0.0), 
             /* e1, e2, e3, e4 */
-            float4(other.e1, other.e2, other.e3, other.e4), 
+            float4(other.group3.xyz, other.e4), 
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -63,7 +63,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -91,7 +91,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -127,7 +127,7 @@ public extension Dipole {
             /* e41, e42, e43, scalar */
             float4(this.group0.xyz, other.scalar), 
             /* e23, e31, e12, e45 */
-            this.group1 + float4(other.group0.xyz, 0.0), 
+            float4((other.group0.xyz + this.group1.xyz), this.e45), 
             /* e15, e25, e35, e1234 */
             float4((this.group2.xyz + other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -145,7 +145,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -173,7 +173,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -201,7 +201,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -229,7 +229,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -283,7 +283,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -337,7 +337,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -365,7 +365,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -393,7 +393,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            other.group3 + float4(this.group2.xyz, this.e45), 
+            float4((this.group2.xyz + other.group3.xyz), this.e45 + other.e45), 
             /* e41, e42, e43 */
             this.group0.xyz + other.group4.xyz, 
             /* e23, e31, e12 */
@@ -435,7 +435,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -489,7 +489,7 @@ public extension Dipole {
             /* e5 */
             other.e5, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -873,7 +873,7 @@ public extension Dipole {
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, scalar */
-            float4((this.group2.xyz - other.group2.xyz), other.scalar * -1.0)
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group2.xyz), other.scalar * -1.0)
         );
     }
 }
@@ -887,7 +887,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -929,7 +929,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -957,7 +957,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -981,7 +981,7 @@ public extension Dipole {
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35 */
             this.group2.xyz - other.group1.xyz
         );
@@ -993,7 +993,7 @@ public extension Dipole {
             /* e41, e42, e43, scalar */
             float4(this.group0.xyz, other.scalar * -1.0), 
             /* e23, e31, e12, e45 */
-            this.group1 - float4(other.group0.xyz, 0.0), 
+            this.group1 + float4(-other.group0.xyz, 0.0), 
             /* e15, e25, e35, e1234 */
             float4((this.group2.xyz - other.group1.xyz), 0.0), 
             /* e4235, e4315, e4125, e3215 */
@@ -1011,7 +1011,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1039,7 +1039,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1067,7 +1067,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1095,7 +1095,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1133,7 +1133,7 @@ public extension Dipole {
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            float4((this.group2.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group2.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );
@@ -1149,7 +1149,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1175,7 +1175,7 @@ public extension Dipole {
             /* e23, e31, e12, e45 */
             float4(this.group1.xyz, this.e45 - other.e45), 
             /* e15, e25, e35 */
-            this.group2.xyz - other.group0.xyz
+            float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group2.xyz
         );
     }
 }
@@ -1203,7 +1203,7 @@ public extension Dipole {
             /* e5 */
             0.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1231,7 +1231,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1259,7 +1259,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.group2.xyz, this.e45) - other.group3, 
+            float4(this.group2.xyz, 0.0) - other.group3, 
             /* e41, e42, e43 */
             this.group0.xyz - other.group4.xyz, 
             /* e23, e31, e12 */
@@ -1301,7 +1301,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1355,7 +1355,7 @@ public extension Dipole {
             /* e5 */
             other.e5 * -1.0, 
             /* e15, e25, e35, e45 */
-            float4(this.e15, this.e25, this.e35, this.e45), 
+            float4(this.group2.xyz, this.e45), 
             /* e41, e42, e43 */
             this.group0.xyz, 
             /* e23, e31, e12 */
@@ -1377,11 +1377,11 @@ public extension Dipole {
     public VersorOdd operator -(VersorOdd other) {
         return VersorOdd(
             /* e41, e42, e43, scalar */
-            float4((this.group0.xyz - other.group0.xyz), other.scalar * -1.0), 
+            float4((float3(other.e41 * -1.0, other.e42 * -1.0, other.e43 * -1.0) + this.group0.xyz), other.scalar * -1.0), 
             /* e23, e31, e12, e45 */
             this.group1 - other.group1, 
             /* e15, e25, e35, e1234 */
-            float4((this.group2.xyz - other.group2.xyz), other.e1234 * -1.0), 
+            float4((float3(other.e15 * -1.0, other.e25 * -1.0, other.e35 * -1.0) + this.group2.xyz), other.e1234 * -1.0), 
             /* e4235, e4315, e4125, e3215 */
             other.group3 * float4(-1.0)
         );

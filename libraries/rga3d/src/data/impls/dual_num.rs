@@ -448,11 +448,11 @@ impl std::ops::Mul<Point> for DualNum {
     // Operative Statistics for this implementation:
     //           add/sub      mul      div      pow
     //      f32        0        1        0        0
-    //    simd3        0        1        0      N/A
-    //    simd4        0        1        0      N/A
+    //    simd3        0        2        0      N/A
+    //    simd4        0        2        0      N/A
     // Totals...
-    // yes simd        0        3        0      N/A
-    //  no simd        0        8        0        0
+    // yes simd        0        5        0      N/A
+    //  no simd        0       15        0        0
     fn mul(self, other: Point) -> Self::Output {
         self.geometric_product(other)
     }

@@ -48,7 +48,7 @@ impl Carrier for AntiDipoleInversion {
         use crate::elements::*;
         Flector::from_groups(
             // e15, e25, e35, e45
-            Simd32x4::from([self[e1], self[e2], self[e3], self[e4]]),
+            self.group3().xyz().with_w(self[e4]),
             // e4235, e4315, e4125, e3215
             self.group0().with_w(self[e321]),
         )
@@ -231,7 +231,7 @@ impl Carrier for MultiVector {
             // e235, e315, e125
             self.group5(),
             // e4235, e4315, e4125, e3215
-            Simd32x4::from([self[e423], self[e431], self[e412], self[e321]]),
+            self.group7().with_w(self[e321]),
             // e1234
             0.0,
         )
@@ -307,7 +307,7 @@ impl Carrier for VersorOdd {
             // e415, e425, e435, e12345
             self.group0().xyz().with_w(self[e1234]),
             // e235, e315, e125, e5
-            Simd32x4::from([self[e23], self[e31], self[e12], self[scalar]]),
+            self.group1().xyz().with_w(self[scalar]),
         )
     }
 }

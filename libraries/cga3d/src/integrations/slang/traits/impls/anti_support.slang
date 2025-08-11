@@ -251,7 +251,7 @@ public extension RoundPoint {
     public AntiFlatPoint anti_support() {
         return AntiFlatPoint(
             /* e235, e315, e125, e321 */
-            float4((this.group0.xyz * float3(-1.0)), this.e4)
+            this.group0 * float4(-1.0, -1.0, -1.0, 1.0)
         );
     }
 }

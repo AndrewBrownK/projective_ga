@@ -139,7 +139,7 @@ public MultiVector operator /(UnitizePrefixOrPostfix lhs, MultiVector rhs) {
 }
 public extension MultiVector {
     public MultiVector unitize() {
-        float geometric_anti_product_g0 = this.e4 * this.e4 + this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e1234 * this.e1234;
+        float geometric_anti_product_g0 = this.e41 * this.e41 + this.e42 * this.e42 + this.e43 * this.e43 + this.e423 * this.e423 + this.e431 * this.e431 + this.e412 * this.e412 + this.e4 * this.e4 + this.e1234 * this.e1234;
         return MultiVector(
             /* scalar, e12345 */
             float2(geometric_anti_product_g0) * this.group0.xy, 
@@ -214,7 +214,8 @@ public VersorEven operator /(UnitizePrefixOrPostfix lhs, VersorEven rhs) {
 }
 public extension VersorEven {
     public VersorEven unitize() {
-        float geometric_anti_product_g0 = this.group0[0] * this.group0[0] + this.group0[1] * this.group0[1] + this.group0[2] * this.group0[2] + this.e4 * this.e4;
+        float3 wedge_g1_xyz = this.group0.xyz;
+        float geometric_anti_product_g0 = wedge_g1_xyz[0] * wedge_g1_xyz[0] + wedge_g1_xyz[1] * wedge_g1_xyz[1] + wedge_g1_xyz[2] * wedge_g1_xyz[2] + this.e4 * this.e4;
         return VersorEven(
             /* e423, e431, e412, e12345 */
             float4(geometric_anti_product_g0) * this.group0, 

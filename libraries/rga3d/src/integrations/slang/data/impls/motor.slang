@@ -374,9 +374,9 @@ public extension Motor {
     public Motor operator -(Line other) {
         return Motor(
             /* e41, e42, e43, e1234 */
-            this.group0 - float4(other.group0.xyz, 0.0), 
+            this.group0 + float4(-other.group0.xyz, 0.0), 
             /* e23, e31, e12, scalar */
-            this.group1 - float4(other.group1.xyz, 0.0)
+            this.group1 + float4(-other.group1.xyz, 0.0)
         );
     }
 }

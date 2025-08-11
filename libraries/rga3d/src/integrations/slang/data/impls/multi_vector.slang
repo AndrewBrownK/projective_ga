@@ -442,9 +442,9 @@ public extension MultiVector {
             /* e1, e2, e3, e4 */
             this.group1, 
             /* e41, e42, e43 */
-            this.group2.xyz - other.group0.xyz, 
+            float3(other.e41 * -1.0, other.e42 * -1.0, other.e43 * -1.0) + this.group2.xyz, 
             /* e23, e31, e12 */
-            this.group3.xyz - other.group1.xyz, 
+            float3(other.e23 * -1.0, other.e31 * -1.0, other.e12 * -1.0) + this.group3.xyz, 
             /* e423, e431, e412, e321 */
             this.group4
         );
