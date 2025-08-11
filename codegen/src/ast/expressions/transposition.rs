@@ -105,7 +105,7 @@ impl ExtractionStrength {
                     vec3_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, z_expr, z_expo)
                 });
             }
-            Truncate1 | Truncate2 => {
+            Truncate1 => {
                 let [x, y, z] = arr;
                 OrderedConcurrentScan::<(FloatExpr, f32), 2>::new_presorted([x, y], || (FloatExpr::Literal(1.0), 1.0)).retain_mut(&is_identity_or_null, |factors| {
                     let factors2 = factors.map(|it| (&mut it.0, &mut it.1));
@@ -116,15 +116,14 @@ impl ExtractionStrength {
                     let [(x_expr, x_expo), (y_expr, y_expo)] = factors2;
 
                     let mut xy_result = [true; 2];
-                    z.retain_mut(|(z_expr, z_expo)| {
-                        if *x_expo == 0.0 || *y_expo == 0.0 || *z_expo == 0.0 { return true; }
-                        let xyz_result = vec3_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, z_expr, z_expo);
-                        xy_result = [xyz_result[0], xyz_result[1]];
-                        xyz_result[2]
-                    });
+                    let mut z_expr = FloatExpr::Literal(1.0);
+                    let mut z_expo = 0.0;
+                    let xyzw_result = vec3_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, &mut z_expr, &mut z_expo);
+                    xy_result = [xyzw_result[0], xyzw_result[1]];
                     xy_result
                 });
             }
+            Truncate2 => {}
         }
     }
 
@@ -154,7 +153,32 @@ impl ExtractionStrength {
                     vec4_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, z_expr, z_expo, w_expr, w_expo)
                 });
             }
-            Truncate1 | Truncate2 => {
+            Truncate1 => {
+                let [x, y, z, w] = arr;
+                tracing::trace!("about to retain_mut");
+                OrderedConcurrentScan::<(FloatExpr, f32), 3>::new_presorted([x, y, z], || (FloatExpr::Literal(1.0), 1.0)).retain_mut(&is_identity_or_null, |factors| {
+                    tracing::trace!("in retain_mut layer xyz");
+                    let factors3 = factors.map(|it| (&mut it.0, &mut it.1));
+                    let mut pre_check = [false, false, false];
+                    pre_check[0] = factors3[0].0.is_one_or_zero();
+                    pre_check[1] = factors3[1].0.is_one_or_zero();
+                    pre_check[2] = factors3[2].0.is_one_or_zero();
+                    if pre_check == [true, true, true] { return pre_check; }
+                    let [(x_expr, x_expo), (y_expr, y_expo), (z_expr, z_expo)] = factors3;
+
+                    if w.is_empty() {
+                        tracing::trace!("is empty: {w:?}");
+                    }
+
+                    let mut xyz_result = [true; 3];
+                    let mut w_expr = FloatExpr::Literal(1.0);
+                    let mut w_expo = 0.0;
+                    let xyzw_result = vec4_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, z_expr, z_expo, &mut w_expr, &mut w_expo);
+                    xyz_result = [xyzw_result[0], xyzw_result[1], xyzw_result[2]];
+                    xyz_result
+                });
+            }
+            Truncate2 => {
                 let [x, y, z, w] = arr;
                 tracing::trace!("about to retain_mut");
                 OrderedConcurrentScan::<(FloatExpr, f32), 2>::new_presorted([x, y], || (FloatExpr::Literal(1.0), 1.0)).retain_mut(&is_identity_or_null, |factors| {
@@ -171,20 +195,12 @@ impl ExtractionStrength {
                     }
 
                     let mut xy_result = [true; 2];
-                    z.retain_mut(|(z_expr, z_expo)| {
-                        tracing::trace!("in retain_mut layer z: ({z_expr:?}, {z_expo:?})");
-                        if *x_expo == 0.0 || *y_expo == 0.0 || *z_expo == 0.0 { return true; }
-                        let mut z_result = true;
-                        w.retain_mut(|(w_expr, w_expo)| {
-                            tracing::trace!("in retain_mut layer w: ({w_expr:?}, {w_expo:?})");
-                            if *x_expo == 0.0 || *y_expo == 0.0 || *z_expo == 0.0 || *w_expo == 0.0 { return true; }
-                            let xyzw_result = vec4_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, z_expr, z_expo, w_expr, w_expo);
-                            xy_result = [xyzw_result[0], xyzw_result[1]];
-                            z_result = xyzw_result[2];
-                            xyzw_result[3]
-                        });
-                        z_result
-                    });
+                    let mut z_expr = FloatExpr::Literal(1.0);
+                    let mut z_expo = 0.0;
+                    let mut w_expr = FloatExpr::Literal(1.0);
+                    let mut w_expo = 0.0;
+                    let xyzw_result = vec4_product_extract(*self, out, literals, x_expr, x_expo, y_expr, y_expo, &mut z_expr, &mut z_expo, &mut w_expr, &mut w_expo);
+                    xy_result = [xyzw_result[0], xyzw_result[1]];
                     xy_result
                 });
             }
@@ -245,7 +261,7 @@ impl ExtractionStrength {
                     vec3_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, z_expr, z_factor)
                 });
             }
-            Truncate1 | Truncate2 => {
+            Truncate1 => {
                 let [x, y, z] = arr;
                 OrderedConcurrentScan::<(FloatExpr, f32), 2>::new_presorted([x, y], || (FloatExpr::Literal(0.0), 1.0)).retain_mut(&is_identity, |addends| {
                     let addends2 = addends.map(|it| (&mut it.0, &mut it.1));
@@ -256,15 +272,14 @@ impl ExtractionStrength {
                     let [(x_expr, x_factor), (y_expr, y_factor)] = addends2;
 
                     let mut xy_result = [true; 2];
-                    z.retain_mut(|(z_expr, z_factor)| {
-                        if *x_factor == 0.0 || *y_factor == 0.0 || *z_factor == 0.0 { return true; }
-                        let xyz_result = vec3_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, z_expr, z_factor);
-                        xy_result = [xyz_result[0], xyz_result[1]];
-                        xyz_result[2]
-                    });
+                    let mut z_expr = FloatExpr::Literal(0.0);
+                    let mut z_factor = 0.0;
+                    let xyz_result = vec3_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, &mut z_expr, &mut z_factor);
+                    xy_result = [xyz_result[0], xyz_result[1]];
                     xy_result
                 });
             }
+            Truncate2 => {}
         }
     }
 
@@ -305,13 +320,10 @@ impl ExtractionStrength {
                     let [(x_expr, x_factor), (y_expr, y_factor), (z_expr, z_factor)] = addends2;
 
                     let mut xyz_result = [true; 3];
-                    w.retain_mut(|(w_expr, w_factor)| {
-                        if *x_factor == 0.0 || *y_factor == 0.0 || *z_factor == 0.0 || *w_factor == 0.0 { return true; }
-
-                        let xyzw_result = vec4_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, z_expr, z_factor, w_expr, w_factor);
-                        xyz_result = [xyzw_result[0], xyzw_result[1], xyzw_result[2]];
-                        xyzw_result[3]
-                    });
+                    let mut w_expr = FloatExpr::Literal(0.0);
+                    let mut w_factor = 0.0;
+                    let xyzw_result = vec4_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, z_expr, z_factor, &mut w_expr, &mut w_factor);
+                    xyz_result = [xyzw_result[0], xyzw_result[1], xyzw_result[2]];
                     xyz_result
                 });
             }
@@ -326,19 +338,12 @@ impl ExtractionStrength {
                     let [(x_expr, x_factor), (y_expr, y_factor)] = addends2;
 
                     let mut xy_result = [true; 2];
-                    z.retain_mut(|(z_expr, z_factor)| {
-                        if *x_factor == 0.0 || *y_factor == 0.0 ||  *z_factor == 0.0 { return true; }
-                        let mut z_result = true;
-                        w.retain_mut(|(w_expr, w_factor)| {
-                            if *x_factor == 0.0 || *y_factor == 0.0 || *z_factor == 0.0 || *w_factor == 0.0 { return true; }
-
-                            let xyzw_result = vec4_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, z_expr, z_factor, w_expr, w_factor);
-                            xy_result = [xyzw_result[0], xyzw_result[1]];
-                            z_result = xyzw_result[2];
-                            xyzw_result[3]
-                        });
-                        z_result
-                    });
+                    let mut z_expr = FloatExpr::Literal(0.0);
+                    let mut z_factor = 0.0;
+                    let mut w_expr = FloatExpr::Literal(0.0);
+                    let mut w_factor = 0.0;
+                    let xyzw_result = vec4_sum_extract(*self, out, literals, x_expr, x_factor, y_expr, y_factor, &mut z_expr, &mut z_factor, &mut w_expr, &mut w_factor);
+                    xy_result = [xyzw_result[0], xyzw_result[1]];
                     xy_result
                 });
             }
@@ -465,7 +470,7 @@ impl<'a, T, const N: usize> OrderedConcurrentScan<'a, T, N> where T: PartialOrd 
             drop(stuff);
             'inner: for index_of_least in the_indexes {
                 let OCSTracker { vec, scan_index, kept_length, identity_element } =  &mut self.0[index_of_least];
-                if *scan_index >= vec.len() - 1 { continue 'inner; }
+                if vec.is_empty() || *scan_index >= vec.len() - 1 { continue 'inner; }
                 vec.swap(*scan_index, *kept_length);
                 scan_index.add_assign(1);
                 kept_length.add_assign(1);
@@ -1104,7 +1109,7 @@ fn vec3_product_extract(
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if extraction_strength >= NaturalExtend && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= Truncate1 && xy_z && eqs!(v0, v1) => {
             let mut v2 = Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1);
             v2.vec2_simplify(false, false, false);
             do_extract!(Vec3Expr::Extend2to3(v2, z.clone()));
@@ -1141,17 +1146,17 @@ fn vec3_product_extract(
             if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
         }
-        // (
-        //     Product(v0, a0),
-        //     Product(v1, a1),
-        //     z,
-        // ) if extraction_strength >= Truncate1AndExtend && xy_z => {
-        //     let a = [*a0, *a1];
-        //     let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
-        //     if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
-        //     if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
-        //     do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
-        // }
+        (
+            Product(v0, a0),
+            Product(v1, a1),
+            z,
+        ) if extraction_strength >= Truncate1 && xy_z => {
+            let a = [*a0, *a1];
+            let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
+            do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
+        }
         _ => { do_return!(); }
     }
 }
@@ -1389,7 +1394,7 @@ fn vec3_sum_extract(
             AccessVec2(box v0, i0),
             AccessVec2(box v1, i1),
             z
-        ) if extraction_strength >= NaturalExtend && xy_z && eqs!(v0, v1) => {
+        ) if extraction_strength >= Truncate1 && xy_z && eqs!(v0, v1) => {
             let mut v2 = Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1);
             v2.vec2_simplify(false, false, false);
             do_extract!(Vec3Expr::Extend2to3(v2, z.clone()));
@@ -1440,17 +1445,17 @@ fn vec3_sum_extract(
             if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
         }
-        // (
-        //     Sum(v0, a0),
-        //     Sum(v1, a1),
-        //     z,
-        // ) if extraction_strength >= Truncate1AndExtend && xy_z => {
-        //     let a = [*a0, *a1];
-        //     let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
-        //     if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
-        //     if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
-        //     do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
-        // }
+        (
+            Sum(v0, a0),
+            Sum(v1, a1),
+            z,
+        ) if extraction_strength >= Truncate1 && xy_z => {
+            let a = [*a0, *a1];
+            let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
+            if v0.is_empty() { v0.push((Literal(0.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
+            do_extract!(Vec3Expr::Extend2to3(transposed, z.clone()));
+        }
         _ => { do_return!(); }
     }
 }
@@ -1830,7 +1835,7 @@ fn vec4_product_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if extraction_strength >= NaturalExtend && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= Truncate1 && xyz_w && eqs!(v0, v1, v2) => {
             let mut v3 = Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2);
             v3.vec3_simplify(false, false, false);
             do_extract!(Vec4Expr::Extend3to4(v3, w.clone()));
@@ -1850,7 +1855,7 @@ fn vec4_product_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if extraction_strength >= NaturalExtend && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= Truncate2 && xy_zw && eqs!(v0, v1) => {
             let mut v2 = Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1);
             v2.vec2_simplify(false, false, false);
             do_extract!(Vec4Expr::Extend2to4(v2, z.clone(), w.clone()));
@@ -1907,18 +1912,18 @@ fn vec4_product_extract(
             if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
             do_extract!(Vec4Expr::Extend3to4(transposed, w.clone()));
         }
-        // (
-        //     Product(v0, a0),
-        //     Product(v1, a1),
-        //     z,
-        //     w
-        // ) if extraction_strength >= Truncate2AndExtend && xy_zw => {
-        //     let a = [*a0, *a1];
-        //     let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
-        //     if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
-        //     if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
-        //     do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
-        // }
+        (
+            Product(v0, a0),
+            Product(v1, a1),
+            z,
+            w
+        ) if extraction_strength >= Truncate2 && xy_zw => {
+            let a = [*a0, *a1];
+            let Some(transposed) = vec2_product_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
+        }
         _ => { do_return!(); }
     }
 }
@@ -2089,10 +2094,10 @@ fn vec4_sum_extract(
             if *z_coefficient == 0.0 { *z = FloatExpr::Literal(0.0); }
             if *w_coefficient == 0.0 { *w = FloatExpr::Literal(0.0); }
             return [
-                x.is_zero() || x_coefficient.abs() > 0.0,
-                y.is_zero() || y_coefficient.abs() > 0.0,
-                z.is_zero() || z_coefficient.abs() > 0.0,
-                w.is_zero() || w_coefficient.abs() > 0.0,
+                xy && (x.is_zero() || x_coefficient.abs() > 0.0),
+                xy && (y.is_zero() || y_coefficient.abs() > 0.0),
+                xyz && (z.is_zero() || z_coefficient.abs() > 0.0),
+                xyzw && (w.is_zero() || w_coefficient.abs() > 0.0),
             ];
         };
     }
@@ -2216,7 +2221,7 @@ fn vec4_sum_extract(
         ) if extraction_strength >= Truncate1 && xyz_w && eqs!(v0, v1, v2) => {
             let mut v4 = Vec4Expr::swizzle_vec_4(v0.clone(), *i0, *i1, *i2, 3);
             v4.vec4_simplify(false, false, false);
-            do_extract!(Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(v4)), w.clone()));
+            do_extract!(Vec4Expr::Extend3to4(Vec3Expr::Truncate4to3(Box::new(v4)), Literal(0.0)));
         }
         (
             AccessVec4(box v0, i0),
@@ -2233,7 +2238,7 @@ fn vec4_sum_extract(
             AccessVec3(box v1, i1),
             AccessVec3(box v2, i2),
             w
-        ) if extraction_strength >= NaturalExtend && xyz_w && eqs!(v0, v1, v2) => {
+        ) if extraction_strength >= Truncate1 && xyz_w && eqs!(v0, v1, v2) => {
             let mut v3 = Vec3Expr::swizzle_vec_3(v0.clone(), *i0, *i1, *i2);
             v3.vec3_simplify(false, false, false);
             do_extract!(Vec4Expr::Extend3to4(v3, w.clone()));
@@ -2253,7 +2258,7 @@ fn vec4_sum_extract(
             AccessVec2(box v1, i1),
             z,
             w
-        ) if extraction_strength >= NaturalExtend && xy_zw && eqs!(v0, v1) => {
+        ) if extraction_strength >= Truncate2 && xy_zw && eqs!(v0, v1) => {
             let mut v2 = Vec2Expr::swizzle_vec_2(v0.clone(), *i0, *i1);
             v2.vec2_simplify(false, false, false);
             do_extract!(Vec4Expr::Extend2to4(v2, z.clone(), w.clone()));
@@ -2341,31 +2346,31 @@ fn vec4_sum_extract(
             if v1.is_empty() { v1.push((Literal(0.0), 1.0)); *a1 = 0.0; }
             do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
         }
-        // (
-        //     Sum(v0, a0),
-        //     Sum(v1, a1),
-        //     Sum(v2, a2),
-        //     w
-        // ) if extraction_strength >= Truncate1AndExtend && xyz_w => {
-        //     let a = [*a0, *a1, *a2];
-        //     let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { do_return!(); };
-        //     if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
-        //     if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
-        //     if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
-        //     do_extract!(Vec4Expr::Extend3to4(transposed, w.clone()));
-        // }
-        // (
-        //     Sum(v0, a0),
-        //     Sum(v1, a1),
-        //     z,
-        //     w
-        // ) if extraction_strength >= Truncate2AndExtend && xy_zw => {
-        //     let a = [*a0, *a1];
-        //     let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
-        //     if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
-        //     if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
-        //     do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
-        // }
+        (
+            Sum(v0, a0),
+            Sum(v1, a1),
+            Sum(v2, a2),
+            w
+        ) if extraction_strength >= Truncate1 && xyz_w => {
+            let a = [*a0, *a1, *a2];
+            let Some(transposed) = vec3_sum_transpose(Some(extraction_strength), v0, v1, v2, a) else { do_return!(); };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            if v2.is_empty() { v2.push((Literal(1.0), 1.0)); *a2 = 0.0; }
+            do_extract!(Vec4Expr::Extend3to4(transposed, w.clone()));
+        }
+        (
+            Sum(v0, a0),
+            Sum(v1, a1),
+            z,
+            w
+        ) if extraction_strength >= Truncate2 && xy_zw => {
+            let a = [*a0, *a1];
+            let Some(transposed) = vec2_sum_transpose(Some(extraction_strength), v0, v1, a) else { do_return!(); };
+            if v0.is_empty() { v0.push((Literal(1.0), 1.0)); *a0 = 0.0; }
+            if v1.is_empty() { v1.push((Literal(1.0), 1.0)); *a1 = 0.0; }
+            do_extract!(Vec4Expr::Extend2to4(transposed, z.clone(), w.clone()));
+        }
         _ => { do_return!(); }
     }
 }

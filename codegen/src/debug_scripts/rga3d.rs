@@ -4,7 +4,7 @@
 use crate::ast::expressions::{DebugExpression, FloatExpr, MultiVectorExpr, MultiVectorGroupExpr, MultiVectorVia, Vec2Expr, Vec3Expr, Vec4Expr};
 use crate::ast::quick_variables::*;
 use crate::ast::traits::{Debug22, DebugTrait};
-use crate::build_scripts::common_traits::{AntiInverse, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, ConstraintViolation, GeometricAntiQuotient, GeometricQuotient, ProjectViaOriginOnto, Wedge};
+use crate::build_scripts::common_traits::{AntiInverse, AntiProjectOrthogonallyOnto, AntiProjectViaHorizonOnto, AntiWedge, ConstraintViolation, GeometricAntiQuotient, GeometricQuotient, ProjectViaOriginOnto, Wedge};
 use crate::elements::e1234;
 use crate::utility::tracing::DebuggableCopyPasta;
 use tracing::Level;
@@ -105,7 +105,10 @@ async fn multi_line_simplification_debugger() {
     };
     let repo = register_multi_vecs(rga3d).finished();
 
-    DebugTrait(Wedge).trace_implementation(Level::TRACE, repo, &Flector, &Line).await;
+    // AntiWedge<Horizon> for Flector
+    DebugTrait(AntiWedge).trace_implementation(Level::TRACE, repo, &Horizon, &Line).await;
+
+    // DebugTrait(Wedge).trace_implementation(Level::TRACE, repo, &Flector, &Line).await;
 }
 
 /*
